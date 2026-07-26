@@ -21,9 +21,9 @@ are cross-checked against Emacs from the day they are written; the
 fixture books themselves start from the worked examples in
 [[*Writing a book for babble]].
 
-The ladder is a diamond, not a chain: after the harness, the three
-hard semantic stages are independent of one another and close back
-together at the fence.
+After the harness the ladder opens into a diamond: comments,
+noweb, and dynamic blocks are independent of one another, and they
+close back together at the fence.
 
 #+begin_src mermaid
 graph LR
@@ -51,7 +51,7 @@ so the census never matches its own index.
 - [[file:BOOK.org::386][386]] entry: PLANNED Stage 9: dynamic blocks
 - [[file:BOOK.org::432][432]] entry: PLANNED Stage 10: the fence
 - [[file:BOOK.org::461][461]] entry: PLANNED Stage 11: parity and self-hosting
-- [[file:BOOK.org::1174][1174]] badge: PLANNED stage 1 replaces this chapter (plan)
+- [[file:BOOK.org::1189][1189]] badge: PLANNED stage 1 replaces this chapter (plan)
 
 #+end:
 
@@ -249,7 +249,7 @@ Decided: babble compares the final bytes, banner included, and
 skips the write when they match, so an unchanged target keeps its
 mtime. The oracle never skips: its identity check compares a
 bannerless buffer against a bannered file, so it rewrites every
-target on every run (verified empirically during bootstrap). The
+target on every run (checked during bootstrap: the mtimes bump). The
 brief asks for the skip; bytes agree either way, so the oracle
 harness, which compares bytes, is untouched. Listed under
 [[*Deviations][Deviations]].
@@ -506,31 +506,46 @@ grep -nE '^\*+ (PLANNED|FILLING|HOLE|LIVE|DROPPED) |^\*{15,} |HOLE[(]|\{[+][+]|\
 
 * Introduction
 
-babble tangles lit books without Emacs. The lit toolchain under
-lit/ drives literate programs whose single source of truth is an
-org file: prose explains, code blocks tangle into the sources, and
-two dynamic blocks (a plan index and a generated diff) keep the
-in-book planning honest. The driver for all of that is batch Emacs
-running org-babel plus lit/tangle.el, which works, and is also
-four hundred megabytes of editor that takes over a second to wake
-for every tangle, on every CI run and every fresh machine.
+Literate programming is an idea Donald Knuth came up with in 1984,
+and at a high level it goes like this: a program should be written
+for humans first, computers second. You write an essay, actual
+prose with a narrative flow, and embed the code inside it wherever
+the explanation calls for it. A tool then extracts the code and
+stitches it together into something a compiler can run
+("tangling"), while another pass produces a nicely typeset
+document for reading ("weaving").
 
-The constraint that shapes everything here is the oracle.
-~babble tangle BOOK.org~ must produce byte-identical
-results to
-~emacs -Q --batch -l lit/tangle.el --eval '(lit-tangle "BOOK.org")'~:
-the same tangled files, the same refreshed book. Byte-identity is
-checkable by machine, so the test suite carries an oracle mode that
-runs every fixture through both engines and diffs the trees, and a
-golden-update mode that mints expected outputs from the Emacs side
-only. Committed goldens are Emacs output by construction; babble
-never gets to grade its own homework.
+The radical part is the ordering. Traditional code follows the
+structure the machine needs: imports at the top, functions in
+dependency order. Literate programming follows the structure your
+thinking needs. You present ideas in whatever sequence makes the
+argument clearest, and the tooling reorders everything behind the
+scenes.
+
+babble tangles lit books without Emacs. A lit book is one org file
+that is the program: prose says why, code blocks tangle into the
+sources, and two dynamic blocks (a plan index and a generated
+diff) keep the in-book planning honest. Batch Emacs running
+org-babel plus lit/tangle.el drives all of that today. And it
+works. It is also four hundred megabytes of editor waking up for
+over a second every time I tangle, on every CI run and every
+fresh machine.
+
+One constraint shapes everything here: the oracle.
+~babble tangle BOOK.org~ must produce byte-identical results to
+~emacs -Q --batch -l lit/tangle.el --eval '(lit-tangle "BOOK.org")'~,
+the same tangled files, the same refreshed book. Why bytes?
+Because a machine can check bytes. The suite carries an oracle
+mode that runs every fixture through both engines and diffs the
+trees, and an update mode that mints expected outputs from the
+Emacs side only. So committed goldens are Emacs output by
+construction, and babble never gets to grade its own homework.
 
 This is a port of a narrow, documented subset, not of org-mode.
 Where the books never rely on a behavior, babble prefers a loud
 error to a faithful imitation; the [[*Deviations][Deviations]] chapter is the
-complete list of such choices. Where the oracle and any description
-of it disagree, including this book's, the oracle wins.
+complete list. When the oracle and any description of it disagree,
+this book included, the oracle wins.
 
 babble is itself a lit book. This file is the program: the blocks
 below tangle into the Go sources, tests included, and until babble
@@ -539,11 +554,11 @@ line: v1 is done when babble tangles its own book byte-identically.
 
 * Writing a book for babble
 
-This chapter is the user's tour of the org that babble reads, one
-construct at a time, each with an example. The examples are load
+This chapter is the tour: the org babble reads, one construct at a
+time, each construct with an example. And the examples are load
 bearing: every one of them is meant to reappear in the test suite
 as a fixture book whose expected output batch Emacs mints, so what
-this chapter promises is what the oracle enforces. The precise
+this chapter promises, the oracle enforces. The precise
 rules behind the tour live in [[*The subset contract][The subset contract]].
 
 Org quoted inside the examples is comma-escaped (a comma before a
@@ -768,9 +783,9 @@ package greet
 ,#+end_src
 #+end_example
 
-Emacs reads ~:tangel~ as an unknown key, ignores it, and the block
-silently stops tangling; babble refuses the book until the key is
-spelled ~:tangle~.
+Emacs reads ~:tangel~ as an unknown key and ignores it, and the
+block silently stops tangling. babble refuses the book until the
+key is spelled right.
 
 Headers can be set once and inherited. A property drawer under a
 heading applies to every block in its subtree, nearest setting
@@ -905,8 +920,8 @@ table is an error. The bins are exhaustive against the oracle
 because the union of parameter lookups on org's tangle code path
 (collection, block assembly, noweb expansion, the write loop) is
 exactly the implemented set plus the rejected set; a key that path
-never reads cannot change a byte, which makes inert a proof, not a
-hope. The table applies to non-tangling blocks too, because
+never reads cannot change a byte, so the inert bin rests on proof.
+The table applies to non-tangling blocks too, because
 silence is where typos hide: a misspelled ~:tangle~ leaves the
 block looking like a deliberate illustration, and only the
 unknown-key error can tell the difference. The census block above
@@ -1206,11 +1221,14 @@ no date at all.
 
 ~make tangle~ regenerates the sources through batch Emacs and
 lit/tangle.el; ~make check~ tangles into a scratch directory and
-diffs; ~make weave~ renders this book to PDF with any in-flight
-plan styled, and ~make review~ is the same weave under the gate's
-name. The toolchain under lit/ is a copy from reqsync, carried
-whole; lit/lit.mk is hand-managed until the skeleton stage, when
-this book takes ownership of it with the babble-specific check
-excludes. The Makefile is one hand-written line including it, and
-go.mod, .gitignore, and the fixture data under testdata stay
-outside the book the way manifests always do.
+diffs; ~make weave~ renders this book to PDF, mermaid diagrams
+drawn through mmdc and any in-flight plan styled, and
+~make review~ is the same weave under the gate's name. The
+toolchain under lit/ is a copy from reqsync plus two local pieces,
+lit/mermaid.lua and the weave recipe line that runs it; both
+belong upstream in reqsync eventually. lit/lit.mk is hand-managed
+until the skeleton stage, when this book takes ownership of it
+with the babble-specific check excludes. The Makefile is one
+hand-written line including it, and go.mod, .gitignore, and the
+fixture data under testdata stay outside the book the way
+manifests always do.
