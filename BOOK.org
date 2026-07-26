@@ -17,25 +17,41 @@ stages, of which the first is the skeleton gate and the last is the
 parity sweep. Every stage after the skeleton lands with its tests in
 the same commits and leaves the suite green. The oracle harness
 arrives in stage 6, early enough that every later stage's fixtures
-are cross-checked against Emacs from the day they are written.
+are cross-checked against Emacs from the day they are written; the
+fixture books themselves start from the worked examples in
+[[*Writing a book for babble]].
+
+The ladder is a diamond, not a chain: after the harness, the three
+hard semantic stages are independent of one another and close back
+together at the fence.
+
+#+begin_src mermaid
+graph LR
+  s1[1 skeleton] --> s2[2 tree] --> s3[3 blocks] --> s4[4 headers]
+  s4 --> s5[5 tangle] --> s6[6 oracle]
+  s6 --> s7[7 comments] --> s10[10 fence]
+  s6 --> s8[8 noweb] --> s10
+  s6 --> s9[9 dblocks] --> s10
+  s10 --> s11[11 parity]
+#+end_src
 
 Where to look, as a generated jump list. Tangling refreshes it like
 every dynamic block, and the labels are spelled without the sigils,
 so the census never matches its own index.
 
 #+begin: plan-toc
-- [[file:BOOK.org::42][42]] entry: PLANNED Stage 1: the skeleton
-- [[file:BOOK.org::95][95]] entry: PLANNED Stage 2: the document tree
-- [[file:BOOK.org::132][132]] entry: PLANNED Stage 3: blocks in the tree
-- [[file:BOOK.org::173][173]] entry: PLANNED Stage 4: header resolution
-- [[file:BOOK.org::216][216]] entry: PLANNED Stage 5: tangle
-- [[file:BOOK.org::256][256]] entry: PLANNED Stage 6: the oracle harness
-- [[file:BOOK.org::290][290]] entry: PLANNED Stage 7: org comments
-- [[file:BOOK.org::333][333]] entry: PLANNED Stage 8: noweb
-- [[file:BOOK.org::370][370]] entry: PLANNED Stage 9: dynamic blocks
-- [[file:BOOK.org::416][416]] entry: PLANNED Stage 10: the fence
-- [[file:BOOK.org::445][445]] entry: PLANNED Stage 11: parity and self-hosting
-- [[file:BOOK.org::793][793]] badge: PLANNED stage 1 replaces this chapter (plan)
+- [[file:BOOK.org::58][58]] entry: PLANNED Stage 1: the skeleton
+- [[file:BOOK.org::111][111]] entry: PLANNED Stage 2: the document tree
+- [[file:BOOK.org::148][148]] entry: PLANNED Stage 3: blocks in the tree
+- [[file:BOOK.org::189][189]] entry: PLANNED Stage 4: header resolution
+- [[file:BOOK.org::232][232]] entry: PLANNED Stage 5: tangle
+- [[file:BOOK.org::272][272]] entry: PLANNED Stage 6: the oracle harness
+- [[file:BOOK.org::306][306]] entry: PLANNED Stage 7: org comments
+- [[file:BOOK.org::349][349]] entry: PLANNED Stage 8: noweb
+- [[file:BOOK.org::386][386]] entry: PLANNED Stage 9: dynamic blocks
+- [[file:BOOK.org::432][432]] entry: PLANNED Stage 10: the fence
+- [[file:BOOK.org::461][461]] entry: PLANNED Stage 11: parity and self-hosting
+- [[file:BOOK.org::1174][1174]] badge: PLANNED stage 1 replaces this chapter (plan)
 
 #+end:
 
@@ -184,8 +200,8 @@ resolve through org's merge order (driver defaults with mkdirp on,
 inherited header-args properties, then the block's own line, later
 entries winning) using the balanced splitter and the quoted-value
 reader, ~parse --dump~ shows the resolved set, and every header key
-on an output-reaching block classifies as implemented, rejected, or
-inert against a closed table, an unknown key being an error.
+on every src block classifies as implemented, rejected, or inert
+against a closed table, an unknown key being an error.
 
 Decided: (1) Property inheritance is nearest-wins across ancestor
 drawers and the file-level ~#+property~ keyword, for ~header-args~
@@ -521,6 +537,314 @@ below tangle into the Go sources, tests included, and until babble
 reaches parity, batch Emacs tangles it. Self-hosting is the finish
 line: v1 is done when babble tangles its own book byte-identically.
 
+* Writing a book for babble
+
+This chapter is the user's tour of the org that babble reads, one
+construct at a time, each with an example. The examples are load
+bearing: every one of them is meant to reappear in the test suite
+as a fixture book whose expected output batch Emacs mints, so what
+this chapter promises is what the oracle enforces. The precise
+rules behind the tour live in [[*The subset contract][The subset contract]].
+
+Org quoted inside the examples is comma-escaped (a comma before a
+star or a ~#+~), which is org's own convention for quoting itself;
+the section on escaping below explains it.
+
+** A minimal book
+
+A book is prose and code under headlines. Every src block that
+names a target file tangles into it; everything else is yours. The
+smallest useful book is one block:
+
+#+begin_example
+,#+title: a tiny book
+
+,* Greeting
+
+greet is the whole library.
+
+,#+begin_src go :tangle greet.go
+package greet
+,#+end_src
+#+end_example
+
+Running ~babble tangle BOOK.org~ writes greet.go:
+
+#+begin_example
+// Code generated from BOOK.org by make tangle. DO NOT EDIT.
+
+package greet
+#+end_example
+
+Every tangled file opens with that banner in the file's own comment
+syntax (~//~ for .go, ~;;~ for .el, ~--~ for .lua, ~#~ for
+everything else), then one blank line, then the code. A file ends
+with exactly one newline. Tangling again without changing the book
+rewrites nothing: the target's bytes already match, so its
+timestamp survives and build tools stay calm.
+
+** Choosing targets
+
+~:tangle~ decides where a block lands. A path lands relative to the
+book's directory, and parent directories appear on demand:
+
+#+begin_example
+,#+begin_src go :tangle internal/req/req.go
+package req
+,#+end_src
+#+end_example
+
+~:tangle no~ keeps a block in the book only, which is what you want
+for illustrations and scratch work; a block with no ~:tangle~ at
+all means the same thing. ~:tangle yes~ derives the target from
+the book's name and the language, so in BOOK.org a go block lands
+in BOOK.go. Tangling into the book itself is refused.
+
+A block with no language is an error. Emacs would skip it without
+a word, which is how a renamed language quietly empties a file;
+babble names the line instead.
+
+** How files assemble
+
+Blocks reach a file in document order, whatever their targets do in
+between, and consecutive blocks in the same file are separated by
+exactly one blank line:
+
+#+begin_example
+,#+begin_src go :tangle greet.go
+package greet
+,#+end_src
+
+,#+begin_src go :tangle other.go
+package other
+,#+end_src
+
+,#+begin_src go :tangle greet.go
+func greet(name string) string {
+	return "Hello, " + name + "!"
+}
+,#+end_src
+#+end_example
+
+greet.go collects the first and third blocks with one blank line
+between them; other.go gets the middle one. Trailing blank lines
+inside a block body are dropped, so you cannot accidentally pad a
+file's end.
+
+** Keeping drafts out
+
+A heading whose title starts with ~COMMENT~ takes its whole
+subtree out of the tangle, children included. The ~:ARCHIVE:~ tag
+does the same:
+
+#+begin_example
+,* COMMENT Scratchpad
+
+,#+begin_src go :tangle greet.go
+package wrong
+,#+end_src
+
+,* Old ideas                                                    :ARCHIVE:
+#+end_example
+
+Neither block above reaches a file. This is the mechanism behind
+the plan convention's rejected drafts: mark the heading, keep the
+text.
+
+** Doc comments
+
+~:comments org~ turns the paragraph directly above a block into its
+comment in the tangled file. Not all the prose above it: the last
+paragraph, which keeps narrative and doc comment from repeating
+each other.
+
+#+begin_example
+,* Greeting
+
+Callers pick the name; greet only decorates it.
+
+greet returns its salute with the name spliced in.
+
+,#+name: greet
+,#+begin_src go :tangle greet.go :comments org
+func greet(name string) string {
+	return "Hello, " + name + "!"
+}
+,#+end_src
+#+end_example
+
+greet.go reads:
+
+#+begin_example
+// Code generated from BOOK.org by make tangle. DO NOT EDIT.
+
+// greet returns its salute with the name spliced in.
+func greet(name string) string {
+	return "Hello, " + name + "!"
+}
+#+end_example
+
+The first paragraph stayed in the book; the ~#+name:~ line never
+leaks into the comment. When a docstring needs several paragraphs,
+put an invisible ~# doc~ marker line where it starts:
+
+#+begin_example
+Greeting strings concatenate; there is no template engine here.
+
+# doc
+greet returns its salute with the name spliced in.
+
+The exclamation point is part of the contract: tests pin it.
+
+,#+begin_src go :tangle greet.go :comments org
+func greet(name string) string {
+	return "Hello, " + name + "!"
+}
+,#+end_src
+#+end_example
+
+Everything after the marker becomes the comment, blank lines
+preserved as bare ~//~ lines. A paragraph opening with ~Note:~ or
+~Apropos:~ is an aside: the weave styles it, and the tangle drops
+the sigil and keeps the text, so the aside lands in the source as
+an ordinary comment. Doc comments work for go, python, emacs-lisp,
+sh, and makefile blocks; any other language under ~:comments org~
+is an error, because batch Emacs cannot be trusted to comment a
+language it has no mode for.
+
+** Splitting code with noweb
+
+With ~:noweb yes~, a block can pull named blocks into itself with
+~<<name>>~ references, which is how a long function becomes a
+skeleton of named regions:
+
+#+begin_example
+,#+begin_src go :tangle greet.go :comments org :noweb yes
+func main() {
+	<<print-greetings>>
+}
+,#+end_src
+
+,#+name: print-greetings
+,#+begin_src go
+fmt.Println(greet("you"))
+fmt.Println(greet("me"))
+,#+end_src
+#+end_example
+
+The tangled main carries both lines, and the tab before
+~<<print-greetings>>~ is replicated in front of every expanded
+line, so indentation survives:
+
+#+begin_example
+func main() {
+	fmt.Println(greet("you"))
+	fmt.Println(greet("me"))
+}
+#+end_example
+
+When no single block carries the name, the reference collects
+every block whose ~:noweb-ref~ equals it, in document order, each
+followed by its own ~:noweb-sep~ (a newline unless you say
+otherwise). Expansion is recursive: a referenced block may itself
+reference further blocks. A reference nothing defines is an error,
+and so is a cycle; Emacs would silently expand the first to
+nothing and hang on the second.
+
+** Header arguments at large
+
+Org defines some thirty header arguments; a tangler needs eight of
+them. babble sorts every header key on every block into three
+bins. Implemented: ~:tangle~, ~:mkdirp~, ~:comments~,
+~:padline~, ~:noweb~, ~:noweb-ref~, ~:noweb-sep~, and the ~-i~
+switch that preserves indentation. Inert: the evaluation-only
+arguments such as ~:results~ and ~:exports~, accepted and ignored
+because they cannot change a tangled byte. Everything else is an
+error that names the key, which among other things catches typos:
+
+#+begin_example
+,#+begin_src go :tangel greet.go
+package greet
+,#+end_src
+#+end_example
+
+Emacs reads ~:tangel~ as an unknown key, ignores it, and the block
+silently stops tangling; babble refuses the book until the key is
+spelled ~:tangle~.
+
+Headers can be set once and inherited. A property drawer under a
+heading applies to every block in its subtree, nearest setting
+winning:
+
+#+begin_example
+,* Engine
+:PROPERTIES:
+:header-args: :comments org
+:END:
+#+end_example
+
+** Dynamic blocks
+
+Two generated views live in books, and tangling refreshes both
+before any code moves, so committed generated content cannot
+disagree with the blocks it describes. Hand edits inside them are
+futile: the next refresh clobbers the interior wholesale.
+
+plan-toc renders a jump list of every plan-markup site in the
+book, one line-number link per site:
+
+#+begin_example
+,#+begin: plan-toc
+,#+end:
+#+end_example
+
+src-block-diff renders a unified diff of two named blocks' bodies,
+which is how a planned twin shows its delta next to the original:
+
+#+begin_example
+,#+begin: src-block-diff :old greet :new greet-quiet
+,#+end:
+#+end_example
+
+Both names must exist as ~#+name:~'d blocks. Dynamic blocks start
+in column zero, and only these two names exist; an unknown name is
+an error rather than an emptied interior, which is what Emacs
+would leave you.
+
+** Quoting org inside a block
+
+Org has one rule for putting org inside org: escape a line that
+starts with a star or ~#+~ by putting a comma in front, and the
+tangle strips one comma back off. Headlines are the reason the
+rule exists at all: a bare star line ends every block it appears
+in, no matter how deeply quoted it looks.
+
+#+begin_example
+,#+begin_src org :tangle no
+,,* A quoted heading, safely inert
+,,#+begin_src go
+,,#+end_src
+,#+end_src
+#+end_example
+
+One comma per nesting level. An unescaped block delimiter inside
+an example, src, export, or comment body is refused outright: the
+Emacs driver's raw text searches would anchor doc-comment extents
+on it, and no honest parser can reproduce that.
+
+** When babble says no
+
+Everything outside src and dynamic blocks is yours: keywords,
+drawers, tables, footnotes, links, timestamps pass through
+untouched, because babble rewrites the book only by splicing fresh
+dynamic-block interiors into the bytes it read. The refusals all
+sit on the tangling path, and they share one philosophy: where the
+books never relied on a behavior, a loud early error beats a
+faithful imitation of a silent mistake. The complete list, with
+what Emacs would have done instead, is [[*Deviations][Deviations]]. A book that
+tangles at all tangles to the same bytes Emacs produces; a book
+that would not is refused before any file changes.
+
 * The subset contract
 
 What ~babble tangle~ does, in order: refresh every dynamic block in
@@ -570,12 +894,11 @@ outside balanced parentheses, brackets, and double quotes. A value
 is a string; a quoted value is read with elisp string escapes; a
 value org would evaluate as lisp is rejected.
 
-The header surface is closed. Every key on a block whose body
-reaches an output file, directly or through a noweb reference,
-must sit in a fixed table with three bins: implemented
-(~:tangle~, ~:mkdirp~, ~:comments~, ~:padline~, ~:noweb~,
-~:noweb-ref~, ~:noweb-sep~, the ~-i~ switch), rejected (the
-[[*Deviations][Deviations]] list), and inert, the evaluation-only keys
+The header surface is closed. Every key on every src block,
+tangling or not, must sit in a fixed table with three bins:
+implemented (~:tangle~, ~:mkdirp~, ~:comments~, ~:padline~,
+~:noweb~, ~:noweb-ref~, ~:noweb-sep~, the ~-i~ switch), rejected
+(the [[*Deviations][Deviations]] list), and inert, the evaluation-only keys
 (~:results~, ~:exports~, ~:session~, ~:cache~, ~:eval~ and kin)
 that org parses but its tangle path never reads. A key outside the
 table is an error. The bins are exhaustive against the oracle
@@ -583,9 +906,12 @@ because the union of parameter lookups on org's tangle code path
 (collection, block assembly, noweb expansion, the write loop) is
 exactly the implemented set plus the rejected set; a key that path
 never reads cannot change a byte, which makes inert a proof, not a
-hope. A block that reaches no output file only needs a parseable
-header, the same indifference org shows it; the census block above
-wears ~:results output~ and relies on exactly that.
+hope. The table applies to non-tangling blocks too, because
+silence is where typos hide: a misspelled ~:tangle~ leaves the
+block looking like a deliberate illustration, and only the
+unknown-key error can tell the difference. The census block above
+wears ~:results output~ and passes because inert keys are welcome
+everywhere.
 
 ** The body pipeline
 
@@ -621,6 +947,32 @@ leading ~Note:~ or ~Apropos:~ sigil drops. The result wraps in the
 block language's line-comment syntax, blank lines becoming a bare
 comment marker with no trailing space, and a docstring that is all
 whitespace inserts nothing.
+
+The anchors earn an example. Two commented blocks under one
+heading:
+
+#+begin_example
+,* Loading
+
+Load reads the set.
+
+,#+begin_src go :tangle a.go :comments org
+func Load() {}
+,#+end_src
+
+,#+begin_src go :tangle a.go :comments org
+func Save() {}
+,#+end_src
+#+end_example
+
+Load's extent starts after the heading's stars and runs to its
+begin line, so it holds the title and the paragraph; the
+last-paragraph rule picks ~Load reads the set.~ and the title
+stays behind. Save's extent starts after the previous block's
+literal end_src and holds only blank lines, so Save tangles with
+no comment at all. Delete the paragraph, though, and the title
+itself becomes Load's comment: the extent still ends somewhere,
+and the docstring rule takes the last paragraph it finds there.
 
 ** Noweb
 
@@ -752,6 +1104,17 @@ engine consumes, free of org spellings, which is the seam a future
 markdown frontend would plug into. ~internal/tangle~ owns
 collection, targets, the body pipeline, comments, noweb, banners,
 and assembly; ~internal/dblock~ owns refresh and the two writers.
+The dependency arrows all point one way, and the tree is the waist:
+
+#+begin_src mermaid
+graph LR
+  book[BOOK.org] --> org["internal/org<br/>recognition, spans, headers"]
+  org -->|"org spellings stop here"| tree["internal/book<br/>the logical tree"]
+  tree --> tangle["internal/tangle<br/>collect, noweb, comments, assemble"]
+  tree --> dblock["internal/dblock<br/>refresh, plan-toc, src-block-diff"]
+  tangle --> files[tangled sources]
+  dblock --> book2[BOOK.org rewritten]
+#+end_src
 
 Two facts keep the port small. Batch Emacs loads no language packs,
 so org's language-specific expansion hooks never exist and body
@@ -768,7 +1131,9 @@ expected outputs; the script runs ~babble tangle~ or
 ~babble parse --dump~ and compares every expected file, the book
 itself included when dynamic blocks are in play. The fixtures are
 data files outside this book, hand-started and machine-reminted,
-like the dependency manifests.
+like the dependency manifests. Their books start from the worked
+examples in [[*Writing a book for babble]], so what the guide shows
+is what the suite pins.
 
 The oracle harness is the part that keeps the port honest. Under
 ORACLE=1, each fixture's inputs are extracted twice; batch Emacs
@@ -780,6 +1145,22 @@ encode babble's own misunderstanding. Fixtures that pin babble's
 deliberate deviations (error paths, the mtime-preserving skip) are
 marked to run without the oracle, since the oracle disagrees with
 them by design.
+
+The whole loop in one picture; the arrow to the goldens is the one
+that keeps babble honest, because it never starts from babble:
+
+#+begin_src mermaid
+graph TD
+  fx[fixture inputs] --> e[batch Emacs + lit/tangle.el]
+  fx --> b[babble tangle]
+  e --> et[Emacs tree]
+  b --> bt[babble tree]
+  et --> d{byte diff}
+  bt --> d
+  d -->|equal| ok[ORACLE=1 green]
+  d -->|differs| no[test fails]
+  et -->|UPDATE=1| g[committed goldens]
+#+end_src
 
 The real-book sweep copies the reqsync book, the lit example book,
 and this book into temp trees and cross-checks both engines over
