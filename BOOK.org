@@ -28,14 +28,14 @@ so the census never matches its own index.
 - [[file:BOOK.org::95][95]] entry: PLANNED Stage 2: the document tree
 - [[file:BOOK.org::132][132]] entry: PLANNED Stage 3: blocks in the tree
 - [[file:BOOK.org::173][173]] entry: PLANNED Stage 4: header resolution
-- [[file:BOOK.org::210][210]] entry: PLANNED Stage 5: tangle
-- [[file:BOOK.org::250][250]] entry: PLANNED Stage 6: the oracle harness
-- [[file:BOOK.org::284][284]] entry: PLANNED Stage 7: org comments
-- [[file:BOOK.org::327][327]] entry: PLANNED Stage 8: noweb
-- [[file:BOOK.org::364][364]] entry: PLANNED Stage 9: dynamic blocks
-- [[file:BOOK.org::410][410]] entry: PLANNED Stage 10: the fence
-- [[file:BOOK.org::439][439]] entry: PLANNED Stage 11: parity and self-hosting
-- [[file:BOOK.org::759][759]] badge: PLANNED stage 1 replaces this chapter (plan)
+- [[file:BOOK.org::216][216]] entry: PLANNED Stage 5: tangle
+- [[file:BOOK.org::256][256]] entry: PLANNED Stage 6: the oracle harness
+- [[file:BOOK.org::290][290]] entry: PLANNED Stage 7: org comments
+- [[file:BOOK.org::333][333]] entry: PLANNED Stage 8: noweb
+- [[file:BOOK.org::370][370]] entry: PLANNED Stage 9: dynamic blocks
+- [[file:BOOK.org::416][416]] entry: PLANNED Stage 10: the fence
+- [[file:BOOK.org::445][445]] entry: PLANNED Stage 11: parity and self-hosting
+- [[file:BOOK.org::793][793]] badge: PLANNED stage 1 replaces this chapter (plan)
 
 #+end:
 
@@ -175,7 +175,7 @@ error here.
 :CUSTOM_ID: stage-4
 :SPEC:     The subset contract, "Header arguments"
 :DEPS:     stage 3
-:ACCEPTANCE: TestResolveHeaders, TestHeaderRejects; go test ./...
+:ACCEPTANCE: TestResolveHeaders, TestHeaderRejects, TestInertHeaders; go test ./...
 :SIZE:     ~220 lines
 :END:
 
@@ -183,15 +183,21 @@ Claim: after this stage, every block's effective header arguments
 resolve through org's merge order (driver defaults with mkdirp on,
 inherited header-args properties, then the block's own line, later
 entries winning) using the balanced splitter and the quoted-value
-reader, ~parse --dump~ shows the resolved set, and every
-out-of-subset header errors with its name and the supported set.
+reader, ~parse --dump~ shows the resolved set, and every header key
+on an output-reaching block classifies as implemented, rejected, or
+inert against a closed table, an unknown key being an error.
 
 Decided: (1) Property inheritance is nearest-wins across ancestor
 drawers and the file-level ~#+property~ keyword, for ~header-args~
 and ~header-args:LANG~; the accumulating ~header-args+~ forms are
 rejected. (2) Values are strings: the reader unquotes an elisp
 string literal with the common escapes and rejects anything that
-would make org's reader evaluate lisp.
+would make org's reader evaluate lisp. (3) The table's three bins
+are proven exhaustive by enumeration of the parameter lookups on
+org's tangle code path, done during the source reading that shaped
+this plan; the inert bin is every key that path never touches, and
+an ORACLE fixture pins that a block wearing the inert keys tangles
+to the same bytes in both engines.
 
 - [ ] inserted prose reads steady-state
 - [ ] Changes draft below reads right in the journal
@@ -564,6 +570,23 @@ outside balanced parentheses, brackets, and double quotes. A value
 is a string; a quoted value is read with elisp string escapes; a
 value org would evaluate as lisp is rejected.
 
+The header surface is closed. Every key on a block whose body
+reaches an output file, directly or through a noweb reference,
+must sit in a fixed table with three bins: implemented
+(~:tangle~, ~:mkdirp~, ~:comments~, ~:padline~, ~:noweb~,
+~:noweb-ref~, ~:noweb-sep~, the ~-i~ switch), rejected (the
+[[*Deviations][Deviations]] list), and inert, the evaluation-only keys
+(~:results~, ~:exports~, ~:session~, ~:cache~, ~:eval~ and kin)
+that org parses but its tangle path never reads. A key outside the
+table is an error. The bins are exhaustive against the oracle
+because the union of parameter lookups on org's tangle code path
+(collection, block assembly, noweb expansion, the write loop) is
+exactly the implemented set plus the rejected set; a key that path
+never reads cannot change a byte, which makes inert a proof, not a
+hope. A block that reaches no output file only needs a parseable
+header, the same indifference org shows it; the census block above
+wears ~:results output~ and relies on exactly that.
+
 ** The body pipeline
 
 The body is the raw text between the delimiter lines, minus exactly
@@ -625,7 +648,11 @@ lines, and wraps the rest in a src diff block, or writes the words
 the book, labels spelled without the sigils, as line-number links,
 with sites below the block shifted by the number of lines the
 writer is about to insert. Dynamic blocks are recognized at column
-zero.
+zero. The writer set is closed by dispatch: two names exist, and an
+unknown name is an error. babble never renders org; the book file
+is rewritten by splicing fresh interiors into the retained bytes,
+so every construct outside a dynamic-block interior, understood or
+not, survives byte-for-byte by construction.
 
 * Deviations
 
@@ -652,12 +679,19 @@ message always names the construct and the supported alternative.
 - A duplicate ~#+name:~ across src blocks is an error, as is a name
   that some block also uses as a ~:noweb-ref~ value; org would
   resolve both by whichever its scan finds first.
-- Unsupported header arguments and switches error by name:
-  ~:comments~ values other than ~no~ and ~org~, ~:var~, ~:shebang~,
-  ~:tangle-mode~, ~:no-expand~, ~:noweb~ values other than ~yes~
-  and ~no~, ~:noweb-prefix~, ~:prologue~, ~:epilogue~, the ~-r~,
-  ~-l~, and ~-k~ coderef switches, accumulating ~header-args+~
-  properties, inline src blocks, and ~#+include~.
+- The header table is closed: a key babble does not know is an
+  error, so org's option space cannot leak in unclassified. Within
+  the table, the rejected keys error by name: ~:comments~ values
+  other than ~no~ and ~org~, ~:var~, ~:shebang~, ~:tangle-mode~,
+  ~:no-expand~, ~:noweb~ values other than ~yes~ and ~no~,
+  ~:noweb-prefix~, ~:prologue~, ~:epilogue~, ~:dir~ in its attach
+  form, the ~-r~ and ~-l~ coderef switches, accumulating
+  ~header-args+~ properties, inline src blocks, and ~#+include~.
+  The inert keys (evaluation-only arguments such as ~:results~ and
+  ~:exports~, and the ~-n~ and ~-k~ switches) pass through because
+  the oracle's tangle path never reads them; an oracle fixture
+  holds a tangled block wearing them all and proves the bytes do
+  not move.
 - ~:comments org~ is limited to languages whose comment syntax the
   driver world actually has: go, python, emacs-lisp, sh, makefile.
   In batch Emacs a missing language mode silently leaves the
