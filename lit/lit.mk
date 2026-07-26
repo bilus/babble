@@ -37,6 +37,7 @@ check:
 	    --eval '(lit-tangle "BOOK.org")' >/dev/null 2>&1 \
 	) && diff -r -x BOOK.org -x example -x Makefile -x .gitignore \
 	  -x go.mod -x go.sum -x requirements.txt -x README.md \
-	  -x AGENTS.md -x book.pdf -x book-review.pdf -x docs -x .git \
+	  -x AGENTS.md -x PROMPT.md -x babble -x testdata -x .github \
+	  -x book.pdf -x book-review.pdf -x docs -x .git \
 	  -x .DS_Store $$d . \
 	  && echo ok
