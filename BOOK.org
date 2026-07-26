@@ -489,12 +489,12 @@ lit/ drives literate programs whose single source of truth is an
 org file: prose explains, code blocks tangle into the sources, and
 two dynamic blocks (a plan index and a generated diff) keep the
 in-book planning honest. The driver for all of that is batch Emacs
-running org-babel plus lit/tangle.el, which works, and is also a
-heavyweight dependency with a slow start that every CI run and
-fresh machine pays again.
+running org-babel plus lit/tangle.el, which works, and is also
+four hundred megabytes of editor that takes over a second to wake
+for every tangle, on every CI run and every fresh machine.
 
-The interesting constraint is not the feature list, it is the
-oracle. ~babble tangle BOOK.org~ must produce byte-identical
+The constraint that shapes everything here is the oracle.
+~babble tangle BOOK.org~ must produce byte-identical
 results to
 ~emacs -Q --batch -l lit/tangle.el --eval '(lit-tangle "BOOK.org")'~:
 the same tangled files, the same refreshed book. Byte-identity is
