@@ -1,0 +1,31 @@
+#+title: A fresh literate program
+#+todo: PLANNED(p!) HOLE(h!) FILLING(f!) | LIVE(l!) DROPPED(d@)
+
+Retitle this book after your project. This file is the program:
+prose says why, the blocks below tangle into the sources, and lit/
+turns the whole thing into code and PDFs. The rules live in
+lit/AGENTS.md, the flow in lit/README.md. go.mod, go.sum, the
+one-line Makefile, and .gitignore stay outside the book, managed by
+their own tools and your hands; make setup writes the Makefile when
+none exists.
+
+* Hello
+
+main prints a greeting; replace it with the real entry point and
+let the chapters grow around it.
+
+#+begin_src go :tangle main.go :comments org
+package main
+
+import "fmt"
+
+func main() {
+	fmt.Println("hello from the book")
+}
+#+end_src
+
+* Changes
+
+A journal, newest first: one entry per completed plan stage, written
+once at acceptance and never reworded. The first entry arrives with
+the first completed plan.

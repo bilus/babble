@@ -1,0 +1,30 @@
+#+title: A fresh literate program
+#+todo: PLANNED(p!) HOLE(h!) FILLING(f!) | LIVE(l!) DROPPED(d@)
+
+Retitle this book after your project. This file is the program:
+prose says why, the blocks below tangle into the sources, and lit/
+turns the whole thing into code and PDFs. The rules live in
+lit/AGENTS.md, the flow in lit/README.md. requirements.txt, the
+one-line Makefile, and .gitignore stay outside the book, managed by
+their own tools and your hands; make setup writes the Makefile when
+none exists.
+
+* Hello
+
+hello prints a greeting; replace it with the real entry point and
+let the chapters grow around it.
+
+#+begin_src python :tangle hello.py :comments org
+def hello():
+    print("hello from the book")
+
+
+if __name__ == "__main__":
+    hello()
+#+end_src
+
+* Changes
+
+A journal, newest first: one entry per completed plan stage, written
+once at acceptance and never reworded. The first entry arrives with
+the first completed plan.

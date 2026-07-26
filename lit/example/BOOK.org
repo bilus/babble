@@ -1,0 +1,189 @@
+#+title: slug: titles into addresses
+#+author: Marcin Bilski
+#+todo: PLANNED(p!) HOLE(h!) FILLING(f!) | LIVE(l!) DROPPED(d@)
+
+* Plan                                                                :plan:
+
+Temporary and first in the file: one entry per stage while work is
+in flight. A completed stage's entry is deleted and its Changes
+draft moves, timestamped, to [[*Changes]].
+
+** PLANNED Stage 2: colliding slugs get numbered suffixes          :stage2:
+:PROPERTIES:
+:CUSTOM_ID: stage-2
+:ACCEPTANCE: doctest for deduplicate; python3 -m doctest slug.py
+:END:
+
+Claim: after this stage, a slug checked against a collection of
+taken slugs comes back untouched when free and wearing the first
+free numbered suffix when not, so no two posts share an address.
+
+- [ ] skeleton approved (twin at [[slug-entry--planned]])
+- [ ] inserted prose reads steady-state (no "now", "no longer", "still")
+- [ ] HOLE(2) deduplicate filled, doctest in the same commit
+- [ ] twin accepted: ~:tangle~ headers swapped, old block DROPPED
+- [ ] census clean for stage 2, doctests green
+- [ ] Changes entry dated and filed, plan entry deleted
+
+Where to look, as a generated jump list; tangling refreshes it.
+
+#+begin: plan-toc
+- [[file:BOOK.org::11][11]] entry: PLANNED Stage 2: colliding slugs get numbered suffixes
+- [[file:BOOK.org::102][102]] badge: PLANNED stage 2 amends the paragraph below (plan)
+- [[file:BOOK.org::108][108]] insertion: Checked against a collection of taken slugs, a colliding ...
+- [[file:BOOK.org::123][123]] badge: PLANNED stage 2 replaces the block above (plan)
+- [[file:BOOK.org::133][133]] twin of slug-entry
+- [[file:BOOK.org::145][145]] generated diff
+- [[file:BOOK.org::159][159]] badge: PLANNED stage 2 adds the dedup helper (plan)
+- [[file:BOOK.org::169][169]] hole 2: first of base, base-2, ... not in taken
+
+#+end:
+
+*** Changes draft
+
+Filed to [[*Changes]] with an inactive timestamp at acceptance.
+
+#+begin_quote
+Two titles that reduced to the same slug shared one address, the
+newer post shadowing the older. slug hands its result and the taken
+collection to deduplicate, which counts up from 2 until the suffix
+is free. slugify and truncate never moved.
+#+end_quote
+
+*** Census
+
+The tangled source is authoritative for holes that ship; the book
+side is one grep. Spellings such as ~HOLE[(]~ keep the patterns
+from matching themselves.
+
+#+name: hole-census
+#+begin_src sh :results output
+grep -rn "HOLE[(]" --include="*.py" . || echo no holes in sources
+echo ---
+grep -nE '^\*+ (PLANNED|FILLING|HOLE|LIVE|DROPPED) |^\*{15,} |HOLE[(]|\{[+][+]|\{[-][-]|\{[~][~]|\{[>][>]|[-]-planned|^#\+begin: src-block-diff|:(plan|stage[0-9]+):' BOOK.org \
+  || echo no plan markup in the book
+#+end_src
+
+* From title to address
+
+slug turns post titles into URL addresses. Most of the work is
+throwing things away: punctuation, case, everything past the cap,
+without shipping half a word. And two titles can reduce to the
+same slug, while an address is only an address if it is unique.
+
+This file is the program: the blocks below tangle into slug.py,
+the paragraph above a block is its doc comment, and ~python3 -m
+doctest slug.py~ is the suite. ~make tangle~ regenerates slug.py;
+~make check~ tangles into a scratch directory and diffs. The
+Makefile is one hand-written line, ~include lit/lit.mk~; ~lit~ here
+is a symlink to the parent toolchain, standing in for the copy of
+lit/ a real project carries, and .gitignore is hand-managed too.
+
+slugify keeps the alphanumeric runs and hyphenates the gaps; a run
+of junk is one gap, not several, and the ends come out clean.
+
+#+begin_src python :tangle slug.py :comments org
+def slugify(title):
+    kept = "".join(c if c.isalnum() else " " for c in title.lower())
+    return "-".join(kept.split())
+#+end_src
+
+truncate cuts at the last hyphen inside the limit, never mid-word;
+a single run longer than the limit takes the hard cut.
+
+#+begin_src python :tangle slug.py :comments org
+def truncate(slug, limit):
+    if len(slug) <= limit:
+        return slug
+    cut = slug.rfind("-", 0, limit + 1)
+    return slug[:cut] if cut > 0 else slug[:limit]
+#+end_src
+
+*************** PLANNED stage 2 amends the paragraph below ([[#stage-2][plan]]) :stage2:
+The insertion states the uniqueness guarantee in steady-state
+voice; the collision story lives in the plan only.
+*************** END
+
+The two halves compose into the one entry point call sites use.
+{++Checked against a collection of taken slugs, a colliding result
+picks up the first free numbered suffix before it escapes.++}
+
+slug is the whole pipeline: slugified, then cut at the limit.
+
+#+name: slug-entry
+#+begin_src python :tangle slug.py :comments org
+def slug(title, limit=64):
+    """
+    >>> slug("Quiet Brown Fox, part 2", limit=15)
+    'quiet-brown-fox'
+    """
+    return truncate(slugify(title), limit)
+#+end_src
+
+*************** PLANNED stage 2 replaces the block above ([[#stage-2][plan]]) :stage2:
+The twin below is the skeleton. It must not tangle yet: the doctest
+drives slug, and a body reaching deduplicate's raise would turn the
+suite red. Accept = swap the two blocks' ~:tangle~ headers, mark
+the old one DROPPED. Reject = delete the twin; nothing else moves.
+*************** END
+
+slug is the whole pipeline: slugified, cut at the limit, then made
+unique against taken.
+
+#+name: slug-entry--planned
+#+begin_src python :tangle no :comments org
+def slug(title, limit=64, taken=()):
+    """
+    >>> slug("Quiet Brown Fox, part 2", limit=15)
+    'quiet-brown-fox'
+    """
+    return deduplicate(truncate(slugify(title), limit), taken)
+#+end_src
+
+What changed, as a generated view the tangle refreshes.
+
+#+begin: src-block-diff :old slug-entry :new slug-entry--planned
+#+begin_src diff
+@@ -1,6 +1,6 @@
+-def slug(title, limit=64):
++def slug(title, limit=64, taken=()):
+     """
+     >>> slug("Quiet Brown Fox, part 2", limit=15)
+     'quiet-brown-fox'
+     """
+-    return truncate(slugify(title), limit)
++    return deduplicate(truncate(slugify(title), limit), taken)
+#+end_src
+#+end:
+
+*************** PLANNED stage 2 adds the dedup helper ([[#stage-2][plan]]) :stage2:
+deduplicate is the stage-2 hole; an addition needs no twin, since a
+hole body compiles and nothing calls it before acceptance.
+*************** END
+
+deduplicate returns the first of base, base-2, base-3, ... absent
+from taken; the bare slug always wins when free.
+
+#+begin_src python :tangle slug.py :comments org
+def deduplicate(base, taken):
+    raise NotImplementedError("HOLE(2): first of base, base-2, ... not in taken")
+#+end_src
+
+* Changes
+
+A journal, newest first: one entry per completed change, written
+once and never reworded, speaking from its date.
+
+** [2026-07-22 Wed] Truncation stops splitting words
+
+truncate cut at the raw limit, so a cap landing mid-word shipped
+fragments: "quiet-brown-fox" at nine came out "quiet-bro". The cut
+moved back to the last hyphen inside the limit, the hard cut
+surviving only for a single run longer than the cap.
+
+** [2026-07-18 Sat] Separator runs collapse
+
+slugify gave every rejected character its own hyphen, and titles
+like "C++ & Go" slugged to rows of dashes reading like redactions.
+Rejected characters became spaces and the join collapsed the runs:
+one hyphen per gap, none at the ends.
