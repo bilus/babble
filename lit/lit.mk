@@ -7,12 +7,13 @@ tangle:
 
 weave: book.pdf
 
-book.pdf: BOOK.org lit/preprocess.py lit/plan.lua lit/notes.lua
+book.pdf: BOOK.org lit/preprocess.py lit/plan.lua lit/notes.lua lit/mermaid.lua
 	python3 lit/preprocess.py BOOK.org book-weave.org
-	pandoc book-weave.org -s --toc --lua-filter=lit/notes.lua \
+	t=$$(mktemp -d) && MERMAID_TMP=$$t pandoc book-weave.org -s --toc \
+	  --lua-filter=lit/mermaid.lua --lua-filter=lit/notes.lua \
 	  --lua-filter=lit/plan.lua -V colorlinks -V linkcolor=NavyBlue \
-	  --pdf-engine=tectonic -o book.pdf
-	rm -f book-weave.org
+	  --pdf-engine=tectonic -o book.pdf; rc=$$?; \
+	  rm -rf "$$t" book-weave.org; exit $$rc
 
 review: weave
 
