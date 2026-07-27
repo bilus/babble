@@ -1,0 +1,203 @@
+# Every block shape in one book: a named src block with a switch
+# and a header, a plain one, both dynamic blocks (the generated
+# diff holding a real src block), an example whose escaped
+# delimiters stay text, a quote with a child, and upper-case
+# delimiters.
+
+exec babble parse --dump b.org
+cmp stdout want.json
+
+-- b.org --
+#+title: blocks
+
+* Blocks
+
+#+name: greet
+#+begin_src go -i :tangle greet.go :comments org
+package greet
+#+end_src
+
+#+begin_src go
+plain
+#+end_src
+
+#+begin: plan-toc
+- [[file:b.org::3][3]] entry: Blocks
+#+end:
+
+#+begin: src-block-diff :old greet :new greet
+#+begin_src diff
+-old
++new
+#+end_src
+#+end:
+
+#+begin_example
+,#+begin_src go
+not a block
+,#+end_src
+#+end_example
+
+#+begin_quote
+Quoted prose.
+#+end_quote
+
+#+BEGIN_SRC go :tangle up.go
+upper case delimiters
+#+END_SRC
+-- want.json --
+{
+ "path": "b.org",
+ "todo": [
+  "TODO",
+  "DONE"
+ ],
+ "keywords": {
+  "title": [
+   "blocks"
+  ]
+ },
+ "nodes": [
+  {
+   "type": "keyword",
+   "key": "title",
+   "value": "blocks",
+   "line": 1,
+   "span": "0:15"
+  },
+  {
+   "type": "prose",
+   "line": 2,
+   "span": "16:17"
+  },
+  {
+   "type": "headline",
+   "level": 1,
+   "title": "Blocks",
+   "afterStars": 19,
+   "line": 3,
+   "head": "17:25",
+   "children": [
+    {
+     "type": "prose",
+     "line": 4,
+     "span": "26:27"
+    },
+    {
+     "type": "src",
+     "lang": "go",
+     "name": "greet",
+     "switches": "-i",
+     "rawHeader": ":tangle greet.go :comments org",
+     "body": "90:104",
+     "beginAt": 41,
+     "afterEnd": 113,
+     "line": 6,
+     "full": "27:113"
+    },
+    {
+     "type": "prose",
+     "line": 9,
+     "span": "114:115"
+    },
+    {
+     "type": "src",
+     "lang": "go",
+     "body": "130:136",
+     "beginAt": 115,
+     "afterEnd": 145,
+     "line": 10,
+     "full": "115:145"
+    },
+    {
+     "type": "prose",
+     "line": 13,
+     "span": "146:147"
+    },
+    {
+     "type": "dynamic",
+     "name": "plan-toc",
+     "interior": "165:202",
+     "line": 14,
+     "full": "147:208",
+     "children": [
+      {
+       "type": "prose",
+       "line": 15,
+       "span": "165:202"
+      }
+     ]
+    },
+    {
+     "type": "prose",
+     "line": 17,
+     "span": "209:210"
+    },
+    {
+     "type": "dynamic",
+     "name": "src-block-diff",
+     "args": ":old greet :new greet",
+     "interior": "256:293",
+     "line": 18,
+     "full": "210:299",
+     "children": [
+      {
+       "type": "src",
+       "lang": "diff",
+       "body": "273:283",
+       "beginAt": 256,
+       "afterEnd": 292,
+       "line": 19,
+       "full": "256:292"
+      }
+     ]
+    },
+    {
+     "type": "prose",
+     "line": 24,
+     "span": "300:301"
+    },
+    {
+     "type": "verbatim",
+     "kind": "example",
+     "body": "317:356",
+     "line": 25,
+     "full": "301:369"
+    },
+    {
+     "type": "prose",
+     "line": 30,
+     "span": "370:371"
+    },
+    {
+     "type": "quote",
+     "kind": "quote",
+     "line": 31,
+     "full": "371:410",
+     "children": [
+      {
+       "type": "prose",
+       "line": 32,
+       "span": "385:399"
+      }
+     ]
+    },
+    {
+     "type": "prose",
+     "line": 34,
+     "span": "411:412"
+    },
+    {
+     "type": "src",
+     "lang": "go",
+     "rawHeader": ":tangle up.go",
+     "body": "441:463",
+     "beginAt": 412,
+     "afterEnd": 472,
+     "line": 35,
+     "full": "412:472"
+    }
+   ]
+  }
+ ]
+}

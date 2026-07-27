@@ -88,9 +88,11 @@ type SrcBlock struct {
 
 // A dynamic block keeps its interior as both bytes and children:
 // refresh splices the span, and the src block inside a generated
-// diff is a real block the collection walk must see. Quote blocks
-// hold children too; example, export, and comment blocks are
-// verbatim.
+// diff is a real block the collection walk must see. Greater blocks
+// (quote, center, and any name org does not reserve) hold children
+// too; example, export, comment, and verse blocks are verbatim,
+// which is org's own split between blocks whose contents are
+// elements and blocks whose contents are text.
 type DynamicBlock struct {
 	Name     string `json:"name"`
 	Args     string `json:"args,omitempty"`
@@ -101,6 +103,7 @@ type DynamicBlock struct {
 }
 
 type QuoteBlock struct {
+	Kind     string `json:"kind"` // quote, center, or any other greater block
 	Line     int    `json:"line"`
 	Full     Span   `json:"full"`
 	Children []Node `json:"-"`

@@ -8,6 +8,7 @@ package org
 
 import (
 	"bytes"
+	"fmt"
 	"os"
 	"strings"
 
@@ -30,13 +31,19 @@ func ParseBytes(src []byte, path string) (*book.Document, error) {
 	for _, w := range d.Todo {
 		p.todo[w] = true
 	}
-	p.parse()
+	if err := p.parse(); err != nil {
+		return nil, err
+	}
+	d.Nodes = p.roots
 	return d, nil
 }
 
 // A token is one line. The shapes: a run of stars and a space, a
-// means is not the tokenizer's business; a drawer is a grammatical
-// fact the parser establishes from position.
+// block delimiter, a #+key: line, a colon-fenced line, or plain
+// text. What any of them means is not the tokenizer's business; that
+// a delimiter pair forms a block, and that a colon-line run forms a
+// drawer, are grammatical facts the parser establishes from
+// position.
 type tokKind int
 
 const (
@@ -44,6 +51,8 @@ const (
 	tokHeadline
 	tokKeyword
 	tokColonLine
+	tokBlockBegin
+	tokBlockEnd
 )
 
 type token struct {
@@ -53,8 +62,9 @@ type token struct {
 	end   int    // offset past its text, newline excluded
 	next  int    // offset of the next line
 	stars int    // tokHeadline: how many
-	key   string // tokKeyword lowercased; tokColonLine as written
-	value string // tokKeyword, tokColonLine: trimmed
+	key   string // tokKeyword, tokBlockBegin, tokBlockEnd: lowercased; tokColonLine as written
+	value string // everything after the key, trimmed
+	after int    // tokBlockEnd: offset just past the delimiter keyword
 }
 
 func tokenize(src []byte) []token {
@@ -66,6 +76,12 @@ func tokenize(src []byte) []token {
 			end: off + len(text), next: next}
 		if stars := starRun(text); stars > 0 {
 			t.kind, t.stars = tokHeadline, stars
+		} else if name, rest, after, ok := blockDelim(text, "begin"); ok {
+			t.kind, t.key, t.value = tokBlockBegin, name, rest
+			t.after = off + after
+		} else if name, rest, after, ok := blockDelim(text, "end"); ok {
+			t.kind, t.key, t.value = tokBlockEnd, name, rest
+			t.after = off + after
 		} else if key, value, ok := keywordLine(text); ok {
 			t.kind, t.key, t.value = tokKeyword, key, value
 		} else if key, value, ok := colonLine(text); ok {
@@ -97,6 +113,26 @@ func starRun(text string) int {
 	return 0
 }
 
+func blockDelim(text, word string) (name, rest string, after int, ok bool) {
+	i := 0
+	for i < len(text) && (text[i] == ' ' || text[i] == '\t') {
+		i++
+	}
+	prefix := "#+" + word + "_"
+	if len(text) < i+len(prefix) || !strings.EqualFold(text[i:i+len(prefix)], prefix) {
+		return "", "", 0, false
+	}
+	j := i + len(prefix)
+	k := j
+	for k < len(text) && text[k] != ' ' && text[k] != '\t' {
+		k++
+	}
+	if k == j {
+		return "", "", 0, false
+	}
+	return strings.ToLower(text[j:k]), strings.TrimSpace(text[k:]), k, true
+}
+
 func colonLine(text string) (key, value string, ok bool) {
 	t := strings.TrimSpace(text)
 	if len(t) < 3 || t[0] != ':' {
@@ -119,6 +155,9 @@ const (
 	kwTodo    = "todo"
 	kwSeqTodo = "seq_todo"
 	kwTypTodo = "typ_todo"
+	kwName    = "name"
+	kwBegin   = "begin" // the dynamic-block opener, #+begin:
+	kwEnd     = "end"   // and its closer
 )
 
 func todoWords(toks []token) []string {
@@ -161,25 +200,46 @@ type parser struct {
 	toks  []token
 	pos   int
 	stack []*book.Headline
+	roots []book.Node
 }
 
-func (p *parser) parse() {
+func (p *parser) parse() error {
 	for p.pos < len(p.toks) {
-		switch t := p.toks[p.pos]; t.kind {
-		case tokHeadline:
+		t := p.toks[p.pos]
+		switch {
+		case t.kind == tokHeadline:
 			p.headline(t)
-		case tokKeyword:
+		case p.atBlock():
+			if err := p.block(); err != nil {
+				return err
+			}
+		case t.kind == tokKeyword:
 			p.keyword(t)
 		default:
 			p.prose()
 		}
 	}
+	return nil
+}
+
+// A block may wear an affiliated name line, so the cursor is at a
+// block when it sits on a delimiter or on a name line with a
+// delimiter behind it. That lookahead is the only place the parser
+// needs two tokens at once.
+func (p *parser) atBlock() bool {
+	i := p.pos
+	if t := p.toks[i]; t.kind == tokKeyword && t.key == kwName && i+1 < len(p.toks) {
+		i++
+	}
+	t := p.toks[i]
+	return t.kind == tokBlockBegin || (t.kind == tokKeyword && t.key == kwBegin)
 }
 
 // A keyword line is one node and one map entry. Prose swallows
-// every token that is neither a headline nor a keyword, stray colon
-// lines included, blank lines included; its span runs from its first
-// line to the start of whatever interrupts it.
+// every token that opens nothing, stray colon lines included, blank
+// lines included; its span runs from its first line to the start of
+// whatever interrupts it. A block delimiter interrupts it, or a run
+// of prose would eat every block below it.
 func (p *parser) keyword(t token) {
 	k := &book.Keyword{Key: t.key, Value: t.value, Line: t.line,
 		Raw: book.Span{Start: t.start, End: t.end}}
@@ -193,7 +253,7 @@ func (p *parser) prose() {
 	last := first
 	for p.pos < len(p.toks) {
 		t := p.toks[p.pos]
-		if t.kind == tokHeadline || t.kind == tokKeyword {
+		if t.kind == tokHeadline || t.kind == tokKeyword || t.kind == tokBlockBegin {
 			break
 		}
 		last = t
@@ -209,7 +269,7 @@ func (p *parser) prose() {
 // A fifteen-star badge is just a very deep entry in that stack.
 func (p *parser) attach(n book.Node) {
 	if len(p.stack) == 0 {
-		p.d.Nodes = append(p.d.Nodes, n)
+		p.roots = append(p.roots, n)
 		return
 	}
 	top := p.stack[len(p.stack)-1]
@@ -356,12 +416,174 @@ func (p *parser) drawer() (map[string]string, bool) {
 	return nil, false
 }
 
-// parseBlocks is stage 3's seam: the tokenizer gains the block
-// delimiter shapes, and this parser method assembles src, dynamic,
-// quote, and verbatim blocks from them, with names, spans, and the
-// two extent anchors.
-func (p *parser) parseBlocks() error {
-	panic("HOLE(3): blocks with names, spans, and the two extent anchors")
+// block assembles whatever the delimiters enclose, name line
+// included. The Full span opens at the name line when there is one,
+// so a name sits inside the extent of the block below it, which is
+// what the doc-comment rule needs later.
+func (p *parser) block() error {
+	start := p.toks[p.pos]
+	name := ""
+	if start.kind == tokKeyword && start.key == kwName {
+		name = start.value
+		p.pos++
+	}
+	begin := p.toks[p.pos]
+	if begin.kind == tokKeyword {
+		return p.dynamicBlock(start, begin, name)
+	}
+	return p.delimitedBlock(start, begin, name)
+}
+
+// The end line must match the opener's name and carry nothing but
+// whitespace, and the search stops at the next headline, since org
+// looks for the closer inside one section only. A block that never
+// closes is an error naming its line; org would quietly reparse the
+// opener as a paragraph.
+func (p *parser) matchingEnd(closes func(token) bool) (int, bool) {
+	for i := p.pos + 1; i < len(p.toks); i++ {
+		if t := p.toks[i]; t.kind == tokHeadline {
+			return 0, false
+		} else if closes(t) {
+			return i, true
+		}
+	}
+	return 0, false
+}
+
+// A src block carries the two raw anchors: BeginAt where its begin
+// line starts, and AfterEnd just past the literal end keyword, which
+// is where org's own backward search stops. Everything else in the
+// tree is spans and parsed attributes.
+func (p *parser) delimitedBlock(start, begin token, name string) error {
+	end, ok := p.matchingEnd(func(t token) bool {
+		return t.kind == tokBlockEnd && t.key == begin.key && t.value == ""
+	})
+	if !ok {
+		return fmt.Errorf("%s:%d: unterminated %s block", p.d.Path, begin.line, begin.key)
+	}
+	endTok := p.toks[end]
+	full := book.Span{Start: start.start, End: endTok.end}
+	body := book.Span{Start: begin.next, End: endTok.start}
+	switch begin.key {
+	case "src":
+		lang, switches, header := srcHeader(begin.value)
+		p.attach(&book.SrcBlock{Lang: lang, Name: name,
+			Switches: switches, RawHeader: header, Body: body,
+			BeginAt: begin.start, AfterEnd: endTok.after,
+			Line: begin.line, Full: full})
+	case "example", "export", "comment", "verse":
+		p.attach(&book.VerbatimBlock{Kind: begin.key, Body: body,
+			Line: begin.line, Full: full})
+	default:
+		kids, err := p.parseRange(p.toks[p.pos+1 : end])
+		if err != nil {
+			return err
+		}
+		p.attach(&book.QuoteBlock{Kind: begin.key, Line: begin.line,
+			Full: full, Children: kids})
+	}
+	p.pos = end + 1
+	return nil
+}
+
+// A dynamic block keeps its interior twice over: the span refresh
+// rewrites, and the nodes inside it, because a generated diff holds
+// a real src block that collection has to see.
+func (p *parser) dynamicBlock(start, begin token, name string) error {
+	end, ok := p.matchingEnd(func(t token) bool {
+		return t.kind == tokKeyword && t.key == kwEnd && t.value == ""
+	})
+	if !ok {
+		return fmt.Errorf("%s:%d: unterminated dynamic block", p.d.Path, begin.line)
+	}
+	endTok := p.toks[end]
+	blockName, args, _ := strings.Cut(begin.value, " ")
+	kids, err := p.parseRange(p.toks[p.pos+1 : end])
+	if err != nil {
+		return err
+	}
+	p.attach(&book.DynamicBlock{Name: blockName,
+		Args:     strings.TrimSpace(args),
+		Interior: book.Span{Start: begin.next, End: endTok.start},
+		Line:     begin.line,
+		Full:     book.Span{Start: start.start, End: endTok.end},
+		Children: kids})
+	p.pos = end + 1
+	return nil
+}
+
+func (p *parser) parseRange(toks []token) ([]book.Node, error) {
+	sub := &parser{src: p.src, d: p.d, todo: p.todo, toks: toks}
+	if err := sub.parse(); err != nil {
+		return nil, err
+	}
+	return sub.roots, nil
+}
+
+// The begin_src line splits three ways: the language, then a run of
+// switches, then the header string. Only the switch run needs
+// grammar, since org accepts exactly -i, -k, -r, -n and +n with an
+// optional count, and -l with a quoted format. Whatever follows the
+// run is the header, unresolved until stage 4.
+func srcHeader(s string) (lang, switches, header string) {
+	rest := strings.TrimLeft(s, " \t")
+	lang, rest = cutWord(rest)
+	run := rest
+	taken := 0
+	for {
+		w, after := cutWord(rest)
+		switch w {
+		case "":
+			return lang, strings.TrimSpace(run[:taken]), ""
+		case "-i", "-k", "-r":
+		case "-n", "+n":
+			if n, a := cutWord(after); isNumber(n) {
+				after = a
+			}
+		case "-l":
+			if q, a, ok := cutQuoted(after); ok {
+				_ = q
+				after = a
+			} else {
+				return lang, strings.TrimSpace(run[:taken]), strings.TrimSpace(rest)
+			}
+		default:
+			return lang, strings.TrimSpace(run[:taken]), strings.TrimSpace(rest)
+		}
+		rest = after
+		taken = len(run) - len(rest)
+	}
+}
+
+func cutWord(s string) (word, rest string) {
+	s = strings.TrimLeft(s, " \t")
+	if i := strings.IndexAny(s, " \t"); i >= 0 {
+		return s[:i], s[i:]
+	}
+	return s, ""
+}
+
+func cutQuoted(s string) (quoted, rest string, ok bool) {
+	t := strings.TrimLeft(s, " \t")
+	if !strings.HasPrefix(t, `"`) {
+		return "", s, false
+	}
+	if i := strings.IndexByte(t[1:], '"'); i >= 0 {
+		return t[1 : 1+i], t[i+2:], true
+	}
+	return "", s, false
+}
+
+func isNumber(s string) bool {
+	if s == "" {
+		return false
+	}
+	for _, c := range s {
+		if c < '0' || c > '9' {
+			return false
+		}
+	}
+	return true
 }
 
 // ResolveAll fills every src block's Params through the closed
