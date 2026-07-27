@@ -53,3 +53,52 @@ func TestWalk(t *testing.T) {
 		}
 	}
 }
+
+// TestDump pins the exact rendering of a small handcrafted tree, so
+// any change to the dump format shows up as a diff here before it
+// breaks every fixture golden.
+func TestDump(t *testing.T) {
+	d := &book.Document{
+		Path: "b.org",
+		Todo: []string{"TODO", "DONE"},
+		Nodes: []book.Node{
+			&book.Headline{Level: 1, Title: "A", AfterStars: 2,
+				Line: 1, Head: book.Span{Start: 0, End: 3},
+				Children: []book.Node{
+					&book.Prose{Line: 2, Text: book.Span{Start: 4, End: 9}},
+				}},
+		},
+	}
+	out, err := book.Dump(d)
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := `{
+ "path": "b.org",
+ "todo": [
+  "TODO",
+  "DONE"
+ ],
+ "nodes": [
+  {
+   "type": "headline",
+   "level": 1,
+   "title": "A",
+   "afterStars": 2,
+   "line": 1,
+   "head": "0:3",
+   "children": [
+    {
+     "type": "prose",
+     "line": 2,
+     "span": "4:9"
+    }
+   ]
+  }
+ ]
+}
+`
+	if string(out) != want {
+		t.Errorf("Dump:\n%s\nwant:\n%s", out, want)
+	}
+}

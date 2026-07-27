@@ -56,39 +56,38 @@ every dynamic block, and the labels are spelled without the sigils,
 so the census never matches its own index.
 
 #+begin: plan-toc
-- [[file:BOOK.org::95][95]] entry: PLANNED Stage 2: the document tree
-- [[file:BOOK.org::134][134]] entry: PLANNED Stage 3: blocks in the tree
-- [[file:BOOK.org::177][177]] entry: PLANNED Stage 4: header resolution
-- [[file:BOOK.org::223][223]] entry: PLANNED Stage 5: tangle
-- [[file:BOOK.org::263][263]] entry: PLANNED Stage 6: the oracle harness
-- [[file:BOOK.org::297][297]] entry: PLANNED Stage 7: org comments
-- [[file:BOOK.org::340][340]] entry: PLANNED Stage 8: noweb
-- [[file:BOOK.org::377][377]] entry: PLANNED Stage 9: dynamic blocks
-- [[file:BOOK.org::424][424]] entry: PLANNED Stage 10: the fence
-- [[file:BOOK.org::453][453]] entry: PLANNED Stage 11: parity and self-hosting
-- [[file:BOOK.org::1258][1258]] hole 5: parse, refresh, reparse, tangle; errors to stderr
-- [[file:BOOK.org::1455][1455]] hole 2: stable JSON rendering of the tree
-- [[file:BOOK.org::1486][1486]] hole 2: headlines, keywords, and prose into a spanned tree
-- [[file:BOOK.org::1496][1496]] hole 3: blocks with names, spans, and the two extent anchors
-- [[file:BOOK.org::1507][1507]] hole 4: every block's Params through the closed table, unknown ke...
-- [[file:BOOK.org::1513][1513]] hole 4: split on space-then-colon outside parens, brackets, and d...
-- [[file:BOOK.org::1517][1517]] hole 4: chomp, unquote an elisp string literal, reject lisp
-- [[file:BOOK.org::1526][1526]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
-- [[file:BOOK.org::1542][1542]] hole 5: collect, resolve targets, assemble with banners, write
-- [[file:BOOK.org::1559][1559]] hole 5: eligible blocks grouped by target in first-appearance order
-- [[file:BOOK.org::1563][1563]] hole 5: no, yes, or a path relative to the book's directory
-- [[file:BOOK.org::1573][1573]] hole 5: unescape commas, dedent by column, expand noweb, dedent a...
-- [[file:BOOK.org::1583][1583]] hole 7: extent between the anchors, then the docstring rule
-- [[file:BOOK.org::1589][1589]] hole 7: line-comment table per language, blank lines as a bare ma...
-- [[file:BOOK.org::1599][1599]] hole 8: named block first, else noweb-ref concatenation; cycles a...
-- [[file:BOOK.org::1610][1610]] hole 5: the generated-file banner in the target's own comment syntax
-- [[file:BOOK.org::1616][1616]] hole 5: refuse the book itself, mkdirp on demand, skip byte-ident...
-- [[file:BOOK.org::1632][1632]] hole 9: splice fresh interiors into the retained bytes, report ch...
-- [[file:BOOK.org::1642][1642]] hole 9: a line link per plan site, sites below the block shifted ...
-- [[file:BOOK.org::1648][1648]] hole 9: system diff -u over the two named bodies, temp-file heade...
-- [[file:BOOK.org::1764][1764]] hole 6: ORACLE=1 in the environment
-- [[file:BOOK.org::1768][1768]] hole 6: UPDATE=1 in the environment
-- [[file:BOOK.org::1774][1774]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
+- [[file:BOOK.org::94][94]] entry: PLANNED Stage 2: the document tree
+- [[file:BOOK.org::133][133]] entry: PLANNED Stage 3: blocks in the tree
+- [[file:BOOK.org::176][176]] entry: PLANNED Stage 4: header resolution
+- [[file:BOOK.org::222][222]] entry: PLANNED Stage 5: tangle
+- [[file:BOOK.org::262][262]] entry: PLANNED Stage 6: the oracle harness
+- [[file:BOOK.org::296][296]] entry: PLANNED Stage 7: org comments
+- [[file:BOOK.org::339][339]] entry: PLANNED Stage 8: noweb
+- [[file:BOOK.org::376][376]] entry: PLANNED Stage 9: dynamic blocks
+- [[file:BOOK.org::423][423]] entry: PLANNED Stage 10: the fence
+- [[file:BOOK.org::452][452]] entry: PLANNED Stage 11: parity and self-hosting
+- [[file:BOOK.org::1257][1257]] hole 5: parse, refresh, reparse, tangle; errors to stderr
+- [[file:BOOK.org::1598][1598]] hole 2: headlines, keywords, and prose into a spanned tree
+- [[file:BOOK.org::1608][1608]] hole 3: blocks with names, spans, and the two extent anchors
+- [[file:BOOK.org::1619][1619]] hole 4: every block's Params through the closed table, unknown ke...
+- [[file:BOOK.org::1625][1625]] hole 4: split on space-then-colon outside parens, brackets, and d...
+- [[file:BOOK.org::1629][1629]] hole 4: chomp, unquote an elisp string literal, reject lisp
+- [[file:BOOK.org::1638][1638]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
+- [[file:BOOK.org::1654][1654]] hole 5: collect, resolve targets, assemble with banners, write
+- [[file:BOOK.org::1671][1671]] hole 5: eligible blocks grouped by target in first-appearance order
+- [[file:BOOK.org::1675][1675]] hole 5: no, yes, or a path relative to the book's directory
+- [[file:BOOK.org::1685][1685]] hole 5: unescape commas, dedent by column, expand noweb, dedent a...
+- [[file:BOOK.org::1695][1695]] hole 7: extent between the anchors, then the docstring rule
+- [[file:BOOK.org::1701][1701]] hole 7: line-comment table per language, blank lines as a bare ma...
+- [[file:BOOK.org::1711][1711]] hole 8: named block first, else noweb-ref concatenation; cycles a...
+- [[file:BOOK.org::1722][1722]] hole 5: the generated-file banner in the target's own comment syntax
+- [[file:BOOK.org::1728][1728]] hole 5: refuse the book itself, mkdirp on demand, skip byte-ident...
+- [[file:BOOK.org::1744][1744]] hole 9: splice fresh interiors into the retained bytes, report ch...
+- [[file:BOOK.org::1754][1754]] hole 9: a line link per plan site, sites below the block shifted ...
+- [[file:BOOK.org::1760][1760]] hole 9: system diff -u over the two named bodies, temp-file heade...
+- [[file:BOOK.org::1876][1876]] hole 6: ORACLE=1 in the environment
+- [[file:BOOK.org::1880][1880]] hole 6: UPDATE=1 in the environment
+- [[file:BOOK.org::1886][1886]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
 
 #+end:
 
@@ -1272,7 +1271,11 @@ source bytes that every Span indexes.
 #+begin_src go :tangle internal/book/book.go :comments org
 package book
 
-import "bytes"
+import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+)
 
 type Document struct {
 	Path     string              // where Source came from
@@ -1448,11 +1451,120 @@ func (d *Document) LineAt(off int) int {
 #+end_src
 
 Dump is parse --dump's output: stable JSON, so the fixtures can
-pin it byte for byte.
+pin it byte for byte. Map keys sort, empty fields drop, and spans
+render as start:end strings, which keeps a golden tree readable in
+a fixture file.
 
 #+begin_src go :tangle internal/book/book.go :comments org
 func Dump(d *Document) ([]byte, error) {
-	panic("HOLE(2): stable JSON rendering of the tree")
+	v := struct {
+		Path     string              `json:"path"`
+		Todo     []string            `json:"todo"`
+		Keywords map[string][]string `json:"keywords,omitempty"`
+		Nodes    []any               `json:"nodes"`
+	}{d.Path, d.Todo, d.Keywords, dumpNodes(d.Nodes)}
+	out, err := json.MarshalIndent(v, "", " ")
+	if err != nil {
+		return nil, err
+	}
+	return append(out, '\n'), nil
+}
+#+end_src
+
+#+begin_src go :tangle internal/book/book.go
+func dumpNodes(nodes []Node) []any {
+	out := make([]any, 0, len(nodes))
+	for _, n := range nodes {
+		out = append(out, dumpNode(n))
+	}
+	return out
+}
+
+func spanStr(s Span) string {
+	return fmt.Sprintf("%d:%d", s.Start, s.End)
+}
+
+func dumpNode(n Node) any {
+	switch n := n.(type) {
+	case *Headline:
+		return struct {
+			Type       string            `json:"type"`
+			Level      int               `json:"level"`
+			Todo       string            `json:"todo,omitempty"`
+			Commented  bool              `json:"commented,omitempty"`
+			Archived   bool              `json:"archived,omitempty"`
+			Tags       []string          `json:"tags,omitempty"`
+			Title      string            `json:"title"`
+			Properties map[string]string `json:"properties,omitempty"`
+			AfterStars int               `json:"afterStars"`
+			Line       int               `json:"line"`
+			Head       string            `json:"head"`
+			Children   []any             `json:"children,omitempty"`
+		}{"headline", n.Level, n.Todo, n.Commented, n.Archived,
+			n.Tags, n.Title, n.Properties, n.AfterStars, n.Line,
+			spanStr(n.Head), dumpNodes(n.Children)}
+	case *Prose:
+		return struct {
+			Type string `json:"type"`
+			Line int    `json:"line"`
+			Span string `json:"span"`
+		}{"prose", n.Line, spanStr(n.Text)}
+	case *Keyword:
+		return struct {
+			Type  string `json:"type"`
+			Key   string `json:"key"`
+			Value string `json:"value"`
+			Line  int    `json:"line"`
+			Span  string `json:"span"`
+		}{"keyword", n.Key, n.Value, n.Line, spanStr(n.Raw)}
+	case *SrcBlock:
+		var params any
+		if n.Params != (Params{}) {
+			params = n.Params
+		}
+		return struct {
+			Type      string `json:"type"`
+			Lang      string `json:"lang"`
+			Name      string `json:"name,omitempty"`
+			Switches  string `json:"switches,omitempty"`
+			RawHeader string `json:"rawHeader,omitempty"`
+			Params    any    `json:"params,omitempty"`
+			Body      string `json:"body"`
+			BeginAt   int    `json:"beginAt"`
+			AfterEnd  int    `json:"afterEnd"`
+			Line      int    `json:"line"`
+			Full      string `json:"full"`
+		}{"src", n.Lang, n.Name, n.Switches, n.RawHeader, params,
+			spanStr(n.Body), n.BeginAt, n.AfterEnd, n.Line,
+			spanStr(n.Full)}
+	case *DynamicBlock:
+		return struct {
+			Type     string `json:"type"`
+			Name     string `json:"name"`
+			Args     string `json:"args,omitempty"`
+			Interior string `json:"interior"`
+			Line     int    `json:"line"`
+			Full     string `json:"full"`
+			Children []any  `json:"children,omitempty"`
+		}{"dynamic", n.Name, n.Args, spanStr(n.Interior), n.Line,
+			spanStr(n.Full), dumpNodes(n.Children)}
+	case *QuoteBlock:
+		return struct {
+			Type     string `json:"type"`
+			Line     int    `json:"line"`
+			Full     string `json:"full"`
+			Children []any  `json:"children,omitempty"`
+		}{"quote", n.Line, spanStr(n.Full), dumpNodes(n.Children)}
+	case *VerbatimBlock:
+		return struct {
+			Type string `json:"type"`
+			Kind string `json:"kind"`
+			Body string `json:"body"`
+			Line int    `json:"line"`
+			Full string `json:"full"`
+		}{"verbatim", n.Kind, spanStr(n.Body), n.Line, spanStr(n.Full)}
+	}
+	return nil
 }
 #+end_src
 
@@ -1837,6 +1949,59 @@ func TestWalk(t *testing.T) {
 		if lines[i] != want[i] {
 			t.Fatalf("visited %v, want %v", lines, want)
 		}
+	}
+}
+#+end_src
+
+TestDump pins the exact rendering of a small handcrafted tree, so
+any change to the dump format shows up as a diff here before it
+breaks every fixture golden.
+
+#+name: TestDump
+#+begin_src go :tangle internal/book/book_test.go :comments org
+func TestDump(t *testing.T) {
+	d := &book.Document{
+		Path: "b.org",
+		Todo: []string{"TODO", "DONE"},
+		Nodes: []book.Node{
+			&book.Headline{Level: 1, Title: "A", AfterStars: 2,
+				Line: 1, Head: book.Span{Start: 0, End: 3},
+				Children: []book.Node{
+					&book.Prose{Line: 2, Text: book.Span{Start: 4, End: 9}},
+				}},
+		},
+	}
+	out, err := book.Dump(d)
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := `{
+ "path": "b.org",
+ "todo": [
+  "TODO",
+  "DONE"
+ ],
+ "nodes": [
+  {
+   "type": "headline",
+   "level": 1,
+   "title": "A",
+   "afterStars": 2,
+   "line": 1,
+   "head": "0:3",
+   "children": [
+    {
+     "type": "prose",
+     "line": 2,
+     "span": "4:9"
+    }
+   ]
+  }
+ ]
+}
+`
+	if string(out) != want {
+		t.Errorf("Dump:\n%s\nwant:\n%s", out, want)
 	}
 }
 #+end_src

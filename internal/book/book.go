@@ -4,7 +4,11 @@
 // source bytes that every Span indexes.
 package book
 
-import "bytes"
+import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+)
 
 type Document struct {
 	Path     string              // where Source came from
@@ -145,7 +149,114 @@ func (d *Document) LineAt(off int) int {
 }
 
 // Dump is parse --dump's output: stable JSON, so the fixtures can
-// pin it byte for byte.
+// pin it byte for byte. Map keys sort, empty fields drop, and spans
+// render as start:end strings, which keeps a golden tree readable in
+// a fixture file.
 func Dump(d *Document) ([]byte, error) {
-	panic("HOLE(2): stable JSON rendering of the tree")
+	v := struct {
+		Path     string              `json:"path"`
+		Todo     []string            `json:"todo"`
+		Keywords map[string][]string `json:"keywords,omitempty"`
+		Nodes    []any               `json:"nodes"`
+	}{d.Path, d.Todo, d.Keywords, dumpNodes(d.Nodes)}
+	out, err := json.MarshalIndent(v, "", " ")
+	if err != nil {
+		return nil, err
+	}
+	return append(out, '\n'), nil
+}
+
+func dumpNodes(nodes []Node) []any {
+	out := make([]any, 0, len(nodes))
+	for _, n := range nodes {
+		out = append(out, dumpNode(n))
+	}
+	return out
+}
+
+func spanStr(s Span) string {
+	return fmt.Sprintf("%d:%d", s.Start, s.End)
+}
+
+func dumpNode(n Node) any {
+	switch n := n.(type) {
+	case *Headline:
+		return struct {
+			Type       string            `json:"type"`
+			Level      int               `json:"level"`
+			Todo       string            `json:"todo,omitempty"`
+			Commented  bool              `json:"commented,omitempty"`
+			Archived   bool              `json:"archived,omitempty"`
+			Tags       []string          `json:"tags,omitempty"`
+			Title      string            `json:"title"`
+			Properties map[string]string `json:"properties,omitempty"`
+			AfterStars int               `json:"afterStars"`
+			Line       int               `json:"line"`
+			Head       string            `json:"head"`
+			Children   []any             `json:"children,omitempty"`
+		}{"headline", n.Level, n.Todo, n.Commented, n.Archived,
+			n.Tags, n.Title, n.Properties, n.AfterStars, n.Line,
+			spanStr(n.Head), dumpNodes(n.Children)}
+	case *Prose:
+		return struct {
+			Type string `json:"type"`
+			Line int    `json:"line"`
+			Span string `json:"span"`
+		}{"prose", n.Line, spanStr(n.Text)}
+	case *Keyword:
+		return struct {
+			Type  string `json:"type"`
+			Key   string `json:"key"`
+			Value string `json:"value"`
+			Line  int    `json:"line"`
+			Span  string `json:"span"`
+		}{"keyword", n.Key, n.Value, n.Line, spanStr(n.Raw)}
+	case *SrcBlock:
+		var params any
+		if n.Params != (Params{}) {
+			params = n.Params
+		}
+		return struct {
+			Type      string `json:"type"`
+			Lang      string `json:"lang"`
+			Name      string `json:"name,omitempty"`
+			Switches  string `json:"switches,omitempty"`
+			RawHeader string `json:"rawHeader,omitempty"`
+			Params    any    `json:"params,omitempty"`
+			Body      string `json:"body"`
+			BeginAt   int    `json:"beginAt"`
+			AfterEnd  int    `json:"afterEnd"`
+			Line      int    `json:"line"`
+			Full      string `json:"full"`
+		}{"src", n.Lang, n.Name, n.Switches, n.RawHeader, params,
+			spanStr(n.Body), n.BeginAt, n.AfterEnd, n.Line,
+			spanStr(n.Full)}
+	case *DynamicBlock:
+		return struct {
+			Type     string `json:"type"`
+			Name     string `json:"name"`
+			Args     string `json:"args,omitempty"`
+			Interior string `json:"interior"`
+			Line     int    `json:"line"`
+			Full     string `json:"full"`
+			Children []any  `json:"children,omitempty"`
+		}{"dynamic", n.Name, n.Args, spanStr(n.Interior), n.Line,
+			spanStr(n.Full), dumpNodes(n.Children)}
+	case *QuoteBlock:
+		return struct {
+			Type     string `json:"type"`
+			Line     int    `json:"line"`
+			Full     string `json:"full"`
+			Children []any  `json:"children,omitempty"`
+		}{"quote", n.Line, spanStr(n.Full), dumpNodes(n.Children)}
+	case *VerbatimBlock:
+		return struct {
+			Type string `json:"type"`
+			Kind string `json:"kind"`
+			Body string `json:"body"`
+			Line int    `json:"line"`
+			Full string `json:"full"`
+		}{"verbatim", n.Kind, spanStr(n.Body), n.Line, spanStr(n.Full)}
+	}
+	return nil
 }
