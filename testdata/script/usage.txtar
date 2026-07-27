@@ -1,0 +1,15 @@
+# Dispatch behavior nobody should have to guess: no arguments,
+# unknown commands, and a parse without a book all print usage and
+# fail; the messages name the binary's actual commands.
+
+! exec babble
+stderr 'usage: babble'
+
+! exec babble frobnicate
+stderr 'usage: babble'
+
+! exec babble parse
+stderr 'usage: babble'
+
+! exec babble tangle
+stderr 'usage: babble'

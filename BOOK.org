@@ -56,43 +56,42 @@ every dynamic block, and the labels are spelled without the sigils,
 so the census never matches its own index.
 
 #+begin: plan-toc
-- [[file:BOOK.org::99][99]] entry: PLANNED Stage 2: the document tree
-- [[file:BOOK.org::138][138]] entry: PLANNED Stage 3: blocks in the tree
-- [[file:BOOK.org::181][181]] entry: PLANNED Stage 4: header resolution
-- [[file:BOOK.org::227][227]] entry: PLANNED Stage 5: tangle
-- [[file:BOOK.org::267][267]] entry: PLANNED Stage 6: the oracle harness
-- [[file:BOOK.org::301][301]] entry: PLANNED Stage 7: org comments
-- [[file:BOOK.org::344][344]] entry: PLANNED Stage 8: noweb
-- [[file:BOOK.org::381][381]] entry: PLANNED Stage 9: dynamic blocks
-- [[file:BOOK.org::428][428]] entry: PLANNED Stage 10: the fence
-- [[file:BOOK.org::457][457]] entry: PLANNED Stage 11: parity and self-hosting
-- [[file:BOOK.org::1206][1206]] hole 2: dispatch parse and tangle; parse --dump works after this ...
-- [[file:BOOK.org::1217][1217]] hole 5: parse, refresh, reparse, tangle; errors to stderr
-- [[file:BOOK.org::1379][1379]] hole 2: document-order walk, fn returning false prunes the subtree
-- [[file:BOOK.org::1385][1385]] hole 2: 1-based line number holding byte offset off
-- [[file:BOOK.org::1394][1394]] hole 2: stable JSON rendering of the tree
-- [[file:BOOK.org::1411][1411]] hole 2: read path and hand ParseBytes the bytes
-- [[file:BOOK.org::1417][1417]] hole 2: headlines, keywords, and prose into a spanned tree
-- [[file:BOOK.org::1427][1427]] hole 3: blocks with names, spans, and the two extent anchors
-- [[file:BOOK.org::1438][1438]] hole 4: every block's Params through the closed table, unknown ke...
-- [[file:BOOK.org::1444][1444]] hole 4: split on space-then-colon outside parens, brackets, and d...
-- [[file:BOOK.org::1448][1448]] hole 4: chomp, unquote an elisp string literal, reject lisp
-- [[file:BOOK.org::1457][1457]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
-- [[file:BOOK.org::1473][1473]] hole 5: collect, resolve targets, assemble with banners, write
-- [[file:BOOK.org::1490][1490]] hole 5: eligible blocks grouped by target in first-appearance order
-- [[file:BOOK.org::1494][1494]] hole 5: no, yes, or a path relative to the book's directory
-- [[file:BOOK.org::1504][1504]] hole 5: unescape commas, dedent by column, expand noweb, dedent a...
-- [[file:BOOK.org::1514][1514]] hole 7: extent between the anchors, then the docstring rule
-- [[file:BOOK.org::1520][1520]] hole 7: line-comment table per language, blank lines as a bare ma...
-- [[file:BOOK.org::1530][1530]] hole 8: named block first, else noweb-ref concatenation; cycles a...
-- [[file:BOOK.org::1541][1541]] hole 5: the generated-file banner in the target's own comment syntax
-- [[file:BOOK.org::1547][1547]] hole 5: refuse the book itself, mkdirp on demand, skip byte-ident...
-- [[file:BOOK.org::1563][1563]] hole 9: splice fresh interiors into the retained bytes, report ch...
-- [[file:BOOK.org::1573][1573]] hole 9: a line link per plan site, sites below the block shifted ...
-- [[file:BOOK.org::1579][1579]] hole 9: system diff -u over the two named bodies, temp-file heade...
-- [[file:BOOK.org::1695][1695]] hole 6: ORACLE=1 in the environment
-- [[file:BOOK.org::1699][1699]] hole 6: UPDATE=1 in the environment
-- [[file:BOOK.org::1705][1705]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
+- [[file:BOOK.org::98][98]] entry: PLANNED Stage 2: the document tree
+- [[file:BOOK.org::137][137]] entry: PLANNED Stage 3: blocks in the tree
+- [[file:BOOK.org::180][180]] entry: PLANNED Stage 4: header resolution
+- [[file:BOOK.org::226][226]] entry: PLANNED Stage 5: tangle
+- [[file:BOOK.org::266][266]] entry: PLANNED Stage 6: the oracle harness
+- [[file:BOOK.org::300][300]] entry: PLANNED Stage 7: org comments
+- [[file:BOOK.org::343][343]] entry: PLANNED Stage 8: noweb
+- [[file:BOOK.org::380][380]] entry: PLANNED Stage 9: dynamic blocks
+- [[file:BOOK.org::427][427]] entry: PLANNED Stage 10: the fence
+- [[file:BOOK.org::456][456]] entry: PLANNED Stage 11: parity and self-hosting
+- [[file:BOOK.org::1261][1261]] hole 5: parse, refresh, reparse, tangle; errors to stderr
+- [[file:BOOK.org::1423][1423]] hole 2: document-order walk, fn returning false prunes the subtree
+- [[file:BOOK.org::1429][1429]] hole 2: 1-based line number holding byte offset off
+- [[file:BOOK.org::1438][1438]] hole 2: stable JSON rendering of the tree
+- [[file:BOOK.org::1455][1455]] hole 2: read path and hand ParseBytes the bytes
+- [[file:BOOK.org::1461][1461]] hole 2: headlines, keywords, and prose into a spanned tree
+- [[file:BOOK.org::1471][1471]] hole 3: blocks with names, spans, and the two extent anchors
+- [[file:BOOK.org::1482][1482]] hole 4: every block's Params through the closed table, unknown ke...
+- [[file:BOOK.org::1488][1488]] hole 4: split on space-then-colon outside parens, brackets, and d...
+- [[file:BOOK.org::1492][1492]] hole 4: chomp, unquote an elisp string literal, reject lisp
+- [[file:BOOK.org::1501][1501]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
+- [[file:BOOK.org::1517][1517]] hole 5: collect, resolve targets, assemble with banners, write
+- [[file:BOOK.org::1534][1534]] hole 5: eligible blocks grouped by target in first-appearance order
+- [[file:BOOK.org::1538][1538]] hole 5: no, yes, or a path relative to the book's directory
+- [[file:BOOK.org::1548][1548]] hole 5: unescape commas, dedent by column, expand noweb, dedent a...
+- [[file:BOOK.org::1558][1558]] hole 7: extent between the anchors, then the docstring rule
+- [[file:BOOK.org::1564][1564]] hole 7: line-comment table per language, blank lines as a bare ma...
+- [[file:BOOK.org::1574][1574]] hole 8: named block first, else noweb-ref concatenation; cycles a...
+- [[file:BOOK.org::1585][1585]] hole 5: the generated-file banner in the target's own comment syntax
+- [[file:BOOK.org::1591][1591]] hole 5: refuse the book itself, mkdirp on demand, skip byte-ident...
+- [[file:BOOK.org::1607][1607]] hole 9: splice fresh interiors into the retained bytes, report ch...
+- [[file:BOOK.org::1617][1617]] hole 9: a line link per plan site, sites below the block shifted ...
+- [[file:BOOK.org::1623][1623]] hole 9: system diff -u over the two named bodies, temp-file heade...
+- [[file:BOOK.org::1739][1739]] hole 6: ORACLE=1 in the environment
+- [[file:BOOK.org::1743][1743]] hole 6: UPDATE=1 in the environment
+- [[file:BOOK.org::1749][1749]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
 
 #+end:
 
@@ -1183,8 +1182,13 @@ BOOK.org.
 package main
 
 import (
+	"flag"
+	"fmt"
 	"io"
 	"os"
+
+	"github.com/bilus/babble/internal/book"
+	"github.com/bilus/babble/internal/org"
 )
 
 const usage = `usage: babble <command> [flags] BOOK.org
@@ -1203,7 +1207,47 @@ run dispatches the subcommands and owns the exit codes.
 
 #+begin_src go :tangle main.go :comments org
 func run(args []string, stdout, stderr io.Writer) int {
-	panic("HOLE(2): dispatch parse and tangle; parse --dump works after this fill")
+	if len(args) < 1 {
+		fmt.Fprint(stderr, usage)
+		return 2
+	}
+	switch args[0] {
+	case "parse":
+		fs := flag.NewFlagSet("parse", flag.ContinueOnError)
+		fs.SetOutput(stderr)
+		dump := fs.Bool("dump", false, "print the tree as JSON")
+		if err := fs.Parse(args[1:]); err != nil {
+			return 2
+		}
+		if fs.NArg() != 1 {
+			fmt.Fprint(stderr, usage)
+			return 2
+		}
+		d, err := org.Parse(fs.Arg(0))
+		if err != nil {
+			fmt.Fprintln(stderr, "babble:", err)
+			return 1
+		}
+		if *dump {
+			out, err := book.Dump(d)
+			if err != nil {
+				fmt.Fprintln(stderr, "babble:", err)
+				return 1
+			}
+			if _, err := stdout.Write(out); err != nil {
+				return 1
+			}
+		}
+		return 0
+	case "tangle":
+		if len(args) != 2 {
+			fmt.Fprint(stderr, usage)
+			return 2
+		}
+		return tangleCmd(args[1], stderr)
+	}
+	fmt.Fprint(stderr, usage)
+	return 2
 }
 #+end_src
 
