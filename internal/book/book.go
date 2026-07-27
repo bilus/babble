@@ -144,7 +144,16 @@ func walk(nodes []Node, fn func(Node) bool) {
 	}
 }
 
+// LineAt is total: any int is a valid argument, offsets before the
+// source count as its start and offsets past it as its end, so no
+// caller can turn a bad offset into a panic.
 func (d *Document) LineAt(off int) int {
+	if off < 0 {
+		off = 0
+	}
+	if off > len(d.Source) {
+		off = len(d.Source)
+	}
 	return 1 + bytes.Count(d.Source[:off], []byte("\n"))
 }
 

@@ -67,26 +67,26 @@ so the census never matches its own index.
 - [[file:BOOK.org::422][422]] entry: PLANNED Stage 10: the fence
 - [[file:BOOK.org::451][451]] entry: PLANNED Stage 11: parity and self-hosting
 - [[file:BOOK.org::1256][1256]] hole 5: parse, refresh, reparse, tangle; errors to stderr
-- [[file:BOOK.org::1897][1897]] hole 3: blocks with names, spans, and the two extent anchors
-- [[file:BOOK.org::1908][1908]] hole 4: every block's Params through the closed table, unknown ke...
-- [[file:BOOK.org::1914][1914]] hole 4: split on space-then-colon outside parens, brackets, and d...
-- [[file:BOOK.org::1918][1918]] hole 4: chomp, unquote an elisp string literal, reject lisp
-- [[file:BOOK.org::1927][1927]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
-- [[file:BOOK.org::1943][1943]] hole 5: collect, resolve targets, assemble with banners, write
-- [[file:BOOK.org::1960][1960]] hole 5: eligible blocks grouped by target in first-appearance order
-- [[file:BOOK.org::1964][1964]] hole 5: no, yes, or a path relative to the book's directory
-- [[file:BOOK.org::1974][1974]] hole 5: unescape commas, dedent by column, expand noweb, dedent a...
-- [[file:BOOK.org::1984][1984]] hole 7: extent between the anchors, then the docstring rule
-- [[file:BOOK.org::1990][1990]] hole 7: line-comment table per language, blank lines as a bare ma...
-- [[file:BOOK.org::2000][2000]] hole 8: named block first, else noweb-ref concatenation; cycles a...
-- [[file:BOOK.org::2011][2011]] hole 5: the generated-file banner in the target's own comment syntax
-- [[file:BOOK.org::2017][2017]] hole 5: refuse the book itself, mkdirp on demand, skip byte-ident...
-- [[file:BOOK.org::2033][2033]] hole 9: splice fresh interiors into the retained bytes, report ch...
-- [[file:BOOK.org::2043][2043]] hole 9: a line link per plan site, sites below the block shifted ...
-- [[file:BOOK.org::2049][2049]] hole 9: system diff -u over the two named bodies, temp-file heade...
-- [[file:BOOK.org::2165][2165]] hole 6: ORACLE=1 in the environment
-- [[file:BOOK.org::2169][2169]] hole 6: UPDATE=1 in the environment
-- [[file:BOOK.org::2175][2175]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
+- [[file:BOOK.org::1907][1907]] hole 3: blocks with names, spans, and the two extent anchors
+- [[file:BOOK.org::1918][1918]] hole 4: every block's Params through the closed table, unknown ke...
+- [[file:BOOK.org::1924][1924]] hole 4: split on space-then-colon outside parens, brackets, and d...
+- [[file:BOOK.org::1928][1928]] hole 4: chomp, unquote an elisp string literal, reject lisp
+- [[file:BOOK.org::1937][1937]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
+- [[file:BOOK.org::1953][1953]] hole 5: collect, resolve targets, assemble with banners, write
+- [[file:BOOK.org::1970][1970]] hole 5: eligible blocks grouped by target in first-appearance order
+- [[file:BOOK.org::1974][1974]] hole 5: no, yes, or a path relative to the book's directory
+- [[file:BOOK.org::1984][1984]] hole 5: unescape commas, dedent by column, expand noweb, dedent a...
+- [[file:BOOK.org::1994][1994]] hole 7: extent between the anchors, then the docstring rule
+- [[file:BOOK.org::2000][2000]] hole 7: line-comment table per language, blank lines as a bare ma...
+- [[file:BOOK.org::2010][2010]] hole 8: named block first, else noweb-ref concatenation; cycles a...
+- [[file:BOOK.org::2021][2021]] hole 5: the generated-file banner in the target's own comment syntax
+- [[file:BOOK.org::2027][2027]] hole 5: refuse the book itself, mkdirp on demand, skip byte-ident...
+- [[file:BOOK.org::2043][2043]] hole 9: splice fresh interiors into the retained bytes, report ch...
+- [[file:BOOK.org::2053][2053]] hole 9: a line link per plan site, sites below the block shifted ...
+- [[file:BOOK.org::2059][2059]] hole 9: system diff -u over the two named bodies, temp-file heade...
+- [[file:BOOK.org::2175][2175]] hole 6: ORACLE=1 in the environment
+- [[file:BOOK.org::2179][2179]] hole 6: UPDATE=1 in the environment
+- [[file:BOOK.org::2185][2185]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
 
 #+end:
 
@@ -1443,8 +1443,18 @@ func walk(nodes []Node, fn func(Node) bool) {
 }
 #+end_src
 
-#+begin_src go :tangle internal/book/book.go
+LineAt is total: any int is a valid argument, offsets before the
+source count as its start and offsets past it as its end, so no
+caller can turn a bad offset into a panic.
+
+#+begin_src go :tangle internal/book/book.go :comments org
 func (d *Document) LineAt(off int) int {
+	if off < 0 {
+		off = 0
+	}
+	if off > len(d.Source) {
+		off = len(d.Source)
+	}
 	return 1 + bytes.Count(d.Source[:off], []byte("\n"))
 }
 #+end_src
@@ -2190,8 +2200,9 @@ import (
 
 TestLineAt pins the offset-to-line arithmetic the writers lean on,
 boundary offsets included: an offset on a newline belongs to the
-line that newline ends, and the offset one past the final byte
-lands on a virtual next line.
+line that newline ends, the offset one past the final byte lands
+on a virtual next line, and out-of-range offsets clamp instead of
+panicking.
 
 #+name: TestLineAt
 #+begin_src go :tangle internal/book/book_test.go :comments org
@@ -2199,6 +2210,7 @@ func TestLineAt(t *testing.T) {
 	d := &book.Document{Source: []byte("one\ntwo\nthree\n")}
 	for _, tc := range []struct{ off, line int }{
 		{0, 1}, {3, 1}, {4, 2}, {7, 2}, {8, 3}, {13, 3}, {14, 4},
+		{-5, 1}, {99, 4},
 	} {
 		if got := d.LineAt(tc.off); got != tc.line {
 			t.Errorf("LineAt(%d) = %d, want %d", tc.off, got, tc.line)
