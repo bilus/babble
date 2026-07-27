@@ -66,44 +66,44 @@ so the census never matches its own index.
 - [[file:BOOK.org::424][424]] entry: PLANNED Stage 10: the fence
 - [[file:BOOK.org::453][453]] entry: PLANNED Stage 11: parity and self-hosting
 - [[file:BOOK.org::1258][1258]] hole 5: parse, refresh, reparse, tangle; errors to stderr
-- [[file:BOOK.org::1798][1798]] badge: PLANNED stage 3 replaces this section (plan)
-- [[file:BOOK.org::2418][2418]] hole 4: every block's Params through the closed table, unknown ke...
-- [[file:BOOK.org::2424][2424]] hole 4: split on space-then-colon outside parens, brackets, and d...
-- [[file:BOOK.org::2428][2428]] hole 4: chomp, unquote an elisp string literal, reject lisp
-- [[file:BOOK.org::2434][2434]] badge: PLANNED stage 3 adds the section below (plan)
-- [[file:BOOK.org::2444][2444]] twin of org-parser
-- [[file:BOOK.org::2458][2458]] twin of org-mode-enum
-- [[file:BOOK.org::2478][2478]] twin of org-container
-- [[file:BOOK.org::2491][2491]] twin of org-parse-elements
-- [[file:BOOK.org::2494][2494]] hole 3: the bounded loop; recurse only into containers
-- [[file:BOOK.org::2502][2502]] twin of org-current-element
-- [[file:BOOK.org::2505][2505]] hole 3: dispatch on mode, then on the line at point
-- [[file:BOOK.org::2514][2514]] twin of org-element-parsers
-- [[file:BOOK.org::2517][2517]] hole 3: stars, todo, priority, COMMENT, title, tags; contents to ...
-- [[file:BOOK.org::2521][2521]] hole 3: find end_src within limit; language, switches, header, bo...
-- [[file:BOOK.org::2525][2525]] hole 3: find end: within limit; name, args, interior span
-- [[file:BOOK.org::2529][2529]] hole 3: find the matching end within limit; contents recurse
-- [[file:BOOK.org::2533][2533]] hole 3: find the matching end within limit; body stays text
-- [[file:BOOK.org::2537][2537]] hole 3: only in modePropertyDrawer; a malformed drawer is not a d...
-- [[file:BOOK.org::2541][2541]] hole 3: run to the next line that cannot be prose, verifying pairs
-- [[file:BOOK.org::2551][2551]] twin of org-affiliated
-- [[file:BOOK.org::2560][2560]] hole 3: consume affiliated keyword lines; report name and the ele...
-- [[file:BOOK.org::2569][2569]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
-- [[file:BOOK.org::2585][2585]] hole 5: collect, resolve targets, assemble with banners, write
-- [[file:BOOK.org::2602][2602]] hole 5: eligible blocks grouped by target in first-appearance order
-- [[file:BOOK.org::2606][2606]] hole 5: no, yes, or a path relative to the book's directory
-- [[file:BOOK.org::2616][2616]] hole 5: unescape commas, dedent by column, expand noweb, dedent a...
-- [[file:BOOK.org::2626][2626]] hole 7: extent between the anchors, then the docstring rule
-- [[file:BOOK.org::2632][2632]] hole 7: line-comment table per language, blank lines as a bare ma...
-- [[file:BOOK.org::2642][2642]] hole 8: named block first, else noweb-ref concatenation; cycles a...
-- [[file:BOOK.org::2653][2653]] hole 5: the generated-file banner in the target's own comment syntax
-- [[file:BOOK.org::2659][2659]] hole 5: refuse the book itself, mkdirp on demand, skip byte-ident...
-- [[file:BOOK.org::2675][2675]] hole 9: splice fresh interiors into the retained bytes, report ch...
-- [[file:BOOK.org::2685][2685]] hole 9: a line link per plan site, sites below the block shifted ...
-- [[file:BOOK.org::2691][2691]] hole 9: system diff -u over the two named bodies, temp-file heade...
-- [[file:BOOK.org::2870][2870]] hole 6: ORACLE=1 in the environment
-- [[file:BOOK.org::2874][2874]] hole 6: UPDATE=1 in the environment
-- [[file:BOOK.org::2880][2880]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
+- [[file:BOOK.org::1831][1831]] badge: PLANNED stage 3 replaces this section (plan)
+- [[file:BOOK.org::2451][2451]] hole 4: every block's Params through the closed table, unknown ke...
+- [[file:BOOK.org::2457][2457]] hole 4: split on space-then-colon outside parens, brackets, and d...
+- [[file:BOOK.org::2461][2461]] hole 4: chomp, unquote an elisp string literal, reject lisp
+- [[file:BOOK.org::2467][2467]] badge: PLANNED stage 3 adds the section below (plan)
+- [[file:BOOK.org::2477][2477]] twin of org-parser
+- [[file:BOOK.org::2491][2491]] twin of org-mode-enum
+- [[file:BOOK.org::2511][2511]] twin of org-container
+- [[file:BOOK.org::2524][2524]] twin of org-parse-elements
+- [[file:BOOK.org::2527][2527]] hole 3: the bounded loop; recurse only into containers
+- [[file:BOOK.org::2538][2538]] twin of org-current-element
+- [[file:BOOK.org::2541][2541]] hole 3: the dispatch table in order: mode, stars, affiliated, key...
+- [[file:BOOK.org::2550][2550]] twin of org-element-parsers
+- [[file:BOOK.org::2553][2553]] hole 3: stars, todo, priority, COMMENT, title, tags; contents to ...
+- [[file:BOOK.org::2557][2557]] hole 3: find end_src within limit; language, switches, header, bo...
+- [[file:BOOK.org::2561][2561]] hole 3: find end: within limit; name, args, interior span
+- [[file:BOOK.org::2565][2565]] hole 3: find the matching end within limit; contents recurse
+- [[file:BOOK.org::2569][2569]] hole 3: find the matching end within limit; body stays text
+- [[file:BOOK.org::2573][2573]] hole 3: only in modePropertyDrawer; a malformed drawer is not a d...
+- [[file:BOOK.org::2577][2577]] hole 3: run to the next line that cannot be prose, verifying pairs
+- [[file:BOOK.org::2587][2587]] twin of org-affiliated
+- [[file:BOOK.org::2596][2596]] hole 3: consume affiliated keyword lines; report name and the ele...
+- [[file:BOOK.org::2605][2605]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
+- [[file:BOOK.org::2621][2621]] hole 5: collect, resolve targets, assemble with banners, write
+- [[file:BOOK.org::2638][2638]] hole 5: eligible blocks grouped by target in first-appearance order
+- [[file:BOOK.org::2642][2642]] hole 5: no, yes, or a path relative to the book's directory
+- [[file:BOOK.org::2652][2652]] hole 5: unescape commas, dedent by column, expand noweb, dedent a...
+- [[file:BOOK.org::2662][2662]] hole 7: extent between the anchors, then the docstring rule
+- [[file:BOOK.org::2668][2668]] hole 7: line-comment table per language, blank lines as a bare ma...
+- [[file:BOOK.org::2678][2678]] hole 8: named block first, else noweb-ref concatenation; cycles a...
+- [[file:BOOK.org::2689][2689]] hole 5: the generated-file banner in the target's own comment syntax
+- [[file:BOOK.org::2695][2695]] hole 5: refuse the book itself, mkdirp on demand, skip byte-ident...
+- [[file:BOOK.org::2711][2711]] hole 9: splice fresh interiors into the retained bytes, report ch...
+- [[file:BOOK.org::2721][2721]] hole 9: a line link per plan site, sites below the block shifted ...
+- [[file:BOOK.org::2727][2727]] hole 9: system diff -u over the two named bodies, temp-file heade...
+- [[file:BOOK.org::2906][2906]] hole 6: ORACLE=1 in the environment
+- [[file:BOOK.org::2910][2910]] hole 6: UPDATE=1 in the environment
+- [[file:BOOK.org::2916][2916]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
 
 #+end:
 
@@ -1641,6 +1641,39 @@ EXAMPLE, EXPORT, QUOTE, SRC and VERSE have their own, and any
 other name is a special block. That list is the whole reason
 babble splits verbatim blocks from greater blocks.
 
+The order is the specification, because the first branch that
+matches wins and several of them can match the same line. Here it
+is as the elisp reads it, with the branches babble's subset never
+reaches marked. babble's ~currentElement~ answers these questions
+in this order, which is what makes the two comparable at all.
+
+| # | branch | condition | in the subset |
+|---|---|---|---|
+| 1 | item | mode is item | no, lists are prose |
+| 2 | table row | mode is table-row | no |
+| 3 | node property | mode is node-property | yes, inside a drawer |
+| 4 | headline | line starts with stars and a space | yes |
+| 5 | section | mode is section or first-section | yes, implicit |
+| 6 | comment | the line is an org comment | yes, as prose |
+| 7 | planning | mode is planning, previous line is a headline | not yet, see stage 4 |
+| 8 | property drawer | mode admits one, and the line opens it | yes |
+| 9 | paragraph | point is not at the start of a line | no |
+| 10 | clock | the line is a clock line | no |
+| 11 | inlinetask | the star run is deep enough, with org-inlinetask loaded | no, batch never loads it |
+| 12 | affiliated | collect ~#+name:~ and kin, then dispatch again | yes |
+| 13 | the bulk regexp | drawer, fixed-width, dynamic block, begin_X, CALL, keyword, footnote, rule, sexp | yes, four of nine |
+| 14 | table | the line starts with a pipe | no |
+| 15 | paragraph | everything left | yes |
+
+Two entries in that table are worth reading twice. Branch 11 is
+why a fifteen-star badge is an ordinary headline here: batch Emacs
+never loads org-inlinetask, so the condition is false and control
+falls to branch 4, which is what babble does unconditionally.
+Branch 7 is the gap this book already knows about: org admits a
+planning line between a headline and its property drawer, babble
+does not, and stage 4 has to close that before header arguments
+can be inherited.
+
 ** Elements find their own end
 
 Every element parser receives the bound and searches for its own
@@ -2495,14 +2528,17 @@ func (p *parser) parseElements(beg, end int, m mode) ([]book.Node, error) {
 }
 #+end_src
 
-currentElement is the dispatcher: mode first, then a star run,
-then the line's keyword shape, then the fallbacks. It returns the
-node and the offset where the element ends.
+currentElement is the dispatcher, and its body is the table in
+[[*The dispatch]] read top to bottom: the mode branches first, then
+the star run, then the affiliated keywords, then the line's
+keyword shape, then paragraph as the fallback. Order is the
+contract, so the fills add branches in the table's order and never
+between two of them.
 
 #+name: org-current-element--planned
 #+begin_src go :tangle no
 func (p *parser) currentElement(limit int, m mode) (book.Node, int, error) {
-	panic("HOLE(3): dispatch on mode, then on the line at point")
+	panic("HOLE(3): the dispatch table in order: mode, stars, affiliated, keyword shape, paragraph")
 }
 #+end_src
 
