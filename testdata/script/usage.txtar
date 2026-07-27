@@ -13,3 +13,7 @@ stderr 'usage: babble'
 
 ! exec babble tangle
 stderr 'usage: babble'
+
+# a missing book is a failure, not a usage error
+! exec babble parse --dump no-such.org
+stderr 'no-such.org'

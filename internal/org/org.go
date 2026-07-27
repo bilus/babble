@@ -6,10 +6,18 @@
 // reparse can feed bytes directly.
 package org
 
-import "github.com/bilus/babble/internal/book"
+import (
+	"os"
+
+	"github.com/bilus/babble/internal/book"
+)
 
 func Parse(path string) (*book.Document, error) {
-	panic("HOLE(2): read path and hand ParseBytes the bytes")
+	src, err := os.ReadFile(path)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBytes(src, path)
 }
 
 func ParseBytes(src []byte, path string) (*book.Document, error) {
