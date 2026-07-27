@@ -39,15 +39,12 @@ fixture books start from the worked examples in
 After the harness the ladder opens into a diamond: comments,
 noweb (block inclusion by named reference), and dynamic blocks
 (the book's generated views) are independent of one another, and
-they close back together at the fence. Stage numbers are
-identities, not an order; stage 12 arrived after stage 3 was
-accepted and runs before stage 4, which is why the diagram reads
-3, 12, 4 and the earlier numbers stay put.
+they close back together at the fence.
 
 #+begin_src mermaid
 graph LR
-  s1[1 skeleton] --> s2[2 tree] --> s3[3 blocks] --> s12[12 oracle algorithm]
-  s12 --> s4[4 headers] --> s5[5 tangle] --> s6[6 oracle harness]
+  s1[1 skeleton] --> s2[2 tree] --> s3[3 blocks] --> s4[4 headers]
+  s4 --> s5[5 tangle] --> s6[6 oracle harness]
   s6 --> s7[7 comments] --> s10[10 fence]
   s6 --> s8[8 noweb] --> s10
   s6 --> s9[9 dblocks] --> s10
@@ -59,90 +56,105 @@ every dynamic block, and the labels are spelled without the sigils,
 so the census never matches its own index.
 
 #+begin: plan-toc
-- [[file:BOOK.org::114][114]] entry: PLANNED Stage 3: blocks in the tree
-- [[file:BOOK.org::157][157]] entry: PLANNED Stage 12: parse the way the oracle parses
-- [[file:BOOK.org::214][214]] entry: PLANNED Stage 4: header resolution
-- [[file:BOOK.org::260][260]] entry: PLANNED Stage 5: tangle
-- [[file:BOOK.org::300][300]] entry: PLANNED Stage 6: the oracle harness
-- [[file:BOOK.org::334][334]] entry: PLANNED Stage 7: org comments
-- [[file:BOOK.org::377][377]] entry: PLANNED Stage 8: noweb
-- [[file:BOOK.org::414][414]] entry: PLANNED Stage 9: dynamic blocks
-- [[file:BOOK.org::461][461]] entry: PLANNED Stage 10: the fence
-- [[file:BOOK.org::490][490]] entry: PLANNED Stage 11: parity and self-hosting
-- [[file:BOOK.org::1295][1295]] hole 5: parse, refresh, reparse, tangle; errors to stderr
-- [[file:BOOK.org::1835][1835]] badge: PLANNED stage 12 replaces this section (plan)
-- [[file:BOOK.org::2455][2455]] hole 4: every block's Params through the closed table, unknown ke...
-- [[file:BOOK.org::2461][2461]] hole 4: split on space-then-colon outside parens, brackets, and d...
-- [[file:BOOK.org::2465][2465]] hole 4: chomp, unquote an elisp string literal, reject lisp
-- [[file:BOOK.org::2471][2471]] badge: PLANNED stage 12 adds the section below (plan)
-- [[file:BOOK.org::2481][2481]] twin of org-parser
-- [[file:BOOK.org::2495][2495]] twin of org-mode-enum
-- [[file:BOOK.org::2515][2515]] twin of org-container
-- [[file:BOOK.org::2528][2528]] twin of org-parse-elements
-- [[file:BOOK.org::2531][2531]] hole 12: the bounded loop; recurse only into containers
-- [[file:BOOK.org::2539][2539]] twin of org-current-element
-- [[file:BOOK.org::2542][2542]] hole 12: dispatch on mode, then on the line at point
-- [[file:BOOK.org::2551][2551]] twin of org-element-parsers
-- [[file:BOOK.org::2554][2554]] hole 12: stars, todo, priority, COMMENT, title, tags; contents to ...
-- [[file:BOOK.org::2558][2558]] hole 12: find end_src within limit; language, switches, header, bo...
-- [[file:BOOK.org::2562][2562]] hole 12: find end: within limit; name, args, interior span
-- [[file:BOOK.org::2566][2566]] hole 12: find the matching end within limit; contents recurse
-- [[file:BOOK.org::2570][2570]] hole 12: find the matching end within limit; body stays text
-- [[file:BOOK.org::2574][2574]] hole 12: only in modePropertyDrawer; a malformed drawer is not a d...
-- [[file:BOOK.org::2578][2578]] hole 12: run to the next line that cannot be prose, verifying pairs
-- [[file:BOOK.org::2588][2588]] twin of org-affiliated
-- [[file:BOOK.org::2597][2597]] hole 12: consume affiliated keyword lines; report name and the ele...
-- [[file:BOOK.org::2606][2606]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
-- [[file:BOOK.org::2622][2622]] hole 5: collect, resolve targets, assemble with banners, write
-- [[file:BOOK.org::2639][2639]] hole 5: eligible blocks grouped by target in first-appearance order
-- [[file:BOOK.org::2643][2643]] hole 5: no, yes, or a path relative to the book's directory
-- [[file:BOOK.org::2653][2653]] hole 5: unescape commas, dedent by column, expand noweb, dedent a...
-- [[file:BOOK.org::2663][2663]] hole 7: extent between the anchors, then the docstring rule
-- [[file:BOOK.org::2669][2669]] hole 7: line-comment table per language, blank lines as a bare ma...
-- [[file:BOOK.org::2679][2679]] hole 8: named block first, else noweb-ref concatenation; cycles a...
-- [[file:BOOK.org::2690][2690]] hole 5: the generated-file banner in the target's own comment syntax
-- [[file:BOOK.org::2696][2696]] hole 5: refuse the book itself, mkdirp on demand, skip byte-ident...
-- [[file:BOOK.org::2712][2712]] hole 9: splice fresh interiors into the retained bytes, report ch...
-- [[file:BOOK.org::2722][2722]] hole 9: a line link per plan site, sites below the block shifted ...
-- [[file:BOOK.org::2728][2728]] hole 9: system diff -u over the two named bodies, temp-file heade...
-- [[file:BOOK.org::2907][2907]] hole 6: ORACLE=1 in the environment
-- [[file:BOOK.org::2911][2911]] hole 6: UPDATE=1 in the environment
-- [[file:BOOK.org::2917][2917]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
+- [[file:BOOK.org::110][110]] entry: PLANNED Stage 3: blocks in the tree
+- [[file:BOOK.org::177][177]] entry: PLANNED Stage 4: header resolution
+- [[file:BOOK.org::223][223]] entry: PLANNED Stage 5: tangle
+- [[file:BOOK.org::263][263]] entry: PLANNED Stage 6: the oracle harness
+- [[file:BOOK.org::297][297]] entry: PLANNED Stage 7: org comments
+- [[file:BOOK.org::340][340]] entry: PLANNED Stage 8: noweb
+- [[file:BOOK.org::377][377]] entry: PLANNED Stage 9: dynamic blocks
+- [[file:BOOK.org::424][424]] entry: PLANNED Stage 10: the fence
+- [[file:BOOK.org::453][453]] entry: PLANNED Stage 11: parity and self-hosting
+- [[file:BOOK.org::1258][1258]] hole 5: parse, refresh, reparse, tangle; errors to stderr
+- [[file:BOOK.org::1798][1798]] badge: PLANNED stage 3 replaces this section (plan)
+- [[file:BOOK.org::2418][2418]] hole 4: every block's Params through the closed table, unknown ke...
+- [[file:BOOK.org::2424][2424]] hole 4: split on space-then-colon outside parens, brackets, and d...
+- [[file:BOOK.org::2428][2428]] hole 4: chomp, unquote an elisp string literal, reject lisp
+- [[file:BOOK.org::2434][2434]] badge: PLANNED stage 3 adds the section below (plan)
+- [[file:BOOK.org::2444][2444]] twin of org-parser
+- [[file:BOOK.org::2458][2458]] twin of org-mode-enum
+- [[file:BOOK.org::2478][2478]] twin of org-container
+- [[file:BOOK.org::2491][2491]] twin of org-parse-elements
+- [[file:BOOK.org::2494][2494]] hole 3: the bounded loop; recurse only into containers
+- [[file:BOOK.org::2502][2502]] twin of org-current-element
+- [[file:BOOK.org::2505][2505]] hole 3: dispatch on mode, then on the line at point
+- [[file:BOOK.org::2514][2514]] twin of org-element-parsers
+- [[file:BOOK.org::2517][2517]] hole 3: stars, todo, priority, COMMENT, title, tags; contents to ...
+- [[file:BOOK.org::2521][2521]] hole 3: find end_src within limit; language, switches, header, bo...
+- [[file:BOOK.org::2525][2525]] hole 3: find end: within limit; name, args, interior span
+- [[file:BOOK.org::2529][2529]] hole 3: find the matching end within limit; contents recurse
+- [[file:BOOK.org::2533][2533]] hole 3: find the matching end within limit; body stays text
+- [[file:BOOK.org::2537][2537]] hole 3: only in modePropertyDrawer; a malformed drawer is not a d...
+- [[file:BOOK.org::2541][2541]] hole 3: run to the next line that cannot be prose, verifying pairs
+- [[file:BOOK.org::2551][2551]] twin of org-affiliated
+- [[file:BOOK.org::2560][2560]] hole 3: consume affiliated keyword lines; report name and the ele...
+- [[file:BOOK.org::2569][2569]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
+- [[file:BOOK.org::2585][2585]] hole 5: collect, resolve targets, assemble with banners, write
+- [[file:BOOK.org::2602][2602]] hole 5: eligible blocks grouped by target in first-appearance order
+- [[file:BOOK.org::2606][2606]] hole 5: no, yes, or a path relative to the book's directory
+- [[file:BOOK.org::2616][2616]] hole 5: unescape commas, dedent by column, expand noweb, dedent a...
+- [[file:BOOK.org::2626][2626]] hole 7: extent between the anchors, then the docstring rule
+- [[file:BOOK.org::2632][2632]] hole 7: line-comment table per language, blank lines as a bare ma...
+- [[file:BOOK.org::2642][2642]] hole 8: named block first, else noweb-ref concatenation; cycles a...
+- [[file:BOOK.org::2653][2653]] hole 5: the generated-file banner in the target's own comment syntax
+- [[file:BOOK.org::2659][2659]] hole 5: refuse the book itself, mkdirp on demand, skip byte-ident...
+- [[file:BOOK.org::2675][2675]] hole 9: splice fresh interiors into the retained bytes, report ch...
+- [[file:BOOK.org::2685][2685]] hole 9: a line link per plan site, sites below the block shifted ...
+- [[file:BOOK.org::2691][2691]] hole 9: system diff -u over the two named bodies, temp-file heade...
+- [[file:BOOK.org::2870][2870]] hole 6: ORACLE=1 in the environment
+- [[file:BOOK.org::2874][2874]] hole 6: UPDATE=1 in the environment
+- [[file:BOOK.org::2880][2880]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
 
 #+end:
 
 ** PLANNED Stage 3: blocks in the tree                             :stage3:
 :PROPERTIES:
 :CUSTOM_ID: stage-3
-:SPEC:     The subset contract, "Recognition"
+:SPEC:     How the oracle parses; The subset contract, "Recognition"
 :DEPS:     stage 2
-:ACCEPTANCE: TestParseDumpBlocks, TestParseCorpora; go test ./...
-:SIZE:     ~250 lines
+:ACCEPTANCE: TestParseDumpBlocks, TestParseCorpora, the stage 2 fixtures unedited; anchors match org on all four books; go test ./...
+:SIZE:     ~300 lines, most of them replacing the frontend
 :END:
 
-Claim: after this stage, src blocks (language, switches, raw header
-string, affiliated name (the #+name: line above the block), body
-span), dynamic blocks (name, argument
-string, interior span), and the quoting greater blocks (example,
-export, comment, quote) land in the tree with exact byte spans, an
-unterminated block is an error naming its line, and both real
-corpora (the reqsync book and the lit example book) parse clean.
+Claim: after this stage the frontend runs the oracle's algorithm
+(a bounded loop over a byte range, a dispatcher that reads one
+line where it stands, element parsers that find their own
+terminators, recursion into containers only, and a mode threaded
+from parent to child), and through it src blocks (language,
+switches, raw header, affiliated name, body span), dynamic blocks
+(name, arguments, interior), and the verbatim and greater blocks
+land in the tree with exact byte spans; an unterminated block is
+an error naming its line; and both real corpora parse clean.
 
-Decided: (1) Recognition follows the element grammar (org's
-structural parser), not the babel scan regex: begin and end lines
-are case-insensitive, the end line must close its own line, and a
-src block inside a dynamic block's interior is a real block (the
-src-block-diff view, the generated diff, carries one).
-(2) The spans the extent logic needs are recorded here: for every
-headline the offset just past the stars and the single following
-space, for every src block the offset where its begin line starts
-(the name line above sits inside the extent) and the offset just
-past the literal end_src text.
+Decided: (1) The first pass at this stage reached the right tree
+by the wrong road: a line tokenizer that lowercased block names
+and computed a comment-extent anchor, which is grammar and a
+later stage's arithmetic done in a lexical phase. It is replaced
+rather than accepted, because [[*How the oracle parses][the oracle has no lexer at all]] and
+a frontend whose phase boundary matches the oracle's is the one
+whose parity can be argued. (2) The headline stack goes: org nests
+by recursing into a headline's byte range, so the tree falls out
+of the recursion. (3) Mode becomes a Go enum and containers an
+interface only greater elements satisfy, so the recursion cannot
+be aimed at a verbatim block; that is the type-safe half of "the
+same algorithm". (4) The subset does not move. The tests written
+against the first pass (the block fixture, the corpus test, and
+every stage 2 fixture) stay byte for byte and are this stage's
+gate: a rewrite that changes no observable behavior is exactly
+what they can prove. (5) The replacement lands as a twin
+subsystem: the planned blocks carry ~:tangle no~ until acceptance,
+and the tokenizer's blocks are deleted in the commit that swaps
+them. (6) The anchor cross-check against org, 252 src blocks over
+four books, is repeated after the swap, with Emacs character
+positions converted to byte offsets.
 
-- [X] inserted prose reads steady-state
-- [X] Changes draft below reads right in the journal
-- [X] HOLE(3) cluster filled, fixtures and corpus test in the same commits
-- [X] census clean for stage 3, suite green
+- [ ] skeleton approved (the human ticks this box)
+- [ ] inserted prose reads steady-state
+- [ ] Changes draft below reads right in the journal
+- [ ] HOLE(3) cluster filled, one element parser at a time
+- [ ] stage 2 and block fixtures green with no edit to any golden
+- [ ] anchors re-checked against org on all four books
+- [ ] twins accepted, tokenizer blocks deleted, census clean
 - [ ] Changes entry dated and filed, plan entry deleted
 
 *** Changes draft
@@ -151,64 +163,15 @@ past the literal end_src text.
 Blocks joined the tree with the byte anchors the comment extents
 later hang from, and parsing both real corpora became a test. An
 unterminated block, which org silently reads as a paragraph, is an
-error here.
-#+end_quote
-
-** PLANNED Stage 12: parse the way the oracle parses              :stage12:
-:PROPERTIES:
-:CUSTOM_ID: stage-12
-:SPEC:     How the oracle parses
-:DEPS:     stage 3; runs before stage 4
-:ACCEPTANCE: every stage 2 and 3 test unchanged and green, TestParseCorpora included; anchors still match org on all four books
-:SIZE:     ~300 lines replaced, no net growth expected
-:END:
-
-Claim: after this stage the frontend runs org-element's algorithm
-(a bounded loop over a byte range, a dispatcher that reads one
-line at the point it needs to, element parsers that find their own
-terminators, recursion only into greater elements, and a mode
-threaded from parent to child) with the tree and every byte span
-unchanged, which the stage 2 and 3 fixtures prove by staying
-green without an edit.
-
-Decided: (1) The tokenizer goes. Pre-classifying lines put grammar
-in the wrong phase (a block name lowercased, an extent anchor
-computed for a stage that did not exist yet) and it is not what
-the oracle does. Reading a line at the moment of decision keeps
-byte anchors exact by construction, since the parser holds the
-offset it is looking at. (2) The headline stack goes too: org
-nests by recursing into a headline's byte range, so the tree falls
-out of the recursion. (3) Mode becomes a Go enum, greater elements
-an interface that only container nodes satisfy, so the recursion
-cannot be aimed at a verbatim block. That is the type-safe half of
-"the same algorithm". (4) The subset stays exactly as it is; this
-stage moves no behavior, which is what makes the existing tests a
-sufficient gate. (5) The replacement lands as a twin subsystem:
-the new blocks carry ~:tangle no~ until acceptance, and the
-tokenizer's blocks are deleted in the same commit that swaps them.
-(6) Stages 4 through 10 then add their constructs the oracle's
-way, one element parser at a time, rather than teaching a
-tokenizer new shapes.
-
-- [ ] skeleton approved (the human ticks this box)
-- [ ] inserted prose reads steady-state
-- [ ] Changes draft below reads right in the journal
-- [ ] HOLE(12) cluster filled, stage 2 and 3 tests green unedited
-- [ ] anchors re-checked against org on all four books
-- [ ] twins accepted, tokenizer blocks deleted, census clean
-- [ ] Changes entry dated and filed, plan entry deleted
-
-*** Changes draft
-
-#+begin_quote
-The frontend became a port of org-element's own algorithm: a
-bounded loop, a dispatcher that reads a line where it stands,
-element parsers that find their own ends, and a mode passed from
-parent to child. The line tokenizer that preceded it had put
-grammar in the lexical phase and computed anchors on behalf of
-stages that had not been written; both problems disappear when the
-parser reads the source at the point of decision, which is what
-the oracle does. The tree, the spans and the tests did not change.
+error here. The frontend that finds them is a port of the oracle's
+own algorithm: a bounded loop, a dispatcher that reads a line
+where it stands, element parsers that find their own ends, and a
+mode passed from parent to child. An earlier attempt put a line
+tokenizer in front of the parser, which moved grammar into the
+lexical phase and computed one stage's anchor on behalf of
+another; reading the source at the point of decision removes both
+problems and matches the oracle's own shape, which is what makes
+byte parity arguable rather than lucky.
 #+end_quote
 
 ** PLANNED Stage 4: header resolution                              :stage4:
@@ -1832,9 +1795,9 @@ func ParseBytes(src []byte, path string) (*book.Document, error) {
 }
 #+end_src
 
-*************** PLANNED stage 12 replaces this section ([[#stage-12][plan]]) :stage12:
+*************** PLANNED stage 3 replaces this section ([[#stage-3][plan]]) :stage3:
 Everything from here to the end of the chapter is the two-phase
-frontend the next stage retires, and the planned replacement sits
+frontend this stage retires, and the planned replacement sits
 at the end of the chapter under [[*The planned frontend]]. The
 paragraph below is the claim that motivated the change and that
 the code does not keep: the tokenizer lowercases block names and
@@ -2468,7 +2431,7 @@ func readValue(s string) (string, error) {
 
 ** The planned frontend
 
-*************** PLANNED stage 12 adds the section below ([[#stage-12][plan]]) :stage12:
+*************** PLANNED stage 3 adds the section below ([[#stage-3][plan]]) :stage3:
 These blocks carry ~:tangle no~ until acceptance, so the live
 frontend above keeps tangling while this one is reviewed. The
 bodies are holes; the shape is what the gate is for.
@@ -2528,7 +2491,7 @@ stops a block from reaching past a heading.
 #+name: org-parse-elements--planned
 #+begin_src go :tangle no
 func (p *parser) parseElements(beg, end int, m mode) ([]book.Node, error) {
-	panic("HOLE(12): the bounded loop; recurse only into containers")
+	panic("HOLE(3): the bounded loop; recurse only into containers")
 }
 #+end_src
 
@@ -2539,7 +2502,7 @@ node and the offset where the element ends.
 #+name: org-current-element--planned
 #+begin_src go :tangle no
 func (p *parser) currentElement(limit int, m mode) (book.Node, int, error) {
-	panic("HOLE(12): dispatch on mode, then on the line at point")
+	panic("HOLE(3): dispatch on mode, then on the line at point")
 }
 #+end_src
 
@@ -2551,31 +2514,31 @@ runs before the parser it feeds.
 #+name: org-element-parsers--planned
 #+begin_src go :tangle no
 func (p *parser) headlineParser(limit int) (*book.Headline, int, error) {
-	panic("HOLE(12): stars, todo, priority, COMMENT, title, tags; contents to the next headline of this level or shallower")
+	panic("HOLE(3): stars, todo, priority, COMMENT, title, tags; contents to the next headline of this level or shallower")
 }
 
 func (p *parser) srcBlockParser(limit int, aff affiliated) (*book.SrcBlock, int, error) {
-	panic("HOLE(12): find end_src within limit; language, switches, header, both anchors")
+	panic("HOLE(3): find end_src within limit; language, switches, header, both anchors")
 }
 
 func (p *parser) dynamicBlockParser(limit int, aff affiliated) (*book.DynamicBlock, int, error) {
-	panic("HOLE(12): find end: within limit; name, args, interior span")
+	panic("HOLE(3): find end: within limit; name, args, interior span")
 }
 
 func (p *parser) greaterBlockParser(limit int, aff affiliated) (*book.QuoteBlock, int, error) {
-	panic("HOLE(12): find the matching end within limit; contents recurse")
+	panic("HOLE(3): find the matching end within limit; contents recurse")
 }
 
 func (p *parser) verbatimBlockParser(limit int, aff affiliated) (*book.VerbatimBlock, int, error) {
-	panic("HOLE(12): find the matching end within limit; body stays text")
+	panic("HOLE(3): find the matching end within limit; body stays text")
 }
 
 func (p *parser) propertyDrawerParser(limit int) (map[string]string, int, bool) {
-	panic("HOLE(12): only in modePropertyDrawer; a malformed drawer is not a drawer")
+	panic("HOLE(3): only in modePropertyDrawer; a malformed drawer is not a drawer")
 }
 
 func (p *parser) paragraphParser(limit int) (*book.Prose, int) {
-	panic("HOLE(12): run to the next line that cannot be prose, verifying pairs")
+	panic("HOLE(3): run to the next line that cannot be prose, verifying pairs")
 }
 #+end_src
 
@@ -2594,7 +2557,7 @@ type affiliated struct {
 }
 
 func (p *parser) collectAffiliated(limit int) affiliated {
-	panic("HOLE(12): consume affiliated keyword lines; report name and the element's own start")
+	panic("HOLE(3): consume affiliated keyword lines; report name and the element's own start")
 }
 #+end_src
 
