@@ -67,26 +67,26 @@ so the census never matches its own index.
 - [[file:BOOK.org::422][422]] entry: PLANNED Stage 10: the fence
 - [[file:BOOK.org::451][451]] entry: PLANNED Stage 11: parity and self-hosting
 - [[file:BOOK.org::1256][1256]] hole 5: parse, refresh, reparse, tangle; errors to stderr
-- [[file:BOOK.org::1956][1956]] hole 3: blocks with names, spans, and the two extent anchors
-- [[file:BOOK.org::1967][1967]] hole 4: every block's Params through the closed table, unknown ke...
-- [[file:BOOK.org::1973][1973]] hole 4: split on space-then-colon outside parens, brackets, and d...
-- [[file:BOOK.org::1977][1977]] hole 4: chomp, unquote an elisp string literal, reject lisp
-- [[file:BOOK.org::1986][1986]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
-- [[file:BOOK.org::2002][2002]] hole 5: collect, resolve targets, assemble with banners, write
-- [[file:BOOK.org::2019][2019]] hole 5: eligible blocks grouped by target in first-appearance order
-- [[file:BOOK.org::2023][2023]] hole 5: no, yes, or a path relative to the book's directory
-- [[file:BOOK.org::2033][2033]] hole 5: unescape commas, dedent by column, expand noweb, dedent a...
-- [[file:BOOK.org::2043][2043]] hole 7: extent between the anchors, then the docstring rule
-- [[file:BOOK.org::2049][2049]] hole 7: line-comment table per language, blank lines as a bare ma...
-- [[file:BOOK.org::2059][2059]] hole 8: named block first, else noweb-ref concatenation; cycles a...
-- [[file:BOOK.org::2070][2070]] hole 5: the generated-file banner in the target's own comment syntax
-- [[file:BOOK.org::2076][2076]] hole 5: refuse the book itself, mkdirp on demand, skip byte-ident...
-- [[file:BOOK.org::2092][2092]] hole 9: splice fresh interiors into the retained bytes, report ch...
-- [[file:BOOK.org::2102][2102]] hole 9: a line link per plan site, sites below the block shifted ...
-- [[file:BOOK.org::2108][2108]] hole 9: system diff -u over the two named bodies, temp-file heade...
-- [[file:BOOK.org::2224][2224]] hole 6: ORACLE=1 in the environment
-- [[file:BOOK.org::2228][2228]] hole 6: UPDATE=1 in the environment
-- [[file:BOOK.org::2234][2234]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
+- [[file:BOOK.org::1987][1987]] hole 3: blocks with names, spans, and the two extent anchors
+- [[file:BOOK.org::1998][1998]] hole 4: every block's Params through the closed table, unknown ke...
+- [[file:BOOK.org::2004][2004]] hole 4: split on space-then-colon outside parens, brackets, and d...
+- [[file:BOOK.org::2008][2008]] hole 4: chomp, unquote an elisp string literal, reject lisp
+- [[file:BOOK.org::2017][2017]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
+- [[file:BOOK.org::2033][2033]] hole 5: collect, resolve targets, assemble with banners, write
+- [[file:BOOK.org::2050][2050]] hole 5: eligible blocks grouped by target in first-appearance order
+- [[file:BOOK.org::2054][2054]] hole 5: no, yes, or a path relative to the book's directory
+- [[file:BOOK.org::2064][2064]] hole 5: unescape commas, dedent by column, expand noweb, dedent a...
+- [[file:BOOK.org::2074][2074]] hole 7: extent between the anchors, then the docstring rule
+- [[file:BOOK.org::2080][2080]] hole 7: line-comment table per language, blank lines as a bare ma...
+- [[file:BOOK.org::2090][2090]] hole 8: named block first, else noweb-ref concatenation; cycles a...
+- [[file:BOOK.org::2101][2101]] hole 5: the generated-file banner in the target's own comment syntax
+- [[file:BOOK.org::2107][2107]] hole 5: refuse the book itself, mkdirp on demand, skip byte-ident...
+- [[file:BOOK.org::2123][2123]] hole 9: splice fresh interiors into the retained bytes, report ch...
+- [[file:BOOK.org::2133][2133]] hole 9: a line link per plan site, sites below the block shifted ...
+- [[file:BOOK.org::2139][2139]] hole 9: system diff -u over the two named bodies, temp-file heade...
+- [[file:BOOK.org::2255][2255]] hole 6: ORACLE=1 in the environment
+- [[file:BOOK.org::2259][2259]] hole 6: UPDATE=1 in the environment
+- [[file:BOOK.org::2265][2265]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
 
 #+end:
 
@@ -1474,12 +1474,16 @@ a fixture file.
 
 #+begin_src go :tangle internal/book/book.go :comments org
 func Dump(d *Document) ([]byte, error) {
+	nodes, err := dumpNodes(d.Nodes)
+	if err != nil {
+		return nil, err
+	}
 	v := struct {
 		Path     string              `json:"path"`
 		Todo     []string            `json:"todo"`
 		Keywords map[string][]string `json:"keywords,omitempty"`
-		Nodes    []any               `json:"nodes"`
-	}{d.Path, d.Todo, d.Keywords, dumpNodes(d.Nodes)}
+		Nodes    []json.Marshaler    `json:"nodes"`
+	}{d.Path, d.Todo, d.Keywords, nodes}
 	out, err := json.MarshalIndent(v, "", " ")
 	if err != nil {
 		return nil, err
@@ -1489,62 +1493,89 @@ func Dump(d *Document) ([]byte, error) {
 #+end_src
 
 Each node type carries its own JSON tags, so the dump never
-restates a field list. The wrappers below add the two things tags
-cannot: the type discriminator, and children rendered through the
-same wrapping (the embedded struct's fields flatten into the
-wrapper's object).
+restates a field list. One wrapper adds what tags cannot: the type
+discriminator in front and the wrapped children behind. A leaf is
+the same wrapper with no children, which is why there is one type
+here and not two.
 
 #+begin_src go :tangle internal/book/book.go :comments org
-func dumpNodes(nodes []Node) []any {
-	out := make([]any, 0, len(nodes))
-	for _, n := range nodes {
-		out = append(out, dumpNode(n))
+type dumped struct {
+	kind     string
+	node     Node
+	children []Node // empty for a leaf
+}
+#+end_src
+
+The wrapper marshals itself because Go cannot flatten a field into
+its enclosing object: an embedded type parameter is illegal and an
+embedded interface marshals under its own key, so a typed wrapper
+that keeps the flat shape has to splice the node's object itself.
+Marshaling the children here rather than at construction lets an
+unknown node type surface as an error instead of a null.
+
+#+begin_src go :tangle internal/book/book.go :comments org
+func (d dumped) MarshalJSON() ([]byte, error) {
+	body, err := json.Marshal(d.node)
+	if err != nil {
+		return nil, err
 	}
-	return out
+	if len(body) < 2 || body[0] != '{' || body[len(body)-1] != '}' {
+		return nil, fmt.Errorf("dump: %s node marshaled as %s, want an object", d.kind, body)
+	}
+	var b bytes.Buffer
+	fmt.Fprintf(&b, `{"type":%q`, d.kind)
+	if inner := body[1 : len(body)-1]; len(inner) > 0 {
+		b.WriteByte(',')
+		b.Write(inner)
+	}
+	if len(d.children) > 0 {
+		kids, err := dumpNodes(d.children)
+		if err != nil {
+			return nil, err
+		}
+		raw, err := json.Marshal(kids)
+		if err != nil {
+			return nil, err
+		}
+		b.WriteString(`,"children":`)
+		b.Write(raw)
+	}
+	b.WriteByte('}')
+	return b.Bytes(), nil
+}
+#+end_src
+
+#+begin_src go :tangle internal/book/book.go
+func dumpNodes(nodes []Node) ([]json.Marshaler, error) {
+	out := make([]json.Marshaler, 0, len(nodes))
+	for _, n := range nodes {
+		m, err := dumpNode(n)
+		if err != nil {
+			return nil, err
+		}
+		out = append(out, m)
+	}
+	return out, nil
 }
 
-func dumpNode(n Node) any {
+func dumpNode(n Node) (json.Marshaler, error) {
 	switch n := n.(type) {
 	case *Headline:
-		return struct {
-			Type string `json:"type"`
-			*Headline
-			Children []any `json:"children,omitempty"`
-		}{"headline", n, dumpNodes(n.Children)}
+		return dumped{"headline", n, n.Children}, nil
 	case *Prose:
-		return struct {
-			Type string `json:"type"`
-			*Prose
-		}{"prose", n}
+		return dumped{"prose", n, nil}, nil
 	case *Keyword:
-		return struct {
-			Type string `json:"type"`
-			*Keyword
-		}{"keyword", n}
+		return dumped{"keyword", n, nil}, nil
 	case *SrcBlock:
-		return struct {
-			Type string `json:"type"`
-			*SrcBlock
-		}{"src", n}
+		return dumped{"src", n, nil}, nil
 	case *DynamicBlock:
-		return struct {
-			Type string `json:"type"`
-			*DynamicBlock
-			Children []any `json:"children,omitempty"`
-		}{"dynamic", n, dumpNodes(n.Children)}
+		return dumped{"dynamic", n, n.Children}, nil
 	case *QuoteBlock:
-		return struct {
-			Type string `json:"type"`
-			*QuoteBlock
-			Children []any `json:"children,omitempty"`
-		}{"quote", n, dumpNodes(n.Children)}
+		return dumped{"quote", n, n.Children}, nil
 	case *VerbatimBlock:
-		return struct {
-			Type string `json:"type"`
-			*VerbatimBlock
-		}{"verbatim", n}
+		return dumped{"verbatim", n, nil}, nil
 	}
-	return nil
+	return nil, fmt.Errorf("dump: unknown node type %T", n)
 }
 #+end_src
 

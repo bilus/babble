@@ -168,12 +168,16 @@ func (d *Document) LineAt(off int) int {
 // render as start:end strings, which keeps a golden tree readable in
 // a fixture file.
 func Dump(d *Document) ([]byte, error) {
+	nodes, err := dumpNodes(d.Nodes)
+	if err != nil {
+		return nil, err
+	}
 	v := struct {
 		Path     string              `json:"path"`
 		Todo     []string            `json:"todo"`
 		Keywords map[string][]string `json:"keywords,omitempty"`
-		Nodes    []any               `json:"nodes"`
-	}{d.Path, d.Todo, d.Keywords, dumpNodes(d.Nodes)}
+		Nodes    []json.Marshaler    `json:"nodes"`
+	}{d.Path, d.Todo, d.Keywords, nodes}
 	out, err := json.MarshalIndent(v, "", " ")
 	if err != nil {
 		return nil, err
@@ -182,58 +186,80 @@ func Dump(d *Document) ([]byte, error) {
 }
 
 // Each node type carries its own JSON tags, so the dump never
-// restates a field list. The wrappers below add the two things tags
-// cannot: the type discriminator, and children rendered through the
-// same wrapping (the embedded struct's fields flatten into the
-// wrapper's object).
-func dumpNodes(nodes []Node) []any {
-	out := make([]any, 0, len(nodes))
-	for _, n := range nodes {
-		out = append(out, dumpNode(n))
-	}
-	return out
+// restates a field list. One wrapper adds what tags cannot: the type
+// discriminator in front and the wrapped children behind. A leaf is
+// the same wrapper with no children, which is why there is one type
+// here and not two.
+type dumped struct {
+	kind     string
+	node     Node
+	children []Node // empty for a leaf
 }
 
-func dumpNode(n Node) any {
+// The wrapper marshals itself because Go cannot flatten a field into
+// its enclosing object: an embedded type parameter is illegal and an
+// embedded interface marshals under its own key, so a typed wrapper
+// that keeps the flat shape has to splice the node's object itself.
+// Marshaling the children here rather than at construction lets an
+// unknown node type surface as an error instead of a null.
+func (d dumped) MarshalJSON() ([]byte, error) {
+	body, err := json.Marshal(d.node)
+	if err != nil {
+		return nil, err
+	}
+	if len(body) < 2 || body[0] != '{' || body[len(body)-1] != '}' {
+		return nil, fmt.Errorf("dump: %s node marshaled as %s, want an object", d.kind, body)
+	}
+	var b bytes.Buffer
+	fmt.Fprintf(&b, `{"type":%q`, d.kind)
+	if inner := body[1 : len(body)-1]; len(inner) > 0 {
+		b.WriteByte(',')
+		b.Write(inner)
+	}
+	if len(d.children) > 0 {
+		kids, err := dumpNodes(d.children)
+		if err != nil {
+			return nil, err
+		}
+		raw, err := json.Marshal(kids)
+		if err != nil {
+			return nil, err
+		}
+		b.WriteString(`,"children":`)
+		b.Write(raw)
+	}
+	b.WriteByte('}')
+	return b.Bytes(), nil
+}
+
+func dumpNodes(nodes []Node) ([]json.Marshaler, error) {
+	out := make([]json.Marshaler, 0, len(nodes))
+	for _, n := range nodes {
+		m, err := dumpNode(n)
+		if err != nil {
+			return nil, err
+		}
+		out = append(out, m)
+	}
+	return out, nil
+}
+
+func dumpNode(n Node) (json.Marshaler, error) {
 	switch n := n.(type) {
 	case *Headline:
-		return struct {
-			Type string `json:"type"`
-			*Headline
-			Children []any `json:"children,omitempty"`
-		}{"headline", n, dumpNodes(n.Children)}
+		return dumped{"headline", n, n.Children}, nil
 	case *Prose:
-		return struct {
-			Type string `json:"type"`
-			*Prose
-		}{"prose", n}
+		return dumped{"prose", n, nil}, nil
 	case *Keyword:
-		return struct {
-			Type string `json:"type"`
-			*Keyword
-		}{"keyword", n}
+		return dumped{"keyword", n, nil}, nil
 	case *SrcBlock:
-		return struct {
-			Type string `json:"type"`
-			*SrcBlock
-		}{"src", n}
+		return dumped{"src", n, nil}, nil
 	case *DynamicBlock:
-		return struct {
-			Type string `json:"type"`
-			*DynamicBlock
-			Children []any `json:"children,omitempty"`
-		}{"dynamic", n, dumpNodes(n.Children)}
+		return dumped{"dynamic", n, n.Children}, nil
 	case *QuoteBlock:
-		return struct {
-			Type string `json:"type"`
-			*QuoteBlock
-			Children []any `json:"children,omitempty"`
-		}{"quote", n, dumpNodes(n.Children)}
+		return dumped{"quote", n, n.Children}, nil
 	case *VerbatimBlock:
-		return struct {
-			Type string `json:"type"`
-			*VerbatimBlock
-		}{"verbatim", n}
+		return dumped{"verbatim", n, nil}, nil
 	}
-	return nil
+	return nil, fmt.Errorf("dump: unknown node type %T", n)
 }
