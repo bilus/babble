@@ -56,110 +56,42 @@ every dynamic block, and the labels are spelled without the sigils,
 so the census never matches its own index.
 
 #+begin: plan-toc
-- [[file:BOOK.org::91][91]] entry: PLANNED Stage 3: blocks in the tree
-- [[file:BOOK.org::158][158]] entry: PLANNED Stage 4: header resolution
-- [[file:BOOK.org::204][204]] entry: PLANNED Stage 5: tangle
-- [[file:BOOK.org::244][244]] entry: PLANNED Stage 6: the oracle harness
-- [[file:BOOK.org::278][278]] entry: PLANNED Stage 7: org comments
-- [[file:BOOK.org::321][321]] entry: PLANNED Stage 8: noweb
-- [[file:BOOK.org::358][358]] entry: PLANNED Stage 9: dynamic blocks
-- [[file:BOOK.org::405][405]] entry: PLANNED Stage 10: the fence
-- [[file:BOOK.org::434][434]] entry: PLANNED Stage 11: parity and self-hosting
-- [[file:BOOK.org::1248][1248]] hole 5: parse, refresh, reparse, tangle; errors to stderr
-- [[file:BOOK.org::2522][2522]] hole 4: every block's Params through the closed table, unknown ke...
-- [[file:BOOK.org::2528][2528]] hole 4: split on space-then-colon outside parens, brackets, and d...
-- [[file:BOOK.org::2532][2532]] hole 4: chomp, unquote an elisp string literal, reject lisp
-- [[file:BOOK.org::2541][2541]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
-- [[file:BOOK.org::2557][2557]] hole 5: collect, resolve targets, assemble with banners, write
-- [[file:BOOK.org::2574][2574]] hole 5: eligible blocks grouped by target in first-appearance order
-- [[file:BOOK.org::2578][2578]] hole 5: no, yes, or a path relative to the book's directory
-- [[file:BOOK.org::2588][2588]] hole 5: unescape commas, dedent by column, expand noweb, dedent a...
-- [[file:BOOK.org::2598][2598]] hole 7: extent between the anchors, then the docstring rule
-- [[file:BOOK.org::2604][2604]] hole 7: line-comment table per language, blank lines as a bare ma...
-- [[file:BOOK.org::2614][2614]] hole 8: named block first, else noweb-ref concatenation; cycles a...
-- [[file:BOOK.org::2625][2625]] hole 5: the generated-file banner in the target's own comment syntax
-- [[file:BOOK.org::2631][2631]] hole 5: refuse the book itself, mkdirp on demand, skip byte-ident...
-- [[file:BOOK.org::2647][2647]] hole 9: splice fresh interiors into the retained bytes, report ch...
-- [[file:BOOK.org::2657][2657]] hole 9: a line link per plan site, sites below the block shifted ...
-- [[file:BOOK.org::2663][2663]] hole 9: system diff -u over the two named bodies, temp-file heade...
-- [[file:BOOK.org::2841][2841]] hole 6: ORACLE=1 in the environment
-- [[file:BOOK.org::2845][2845]] hole 6: UPDATE=1 in the environment
-- [[file:BOOK.org::2851][2851]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
+- [[file:BOOK.org::90][90]] entry: PLANNED Stage 4: header resolution
+- [[file:BOOK.org::136][136]] entry: PLANNED Stage 5: tangle
+- [[file:BOOK.org::176][176]] entry: PLANNED Stage 6: the oracle harness
+- [[file:BOOK.org::210][210]] entry: PLANNED Stage 7: org comments
+- [[file:BOOK.org::253][253]] entry: PLANNED Stage 8: noweb
+- [[file:BOOK.org::290][290]] entry: PLANNED Stage 9: dynamic blocks
+- [[file:BOOK.org::337][337]] entry: PLANNED Stage 10: the fence
+- [[file:BOOK.org::366][366]] entry: PLANNED Stage 11: parity and self-hosting
+- [[file:BOOK.org::1180][1180]] hole 5: parse, refresh, reparse, tangle; errors to stderr
+- [[file:BOOK.org::2454][2454]] hole 4: every block's Params through the closed table, unknown ke...
+- [[file:BOOK.org::2460][2460]] hole 4: split on space-then-colon outside parens, brackets, and d...
+- [[file:BOOK.org::2464][2464]] hole 4: chomp, unquote an elisp string literal, reject lisp
+- [[file:BOOK.org::2473][2473]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
+- [[file:BOOK.org::2489][2489]] hole 5: collect, resolve targets, assemble with banners, write
+- [[file:BOOK.org::2506][2506]] hole 5: eligible blocks grouped by target in first-appearance order
+- [[file:BOOK.org::2510][2510]] hole 5: no, yes, or a path relative to the book's directory
+- [[file:BOOK.org::2520][2520]] hole 5: unescape commas, dedent by column, expand noweb, dedent a...
+- [[file:BOOK.org::2530][2530]] hole 7: extent between the anchors, then the docstring rule
+- [[file:BOOK.org::2536][2536]] hole 7: line-comment table per language, blank lines as a bare ma...
+- [[file:BOOK.org::2546][2546]] hole 8: named block first, else noweb-ref concatenation; cycles a...
+- [[file:BOOK.org::2557][2557]] hole 5: the generated-file banner in the target's own comment syntax
+- [[file:BOOK.org::2563][2563]] hole 5: refuse the book itself, mkdirp on demand, skip byte-ident...
+- [[file:BOOK.org::2579][2579]] hole 9: splice fresh interiors into the retained bytes, report ch...
+- [[file:BOOK.org::2589][2589]] hole 9: a line link per plan site, sites below the block shifted ...
+- [[file:BOOK.org::2595][2595]] hole 9: system diff -u over the two named bodies, temp-file heade...
+- [[file:BOOK.org::2773][2773]] hole 6: ORACLE=1 in the environment
+- [[file:BOOK.org::2777][2777]] hole 6: UPDATE=1 in the environment
+- [[file:BOOK.org::2783][2783]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
 
 #+end:
-
-** PLANNED Stage 3: blocks in the tree                             :stage3:
-:PROPERTIES:
-:CUSTOM_ID: stage-3
-:SPEC:     How the oracle parses; The subset contract, "Recognition"
-:DEPS:     stage 2
-:ACCEPTANCE: TestParseDumpBlocks, TestParseCorpora, the stage 2 fixtures unedited; anchors match org on all four books; go test ./...
-:SIZE:     ~300 lines, most of them replacing the frontend
-:END:
-
-Claim: after this stage the frontend runs the oracle's algorithm
-(a bounded loop over a byte range, a dispatcher that reads one
-line where it stands, element parsers that find their own
-terminators, recursion into containers only, and a mode threaded
-from parent to child), and through it src blocks (language,
-switches, raw header, affiliated name, body span), dynamic blocks
-(name, arguments, interior), and the verbatim and greater blocks
-land in the tree with exact byte spans; an unterminated block is
-an error naming its line; and both real corpora parse clean.
-
-Decided: (1) The first pass at this stage reached the right tree
-by the wrong road: a line tokenizer that lowercased block names
-and computed a comment-extent anchor, which is grammar and a
-later stage's arithmetic done in a lexical phase. It is replaced
-rather than accepted, because [[#how-the-oracle-parses][the oracle has no lexer at all]] and
-a frontend whose phase boundary matches the oracle's is the one
-whose parity can be argued. (2) The headline stack goes: org nests
-by recursing into a headline's byte range, so the tree falls out
-of the recursion. (3) Mode becomes a Go enum and containers an
-interface only greater elements satisfy, so the recursion cannot
-be aimed at a verbatim block; that is the type-safe half of "the
-same algorithm". (4) The subset does not move. The tests written
-against the first pass (the block fixture, the corpus test, and
-every stage 2 fixture) stay byte for byte and are this stage's
-gate: a rewrite that changes no observable behavior is exactly
-what they can prove. (5) The replacement lands as a twin
-subsystem: the planned blocks carry ~:tangle no~ until acceptance,
-and the tokenizer's blocks are deleted in the commit that swaps
-them. (6) The anchor cross-check against org, 252 src blocks over
-four books, is repeated after the swap, with Emacs character
-positions converted to byte offsets.
-
-- [X] skeleton approved (the human ticks this box)
-- [X] inserted prose reads steady-state
-- [X] Changes draft below reads right in the journal
-- [X] HOLE(3) cluster filled, one element parser at a time
-- [X] stage 2 and block fixtures green with no edit to any golden
-- [X] anchors re-checked against org on all four books
-- [X] twins accepted, tokenizer blocks deleted, census clean
-- [ ] Changes entry dated and filed, plan entry deleted
-
-*** Changes draft
-
-#+begin_quote
-Blocks joined the tree with the byte anchors the comment extents
-later hang from, and parsing both real corpora became a test. An
-unterminated block, which org silently reads as a paragraph, is an
-error here. The frontend that finds them is a port of the oracle's
-own algorithm: a bounded loop, a dispatcher that reads a line
-where it stands, element parsers that find their own ends, and a
-mode passed from parent to child. An earlier attempt put a line
-tokenizer in front of the parser, which moved grammar into the
-lexical phase and computed one stage's anchor on behalf of
-another; reading the source at the point of decision removes both
-problems and matches the oracle's own shape, which is what makes
-byte parity arguable rather than lucky.
-#+end_quote
 
 ** PLANNED Stage 4: header resolution                              :stage4:
 :PROPERTIES:
 :CUSTOM_ID: stage-4
 :SPEC:     The subset contract, "Header arguments"
-:DEPS:     stage 3
+:DEPS:     none
 :ACCEPTANCE: TestResolveHeaders, TestHeaderRejects, TestInertHeaders; go test ./...
 :SIZE:     ~220 lines
 :END:
@@ -2985,6 +2917,21 @@ this document cares about. Entries are written once, at acceptance,
 and never reworded; history that needs correcting gets a new entry.
 An entry speaks from its date; the rest of the document speaks from
 no date at all.
+
+** [2026-07-27 Mon] Blocks, parsed the way the oracle parses
+
+Blocks joined the tree with the byte anchors the comment extents
+later hang from, and parsing both real corpora became a test. An
+unterminated block, which org silently reads as a paragraph, is an
+error here. The frontend that finds them is a port of the oracle's
+own algorithm: a bounded loop, a dispatcher that reads a line
+where it stands, element parsers that find their own ends, and a
+mode passed from parent to child. An earlier attempt put a line
+tokenizer in front of the parser, which moved grammar into the
+lexical phase and computed one stage's anchor on behalf of
+another; reading the source at the point of decision removes both
+problems and matches the oracle's own shape, which is what makes
+byte parity arguable rather than lucky.
 
 ** [2026-07-27 Mon] The document tree
 
