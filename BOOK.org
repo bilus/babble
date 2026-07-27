@@ -56,78 +56,38 @@ every dynamic block, and the labels are spelled without the sigils,
 so the census never matches its own index.
 
 #+begin: plan-toc
-- [[file:BOOK.org::93][93]] entry: PLANNED Stage 2: the document tree
-- [[file:BOOK.org::132][132]] entry: PLANNED Stage 3: blocks in the tree
-- [[file:BOOK.org::175][175]] entry: PLANNED Stage 4: header resolution
-- [[file:BOOK.org::221][221]] entry: PLANNED Stage 5: tangle
-- [[file:BOOK.org::261][261]] entry: PLANNED Stage 6: the oracle harness
-- [[file:BOOK.org::295][295]] entry: PLANNED Stage 7: org comments
-- [[file:BOOK.org::338][338]] entry: PLANNED Stage 8: noweb
-- [[file:BOOK.org::375][375]] entry: PLANNED Stage 9: dynamic blocks
-- [[file:BOOK.org::422][422]] entry: PLANNED Stage 10: the fence
-- [[file:BOOK.org::451][451]] entry: PLANNED Stage 11: parity and self-hosting
-- [[file:BOOK.org::1256][1256]] hole 5: parse, refresh, reparse, tangle; errors to stderr
-- [[file:BOOK.org::1987][1987]] hole 3: blocks with names, spans, and the two extent anchors
-- [[file:BOOK.org::1998][1998]] hole 4: every block's Params through the closed table, unknown ke...
-- [[file:BOOK.org::2004][2004]] hole 4: split on space-then-colon outside parens, brackets, and d...
-- [[file:BOOK.org::2008][2008]] hole 4: chomp, unquote an elisp string literal, reject lisp
-- [[file:BOOK.org::2017][2017]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
-- [[file:BOOK.org::2033][2033]] hole 5: collect, resolve targets, assemble with banners, write
-- [[file:BOOK.org::2050][2050]] hole 5: eligible blocks grouped by target in first-appearance order
-- [[file:BOOK.org::2054][2054]] hole 5: no, yes, or a path relative to the book's directory
-- [[file:BOOK.org::2064][2064]] hole 5: unescape commas, dedent by column, expand noweb, dedent a...
-- [[file:BOOK.org::2074][2074]] hole 7: extent between the anchors, then the docstring rule
-- [[file:BOOK.org::2080][2080]] hole 7: line-comment table per language, blank lines as a bare ma...
-- [[file:BOOK.org::2090][2090]] hole 8: named block first, else noweb-ref concatenation; cycles a...
-- [[file:BOOK.org::2101][2101]] hole 5: the generated-file banner in the target's own comment syntax
-- [[file:BOOK.org::2107][2107]] hole 5: refuse the book itself, mkdirp on demand, skip byte-ident...
-- [[file:BOOK.org::2123][2123]] hole 9: splice fresh interiors into the retained bytes, report ch...
-- [[file:BOOK.org::2133][2133]] hole 9: a line link per plan site, sites below the block shifted ...
-- [[file:BOOK.org::2139][2139]] hole 9: system diff -u over the two named bodies, temp-file heade...
-- [[file:BOOK.org::2255][2255]] hole 6: ORACLE=1 in the environment
-- [[file:BOOK.org::2259][2259]] hole 6: UPDATE=1 in the environment
-- [[file:BOOK.org::2265][2265]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
+- [[file:BOOK.org::92][92]] entry: PLANNED Stage 3: blocks in the tree
+- [[file:BOOK.org::135][135]] entry: PLANNED Stage 4: header resolution
+- [[file:BOOK.org::181][181]] entry: PLANNED Stage 5: tangle
+- [[file:BOOK.org::221][221]] entry: PLANNED Stage 6: the oracle harness
+- [[file:BOOK.org::255][255]] entry: PLANNED Stage 7: org comments
+- [[file:BOOK.org::298][298]] entry: PLANNED Stage 8: noweb
+- [[file:BOOK.org::335][335]] entry: PLANNED Stage 9: dynamic blocks
+- [[file:BOOK.org::382][382]] entry: PLANNED Stage 10: the fence
+- [[file:BOOK.org::411][411]] entry: PLANNED Stage 11: parity and self-hosting
+- [[file:BOOK.org::1216][1216]] hole 5: parse, refresh, reparse, tangle; errors to stderr
+- [[file:BOOK.org::1947][1947]] hole 3: blocks with names, spans, and the two extent anchors
+- [[file:BOOK.org::1958][1958]] hole 4: every block's Params through the closed table, unknown ke...
+- [[file:BOOK.org::1964][1964]] hole 4: split on space-then-colon outside parens, brackets, and d...
+- [[file:BOOK.org::1968][1968]] hole 4: chomp, unquote an elisp string literal, reject lisp
+- [[file:BOOK.org::1977][1977]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
+- [[file:BOOK.org::1993][1993]] hole 5: collect, resolve targets, assemble with banners, write
+- [[file:BOOK.org::2010][2010]] hole 5: eligible blocks grouped by target in first-appearance order
+- [[file:BOOK.org::2014][2014]] hole 5: no, yes, or a path relative to the book's directory
+- [[file:BOOK.org::2024][2024]] hole 5: unescape commas, dedent by column, expand noweb, dedent a...
+- [[file:BOOK.org::2034][2034]] hole 7: extent between the anchors, then the docstring rule
+- [[file:BOOK.org::2040][2040]] hole 7: line-comment table per language, blank lines as a bare ma...
+- [[file:BOOK.org::2050][2050]] hole 8: named block first, else noweb-ref concatenation; cycles a...
+- [[file:BOOK.org::2061][2061]] hole 5: the generated-file banner in the target's own comment syntax
+- [[file:BOOK.org::2067][2067]] hole 5: refuse the book itself, mkdirp on demand, skip byte-ident...
+- [[file:BOOK.org::2083][2083]] hole 9: splice fresh interiors into the retained bytes, report ch...
+- [[file:BOOK.org::2093][2093]] hole 9: a line link per plan site, sites below the block shifted ...
+- [[file:BOOK.org::2099][2099]] hole 9: system diff -u over the two named bodies, temp-file heade...
+- [[file:BOOK.org::2215][2215]] hole 6: ORACLE=1 in the environment
+- [[file:BOOK.org::2219][2219]] hole 6: UPDATE=1 in the environment
+- [[file:BOOK.org::2225][2225]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
 
 #+end:
-
-** PLANNED Stage 2: the document tree                              :stage2:
-:PROPERTIES:
-:CUSTOM_ID: stage-2
-:SPEC:     Architecture, "Parse first, into a logical tree"
-:DEPS:     stage 1
-:ACCEPTANCE: TestParseDumpHeadlines, TestParseDumpProse; go test ./...
-:SIZE:     ~250 lines
-:END:
-
-Claim: after this stage, ~babble parse --dump~ renders headlines
-(stars, todo keyword from the book's own ~#+todo~ line, COMMENT
-(the keyword that excludes a subtree from the tangle), tags,
-fifteen-star badge lines included), keyword lines, and prose runs
-as a stable JSON tree in which every node carries its line number
-and byte span into the retained source (the input bytes the tree
-keeps).
-
-Decided: (1) Batch Emacs never loads org-inlinetask, so a line of
-fifteen stars is an ordinary deep headline to the oracle; the parser
-says the same. (2) Todo keywords come from ~#+todo~ (shortcut and
-logging suffixes stripped, the bar dropped), defaulting to TODO and
-DONE; COMMENT is recognized after an optional todo keyword and
-priority (org's bracketed [#A] mark), before the title.
-
-- [X] inserted prose reads steady-state
-- [X] Changes draft below reads right in the journal
-- [X] HOLE(2) cluster filled, parse fixtures in the same commits
-- [X] census clean for stage 2, suite green
-- [ ] Changes entry dated and filed, plan entry deleted
-
-*** Changes draft
-
-#+begin_quote
-babble parse --dump arrived: headlines, keywords, and prose runs
-parse into a spanned tree, pinned by testscript fixtures. Badge
-lines parse as the deep headlines batch Emacs sees, not as inline
-tasks.
-#+end_quote
 
 ** PLANNED Stage 3: blocks in the tree                             :stage3:
 :PROPERTIES:
@@ -2396,6 +2356,13 @@ this document cares about. Entries are written once, at acceptance,
 and never reworded; history that needs correcting gets a new entry.
 An entry speaks from its date; the rest of the document speaks from
 no date at all.
+
+** [2026-07-27 Mon] The document tree
+
+babble parse --dump arrived: headlines, keywords, and prose runs
+parse into a spanned tree, pinned by testscript fixtures. Badge
+lines parse as the deep headlines batch Emacs sees, not as inline
+tasks.
 
 ** [2026-07-27 Mon] The skeleton
 
