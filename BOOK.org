@@ -66,25 +66,25 @@ so the census never matches its own index.
 - [[file:BOOK.org::405][405]] entry: PLANNED Stage 10: the fence
 - [[file:BOOK.org::434][434]] entry: PLANNED Stage 11: parity and self-hosting
 - [[file:BOOK.org::1239][1239]] hole 5: parse, refresh, reparse, tangle; errors to stderr
-- [[file:BOOK.org::2468][2468]] hole 4: every block's Params through the closed table, unknown ke...
-- [[file:BOOK.org::2474][2474]] hole 4: split on space-then-colon outside parens, brackets, and d...
-- [[file:BOOK.org::2478][2478]] hole 4: chomp, unquote an elisp string literal, reject lisp
-- [[file:BOOK.org::2487][2487]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
-- [[file:BOOK.org::2503][2503]] hole 5: collect, resolve targets, assemble with banners, write
-- [[file:BOOK.org::2520][2520]] hole 5: eligible blocks grouped by target in first-appearance order
-- [[file:BOOK.org::2524][2524]] hole 5: no, yes, or a path relative to the book's directory
-- [[file:BOOK.org::2534][2534]] hole 5: unescape commas, dedent by column, expand noweb, dedent a...
-- [[file:BOOK.org::2544][2544]] hole 7: extent between the anchors, then the docstring rule
-- [[file:BOOK.org::2550][2550]] hole 7: line-comment table per language, blank lines as a bare ma...
-- [[file:BOOK.org::2560][2560]] hole 8: named block first, else noweb-ref concatenation; cycles a...
-- [[file:BOOK.org::2571][2571]] hole 5: the generated-file banner in the target's own comment syntax
-- [[file:BOOK.org::2577][2577]] hole 5: refuse the book itself, mkdirp on demand, skip byte-ident...
-- [[file:BOOK.org::2593][2593]] hole 9: splice fresh interiors into the retained bytes, report ch...
-- [[file:BOOK.org::2603][2603]] hole 9: a line link per plan site, sites below the block shifted ...
-- [[file:BOOK.org::2609][2609]] hole 9: system diff -u over the two named bodies, temp-file heade...
-- [[file:BOOK.org::2788][2788]] hole 6: ORACLE=1 in the environment
-- [[file:BOOK.org::2792][2792]] hole 6: UPDATE=1 in the environment
-- [[file:BOOK.org::2798][2798]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
+- [[file:BOOK.org::2475][2475]] hole 4: every block's Params through the closed table, unknown ke...
+- [[file:BOOK.org::2481][2481]] hole 4: split on space-then-colon outside parens, brackets, and d...
+- [[file:BOOK.org::2485][2485]] hole 4: chomp, unquote an elisp string literal, reject lisp
+- [[file:BOOK.org::2494][2494]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
+- [[file:BOOK.org::2510][2510]] hole 5: collect, resolve targets, assemble with banners, write
+- [[file:BOOK.org::2527][2527]] hole 5: eligible blocks grouped by target in first-appearance order
+- [[file:BOOK.org::2531][2531]] hole 5: no, yes, or a path relative to the book's directory
+- [[file:BOOK.org::2541][2541]] hole 5: unescape commas, dedent by column, expand noweb, dedent a...
+- [[file:BOOK.org::2551][2551]] hole 7: extent between the anchors, then the docstring rule
+- [[file:BOOK.org::2557][2557]] hole 7: line-comment table per language, blank lines as a bare ma...
+- [[file:BOOK.org::2567][2567]] hole 8: named block first, else noweb-ref concatenation; cycles a...
+- [[file:BOOK.org::2578][2578]] hole 5: the generated-file banner in the target's own comment syntax
+- [[file:BOOK.org::2584][2584]] hole 5: refuse the book itself, mkdirp on demand, skip byte-ident...
+- [[file:BOOK.org::2600][2600]] hole 9: splice fresh interiors into the retained bytes, report ch...
+- [[file:BOOK.org::2610][2610]] hole 9: a line link per plan site, sites below the block shifted ...
+- [[file:BOOK.org::2616][2616]] hole 9: system diff -u over the two named bodies, temp-file heade...
+- [[file:BOOK.org::2795][2795]] hole 6: ORACLE=1 in the environment
+- [[file:BOOK.org::2799][2799]] hole 6: UPDATE=1 in the environment
+- [[file:BOOK.org::2805][2805]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
 
 #+end:
 
@@ -1628,32 +1628,39 @@ is as the elisp reads it, with the branches babble's subset never
 reaches marked. babble's ~currentElement~ answers these questions
 in this order, which is what makes the two comparable at all.
 
-| # | branch | condition | in the subset |
+| # | branch | condition | subset |
 |---|---|---|---|
-| 1 | item | mode is item | no, lists are prose |
+| 1 | item | mode is item | no |
 | 2 | table row | mode is table-row | no |
-| 3 | node property | mode is node-property | yes, inside a drawer |
-| 4 | headline | line starts with stars and a space | yes |
-| 5 | section | mode is section or first-section | yes, implicit |
-| 6 | comment | the line is an org comment | yes, as prose |
-| 7 | planning | mode is planning, previous line is a headline | not yet, see stage 4 |
-| 8 | property drawer | mode admits one, and the line opens it | yes |
-| 9 | paragraph | point is not at the start of a line | no |
-| 10 | clock | the line is a clock line | no |
-| 11 | inlinetask | the star run is deep enough, with org-inlinetask loaded | no, batch never loads it |
-| 12 | affiliated | collect ~#+name:~ and kin, then dispatch again | yes |
-| 13 | the bulk regexp | drawer, fixed-width, dynamic block, begin_X, CALL, keyword, footnote, rule, sexp | yes, four of nine |
-| 14 | table | the line starts with a pipe | no |
+| 3 | node property | mode is node-property | yes |
+| 4 | headline | stars, then a space | yes |
+| 5 | section | mode is a section mode | implicit |
+| 6 | comment | an org comment line | as prose |
+| 7 | planning | mode is planning | stage 4 |
+| 8 | property drawer | mode admits one | yes |
+| 9 | paragraph | point past a line start | no |
+| 10 | clock | a clock line | no |
+| 11 | inlinetask | deep stars, feature loaded | no |
+| 12 | affiliated | a name line, then retry | yes |
+| 13 | bulk regexp | nine shapes in one match | four |
+| 14 | table | a leading pipe | no |
 | 15 | paragraph | everything left | yes |
 
-Two entries in that table are worth reading twice. Branch 11 is
-why a fifteen-star badge is an ordinary headline here: batch Emacs
-never loads org-inlinetask, so the condition is false and control
-falls to branch 4, which is what babble does unconditionally.
-Branch 7 is the gap this book already knows about: org admits a
-planning line between a headline and its property drawer, babble
-does not, and stage 4 has to close that before header arguments
-can be inherited.
+Branch 13 is the one that carries most of org's syntax. Its nine
+shapes are drawers, fixed-width lines, dynamic-block openers,
+~#+begin_X~, ~#+CALL:~, keywords, footnote definitions,
+horizontal rules and diary sexps, and babble reaches four of them:
+the dynamic-block opener, ~#+begin_X~, keywords, and the drawer
+shape that branch 8 consumes.
+
+Two other entries are worth reading twice. Branch 11 is why a
+fifteen-star badge is an ordinary headline here: batch Emacs never
+loads org-inlinetask, so the condition is false and control falls
+to branch 4, which is what babble does unconditionally. Branch 7
+is the gap this book already knows about: org admits a planning
+line between a headline and its property drawer, babble does not,
+and stage 4 has to close that before header arguments can be
+inherited.
 
 ** Elements find their own end
 
