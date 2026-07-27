@@ -65,25 +65,25 @@ so the census never matches its own index.
 - [[file:BOOK.org::337][337]] entry: PLANNED Stage 10: the fence
 - [[file:BOOK.org::366][366]] entry: PLANNED Stage 11: parity and self-hosting
 - [[file:BOOK.org::1180][1180]] hole 5: parse, refresh, reparse, tangle; errors to stderr
-- [[file:BOOK.org::2454][2454]] hole 4: every block's Params through the closed table, unknown ke...
-- [[file:BOOK.org::2460][2460]] hole 4: split on space-then-colon outside parens, brackets, and d...
-- [[file:BOOK.org::2464][2464]] hole 4: chomp, unquote an elisp string literal, reject lisp
-- [[file:BOOK.org::2473][2473]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
-- [[file:BOOK.org::2489][2489]] hole 5: collect, resolve targets, assemble with banners, write
-- [[file:BOOK.org::2506][2506]] hole 5: eligible blocks grouped by target in first-appearance order
-- [[file:BOOK.org::2510][2510]] hole 5: no, yes, or a path relative to the book's directory
-- [[file:BOOK.org::2520][2520]] hole 5: unescape commas, dedent by column, expand noweb, dedent a...
-- [[file:BOOK.org::2530][2530]] hole 7: extent between the anchors, then the docstring rule
-- [[file:BOOK.org::2536][2536]] hole 7: line-comment table per language, blank lines as a bare ma...
-- [[file:BOOK.org::2546][2546]] hole 8: named block first, else noweb-ref concatenation; cycles a...
-- [[file:BOOK.org::2557][2557]] hole 5: the generated-file banner in the target's own comment syntax
-- [[file:BOOK.org::2563][2563]] hole 5: refuse the book itself, mkdirp on demand, skip byte-ident...
-- [[file:BOOK.org::2579][2579]] hole 9: splice fresh interiors into the retained bytes, report ch...
-- [[file:BOOK.org::2589][2589]] hole 9: a line link per plan site, sites below the block shifted ...
-- [[file:BOOK.org::2595][2595]] hole 9: system diff -u over the two named bodies, temp-file heade...
-- [[file:BOOK.org::2773][2773]] hole 6: ORACLE=1 in the environment
-- [[file:BOOK.org::2777][2777]] hole 6: UPDATE=1 in the environment
-- [[file:BOOK.org::2783][2783]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
+- [[file:BOOK.org::2479][2479]] hole 4: every block's Params through the closed table, unknown ke...
+- [[file:BOOK.org::2485][2485]] hole 4: split on space-then-colon outside parens, brackets, and d...
+- [[file:BOOK.org::2489][2489]] hole 4: chomp, unquote an elisp string literal, reject lisp
+- [[file:BOOK.org::2498][2498]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
+- [[file:BOOK.org::2514][2514]] hole 5: collect, resolve targets, assemble with banners, write
+- [[file:BOOK.org::2531][2531]] hole 5: eligible blocks grouped by target in first-appearance order
+- [[file:BOOK.org::2535][2535]] hole 5: no, yes, or a path relative to the book's directory
+- [[file:BOOK.org::2545][2545]] hole 5: unescape commas, dedent by column, expand noweb, dedent a...
+- [[file:BOOK.org::2555][2555]] hole 7: extent between the anchors, then the docstring rule
+- [[file:BOOK.org::2561][2561]] hole 7: line-comment table per language, blank lines as a bare ma...
+- [[file:BOOK.org::2571][2571]] hole 8: named block first, else noweb-ref concatenation; cycles a...
+- [[file:BOOK.org::2582][2582]] hole 5: the generated-file banner in the target's own comment syntax
+- [[file:BOOK.org::2588][2588]] hole 5: refuse the book itself, mkdirp on demand, skip byte-ident...
+- [[file:BOOK.org::2604][2604]] hole 9: splice fresh interiors into the retained bytes, report ch...
+- [[file:BOOK.org::2614][2614]] hole 9: a line link per plan site, sites below the block shifted ...
+- [[file:BOOK.org::2620][2620]] hole 9: system diff -u over the two named bodies, temp-file heade...
+- [[file:BOOK.org::2798][2798]] hole 6: ORACLE=1 in the environment
+- [[file:BOOK.org::2802][2802]] hole 6: UPDATE=1 in the environment
+- [[file:BOOK.org::2808][2808]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
 
 #+end:
 
@@ -2014,6 +2014,8 @@ A headline owns its subtree, which ends at the next headline of
 its level or shallower. The property drawer directly below it is
 the headline's own data, so the parser asks for it in property
 drawer mode before handing the rest of the range to the loop.
+Everything after the stars is optional except the title:
+  ** DONE [#A] COMMENT Ship it              :release:tools:
 
 #+begin_src go :tangle internal/org/org.go :comments org
 func (p *parser) headlineParser(text string, next, limit int) (parsed, int, error) {
@@ -2066,7 +2068,10 @@ func firstWord(s string) (word, rest string, ok bool) {
 
 Tags are the trailing colon-fenced run; each tag is alphanumerics
 plus the four org extras. Anything that fails the shape stays in
-the title.
+the title, so the first line below has two tags and the second has
+none:
+  ** Ship it                                :release:tools:
+  ** Ship it: a story in two parts
 
 #+begin_src go :tangle internal/org/org.go :comments org
 func splitTags(s string) (string, []string) {
@@ -2101,10 +2106,11 @@ func tagWord(s string) bool {
 }
 #+end_src
 
-The property drawer is a run of colon lines opening with
-:PROPERTIES: and closing with :END:. A malformed drawer is not a
-drawer at all, and its lines fall to prose, which is also what org
-does.
+The property drawer is a run of colon lines: a ":PROPERTIES:"
+line, then keys like ":header-args: :comments org", then ":END:".
+It has to sit directly under its headline. A malformed drawer is
+not a drawer at all, and its lines fall to prose, which is also
+what org does.
 
 #+begin_src go :tangle internal/org/org.go :comments org
 func (p *parser) propertyDrawerParser(from, limit int) (map[string]string, int, bool) {
@@ -2133,8 +2139,11 @@ func (p *parser) propertyDrawerParser(from, limit int) (map[string]string, int, 
 A src block records the two raw anchors beside its parsed
 attributes: where its own first line starts, and the offset just
 past the literal end keyword, which is where org's backward search
-stops. The terminator has to name the same block and carry nothing
-after it, and the bound keeps the search inside one section.
+stops. The shape is a begin line,
+"#+begin_src go :tangle greet.go", the body, then a closing
+"#+end_src". The terminator has to name the same block and carry
+nothing after it, and the bound keeps the search inside one
+section.
 
 #+begin_src go :tangle internal/org/org.go :comments org
 func (p *parser) srcBlockParser(rest string, bodyStart, limit int, aff affiliated) (parsed, int, error) {
@@ -2165,7 +2174,9 @@ func closesBlock(name string) func(string) bool {
 #+end_src
 
 Verbatim blocks hold text, so they report no contents range and
-the loop cannot descend into them. That is what keeps a
+the loop cannot descend into them. The kinds are example, export,
+comment and verse, so "#+begin_example" opens one and
+"#+end_example" closes it. Holding text is what keeps a
 comma-escaped delimiter inside an example block from being read as
 a block.
 
@@ -2185,7 +2196,9 @@ func (p *parser) verbatimBlockParser(kind string, bodyStart, limit int, aff affi
 #+end_src
 
 Greater blocks hold elements, so they hand the loop their interior
-and adopt what comes back.
+and adopt what comes back. A quote block is the common one,
+"#+begin_quote" through "#+end_quote", and any name org does not
+reserve lands here too.
 
 #+begin_src go :tangle internal/org/org.go :comments org
 func (p *parser) greaterBlockParser(kind string, bodyStart, limit int, aff affiliated) (parsed, int, error) {
@@ -2205,7 +2218,10 @@ func (p *parser) greaterBlockParser(kind string, bodyStart, limit int, aff affil
 
 A dynamic block keeps its interior twice over: the span refresh
 rewrites, and the nodes inside it, because a generated diff holds
-a real src block that collection has to see.
+a real src block that collection has to see. The opener carries
+the writer's name and its arguments, as in
+"#+begin: src-block-diff :old greet :new greet-quiet", and
+"#+end:" closes it.
 
 #+begin_src go :tangle internal/org/org.go :comments org
 func (p *parser) dynamicBlockParser(args string, bodyStart, limit int, aff affiliated) (parsed, int, error) {
@@ -2229,9 +2245,11 @@ func (p *parser) dynamicBlockParser(args string, bodyStart, limit int, aff affil
 }
 #+end_src
 
-A keyword line is one node and one map entry. Prose is everything
-left over: it runs from its first line to whatever interrupts it,
-blank lines and stray colon lines included.
+A keyword line is one node and one map entry, as in
+"#+title: babble" or "#+property: header-args :comments org".
+Prose is everything left over: it runs from its first line to
+whatever interrupts it, blank lines and stray colon lines
+included.
 
 #+begin_src go :tangle internal/org/org.go :comments org
 func (p *parser) keywordParser(key, value, text string, next int) (parsed, int, error) {
@@ -2258,9 +2276,13 @@ func (p *parser) paragraphParser(limit int) (parsed, int, error) {
 
 The shape tests below are the only place a line's spelling is
 examined, and every one of them is a pure function of the line
-plus a position. They are read at the point of decision, never
-ahead of time, which is what stops a lexical phase from deciding
-grammar.
+plus a position. Each answers one question: how many stars open
+the line, as in "** Ship it"; whether it is a block delimiter, as
+in "#+begin_src go"; whether it is a keyword line, as in
+"#+title: babble"; and whether it is a colon line, as in
+":header-args: :comments org". They are read at the point of
+decision, never ahead of time, which is what stops a lexical phase
+from deciding grammar.
 
 #+begin_src go :tangle internal/org/org.go :comments org
 func starRun(text string) int {
@@ -2377,7 +2399,10 @@ The begin_src line splits three ways: the language, then a run of
 switches, then the header string. Only the switch run needs
 grammar, since org accepts exactly -i, -k, -r, -n and +n with an
 optional count, and -l with a quoted format. Whatever follows the
-run is the header string, which stays raw until it is resolved.
+run is the header string, which stays raw until it is resolved. In
+the tail below the language is go, the switch run is "-i", and the
+header begins at the first colon:
+  go -i :tangle greet.go :comments org
 
 #+begin_src go :tangle internal/org/org.go :comments org
 func srcHeader(s string) (lang, switches, header string) {
