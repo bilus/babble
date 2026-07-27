@@ -10,12 +10,12 @@ import (
 	"github.com/bilus/babble/internal/org"
 )
 
-// TestParseCorpora parses the books this repository carries and
-// checks each tree against the file it came from: one src block per
-// begin_src line the file opens, every body inside its own block,
-// and every anchor inside it too. Fixtures pin what their author
-// thought of; three real books of a few thousand lines find the
-// rest.
+// The count it compares against comes from a scanner that shares no
+// code with the parser, which is what makes it a check rather than a
+// tautology. It skips the interior of a verbatim block, where a
+// delimiter is text and not a delimiter, and the interior of a src
+// block, where the same is true; a greater block's interior is
+// walked, since blocks nest there for real.
 func TestParseCorpora(t *testing.T) {
 	for _, path := range []string{
 		"../../BOOK.org",
@@ -27,12 +27,7 @@ func TestParseCorpora(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			want := 0
-			for _, l := range strings.Split(string(d.Source), "\n") {
-				if strings.HasPrefix(strings.ToLower(strings.TrimLeft(l, " \t")), "#+begin_src") {
-					want++
-				}
-			}
+			want := countSrcBlocks(string(d.Source))
 			got := 0
 			d.Walk(func(n book.Node) bool {
 				b, ok := n.(*book.SrcBlock)
@@ -53,4 +48,32 @@ func TestParseCorpora(t *testing.T) {
 			}
 		})
 	}
+}
+
+func countSrcBlocks(src string) int {
+	n, inside := 0, ""
+	for _, l := range strings.Split(src, "\n") {
+		t := strings.ToLower(strings.TrimLeft(l, " \t"))
+		if inside != "" {
+			if strings.HasPrefix(t, "#+end_"+inside) {
+				inside = ""
+			}
+			continue
+		}
+		if !strings.HasPrefix(t, "#+begin_") {
+			continue
+		}
+		kind := strings.TrimPrefix(t, "#+begin_")
+		if i := strings.IndexAny(kind, " \t"); i >= 0 {
+			kind = kind[:i]
+		}
+		switch kind {
+		case "src":
+			n++
+			inside = kind
+		case "example", "export", "comment", "verse":
+			inside = kind
+		}
+	}
+	return n
 }
