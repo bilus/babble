@@ -66,25 +66,25 @@ so the census never matches its own index.
 - [[file:BOOK.org::405][405]] entry: PLANNED Stage 10: the fence
 - [[file:BOOK.org::434][434]] entry: PLANNED Stage 11: parity and self-hosting
 - [[file:BOOK.org::1248][1248]] hole 5: parse, refresh, reparse, tangle; errors to stderr
-- [[file:BOOK.org::2492][2492]] hole 4: every block's Params through the closed table, unknown ke...
-- [[file:BOOK.org::2498][2498]] hole 4: split on space-then-colon outside parens, brackets, and d...
-- [[file:BOOK.org::2502][2502]] hole 4: chomp, unquote an elisp string literal, reject lisp
-- [[file:BOOK.org::2511][2511]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
-- [[file:BOOK.org::2527][2527]] hole 5: collect, resolve targets, assemble with banners, write
-- [[file:BOOK.org::2544][2544]] hole 5: eligible blocks grouped by target in first-appearance order
-- [[file:BOOK.org::2548][2548]] hole 5: no, yes, or a path relative to the book's directory
-- [[file:BOOK.org::2558][2558]] hole 5: unescape commas, dedent by column, expand noweb, dedent a...
-- [[file:BOOK.org::2568][2568]] hole 7: extent between the anchors, then the docstring rule
-- [[file:BOOK.org::2574][2574]] hole 7: line-comment table per language, blank lines as a bare ma...
-- [[file:BOOK.org::2584][2584]] hole 8: named block first, else noweb-ref concatenation; cycles a...
-- [[file:BOOK.org::2595][2595]] hole 5: the generated-file banner in the target's own comment syntax
-- [[file:BOOK.org::2601][2601]] hole 5: refuse the book itself, mkdirp on demand, skip byte-ident...
-- [[file:BOOK.org::2617][2617]] hole 9: splice fresh interiors into the retained bytes, report ch...
-- [[file:BOOK.org::2627][2627]] hole 9: a line link per plan site, sites below the block shifted ...
-- [[file:BOOK.org::2633][2633]] hole 9: system diff -u over the two named bodies, temp-file heade...
-- [[file:BOOK.org::2811][2811]] hole 6: ORACLE=1 in the environment
-- [[file:BOOK.org::2815][2815]] hole 6: UPDATE=1 in the environment
-- [[file:BOOK.org::2821][2821]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
+- [[file:BOOK.org::2522][2522]] hole 4: every block's Params through the closed table, unknown ke...
+- [[file:BOOK.org::2528][2528]] hole 4: split on space-then-colon outside parens, brackets, and d...
+- [[file:BOOK.org::2532][2532]] hole 4: chomp, unquote an elisp string literal, reject lisp
+- [[file:BOOK.org::2541][2541]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
+- [[file:BOOK.org::2557][2557]] hole 5: collect, resolve targets, assemble with banners, write
+- [[file:BOOK.org::2574][2574]] hole 5: eligible blocks grouped by target in first-appearance order
+- [[file:BOOK.org::2578][2578]] hole 5: no, yes, or a path relative to the book's directory
+- [[file:BOOK.org::2588][2588]] hole 5: unescape commas, dedent by column, expand noweb, dedent a...
+- [[file:BOOK.org::2598][2598]] hole 7: extent between the anchors, then the docstring rule
+- [[file:BOOK.org::2604][2604]] hole 7: line-comment table per language, blank lines as a bare ma...
+- [[file:BOOK.org::2614][2614]] hole 8: named block first, else noweb-ref concatenation; cycles a...
+- [[file:BOOK.org::2625][2625]] hole 5: the generated-file banner in the target's own comment syntax
+- [[file:BOOK.org::2631][2631]] hole 5: refuse the book itself, mkdirp on demand, skip byte-ident...
+- [[file:BOOK.org::2647][2647]] hole 9: splice fresh interiors into the retained bytes, report ch...
+- [[file:BOOK.org::2657][2657]] hole 9: a line link per plan site, sites below the block shifted ...
+- [[file:BOOK.org::2663][2663]] hole 9: system diff -u over the two named bodies, temp-file heade...
+- [[file:BOOK.org::2841][2841]] hole 6: ORACLE=1 in the environment
+- [[file:BOOK.org::2845][2845]] hole 6: UPDATE=1 in the environment
+- [[file:BOOK.org::2851][2851]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
 
 #+end:
 
@@ -1583,7 +1583,11 @@ The specification for babble's frontend is not the org manual, it
 is org-element.el. This chapter states the algorithm that file
 implements, because babble replicates it: same shape, same
 decisions, same order, in Go types. Line numbers below are org
-9.7.11, the version the oracle runs.
+9.7.11, the version the oracle runs, and the syntax those parsers
+implement is written up separately at
+https://orgmode.org/worg/dev/org-syntax.html. Everything here is
+this book's own account of what that code does; none of its text
+is reproduced, since org is GPL and babble is not.
 
 The first thing to know is that org has no tokenizer. There is no
 token stream between the buffer and the parser. The parser looks
@@ -1630,10 +1634,19 @@ Then one bulk regexp (~org-element--current-element-re~, 4616)
 matches drawers, fixed-width lines, dynamic-block openers,
 ~#+begin_X~, ~#+CALL:~, plain keywords, footnote definitions,
 horizontal rules and diary sexps in a single pass, and the code
-dispatches on which numbered group matched. A comment in the
-source says why it is one regexp and not ten: repeated matching
-cost an order of magnitude on large buffers. What is left over is
-a table or a paragraph.
+dispatches on which numbered group matched. What is left over is a
+table or a paragraph.
+
+The single regexp is an optimization, and the source explains it:
+the parsers follow house rules about never disturbing Emacs's
+global match data, grouping regexps so one call replaces several,
+and precomputing patterns instead of building them per line, all
+because repeated matching dominated the profile on large buffers.
+babble inherits the decision but not the technique. Its dispatcher
+tests line prefixes rather than matching regexps, so there is no
+match state to protect and nothing to gain by fusing the tests;
+the branches stay separate, which is what lets the dispatch table
+read as a table.
 
 For ~#+begin_X~ the block name picks the parser: CENTER, COMMENT,
 EXAMPLE, EXPORT, QUOTE, SRC and VERSE have their own, and any
@@ -1715,6 +1728,13 @@ places. ~:END:~ closes a drawer in one position and is prose in
 another, and no amount of looking at the line itself will tell you
 which.
 
+One rule about greater elements is worth stating because babble's
+block parsers depend on it: apart from headlines and list items, a
+greater element cannot contain another of its own type. That is
+why searching forward for the first matching terminator is correct
+rather than merely convenient, and why a quote block inside a
+quote block closes the outer one.
+
 ** Affiliated keywords
 
 ~org-element--collect-affiliated-keywords~ (org-element.el:4843)
@@ -1787,6 +1807,16 @@ tokenizes inline markup inside paragraphs, is unnecessary because
 nothing in a tangle looks inside prose. The element cache exists
 for interactive editing. And granularity, which lets a caller stop
 the recursion early, has one setting here: parse everything.
+
+The naming follows the oracle deliberately. Org calls its parsers
+~org-element-TYPE-parser~, so babble calls its own TYPEParser, and
+the two correspond function for function, which is what makes a
+divergence findable rather than merely suspected. Org also
+records what adding an element type costs: write its parser, teach
+the dispatcher to recognize it, and list the type. babble's price
+is the same three, an element parser, a branch in the table, and a
+node type, which is the shape the remaining stages pay each time
+they widen the subset.
 
 * Reading org
 
