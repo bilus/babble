@@ -116,10 +116,10 @@ space, for every src block the offset where its begin line starts
 (the name line above sits inside the extent) and the offset just
 past the literal end_src text.
 
-- [ ] inserted prose reads steady-state
-- [ ] Changes draft below reads right in the journal
-- [ ] HOLE(3) cluster filled, fixtures and corpus test in the same commits
-- [ ] census clean for stage 3, suite green
+- [X] inserted prose reads steady-state
+- [X] Changes draft below reads right in the journal
+- [X] HOLE(3) cluster filled, fixtures and corpus test in the same commits
+- [X] census clean for stage 3, suite green
 - [ ] Changes entry dated and filed, plan entry deleted
 
 *** Changes draft
