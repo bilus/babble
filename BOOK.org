@@ -56,18 +56,45 @@ every dynamic block, and the labels are spelled without the sigils,
 so the census never matches its own index.
 
 #+begin: plan-toc
-- [[file:BOOK.org::74][74]] entry: PLANNED Stage 1: the skeleton
-- [[file:BOOK.org::130][130]] entry: PLANNED Stage 2: the document tree
-- [[file:BOOK.org::169][169]] entry: PLANNED Stage 3: blocks in the tree
-- [[file:BOOK.org::212][212]] entry: PLANNED Stage 4: header resolution
-- [[file:BOOK.org::258][258]] entry: PLANNED Stage 5: tangle
-- [[file:BOOK.org::298][298]] entry: PLANNED Stage 6: the oracle harness
-- [[file:BOOK.org::332][332]] entry: PLANNED Stage 7: org comments
-- [[file:BOOK.org::375][375]] entry: PLANNED Stage 8: noweb
-- [[file:BOOK.org::412][412]] entry: PLANNED Stage 9: dynamic blocks
-- [[file:BOOK.org::459][459]] entry: PLANNED Stage 10: the fence
-- [[file:BOOK.org::488][488]] entry: PLANNED Stage 11: parity and self-hosting
-- [[file:BOOK.org::1253][1253]] badge: PLANNED stage 1 replaces the Hello chapter (plan)
+- [[file:BOOK.org::101][101]] entry: PLANNED Stage 1: the skeleton
+- [[file:BOOK.org::157][157]] entry: PLANNED Stage 2: the document tree
+- [[file:BOOK.org::196][196]] entry: PLANNED Stage 3: blocks in the tree
+- [[file:BOOK.org::239][239]] entry: PLANNED Stage 4: header resolution
+- [[file:BOOK.org::285][285]] entry: PLANNED Stage 5: tangle
+- [[file:BOOK.org::325][325]] entry: PLANNED Stage 6: the oracle harness
+- [[file:BOOK.org::359][359]] entry: PLANNED Stage 7: org comments
+- [[file:BOOK.org::402][402]] entry: PLANNED Stage 8: noweb
+- [[file:BOOK.org::439][439]] entry: PLANNED Stage 9: dynamic blocks
+- [[file:BOOK.org::486][486]] entry: PLANNED Stage 10: the fence
+- [[file:BOOK.org::515][515]] entry: PLANNED Stage 11: parity and self-hosting
+- [[file:BOOK.org::1229][1229]] badge: PLANNED stage 1 adds the skeleton below (plan)
+- [[file:BOOK.org::1270][1270]] hole 2: dispatch parse and tangle; parse --dump works after this ...
+- [[file:BOOK.org::1281][1281]] hole 5: parse, refresh, reparse, tangle; errors to stderr
+- [[file:BOOK.org::1443][1443]] hole 2: document-order walk, fn returning false prunes the subtree
+- [[file:BOOK.org::1449][1449]] hole 2: 1-based line number holding byte offset off
+- [[file:BOOK.org::1458][1458]] hole 2: stable JSON rendering of the tree
+- [[file:BOOK.org::1475][1475]] hole 2: read path and hand ParseBytes the bytes
+- [[file:BOOK.org::1481][1481]] hole 2: headlines, keywords, and prose into a spanned tree
+- [[file:BOOK.org::1491][1491]] hole 3: blocks with names, spans, and the two extent anchors
+- [[file:BOOK.org::1502][1502]] hole 4: every block's Params through the closed table, unknown ke...
+- [[file:BOOK.org::1508][1508]] hole 4: split on space-then-colon outside parens, brackets, and d...
+- [[file:BOOK.org::1512][1512]] hole 4: chomp, unquote an elisp string literal, reject lisp
+- [[file:BOOK.org::1521][1521]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
+- [[file:BOOK.org::1537][1537]] hole 5: collect, resolve targets, assemble with banners, write
+- [[file:BOOK.org::1554][1554]] hole 5: eligible blocks grouped by target in first-appearance order
+- [[file:BOOK.org::1558][1558]] hole 5: no, yes, or a path relative to the book's directory
+- [[file:BOOK.org::1568][1568]] hole 5: unescape commas, dedent by column, expand noweb, dedent a...
+- [[file:BOOK.org::1578][1578]] hole 7: extent between the anchors, then the docstring rule
+- [[file:BOOK.org::1584][1584]] hole 7: line-comment table per language, blank lines as a bare ma...
+- [[file:BOOK.org::1594][1594]] hole 8: named block first, else noweb-ref concatenation; cycles a...
+- [[file:BOOK.org::1605][1605]] hole 5: the generated-file banner in the target's own comment syntax
+- [[file:BOOK.org::1611][1611]] hole 5: refuse the book itself, mkdirp on demand, skip byte-ident...
+- [[file:BOOK.org::1627][1627]] hole 9: splice fresh interiors into the retained bytes, report ch...
+- [[file:BOOK.org::1637][1637]] hole 9: a line link per plan site, sites below the block shifted ...
+- [[file:BOOK.org::1643][1643]] hole 9: system diff -u over the two named bodies, temp-file heade...
+- [[file:BOOK.org::1759][1759]] hole 6: ORACLE=1 in the environment
+- [[file:BOOK.org::1763][1763]] hole 6: UPDATE=1 in the environment
+- [[file:BOOK.org::1769][1769]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
 
 #+end:
 
@@ -1199,6 +1226,424 @@ injects variables; babble expands nothing. And the driver pins the
 whole comment story to five language modes, so comment wrapping is
 a table, not a port of Emacs's comment machinery.
 
+*************** PLANNED stage 1 adds the skeleton below ([[#stage-1][plan]]) :stage1:
+Every chapter from here through The test suite is new, and every
+body is a named hole. The fills start at stage 2, after this
+skeleton is approved.
+*************** END
+
+* The command line
+
+babble is two subcommands over one book: ~tangle~ writes the
+sources, ~parse~ shows the tree. main is only the wiring, streams
+in and exit code out, so the tests can drive run the way a shell
+drives main. Exit codes follow convention: 2 for usage errors, 1
+for failures.
+
+babble tangles lit books without Emacs. This file is tangled from
+BOOK.org.
+
+#+begin_src go :tangle main.go :comments org
+package main
+
+import (
+	"io"
+	"os"
+)
+
+const usage = `usage: babble <command> [flags] BOOK.org
+
+commands:
+  tangle  refresh dynamic blocks and write every eligible code block
+  parse   print the book's logical tree (--dump for JSON)
+`
+
+func main() {
+	os.Exit(run(os.Args[1:], os.Stdout, os.Stderr))
+}
+#+end_src
+
+run dispatches the subcommands and owns the exit codes.
+
+#+begin_src go :tangle main.go :comments org
+func run(args []string, stdout, stderr io.Writer) int {
+	panic("HOLE(2): dispatch parse and tangle; parse --dump works after this fill")
+}
+#+end_src
+
+tangleCmd is the whole tangle flow in one place: parse the book,
+refresh its dynamic blocks, reparse the refreshed bytes, then
+write the targets. The reparse matters because refresh moves line
+numbers and the tangle must see the book it just wrote.
+
+#+begin_src go :tangle main.go :comments org
+func tangleCmd(bookPath string, stderr io.Writer) int {
+	panic("HOLE(5): parse, refresh, reparse, tangle; errors to stderr")
+}
+#+end_src
+
+* The document tree
+
+Package book is the tree the engine consumes, and nothing in it
+spells org. That absence is the package's whole job: it is the
+seam a markdown frontend would plug into, and the proof is that no
+identifier below mentions the input syntax.
+
+Document is one parsed book: the node tree plus the retained
+source bytes that every Span indexes.
+
+#+begin_src go :tangle internal/book/book.go :comments org
+package book
+
+type Document struct {
+	Path     string              // where Source came from
+	Source   []byte              // retained input bytes
+	Keywords map[string][]string // file keywords, lowercased keys
+	Todo     []string            // headline state words, default TODO and DONE
+	Nodes    []Node              // top level, document order
+}
+#+end_src
+
+Span is a half-open byte range [Start, End) into Source.
+
+#+begin_src go :tangle internal/book/book.go :comments org
+type Span struct{ Start, End int }
+#+end_src
+
+Node is any tree element; the concrete types below are the whole
+set, and the marker method keeps the set closed.
+
+#+begin_src go :tangle internal/book/book.go :comments org
+type Node interface{ isNode() }
+#+end_src
+
+#+begin_src go :tangle internal/book/book.go
+func (*Headline) isNode()      {}
+func (*Prose) isNode()         {}
+func (*Keyword) isNode()       {}
+func (*SrcBlock) isNode()      {}
+func (*DynamicBlock) isNode()  {}
+func (*QuoteBlock) isNode()    {}
+func (*VerbatimBlock) isNode() {}
+#+end_src
+
+A Headline carries everything collection and comments need:
+COMMENT and ARCHIVE for skipping, the property drawer for header
+inheritance, and AfterStars, the byte anchor the comment extents
+hang from. Badge lines land here too, as deep ordinary headlines.
+
+#+begin_src go :tangle internal/book/book.go :comments org
+type Headline struct {
+	Level      int
+	Todo       string            // one of Document.Todo, or ""
+	Commented  bool              // COMMENT marker
+	Archived   bool              // ARCHIVE tag
+	Tags       []string
+	Title      string
+	Properties map[string]string // property drawer, nil when absent
+	AfterStars int               // offset just past the stars and one space
+	Line       int
+	Head       Span              // the heading line
+	Children   []Node
+}
+#+end_src
+
+Prose and keyword lines stay as spans; the tangler never reads
+them, but extents slice them and plan-toc counts their lines.
+
+#+begin_src go :tangle internal/book/book.go
+type Prose struct {
+	Line int
+	Text Span
+}
+
+type Keyword struct {
+	Key   string // lowercased, without the #+ and the colon
+	Value string
+	Line  int
+	Raw   Span
+}
+#+end_src
+
+SrcBlock records the two raw byte anchors next to the parsed
+attributes: BeginAt, where its begin line starts, and AfterEnd,
+just past the literal end keyword. Params stays zero until header
+resolution fills it.
+
+#+begin_src go :tangle internal/book/book.go :comments org
+type SrcBlock struct {
+	Lang      string
+	Name      string // affiliated name line, or ""
+	Switches  string
+	RawHeader string // the block's own header line, unresolved
+	Params    Params // filled by resolution, zero until then
+	Body      Span   // raw bytes between the delimiter lines
+	BeginAt   int    // offset where the begin line starts
+	AfterEnd  int    // offset just past the literal end keyword
+	Line      int    // line of the begin line
+	Full      Span   // name line through end line
+}
+#+end_src
+
+A dynamic block keeps its interior as both bytes and children:
+refresh splices the span, and the src block inside a generated
+diff is a real block the collection walk must see. Quote blocks
+hold children too; example, export, and comment blocks are
+verbatim.
+
+#+begin_src go :tangle internal/book/book.go :comments org
+type DynamicBlock struct {
+	Name     string
+	Args     string
+	Interior Span // bytes between the begin and end lines
+	Line     int
+	Full     Span
+	Children []Node
+}
+#+end_src
+
+#+begin_src go :tangle internal/book/book.go
+type QuoteBlock struct {
+	Line     int
+	Full     Span
+	Children []Node
+}
+
+type VerbatimBlock struct {
+	Kind string // example, export, or comment
+	Body Span
+	Line int
+	Full Span
+}
+#+end_src
+
+Params is the resolved header set, the engine's side of the closed
+table. The frontend produces it or errors; the engine never sees a
+raw header string.
+
+#+begin_src go :tangle internal/book/book.go :comments org
+type Params struct {
+	Tangle         string // "no", "yes", or a target path
+	Mkdirp         bool
+	Comments       string // "no" or "org"
+	Padline        bool
+	Noweb          bool
+	NowebRef       string
+	NowebSep       string // "" means one newline
+	PreserveIndent bool   // the -i switch
+}
+#+end_src
+
+Walk visits every node in document order, descending into
+children; fn returning false prunes the subtree, which is how
+COMMENT skipping stays one line at the call site.
+
+#+begin_src go :tangle internal/book/book.go :comments org
+func (d *Document) Walk(fn func(Node) bool) {
+	panic("HOLE(2): document-order walk, fn returning false prunes the subtree")
+}
+#+end_src
+
+#+begin_src go :tangle internal/book/book.go
+func (d *Document) LineAt(off int) int {
+	panic("HOLE(2): 1-based line number holding byte offset off")
+}
+#+end_src
+
+Dump is parse --dump's output: stable JSON, so the fixtures can
+pin it byte for byte.
+
+#+begin_src go :tangle internal/book/book.go :comments org
+func Dump(d *Document) ([]byte, error) {
+	panic("HOLE(2): stable JSON rendering of the tree")
+}
+#+end_src
+
+* Reading org
+
+Package org is the frontend: everything that knows the input
+syntax lives here, and it hands the engine a finished tree. Parse
+reads a file; ParseBytes does the work, so tests and the refresh
+reparse can feed bytes directly.
+
+#+begin_src go :tangle internal/org/org.go :comments org
+package org
+
+import "github.com/bilus/babble/internal/book"
+
+func Parse(path string) (*book.Document, error) {
+	panic("HOLE(2): read path and hand ParseBytes the bytes")
+}
+#+end_src
+
+#+begin_src go :tangle internal/org/org.go
+func ParseBytes(src []byte, path string) (*book.Document, error) {
+	panic("HOLE(2): headlines, keywords, and prose into a spanned tree")
+}
+#+end_src
+
+parseBlocks is stage 3's half of the scanner: src, dynamic, quote,
+and verbatim blocks, with names, spans, and the two extent
+anchors.
+
+#+begin_src go :tangle internal/org/org.go :comments org
+func parseBlocks(src []byte, d *book.Document) error {
+	panic("HOLE(3): blocks with names, spans, and the two extent anchors")
+}
+#+end_src
+
+ResolveAll fills every src block's Params through the closed
+table: the merge order, then the three bins, an unknown key an
+error. The splitter and reader below are its tools, ported from
+org's balanced splitter and value reader.
+
+#+begin_src go :tangle internal/org/org.go :comments org
+func ResolveAll(d *book.Document) error {
+	panic("HOLE(4): every block's Params through the closed table, unknown keys error by name")
+}
+#+end_src
+
+#+begin_src go :tangle internal/org/org.go
+func balancedSplit(s string) []string {
+	panic("HOLE(4): split on space-then-colon outside parens, brackets, and double quotes")
+}
+
+func readValue(s string) (string, error) {
+	panic("HOLE(4): chomp, unquote an elisp string literal, reject lisp")
+}
+#+end_src
+
+Lint is the fence: the refusals that need the whole document
+rather than one block.
+
+#+begin_src go :tangle internal/org/org.go :comments org
+func Lint(d *book.Document) error {
+	panic("HOLE(10): quoted delimiters in verbatim bodies, duplicate names, a name doubling as a noweb-ref")
+}
+#+end_src
+
+* The tangle engine
+
+Package tangle turns a tree into files. Run is the whole pass:
+collect the eligible blocks, resolve their targets, assemble each
+file with its banner, and write only what changed.
+
+#+begin_src go :tangle internal/tangle/tangle.go :comments org
+package tangle
+
+import "github.com/bilus/babble/internal/book"
+
+func Run(d *book.Document) error {
+	panic("HOLE(5): collect, resolve targets, assemble with banners, write")
+}
+#+end_src
+
+A unit is one target file's worth of blocks, in document order;
+collect builds them in first-appearance order, skipping COMMENT
+and ARCHIVE subtrees, erroring on a languageless block.
+
+#+begin_src go :tangle internal/tangle/tangle.go :comments org
+type unit struct {
+	target string
+	blocks []*book.SrcBlock
+}
+#+end_src
+
+#+begin_src go :tangle internal/tangle/tangle.go
+func collect(d *book.Document) ([]unit, error) {
+	panic("HOLE(5): eligible blocks grouped by target in first-appearance order")
+}
+
+func targetFor(d *book.Document, b *book.SrcBlock) (string, error) {
+	panic("HOLE(5): no, yes, or a path relative to the book's directory")
+}
+#+end_src
+
+bodyText is the body pipeline in the contract's order; the second
+dedent and the final trim run after noweb expansion, exactly as
+the oracle orders them.
+
+#+begin_src go :tangle internal/tangle/tangle.go :comments org
+func bodyText(d *book.Document, b *book.SrcBlock) (string, error) {
+	panic("HOLE(5): unescape commas, dedent by column, expand noweb, dedent and trim again")
+}
+#+end_src
+
+commentFor and wrapComment split the doc-comment story where the
+driver splits it: what text the extent and docstring rule choose,
+then how the language's comment syntax wears it.
+
+#+begin_src go :tangle internal/tangle/tangle.go :comments org
+func commentFor(d *book.Document, b *book.SrcBlock) (string, error) {
+	panic("HOLE(7): extent between the anchors, then the docstring rule")
+}
+#+end_src
+
+#+begin_src go :tangle internal/tangle/tangle.go
+func wrapComment(lang, text string) (string, error) {
+	panic("HOLE(7): line-comment table per language, blank lines as a bare marker")
+}
+#+end_src
+
+expandNoweb resolves references against the tree: a named block
+wins, else the noweb-ref concatenation, prefixes replicate onto
+every expansion line, recursion allowed, cycles and misses loud.
+
+#+begin_src go :tangle internal/tangle/tangle.go :comments org
+func expandNoweb(d *book.Document, b *book.SrcBlock, body string) (string, error) {
+	panic("HOLE(8): named block first, else noweb-ref concatenation; cycles and misses error")
+}
+#+end_src
+
+banner and writeTarget close the pass: the generated-file banner
+in the target's own comment syntax, parent directories on demand,
+a refusal to write the book itself, and no write at all when the
+bytes already match.
+
+#+begin_src go :tangle internal/tangle/tangle.go :comments org
+func banner(target string) string {
+	panic("HOLE(5): the generated-file banner in the target's own comment syntax")
+}
+#+end_src
+
+#+begin_src go :tangle internal/tangle/tangle.go
+func writeTarget(bookPath, target string, content []byte, mkdirp bool) error {
+	panic("HOLE(5): refuse the book itself, mkdirp on demand, skip byte-identical writes")
+}
+#+end_src
+
+* Dynamic-block refresh
+
+Package dblock owns the book side: Refresh splices a fresh
+interior into every dynamic block and reports whether the bytes
+changed, so the caller writes the book only when they did.
+
+#+begin_src go :tangle internal/dblock/dblock.go :comments org
+package dblock
+
+import "github.com/bilus/babble/internal/book"
+
+func Refresh(d *book.Document) ([]byte, bool, error) {
+	panic("HOLE(9): splice fresh interiors into the retained bytes, report change")
+}
+#+end_src
+
+The two writers, one per dynamic-block name. planToc runs the
+ported census patterns over the retained source lines; the tree
+only supplies the splice points and the line index.
+
+#+begin_src go :tangle internal/dblock/dblock.go :comments org
+func planToc(d *book.Document, at *book.DynamicBlock) (string, error) {
+	panic("HOLE(9): a line link per plan site, sites below the block shifted by the insert count")
+}
+#+end_src
+
+#+begin_src go :tangle internal/dblock/dblock.go
+func srcBlockDiff(d *book.Document, at *book.DynamicBlock) (string, error) {
+	panic("HOLE(9): system diff -u over the two named bodies, temp-file headers dropped")
+}
+#+end_src
+
 * Testing
 
 Two layers hold babble to the oracle: a pure fixture suite that
@@ -1250,24 +1695,78 @@ CI runs two jobs: the pure Go suite with committed goldens and no
 Emacs anywhere, and a second job that provisions Emacs and runs
 ORACLE=1 over the fixtures and the sweep.
 
-*************** PLANNED stage 1 replaces the Hello chapter ([[#stage-1][plan]]) :stage1:
-The template's greeting is the only code block in the book until
-the skeleton lands; it proves the toolchain end to end and is
-deleted at stage 1.
-*************** END
+* The test suite
 
-* Hello
+Tests ride in this back-matter part, one section per chapter once
+the fills begin. The harness below is the only executable code the
+skeleton ships: it registers the babble command with testscript
+and runs every fixture under testdata/script.
 
-main prints a greeting; the skeleton replaces it with the real
-entry point and the chapters grow around it.
+** The harness
 
-#+begin_src go :tangle main.go :comments org
+The harness file lives in package main rather than an external
+test package, the one exception to the external-package rule: a
+main package cannot be imported, and testscript must reach run to
+register the command. The scripts themselves drive the built CLI,
+which is as external as testing gets.
+
+#+begin_src go :tangle main_test.go
 package main
 
-import "fmt"
+import (
+	"os"
+	"path/filepath"
+	"testing"
 
-func main() {
-	fmt.Println("hello from the book")
+	"github.com/rogpeppe/go-internal/testscript"
+)
+
+func TestMain(m *testing.M) {
+	testscript.Main(m, map[string]func(){
+		"babble": func() { os.Exit(run(os.Args[1:], os.Stdout, os.Stderr)) },
+	})
+}
+#+end_src
+
+TestScripts skips while no fixture exists, so the skeleton's suite
+stays green with every body a hole; the first stage-2 fixture
+retires the skip on its own.
+
+#+begin_src go :tangle main_test.go :comments org
+func TestScripts(t *testing.T) {
+	dir := filepath.Join("testdata", "script")
+	// Glob's only error is a malformed pattern, and this one is fixed.
+	fixtures, _ := filepath.Glob(filepath.Join(dir, "*.txtar"))
+	if len(fixtures) == 0 {
+		t.Skip("no fixtures yet")
+	}
+	testscript.Run(t, testscript.Params{Dir: dir})
+}
+#+end_src
+
+** The oracle harness
+
+Package oracletest is the seam stage 6 fills: the two mode
+switches and the cross-check that runs a fixture through both
+engines.
+
+#+begin_src go :tangle internal/oracletest/oracletest.go :comments org
+package oracletest
+
+import "testing"
+
+func Enabled() bool {
+	panic("HOLE(6): ORACLE=1 in the environment")
+}
+
+func Reminting() bool {
+	panic("HOLE(6): UPDATE=1 in the environment")
+}
+#+end_src
+
+#+begin_src go :tangle internal/oracletest/oracletest.go
+func CrossCheck(t *testing.T, fixture string) {
+	panic("HOLE(6): extract the fixture twice, run Emacs and babble, byte-compare the trees")
 }
 #+end_src
 

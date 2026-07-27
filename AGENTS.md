@@ -1,11 +1,31 @@
 # babble
 
 BOOK.org is the program; the sources tangle from it. The working
-rules for literate work live in lit/AGENTS.md. reqsync
+rules for literate work live in lit/AGENTS.md, and the plan lives
+in BOOK.org's Plan chapter; a session picking up work starts from
+the census there, not by reading everything. reqsync
 (~/dev/bilus/reqsync) is the read-only oracle corpus; nothing in
-this repository ever writes there. PROMPT.md carries the bootstrap
-brief; the oracle workflow section lands here at the skeleton
-stage.
+this repository ever writes there.
+
+## The oracle workflow
+
+babble must match batch Emacs byte for byte, and the test suite
+enforces it in two layers:
+
+- `go test ./...` runs the pure suite against committed goldens;
+  no Emacs needed.
+- `ORACLE=1 go test ./...` also runs every fixture through batch
+  Emacs (lit/tangle.el) and through babble in two parallel trees,
+  failing on any byte difference.
+- `UPDATE=1 ORACLE=1 go test ./...` remints each fixture's
+  expected outputs from the Emacs tree, never from babble's, so
+  committed goldens are Emacs output by construction.
+- The harness arrives at stage 6 of the plan; before that these
+  switches are seams in internal/oracletest, not features.
+
+Verification for any change: `make tangle`, `go build ./...`,
+`go vet ./...`, `go test ./...`, `make check`. The census is
+`grep -rn "HOLE[(]" --include="*.go" .` over the tangled tree.
 
 ## Writing style
 
