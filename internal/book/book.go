@@ -4,6 +4,8 @@
 // source bytes that every Span indexes.
 package book
 
+import "bytes"
+
 type Document struct {
 	Path     string              // where Source came from
 	Source   []byte              // retained input bytes
@@ -123,7 +125,7 @@ func (d *Document) Walk(fn func(Node) bool) {
 }
 
 func (d *Document) LineAt(off int) int {
-	panic("HOLE(2): 1-based line number holding byte offset off")
+	return 1 + bytes.Count(d.Source[:off], []byte("\n"))
 }
 
 // Dump is parse --dump's output: stable JSON, so the fixtures can
