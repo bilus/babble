@@ -39,12 +39,15 @@ fixture books start from the worked examples in
 After the harness the ladder opens into a diamond: comments,
 noweb (block inclusion by named reference), and dynamic blocks
 (the book's generated views) are independent of one another, and
-they close back together at the fence.
+they close back together at the fence. Stage numbers are
+identities, not an order; stage 12 arrived after stage 3 was
+accepted and runs before stage 4, which is why the diagram reads
+3, 12, 4 and the earlier numbers stay put.
 
 #+begin_src mermaid
 graph LR
-  s1[1 skeleton] --> s2[2 tree] --> s3[3 blocks] --> s4[4 headers]
-  s4 --> s5[5 tangle] --> s6[6 oracle]
+  s1[1 skeleton] --> s2[2 tree] --> s3[3 blocks] --> s12[12 oracle algorithm]
+  s12 --> s4[4 headers] --> s5[5 tangle] --> s6[6 oracle harness]
   s6 --> s7[7 comments] --> s10[10 fence]
   s6 --> s8[8 noweb] --> s10
   s6 --> s9[9 dblocks] --> s10
@@ -56,35 +59,55 @@ every dynamic block, and the labels are spelled without the sigils,
 so the census never matches its own index.
 
 #+begin: plan-toc
-- [[file:BOOK.org::91][91]] entry: PLANNED Stage 3: blocks in the tree
-- [[file:BOOK.org::134][134]] entry: PLANNED Stage 4: header resolution
-- [[file:BOOK.org::180][180]] entry: PLANNED Stage 5: tangle
-- [[file:BOOK.org::220][220]] entry: PLANNED Stage 6: the oracle harness
-- [[file:BOOK.org::254][254]] entry: PLANNED Stage 7: org comments
-- [[file:BOOK.org::297][297]] entry: PLANNED Stage 8: noweb
-- [[file:BOOK.org::334][334]] entry: PLANNED Stage 9: dynamic blocks
-- [[file:BOOK.org::381][381]] entry: PLANNED Stage 10: the fence
-- [[file:BOOK.org::410][410]] entry: PLANNED Stage 11: parity and self-hosting
-- [[file:BOOK.org::1215][1215]] hole 5: parse, refresh, reparse, tangle; errors to stderr
-- [[file:BOOK.org::2200][2200]] hole 4: every block's Params through the closed table, unknown ke...
-- [[file:BOOK.org::2206][2206]] hole 4: split on space-then-colon outside parens, brackets, and d...
-- [[file:BOOK.org::2210][2210]] hole 4: chomp, unquote an elisp string literal, reject lisp
-- [[file:BOOK.org::2219][2219]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
-- [[file:BOOK.org::2235][2235]] hole 5: collect, resolve targets, assemble with banners, write
-- [[file:BOOK.org::2252][2252]] hole 5: eligible blocks grouped by target in first-appearance order
-- [[file:BOOK.org::2256][2256]] hole 5: no, yes, or a path relative to the book's directory
-- [[file:BOOK.org::2266][2266]] hole 5: unescape commas, dedent by column, expand noweb, dedent a...
-- [[file:BOOK.org::2276][2276]] hole 7: extent between the anchors, then the docstring rule
-- [[file:BOOK.org::2282][2282]] hole 7: line-comment table per language, blank lines as a bare ma...
-- [[file:BOOK.org::2292][2292]] hole 8: named block first, else noweb-ref concatenation; cycles a...
-- [[file:BOOK.org::2303][2303]] hole 5: the generated-file banner in the target's own comment syntax
-- [[file:BOOK.org::2309][2309]] hole 5: refuse the book itself, mkdirp on demand, skip byte-ident...
-- [[file:BOOK.org::2325][2325]] hole 9: splice fresh interiors into the retained bytes, report ch...
-- [[file:BOOK.org::2335][2335]] hole 9: a line link per plan site, sites below the block shifted ...
-- [[file:BOOK.org::2341][2341]] hole 9: system diff -u over the two named bodies, temp-file heade...
-- [[file:BOOK.org::2520][2520]] hole 6: ORACLE=1 in the environment
-- [[file:BOOK.org::2524][2524]] hole 6: UPDATE=1 in the environment
-- [[file:BOOK.org::2530][2530]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
+- [[file:BOOK.org::114][114]] entry: PLANNED Stage 3: blocks in the tree
+- [[file:BOOK.org::157][157]] entry: PLANNED Stage 12: parse the way the oracle parses
+- [[file:BOOK.org::214][214]] entry: PLANNED Stage 4: header resolution
+- [[file:BOOK.org::260][260]] entry: PLANNED Stage 5: tangle
+- [[file:BOOK.org::300][300]] entry: PLANNED Stage 6: the oracle harness
+- [[file:BOOK.org::334][334]] entry: PLANNED Stage 7: org comments
+- [[file:BOOK.org::377][377]] entry: PLANNED Stage 8: noweb
+- [[file:BOOK.org::414][414]] entry: PLANNED Stage 9: dynamic blocks
+- [[file:BOOK.org::461][461]] entry: PLANNED Stage 10: the fence
+- [[file:BOOK.org::490][490]] entry: PLANNED Stage 11: parity and self-hosting
+- [[file:BOOK.org::1295][1295]] hole 5: parse, refresh, reparse, tangle; errors to stderr
+- [[file:BOOK.org::1835][1835]] badge: PLANNED stage 12 replaces this section (plan)
+- [[file:BOOK.org::2455][2455]] hole 4: every block's Params through the closed table, unknown ke...
+- [[file:BOOK.org::2461][2461]] hole 4: split on space-then-colon outside parens, brackets, and d...
+- [[file:BOOK.org::2465][2465]] hole 4: chomp, unquote an elisp string literal, reject lisp
+- [[file:BOOK.org::2471][2471]] badge: PLANNED stage 12 adds the section below (plan)
+- [[file:BOOK.org::2481][2481]] twin of org-parser
+- [[file:BOOK.org::2495][2495]] twin of org-mode-enum
+- [[file:BOOK.org::2515][2515]] twin of org-container
+- [[file:BOOK.org::2528][2528]] twin of org-parse-elements
+- [[file:BOOK.org::2531][2531]] hole 12: the bounded loop; recurse only into containers
+- [[file:BOOK.org::2539][2539]] twin of org-current-element
+- [[file:BOOK.org::2542][2542]] hole 12: dispatch on mode, then on the line at point
+- [[file:BOOK.org::2551][2551]] twin of org-element-parsers
+- [[file:BOOK.org::2554][2554]] hole 12: stars, todo, priority, COMMENT, title, tags; contents to ...
+- [[file:BOOK.org::2558][2558]] hole 12: find end_src within limit; language, switches, header, bo...
+- [[file:BOOK.org::2562][2562]] hole 12: find end: within limit; name, args, interior span
+- [[file:BOOK.org::2566][2566]] hole 12: find the matching end within limit; contents recurse
+- [[file:BOOK.org::2570][2570]] hole 12: find the matching end within limit; body stays text
+- [[file:BOOK.org::2574][2574]] hole 12: only in modePropertyDrawer; a malformed drawer is not a d...
+- [[file:BOOK.org::2578][2578]] hole 12: run to the next line that cannot be prose, verifying pairs
+- [[file:BOOK.org::2588][2588]] twin of org-affiliated
+- [[file:BOOK.org::2597][2597]] hole 12: consume affiliated keyword lines; report name and the ele...
+- [[file:BOOK.org::2606][2606]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
+- [[file:BOOK.org::2622][2622]] hole 5: collect, resolve targets, assemble with banners, write
+- [[file:BOOK.org::2639][2639]] hole 5: eligible blocks grouped by target in first-appearance order
+- [[file:BOOK.org::2643][2643]] hole 5: no, yes, or a path relative to the book's directory
+- [[file:BOOK.org::2653][2653]] hole 5: unescape commas, dedent by column, expand noweb, dedent a...
+- [[file:BOOK.org::2663][2663]] hole 7: extent between the anchors, then the docstring rule
+- [[file:BOOK.org::2669][2669]] hole 7: line-comment table per language, blank lines as a bare ma...
+- [[file:BOOK.org::2679][2679]] hole 8: named block first, else noweb-ref concatenation; cycles a...
+- [[file:BOOK.org::2690][2690]] hole 5: the generated-file banner in the target's own comment syntax
+- [[file:BOOK.org::2696][2696]] hole 5: refuse the book itself, mkdirp on demand, skip byte-ident...
+- [[file:BOOK.org::2712][2712]] hole 9: splice fresh interiors into the retained bytes, report ch...
+- [[file:BOOK.org::2722][2722]] hole 9: a line link per plan site, sites below the block shifted ...
+- [[file:BOOK.org::2728][2728]] hole 9: system diff -u over the two named bodies, temp-file heade...
+- [[file:BOOK.org::2907][2907]] hole 6: ORACLE=1 in the environment
+- [[file:BOOK.org::2911][2911]] hole 6: UPDATE=1 in the environment
+- [[file:BOOK.org::2917][2917]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
 
 #+end:
 
@@ -129,6 +152,63 @@ Blocks joined the tree with the byte anchors the comment extents
 later hang from, and parsing both real corpora became a test. An
 unterminated block, which org silently reads as a paragraph, is an
 error here.
+#+end_quote
+
+** PLANNED Stage 12: parse the way the oracle parses              :stage12:
+:PROPERTIES:
+:CUSTOM_ID: stage-12
+:SPEC:     How the oracle parses
+:DEPS:     stage 3; runs before stage 4
+:ACCEPTANCE: every stage 2 and 3 test unchanged and green, TestParseCorpora included; anchors still match org on all four books
+:SIZE:     ~300 lines replaced, no net growth expected
+:END:
+
+Claim: after this stage the frontend runs org-element's algorithm
+(a bounded loop over a byte range, a dispatcher that reads one
+line at the point it needs to, element parsers that find their own
+terminators, recursion only into greater elements, and a mode
+threaded from parent to child) with the tree and every byte span
+unchanged, which the stage 2 and 3 fixtures prove by staying
+green without an edit.
+
+Decided: (1) The tokenizer goes. Pre-classifying lines put grammar
+in the wrong phase (a block name lowercased, an extent anchor
+computed for a stage that did not exist yet) and it is not what
+the oracle does. Reading a line at the moment of decision keeps
+byte anchors exact by construction, since the parser holds the
+offset it is looking at. (2) The headline stack goes too: org
+nests by recursing into a headline's byte range, so the tree falls
+out of the recursion. (3) Mode becomes a Go enum, greater elements
+an interface that only container nodes satisfy, so the recursion
+cannot be aimed at a verbatim block. That is the type-safe half of
+"the same algorithm". (4) The subset stays exactly as it is; this
+stage moves no behavior, which is what makes the existing tests a
+sufficient gate. (5) The replacement lands as a twin subsystem:
+the new blocks carry ~:tangle no~ until acceptance, and the
+tokenizer's blocks are deleted in the same commit that swaps them.
+(6) Stages 4 through 10 then add their constructs the oracle's
+way, one element parser at a time, rather than teaching a
+tokenizer new shapes.
+
+- [ ] skeleton approved (the human ticks this box)
+- [ ] inserted prose reads steady-state
+- [ ] Changes draft below reads right in the journal
+- [ ] HOLE(12) cluster filled, stage 2 and 3 tests green unedited
+- [ ] anchors re-checked against org on all four books
+- [ ] twins accepted, tokenizer blocks deleted, census clean
+- [ ] Changes entry dated and filed, plan entry deleted
+
+*** Changes draft
+
+#+begin_quote
+The frontend became a port of org-element's own algorithm: a
+bounded loop, a dispatcher that reads a line where it stands,
+element parsers that find their own ends, and a mode passed from
+parent to child. The line tokenizer that preceded it had put
+grammar in the lexical phase and computed anchors on behalf of
+stages that had not been written; both problems disappear when the
+parser reads the source at the point of decision, which is what
+the oracle does. The tree, the spans and the tests did not change.
 #+end_quote
 
 ** PLANNED Stage 4: header resolution                              :stage4:
@@ -1541,6 +1621,172 @@ func dumpNode(n Node) (json.Marshaler, error) {
 }
 #+end_src
 
+* How the oracle parses
+
+The specification for babble's frontend is not the org manual, it
+is org-element.el. This chapter states the algorithm that file
+implements, because babble replicates it: same shape, same
+decisions, same order, in Go types. Line numbers below are org
+9.7.11, the version the oracle runs.
+
+The first thing to know is that org has no tokenizer. There is no
+token stream between the buffer and the parser. The parser looks
+at raw text at the moment it needs to decide something, which is
+why a construct's meaning can depend on where it sits.
+
+** The loop
+
+~org-element--parse-elements~ (org-element.el:5192) walks a byte
+range and does three things per element: ask what starts here,
+jump to where that element says it ends, and, when the element can
+contain other elements, recurse into its interior. The range is
+the parser's bound, and it is the reason a block cannot swallow
+the heading below it: a section's elements are parsed between the
+section's own start and end.
+
+#+begin_src mermaid
+flowchart TD
+  start([parse range beg..end]) --> ask["current-element:<br/>what starts at point?"]
+  ask --> el["element with begin, end,<br/>contents-begin, contents-end"]
+  el --> jump["point = element end"]
+  jump --> greater{"greater<br/>element?"}
+  greater -->|yes| rec["recurse into<br/>contents range"]
+  greater -->|no| more{"point < end?"}
+  rec --> more
+  more -->|yes| ask
+  more -->|no| done([return elements])
+#+end_src
+
+** The dispatch
+
+~org-element--current-element~ (org-element.el:4637) decides an
+element's type from the start of one line, in a fixed order.
+Context comes first: when the caller passed a mode saying "we are
+inside a list item" or "inside a property drawer", that mode wins
+before any text is examined. Then a star run means a headline.
+Then one bulk regexp (~org-element--current-element-re~, 4616)
+matches drawers, fixed-width lines, dynamic-block openers,
+~#+begin_X~, ~#+CALL:~, plain keywords, footnote definitions,
+horizontal rules and diary sexps in a single pass, and the code
+dispatches on which numbered group matched. A comment in the
+source says why it is one regexp and not ten: repeated matching
+cost an order of magnitude on large buffers. What is left over is
+a table or a paragraph.
+
+For ~#+begin_X~ the block name picks the parser: CENTER, COMMENT,
+EXAMPLE, EXPORT, QUOTE, SRC and VERSE have their own, and any
+other name is a special block. That list is the whole reason
+babble splits verbatim blocks from greater blocks.
+
+** Elements find their own end
+
+Every element parser receives the bound and searches for its own
+terminator inside it. ~org-element-src-block-parser~
+(org-element.el:2990) looks for a line matching ~#+END_SRC~ with
+nothing after it, and when the search fails it does not raise an
+error: it calls the paragraph parser instead, and the opening line
+becomes ordinary text. babble refuses that case instead, which is
+one of the [[*Deviations][Deviations]].
+
+Paragraphs are the subtle ones (org-element.el:2854). A paragraph
+ends at the next line that cannot be inside it, but each candidate
+is verified before it counts: a drawer line only ends the
+paragraph if a matching ~:END:~ exists ahead, and a ~#+BEGIN_X~
+only ends it if a matching ~#+END_X~ exists, with X captured from
+the opener and quoted into a fresh search. Deciding where prose
+stops therefore requires proving that a pair matches, somewhere
+below.
+
+** Greater, lesser, and mode
+
+Two properties of an element type steer the loop. Whether it is a
+greater element decides whether the parser recurses into it:
+headlines, sections, quote blocks, centre blocks, special blocks,
+items, tables and footnote definitions hold elements, while src,
+example, export, comment and verse blocks hold text. And the mode
+an element hands to its successor decides how the next line is
+read: after a headline the mode admits a planning line and then a
+property drawer, inside a list the mode makes each line an item,
+inside a property drawer each line is a node property.
+
+Mode is why the same three characters parse differently in two
+places. ~:END:~ closes a drawer in one position and is prose in
+another, and no amount of looking at the line itself will tell you
+which.
+
+** Affiliated keywords
+
+~org-element--collect-affiliated-keywords~ (org-element.el:4843)
+runs before the element parser and attaches ~#+name:~,
+~#+caption:~ and their kin to the element below them. The element
+then carries two positions: ~:begin~, at the first affiliated
+keyword, and ~:post-affiliated~, at the element's own first line.
+The tangler uses the second, which is why babble records the
+begin-line offset separately from the block's full extent.
+
+** A document, line by line
+
+Here is a small book, and what the loop makes of it. The commas
+are org's own escape, and they are not part of the text.
+
+#+begin_example
+,#+title: demo
+
+,* Chapter
+Some prose.
+
+,#+name: greet
+,#+begin_src go :tangle greet.go
+package greet
+,#+end_src
+#+end_example
+
+Dispatch colours the lines by the branch that fired, and the
+elements on the right are what the loop returns. Note that the
+name line and both delimiters belong to one element, and that the
+blank lines are not elements at all: they are trailing space
+counted into the preceding element's end.
+
+#+begin_src mermaid
+flowchart TB
+  l1["#+title: demo"]:::kw
+  subgraph h["headline: the loop recurses into its range"]
+    direction TB
+    l2["* Chapter"]:::hl
+    subgraph pg["paragraph"]
+      l3["Some prose."]:::txt
+    end
+    subgraph sb["src-block: the name line, both delimiters, the text between"]
+      direction TB
+      l4["#+name: greet"]:::aff
+      l5["#+begin_src go :tangle greet.go"]:::blk
+      l6["package greet"]:::raw
+      l7["#+end_src"]:::blk
+    end
+  end
+  l1 ~~~ l2
+  l2 ~~~ pg
+  pg ~~~ sb
+  l4 ~~~ l5 ~~~ l6 ~~~ l7
+  classDef kw fill:#dbeafe,stroke:#2563eb,color:#1e3a8a
+  classDef hl fill:#fef3c7,stroke:#d97706,color:#78350f
+  classDef txt fill:#f3f4f6,stroke:#6b7280,color:#111827
+  classDef aff fill:#ede9fe,stroke:#7c3aed,color:#4c1d95
+  classDef blk fill:#dcfce7,stroke:#16a34a,color:#14532d
+  classDef raw fill:#ffffff,stroke:#9ca3af,color:#374151
+#+end_src
+
+** What babble takes, and what it leaves
+
+babble replicates the element layer: the loop, the dispatch, the
+per-element terminator search, greater against lesser, mode, and
+affiliated keywords. It leaves three things behind. The object
+layer, ~org-element--object-lex~ (org-element.el:5261), which
+tokenizes inline markup inside paragraphs, is unnecessary because
+nothing in a tangle looks inside prose. The element cache exists
+for interactive editing. And granularity, which lets a caller stop
+the recursion early, has one setting here: parse everything.
+
 * Reading org
 
 Package org is the frontend: everything that knows the input
@@ -1585,6 +1831,15 @@ func ParseBytes(src []byte, path string) (*book.Document, error) {
 	return d, nil
 }
 #+end_src
+
+*************** PLANNED stage 12 replaces this section ([[#stage-12][plan]]) :stage12:
+Everything from here to the end of the chapter is the two-phase
+frontend the next stage retires, and the planned replacement sits
+at the end of the chapter under [[*The planned frontend]]. The
+paragraph below is the claim that motivated the change and that
+the code does not keep: the tokenizer lowercases block names and
+computes the extent anchor, which is grammar in the lexical phase.
+*************** END
 
 Parsing is two phases with a hard boundary. The tokenizer
 classifies every line by shape alone and knows no grammar; the
@@ -2208,6 +2463,138 @@ func balancedSplit(s string) []string {
 
 func readValue(s string) (string, error) {
 	panic("HOLE(4): chomp, unquote an elisp string literal, reject lisp")
+}
+#+end_src
+
+** The planned frontend
+
+*************** PLANNED stage 12 adds the section below ([[#stage-12][plan]]) :stage12:
+These blocks carry ~:tangle no~ until acceptance, so the live
+frontend above keeps tangling while this one is reviewed. The
+bodies are holes; the shape is what the gate is for.
+*************** END
+
+The parser holds the source and an offset, which is the buffer
+position org calls point. Everything else it needs is derivable,
+so there is nothing to keep in step.
+
+#+name: org-parser--planned
+#+begin_src go :tangle no
+type parser struct {
+	src  []byte
+	path string
+	off  int // point: the offset the parser is looking at
+}
+#+end_src
+
+Mode is the context a parent hands its children, and it is the
+reason a colon line means one thing under a heading and another
+inside a list. Naming the whole set here keeps the dispatcher's
+first question honest: every value is a case the code answers.
+
+#+name: org-mode-enum--planned
+#+begin_src go :tangle no
+type mode int
+
+const (
+	modeNone mode = iota
+	modeFirstSection
+	modeSection
+	modePlanning
+	modePropertyDrawer
+	modeItem
+	modeNodeProperty
+)
+#+end_src
+
+A container is a node the loop may recurse into. Verbatim blocks
+and src blocks do not satisfy it, so the recursion cannot be
+aimed at text that must stay text; that is org's greater-element
+list expressed as a type rather than a lookup.
+
+#+name: org-container--planned
+#+begin_src go :tangle no
+type container interface {
+	book.Node
+	contents() book.Span
+	adopt([]book.Node)
+}
+#+end_src
+
+parseElements is the loop from [[*The loop]]: identify, jump to the
+element's end, recurse when it holds elements. The bound is what
+stops a block from reaching past a heading.
+
+#+name: org-parse-elements--planned
+#+begin_src go :tangle no
+func (p *parser) parseElements(beg, end int, m mode) ([]book.Node, error) {
+	panic("HOLE(12): the bounded loop; recurse only into containers")
+}
+#+end_src
+
+currentElement is the dispatcher: mode first, then a star run,
+then the line's keyword shape, then the fallbacks. It returns the
+node and the offset where the element ends.
+
+#+name: org-current-element--planned
+#+begin_src go :tangle no
+func (p *parser) currentElement(limit int, m mode) (book.Node, int, error) {
+	panic("HOLE(12): dispatch on mode, then on the line at point")
+}
+#+end_src
+
+Each element parser searches for its own terminator inside the
+bound and reports where it ends, exactly as the elisp parsers do.
+The affiliated name arrives as an argument, since the collector
+runs before the parser it feeds.
+
+#+name: org-element-parsers--planned
+#+begin_src go :tangle no
+func (p *parser) headlineParser(limit int) (*book.Headline, int, error) {
+	panic("HOLE(12): stars, todo, priority, COMMENT, title, tags; contents to the next headline of this level or shallower")
+}
+
+func (p *parser) srcBlockParser(limit int, aff affiliated) (*book.SrcBlock, int, error) {
+	panic("HOLE(12): find end_src within limit; language, switches, header, both anchors")
+}
+
+func (p *parser) dynamicBlockParser(limit int, aff affiliated) (*book.DynamicBlock, int, error) {
+	panic("HOLE(12): find end: within limit; name, args, interior span")
+}
+
+func (p *parser) greaterBlockParser(limit int, aff affiliated) (*book.QuoteBlock, int, error) {
+	panic("HOLE(12): find the matching end within limit; contents recurse")
+}
+
+func (p *parser) verbatimBlockParser(limit int, aff affiliated) (*book.VerbatimBlock, int, error) {
+	panic("HOLE(12): find the matching end within limit; body stays text")
+}
+
+func (p *parser) propertyDrawerParser(limit int) (map[string]string, int, bool) {
+	panic("HOLE(12): only in modePropertyDrawer; a malformed drawer is not a drawer")
+}
+
+func (p *parser) paragraphParser(limit int) (*book.Prose, int) {
+	panic("HOLE(12): run to the next line that cannot be prose, verifying pairs")
+}
+#+end_src
+
+Affiliated keywords are collected before the element they belong
+to, so the collector returns both the name and the offset where
+the element's own first line starts. That offset is the tangler's
+anchor, and keeping the two apart is what makes a name line sit
+inside the following block's comment extent.
+
+#+name: org-affiliated--planned
+#+begin_src go :tangle no
+type affiliated struct {
+	name       string     // the #+name: value, or ""
+	begin      int        // offset of the first affiliated line
+	spans      []book.Span // the affiliated lines themselves
+}
+
+func (p *parser) collectAffiliated(limit int) affiliated {
+	panic("HOLE(12): consume affiliated keyword lines; report name and the element's own start")
 }
 #+end_src
 
