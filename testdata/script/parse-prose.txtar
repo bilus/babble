@@ -1,0 +1,94 @@
+# Keywords, prose runs (before any heading included), and the
+# property drawer directly under its heading.
+
+exec babble parse --dump b.org
+cmp stdout want.json
+
+-- b.org --
+#+title: a tiny book
+#+author: me
+
+Leading prose before any heading,
+two lines of it.
+
+* Section
+:PROPERTIES:
+:header-args: :comments org
+:CUSTOM_ID: sec
+:END:
+
+Body prose.
+
+#+caption: not a block, just a keyword
+More prose after a keyword.
+-- want.json --
+{
+ "path": "b.org",
+ "todo": [
+  "TODO",
+  "DONE"
+ ],
+ "keywords": {
+  "author": [
+   "me"
+  ],
+  "caption": [
+   "not a block, just a keyword"
+  ],
+  "title": [
+   "a tiny book"
+  ]
+ },
+ "nodes": [
+  {
+   "type": "keyword",
+   "key": "title",
+   "value": "a tiny book",
+   "line": 1,
+   "span": "0:20"
+  },
+  {
+   "type": "keyword",
+   "key": "author",
+   "value": "me",
+   "line": 2,
+   "span": "21:33"
+  },
+  {
+   "type": "prose",
+   "line": 3,
+   "span": "34:87"
+  },
+  {
+   "type": "headline",
+   "level": 1,
+   "title": "Section",
+   "properties": {
+    "custom_id": "sec",
+    "header-args": ":comments org"
+   },
+   "afterStars": 89,
+   "line": 7,
+   "head": "87:96",
+   "children": [
+    {
+     "type": "prose",
+     "line": 12,
+     "span": "160:174"
+    },
+    {
+     "type": "keyword",
+     "key": "caption",
+     "value": "not a block, just a keyword",
+     "line": 15,
+     "span": "174:212"
+    },
+    {
+     "type": "prose",
+     "line": 16,
+     "span": "213:241"
+    }
+   ]
+  }
+ ]
+}

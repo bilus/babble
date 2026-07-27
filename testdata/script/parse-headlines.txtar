@@ -1,0 +1,106 @@
+# The scanner's headline story: nesting, todo words from the
+# book's own todo line, priority, COMMENT, tags with ARCHIVE,
+# and a fifteen-star badge as a plain deep headline.
+
+exec babble parse --dump b.org
+cmp stdout want.json
+
+-- b.org --
+#+todo: PLANNED(p!) | LIVE(l!)
+
+* PLANNED [#A] Top                :one:two:
+** COMMENT Scratch
+Some scratch prose.
+** Kept                                :ARCHIVE:
+*************** PLANNED badge line
+* LIVE Done-ish
+-- want.json --
+{
+ "path": "b.org",
+ "todo": [
+  "PLANNED",
+  "LIVE"
+ ],
+ "keywords": {
+  "todo": [
+   "PLANNED(p!) | LIVE(l!)"
+  ]
+ },
+ "nodes": [
+  {
+   "type": "keyword",
+   "key": "todo",
+   "value": "PLANNED(p!) | LIVE(l!)",
+   "line": 1,
+   "span": "0:30"
+  },
+  {
+   "type": "prose",
+   "line": 2,
+   "span": "31:32"
+  },
+  {
+   "type": "headline",
+   "level": 1,
+   "todo": "PLANNED",
+   "tags": [
+    "one",
+    "two"
+   ],
+   "title": "Top",
+   "afterStars": 34,
+   "line": 3,
+   "head": "32:75",
+   "children": [
+    {
+     "type": "headline",
+     "level": 2,
+     "commented": true,
+     "title": "Scratch",
+     "afterStars": 79,
+     "line": 4,
+     "head": "76:94",
+     "children": [
+      {
+       "type": "prose",
+       "line": 5,
+       "span": "95:115"
+      }
+     ]
+    },
+    {
+     "type": "headline",
+     "level": 2,
+     "archived": true,
+     "tags": [
+      "ARCHIVE"
+     ],
+     "title": "Kept",
+     "afterStars": 118,
+     "line": 6,
+     "head": "115:163",
+     "children": [
+      {
+       "type": "headline",
+       "level": 15,
+       "todo": "PLANNED",
+       "title": "badge line",
+       "afterStars": 180,
+       "line": 7,
+       "head": "164:198"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "type": "headline",
+   "level": 1,
+   "todo": "LIVE",
+   "title": "Done-ish",
+   "afterStars": 201,
+   "line": 8,
+   "head": "199:214"
+  }
+ ]
+}
