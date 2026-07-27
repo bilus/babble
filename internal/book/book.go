@@ -18,8 +18,14 @@ type Document struct {
 	Nodes    []Node              // top level, document order
 }
 
-// Span is a half-open byte range [Start, End) into Source.
+// Span is a half-open byte range [Start, End) into Source. It
+// marshals as a compact start:end string, which keeps a dumped tree
+// readable in a fixture golden.
 type Span struct{ Start, End int }
+
+func (s Span) MarshalJSON() ([]byte, error) {
+	return []byte(fmt.Sprintf(`"%d:%d"`, s.Start, s.End)), nil
+}
 
 // Node is any tree element; the concrete types below are the whole
 // set, and the marker method keeps the set closed.
@@ -38,29 +44,29 @@ func (*VerbatimBlock) isNode() {}
 // inheritance, and AfterStars, the byte anchor the comment extents
 // hang from. Badge lines land here too, as deep ordinary headlines.
 type Headline struct {
-	Level      int
-	Todo       string            // one of Document.Todo, or ""
-	Commented  bool              // COMMENT marker
-	Archived   bool              // ARCHIVE tag
-	Tags       []string
-	Title      string
-	Properties map[string]string // property drawer, nil when absent
-	AfterStars int               // offset just past the stars and one space
-	Line       int
-	Head       Span              // the heading line
-	Children   []Node
+	Level      int               `json:"level"`
+	Todo       string            `json:"todo,omitempty"` // one of Document.Todo, or ""
+	Commented  bool              `json:"commented,omitempty"` // COMMENT marker
+	Archived   bool              `json:"archived,omitempty"` // ARCHIVE tag
+	Tags       []string          `json:"tags,omitempty"`
+	Title      string            `json:"title"`
+	Properties map[string]string `json:"properties,omitempty"` // property drawer, nil when absent
+	AfterStars int               `json:"afterStars"` // offset just past the stars and one space
+	Line       int               `json:"line"`
+	Head       Span              `json:"head"` // the heading line
+	Children   []Node            `json:"-"`
 }
 
 type Prose struct {
-	Line int
-	Text Span
+	Line int  `json:"line"`
+	Text Span `json:"span"`
 }
 
 type Keyword struct {
-	Key   string // lowercased, without the #+ and the colon
-	Value string
-	Line  int
-	Raw   Span
+	Key   string `json:"key"` // lowercased, without the #+ and the colon
+	Value string `json:"value"`
+	Line  int    `json:"line"`
+	Raw   Span   `json:"span"`
 }
 
 // SrcBlock records the two raw byte anchors next to the parsed
@@ -68,16 +74,16 @@ type Keyword struct {
 // just past the literal end keyword. Params stays zero until header
 // resolution fills it.
 type SrcBlock struct {
-	Lang      string
-	Name      string // affiliated name line, or ""
-	Switches  string
-	RawHeader string // the block's own header line, unresolved
-	Params    Params // filled by resolution, zero until then
-	Body      Span   // raw bytes between the delimiter lines
-	BeginAt   int    // offset where the begin line starts
-	AfterEnd  int    // offset just past the literal end keyword
-	Line      int    // line of the begin line
-	Full      Span   // name line through end line
+	Lang      string `json:"lang"`
+	Name      string `json:"name,omitempty"` // affiliated name line, or ""
+	Switches  string `json:"switches,omitempty"`
+	RawHeader string `json:"rawHeader,omitempty"` // the block's own header line, unresolved
+	Params    Params `json:"params,omitzero"` // filled by resolution, zero until then
+	Body      Span   `json:"body"` // raw bytes between the delimiter lines
+	BeginAt   int    `json:"beginAt"` // offset where the begin line starts
+	AfterEnd  int    `json:"afterEnd"` // offset just past the literal end keyword
+	Line      int    `json:"line"` // line of the begin line
+	Full      Span   `json:"full"` // name line through end line
 }
 
 // A dynamic block keeps its interior as both bytes and children:
@@ -86,39 +92,39 @@ type SrcBlock struct {
 // hold children too; example, export, and comment blocks are
 // verbatim.
 type DynamicBlock struct {
-	Name     string
-	Args     string
-	Interior Span // bytes between the begin and end lines
-	Line     int
-	Full     Span
-	Children []Node
+	Name     string `json:"name"`
+	Args     string `json:"args,omitempty"`
+	Interior Span   `json:"interior"` // bytes between the begin and end lines
+	Line     int    `json:"line"`
+	Full     Span   `json:"full"`
+	Children []Node `json:"-"`
 }
 
 type QuoteBlock struct {
-	Line     int
-	Full     Span
-	Children []Node
+	Line     int    `json:"line"`
+	Full     Span   `json:"full"`
+	Children []Node `json:"-"`
 }
 
 type VerbatimBlock struct {
-	Kind string // example, export, or comment
-	Body Span
-	Line int
-	Full Span
+	Kind string `json:"kind"` // example, export, or comment
+	Body Span   `json:"body"`
+	Line int    `json:"line"`
+	Full Span   `json:"full"`
 }
 
 // Params is the resolved header set, the engine's side of the closed
 // table. The frontend produces it or errors; the engine never sees a
 // raw header string.
 type Params struct {
-	Tangle         string // "no", "yes", or a target path
-	Mkdirp         bool
-	Comments       string // "no" or "org"
-	Padline        bool
-	Noweb          bool
-	NowebRef       string
-	NowebSep       string // "" means one newline
-	PreserveIndent bool   // the -i switch
+	Tangle         string `json:"tangle"` // "no", "yes", or a target path
+	Mkdirp         bool   `json:"mkdirp,omitempty"`
+	Comments       string `json:"comments,omitempty"` // "no" or "org"
+	Padline        bool   `json:"padline,omitempty"`
+	Noweb          bool   `json:"noweb,omitempty"`
+	NowebRef       string `json:"nowebRef,omitempty"`
+	NowebSep       string `json:"nowebSep,omitempty"` // "" means one newline
+	PreserveIndent bool   `json:"preserveIndent,omitempty"` // the -i switch
 }
 
 // Walk visits every node in document order, descending into
@@ -175,6 +181,11 @@ func Dump(d *Document) ([]byte, error) {
 	return append(out, '\n'), nil
 }
 
+// Each node type carries its own JSON tags, so the dump never
+// restates a field list. The wrappers below add the two things tags
+// cannot: the type discriminator, and children rendered through the
+// same wrapping (the embedded struct's fields flatten into the
+// wrapper's object).
 func dumpNodes(nodes []Node) []any {
 	out := make([]any, 0, len(nodes))
 	for _, n := range nodes {
@@ -183,89 +194,46 @@ func dumpNodes(nodes []Node) []any {
 	return out
 }
 
-func spanStr(s Span) string {
-	return fmt.Sprintf("%d:%d", s.Start, s.End)
-}
-
 func dumpNode(n Node) any {
 	switch n := n.(type) {
 	case *Headline:
 		return struct {
-			Type       string            `json:"type"`
-			Level      int               `json:"level"`
-			Todo       string            `json:"todo,omitempty"`
-			Commented  bool              `json:"commented,omitempty"`
-			Archived   bool              `json:"archived,omitempty"`
-			Tags       []string          `json:"tags,omitempty"`
-			Title      string            `json:"title"`
-			Properties map[string]string `json:"properties,omitempty"`
-			AfterStars int               `json:"afterStars"`
-			Line       int               `json:"line"`
-			Head       string            `json:"head"`
-			Children   []any             `json:"children,omitempty"`
-		}{"headline", n.Level, n.Todo, n.Commented, n.Archived,
-			n.Tags, n.Title, n.Properties, n.AfterStars, n.Line,
-			spanStr(n.Head), dumpNodes(n.Children)}
+			Type string `json:"type"`
+			*Headline
+			Children []any `json:"children,omitempty"`
+		}{"headline", n, dumpNodes(n.Children)}
 	case *Prose:
 		return struct {
 			Type string `json:"type"`
-			Line int    `json:"line"`
-			Span string `json:"span"`
-		}{"prose", n.Line, spanStr(n.Text)}
+			*Prose
+		}{"prose", n}
 	case *Keyword:
 		return struct {
-			Type  string `json:"type"`
-			Key   string `json:"key"`
-			Value string `json:"value"`
-			Line  int    `json:"line"`
-			Span  string `json:"span"`
-		}{"keyword", n.Key, n.Value, n.Line, spanStr(n.Raw)}
+			Type string `json:"type"`
+			*Keyword
+		}{"keyword", n}
 	case *SrcBlock:
-		var params any
-		if n.Params != (Params{}) {
-			params = n.Params
-		}
 		return struct {
-			Type      string `json:"type"`
-			Lang      string `json:"lang"`
-			Name      string `json:"name,omitempty"`
-			Switches  string `json:"switches,omitempty"`
-			RawHeader string `json:"rawHeader,omitempty"`
-			Params    any    `json:"params,omitempty"`
-			Body      string `json:"body"`
-			BeginAt   int    `json:"beginAt"`
-			AfterEnd  int    `json:"afterEnd"`
-			Line      int    `json:"line"`
-			Full      string `json:"full"`
-		}{"src", n.Lang, n.Name, n.Switches, n.RawHeader, params,
-			spanStr(n.Body), n.BeginAt, n.AfterEnd, n.Line,
-			spanStr(n.Full)}
+			Type string `json:"type"`
+			*SrcBlock
+		}{"src", n}
 	case *DynamicBlock:
 		return struct {
-			Type     string `json:"type"`
-			Name     string `json:"name"`
-			Args     string `json:"args,omitempty"`
-			Interior string `json:"interior"`
-			Line     int    `json:"line"`
-			Full     string `json:"full"`
-			Children []any  `json:"children,omitempty"`
-		}{"dynamic", n.Name, n.Args, spanStr(n.Interior), n.Line,
-			spanStr(n.Full), dumpNodes(n.Children)}
+			Type string `json:"type"`
+			*DynamicBlock
+			Children []any `json:"children,omitempty"`
+		}{"dynamic", n, dumpNodes(n.Children)}
 	case *QuoteBlock:
 		return struct {
-			Type     string `json:"type"`
-			Line     int    `json:"line"`
-			Full     string `json:"full"`
-			Children []any  `json:"children,omitempty"`
-		}{"quote", n.Line, spanStr(n.Full), dumpNodes(n.Children)}
+			Type string `json:"type"`
+			*QuoteBlock
+			Children []any `json:"children,omitempty"`
+		}{"quote", n, dumpNodes(n.Children)}
 	case *VerbatimBlock:
 		return struct {
 			Type string `json:"type"`
-			Kind string `json:"kind"`
-			Body string `json:"body"`
-			Line int    `json:"line"`
-			Full string `json:"full"`
-		}{"verbatim", n.Kind, spanStr(n.Body), n.Line, spanStr(n.Full)}
+			*VerbatimBlock
+		}{"verbatim", n}
 	}
 	return nil
 }
