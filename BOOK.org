@@ -9,7 +9,7 @@ The first chapter in the file, and a temporary one: it exists only
 while work is in flight. One entry per stage; the LOGBOOK lines that
 state changes leave behind are the in-flight ledger. When a stage
 completes, its entry is deleted, ledger and all, and its Changes
-draft moves, timestamped, to [[*Changes]]. The plan is scaffolding;
+draft moves, timestamped, to [[#changes][Changes]]. The plan is scaffolding;
 the journal is the record.
 
 Vocabulary, since this chapter sits before everything that
@@ -34,7 +34,7 @@ the same commits and leaves the suite green. The oracle harness
 arrives in stage 6, early enough that every later stage's fixtures
 are cross-checked against Emacs from the day they are written; the
 fixture books start from the worked examples in
-[[*Writing a book for babble]].
+[[#writing-a-book][Writing a book for babble]].
 
 After the harness the ladder opens into a diamond: comments,
 noweb (block inclusion by named reference), and dynamic blocks
@@ -65,26 +65,26 @@ so the census never matches its own index.
 - [[file:BOOK.org::358][358]] entry: PLANNED Stage 9: dynamic blocks
 - [[file:BOOK.org::405][405]] entry: PLANNED Stage 10: the fence
 - [[file:BOOK.org::434][434]] entry: PLANNED Stage 11: parity and self-hosting
-- [[file:BOOK.org::1239][1239]] hole 5: parse, refresh, reparse, tangle; errors to stderr
-- [[file:BOOK.org::2475][2475]] hole 4: every block's Params through the closed table, unknown ke...
-- [[file:BOOK.org::2481][2481]] hole 4: split on space-then-colon outside parens, brackets, and d...
-- [[file:BOOK.org::2485][2485]] hole 4: chomp, unquote an elisp string literal, reject lisp
-- [[file:BOOK.org::2494][2494]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
-- [[file:BOOK.org::2510][2510]] hole 5: collect, resolve targets, assemble with banners, write
-- [[file:BOOK.org::2527][2527]] hole 5: eligible blocks grouped by target in first-appearance order
-- [[file:BOOK.org::2531][2531]] hole 5: no, yes, or a path relative to the book's directory
-- [[file:BOOK.org::2541][2541]] hole 5: unescape commas, dedent by column, expand noweb, dedent a...
-- [[file:BOOK.org::2551][2551]] hole 7: extent between the anchors, then the docstring rule
-- [[file:BOOK.org::2557][2557]] hole 7: line-comment table per language, blank lines as a bare ma...
-- [[file:BOOK.org::2567][2567]] hole 8: named block first, else noweb-ref concatenation; cycles a...
-- [[file:BOOK.org::2578][2578]] hole 5: the generated-file banner in the target's own comment syntax
-- [[file:BOOK.org::2584][2584]] hole 5: refuse the book itself, mkdirp on demand, skip byte-ident...
-- [[file:BOOK.org::2600][2600]] hole 9: splice fresh interiors into the retained bytes, report ch...
-- [[file:BOOK.org::2610][2610]] hole 9: a line link per plan site, sites below the block shifted ...
-- [[file:BOOK.org::2616][2616]] hole 9: system diff -u over the two named bodies, temp-file heade...
-- [[file:BOOK.org::2795][2795]] hole 6: ORACLE=1 in the environment
-- [[file:BOOK.org::2799][2799]] hole 6: UPDATE=1 in the environment
-- [[file:BOOK.org::2805][2805]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
+- [[file:BOOK.org::1248][1248]] hole 5: parse, refresh, reparse, tangle; errors to stderr
+- [[file:BOOK.org::2492][2492]] hole 4: every block's Params through the closed table, unknown ke...
+- [[file:BOOK.org::2498][2498]] hole 4: split on space-then-colon outside parens, brackets, and d...
+- [[file:BOOK.org::2502][2502]] hole 4: chomp, unquote an elisp string literal, reject lisp
+- [[file:BOOK.org::2511][2511]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
+- [[file:BOOK.org::2527][2527]] hole 5: collect, resolve targets, assemble with banners, write
+- [[file:BOOK.org::2544][2544]] hole 5: eligible blocks grouped by target in first-appearance order
+- [[file:BOOK.org::2548][2548]] hole 5: no, yes, or a path relative to the book's directory
+- [[file:BOOK.org::2558][2558]] hole 5: unescape commas, dedent by column, expand noweb, dedent a...
+- [[file:BOOK.org::2568][2568]] hole 7: extent between the anchors, then the docstring rule
+- [[file:BOOK.org::2574][2574]] hole 7: line-comment table per language, blank lines as a bare ma...
+- [[file:BOOK.org::2584][2584]] hole 8: named block first, else noweb-ref concatenation; cycles a...
+- [[file:BOOK.org::2595][2595]] hole 5: the generated-file banner in the target's own comment syntax
+- [[file:BOOK.org::2601][2601]] hole 5: refuse the book itself, mkdirp on demand, skip byte-ident...
+- [[file:BOOK.org::2617][2617]] hole 9: splice fresh interiors into the retained bytes, report ch...
+- [[file:BOOK.org::2627][2627]] hole 9: a line link per plan site, sites below the block shifted ...
+- [[file:BOOK.org::2633][2633]] hole 9: system diff -u over the two named bodies, temp-file heade...
+- [[file:BOOK.org::2811][2811]] hole 6: ORACLE=1 in the environment
+- [[file:BOOK.org::2815][2815]] hole 6: UPDATE=1 in the environment
+- [[file:BOOK.org::2821][2821]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
 
 #+end:
 
@@ -111,7 +111,7 @@ Decided: (1) The first pass at this stage reached the right tree
 by the wrong road: a line tokenizer that lowercased block names
 and computed a comment-extent anchor, which is grammar and a
 later stage's arithmetic done in a lexical phase. It is replaced
-rather than accepted, because [[*How the oracle parses][the oracle has no lexer at all]] and
+rather than accepted, because [[#how-the-oracle-parses][the oracle has no lexer at all]] and
 a frontend whose phase boundary matches the oracle's is the one
 whose parity can be argued. (2) The headline stack goes: org nests
 by recursing into a headline's byte range, so the tree falls out
@@ -224,7 +224,7 @@ bannerless buffer against a bannered file, so it rewrites every
 target on every run (checked during bootstrap: the mtimes bump). The
 brief asks for the skip; bytes agree either way, so the oracle
 harness, which compares bytes, is untouched. Listed under
-[[*Deviations][Deviations]].
+[[#deviations][Deviations]].
 
 - [ ] inserted prose reads steady-state
 - [ ] Changes draft below reads right in the journal
@@ -411,7 +411,7 @@ stay out of the census.
 :SIZE:     ~150 lines
 :END:
 
-Claim: after this stage, every refusal the [[*Deviations][Deviations]] chapter
+Claim: after this stage, every refusal the [[#deviations][Deviations]] chapter
 lists fires as an error naming the construct and the supported set,
 a block or dynamic-block delimiter quoted inside an example, src,
 export, or comment body is a lint error, and a test proves that
@@ -528,7 +528,7 @@ construction.
 
 This is a port of a narrow, documented subset, not of org-mode.
 Where the books never rely on a behavior, babble prefers a loud
-error to a faithful imitation; the [[*Deviations][Deviations]] chapter is the
+error to a faithful imitation; the [[#deviations][Deviations]] chapter is the
 complete list. When the oracle and any description of it disagree,
 this book included, the oracle wins.
 
@@ -539,12 +539,15 @@ line: v1 is done when babble tangles its own book byte-identically.
 
 * Writing a book for babble
 
+:PROPERTIES:
+:CUSTOM_ID: writing-a-book
+:END:
 This chapter is the tour: the org babble reads, one construct at a
 time, each construct with an example. And the examples are load
 bearing: every one of them is meant to reappear in the test suite
 as a fixture book whose expected output batch Emacs mints, so what
 this chapter promises, the oracle enforces. The precise
-rules behind the tour live in [[*The subset contract][The subset contract]].
+rules behind the tour live in [[#subset-contract][The subset contract]].
 
 Org quoted inside the examples is comma-escaped (a comma before a
 star or a ~#+~), which is org's own convention for quoting itself;
@@ -856,12 +859,15 @@ drawers, tables, footnotes, links, timestamps pass through
 untouched, because babble rewrites the book only by splicing fresh
 dynamic-block interiors into the bytes it read. The refusals all
 sit on the tangling path; the complete list, with what Emacs would
-have done instead, is [[*Deviations][Deviations]]. A book that
+have done instead, is [[#deviations][Deviations]]. A book that
 tangles at all tangles to the same bytes Emacs produces; a book
 that would not is refused before any file changes.
 
 * The subset contract
 
+:PROPERTIES:
+:CUSTOM_ID: subset-contract
+:END:
 What ~babble tangle~ does, in order: refresh every dynamic block in
 the book, rewriting the book file only when its bytes changed, then
 tangle every eligible src block into its target file. The
@@ -913,7 +919,7 @@ The header surface is closed. Every key on every src block,
 tangling or not, must sit in a fixed table with three bins:
 implemented (~:tangle~, ~:mkdirp~, ~:comments~, ~:padline~,
 ~:noweb~, ~:noweb-ref~, ~:noweb-sep~, the ~-i~ switch), rejected
-(the [[*Deviations][Deviations]] list), and inert, the evaluation-only keys
+(the [[#deviations][Deviations]] list), and inert, the evaluation-only keys
 (~:results~, ~:exports~, ~:session~, ~:cache~, ~:eval~ and kin)
 that org parses but its tangle path never reads. A key outside the
 table is an error. The bins are exhaustive against the oracle
@@ -1025,6 +1031,9 @@ by construction.
 
 * Deviations
 
+:PROPERTIES:
+:CUSTOM_ID: deviations
+:END:
 Places where babble departs from what org would do: refusals,
 each a loud error instead of an imitation, plus one byte-neutral
 difference in when files are written. The refusals are the fence.
@@ -1567,6 +1576,9 @@ func dumpNode(n Node) (json.Marshaler, error) {
 
 * How the oracle parses
 
+:PROPERTIES:
+:CUSTOM_ID: how-the-oracle-parses
+:END:
 The specification for babble's frontend is not the org manual, it
 is org-element.el. This chapter states the algorithm that file
 implements, because babble replicates it: same shape, same
@@ -1580,6 +1592,9 @@ why a construct's meaning can depend on where it sits.
 
 ** The loop
 
+:PROPERTIES:
+:CUSTOM_ID: the-loop
+:END:
 ~org-element--parse-elements~ (org-element.el:5192) walks a byte
 range and does three things per element: ask what starts here,
 jump to where that element says it ends, and, when the element can
@@ -1603,6 +1618,9 @@ flowchart TD
 
 ** The dispatch
 
+:PROPERTIES:
+:CUSTOM_ID: the-dispatch
+:END:
 ~org-element--current-element~ (org-element.el:4637) decides an
 element's type from the start of one line, in a fixed order.
 Context comes first: when the caller passed a mode saying "we are
@@ -1636,7 +1654,7 @@ in this order, which is what makes the two comparable at all.
 | 4 | headline | stars, then a space | yes |
 | 5 | section | mode is a section mode | implicit |
 | 6 | comment | an org comment line | as prose |
-| 7 | planning | mode is planning | stage 4 |
+| 7 | planning | mode is planning | no |
 | 8 | property drawer | mode admits one | yes |
 | 9 | paragraph | point past a line start | no |
 | 10 | clock | a clock line | no |
@@ -1656,11 +1674,10 @@ shape that branch 8 consumes.
 Two other entries are worth reading twice. Branch 11 is why a
 fifteen-star badge is an ordinary headline here: batch Emacs never
 loads org-inlinetask, so the condition is false and control falls
-to branch 4, which is what babble does unconditionally. Branch 7
-is the gap this book already knows about: org admits a planning
-line between a headline and its property drawer, babble does not,
-and stage 4 has to close that before header arguments can be
-inherited.
+to branch 4, which is what babble does unconditionally. Branch 7 is
+a difference babble carries: org admits a planning line between a
+headline and its property drawer, and babble does not, so a drawer
+below a planning line is prose here and its properties are lost.
 
 ** Elements find their own end
 
@@ -1670,7 +1687,7 @@ terminator inside it. ~org-element-src-block-parser~
 nothing after it, and when the search fails it does not raise an
 error: it calls the paragraph parser instead, and the opening line
 becomes ordinary text. babble refuses that case instead, which is
-one of the [[*Deviations][Deviations]].
+one of the [[#deviations][Deviations]].
 
 Paragraphs are the subtle ones (org-element.el:2854). A paragraph
 ends at the next line that cannot be inside it, but each candidate
@@ -1862,9 +1879,9 @@ func line(src []byte, off int) (string, int) {
 
 Mode is the context a parent hands its children. Org threads seven
 of them; the three below are the ones this subset can reach, and
-the dispatcher branches on the third. Planning arrives with stage
-4, which needs it to let a planning line sit between a heading and
-its drawer.
+the dispatcher branches on the third. Org's planning mode has no
+counterpart here, because a planning line between a heading and
+its drawer is not recognized.
 
 #+begin_src go :tangle internal/org/org.go :comments org
 type mode int
@@ -1893,7 +1910,7 @@ type parsed struct {
 }
 #+end_src
 
-parseElements is the loop from [[*The loop]]: identify what starts
+parseElements is the loop from [[#the-loop][The loop]]: identify what starts
 here, recurse when it holds elements, jump to its end, repeat. The
 bound matters twice over. Elements are parsed within it, and a
 non-headline element gets the tighter bound of the next headline,
@@ -1932,7 +1949,7 @@ func (p *parser) parseElements(beg, end int, m mode) ([]book.Node, error) {
 #+end_src
 
 currentElement is the dispatcher, and its order is the table in
-[[*The dispatch]]: the mode branch, then a star run, then the
+[[#the-dispatch][The dispatch]]: the mode branch, then a star run, then the
 affiliated name line, then the block delimiters, then the keyword
 shape, then a paragraph for everything left. The first branch that
 matches wins, which is why the order is the contract and not a
@@ -2398,7 +2415,7 @@ The begin_src line splits three ways: the language, then a run of
 switches, then the header string. Only the switch run needs
 grammar, since org accepts exactly -i, -k, -r, -n and +n with an
 optional count, and -l with a quoted format. Whatever follows the
-run is the header, unresolved until stage 4.
+run is the header string, which stays raw until it is resolved.
 
 #+begin_src go :tangle internal/org/org.go :comments org
 func srcHeader(s string) (lang, switches, header string) {
@@ -2629,7 +2646,7 @@ in testdata/script; the script runs ~babble tangle~ or
 itself included when dynamic blocks are in play. The fixtures are
 data files outside this book, hand-started and machine-reminted,
 like the dependency manifests. Their books start from the worked
-examples in [[*Writing a book for babble]], so what the guide shows
+examples in [[#writing-a-book][Writing a book for babble]], so what the guide shows
 is what the suite pins.
 
 The oracle harness ties every fixture to Emacs's own output.
@@ -2782,9 +2799,8 @@ func TestParseCorpora(t *testing.T) {
 
 ** The oracle harness
 
-Package oracletest is the seam stage 6 fills: the two mode
-switches and the cross-check that runs a fixture through both
-engines.
+Package oracletest carries the two mode switches and the
+cross-check that runs a fixture through both engines.
 
 #+begin_src go :tangle internal/oracletest/oracletest.go :comments org
 package oracletest
@@ -2929,6 +2945,9 @@ func TestDump(t *testing.T) {
 
 * Changes
 
+:PROPERTIES:
+:CUSTOM_ID: changes
+:END:
 A journal, newest first: one entry per completed plan stage,
 covering the problem it addressed or the capability it changed, the
 decisions that shaped it, and the delta at the level a reader of

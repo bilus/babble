@@ -334,6 +334,36 @@ retired Known-issues entry into its narrative, delete the plan entry.
 Journal entries are written once and never reworded; a correction is
 a new entry.
 
+Then sweep, before the acceptance commit. Deleting the plan entry is
+not the end of the transition layer, because the layer leaks into
+prose that no badge marks: a sentence naming a stage number, a
+promise that something "arrives with" a later stage, a doc comment
+that mentions a hole, a paragraph that compares with how the code
+used to be. Those read as ordinary text and survive forever. The
+sweep is one grep and one reading:
+
+    grep -nE '[Ss]tage [0-9]|[-]-planned|HOLE[(]|\{[+][+]|\{[-][-]|\{[~][~]|\{[>][>]' BOOK.org
+
+A hit is allowed in three places: the Plan chapter, the Changes
+journal, and a hole body whose stage still has an entry. Everything
+else is rewritten to steady state, which means it either states what
+the program does today or says nothing at all. "Planning arrives with
+stage 4" becomes "planning lines are not recognized", or becomes a
+Known-issues entry when a reader would trip over the absence, or
+disappears when neither is true. A journal entry may name what
+changed, since it speaks from its date; steady-state text may not,
+since it speaks from none.
+
+Grep alone will not find them all, because prose wraps: "stage" and
+its number land on different lines and the pattern misses. So read as
+well as grep, and read for the tell rather than the token. The tells
+are a future tense about the program itself, a promise that something
+arrives later, a number that only means something to someone holding
+the plan, and any sentence that would puzzle a reader who joined after
+the work was done. That reader is the test: the surviving text should
+be indistinguishable from text written by someone who never saw the
+plan.
+
 The tooling needs none of this rendered: tangle, build, tests,
 census, and sparse trees all work on the plain org. The weave
 renders it: pandoc alone ignores custom todo keywords, inline tasks,

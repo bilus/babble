@@ -79,9 +79,9 @@ func line(src []byte, off int) (string, int) {
 
 // Mode is the context a parent hands its children. Org threads seven
 // of them; the three below are the ones this subset can reach, and
-// the dispatcher branches on the third. Planning arrives with stage
-// 4, which needs it to let a planning line sit between a heading and
-// its drawer.
+// the dispatcher branches on the third. Org's planning mode has no
+// counterpart here, because a planning line between a heading and
+// its drawer is not recognized.
 type mode int
 
 const (
@@ -104,7 +104,7 @@ type parsed struct {
 	childMode mode
 }
 
-// parseElements is the loop from [[*The loop]]: identify what starts
+// parseElements is the loop from [[#the-loop][The loop]]: identify what starts
 // here, recurse when it holds elements, jump to its end, repeat. The
 // bound matters twice over. Elements are parsed within it, and a
 // non-headline element gets the tighter bound of the next headline,
@@ -140,7 +140,7 @@ func (p *parser) parseElements(beg, end int, m mode) ([]book.Node, error) {
 }
 
 // currentElement is the dispatcher, and its order is the table in
-// [[*The dispatch]]: the mode branch, then a star run, then the
+// [[#the-dispatch][The dispatch]]: the mode branch, then a star run, then the
 // affiliated name line, then the block delimiters, then the keyword
 // shape, then a paragraph for everything left. The first branch that
 // matches wins, which is why the order is the contract and not a
@@ -564,7 +564,7 @@ func todoWords(src []byte) []string {
 // switches, then the header string. Only the switch run needs
 // grammar, since org accepts exactly -i, -k, -r, -n and +n with an
 // optional count, and -l with a quoted format. Whatever follows the
-// run is the header, unresolved until stage 4.
+// run is the header string, which stays raw until it is resolved.
 func srcHeader(s string) (lang, switches, header string) {
 	rest := strings.TrimLeft(s, " \t")
 	lang, rest = cutWord(rest)

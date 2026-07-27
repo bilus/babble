@@ -1,8 +1,7 @@
 // Code generated from BOOK.org by make tangle. DO NOT EDIT.
 
-// Package oracletest is the seam stage 6 fills: the two mode
-// switches and the cross-check that runs a fixture through both
-// engines.
+// Package oracletest carries the two mode switches and the
+// cross-check that runs a fixture through both engines.
 package oracletest
 
 import "testing"
