@@ -114,10 +114,10 @@ logging suffixes stripped, the bar dropped), defaulting to TODO and
 DONE; COMMENT is recognized after an optional todo keyword and
 priority (org's bracketed [#A] mark), before the title.
 
-- [ ] inserted prose reads steady-state
-- [ ] Changes draft below reads right in the journal
-- [ ] HOLE(2) cluster filled, parse fixtures in the same commits
-- [ ] census clean for stage 2, suite green
+- [X] inserted prose reads steady-state
+- [X] Changes draft below reads right in the journal
+- [X] HOLE(2) cluster filled, parse fixtures in the same commits
+- [X] census clean for stage 2, suite green
 - [ ] Changes entry dated and filed, plan entry deleted
 
 *** Changes draft
