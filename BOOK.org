@@ -56,19 +56,18 @@ every dynamic block, and the labels are spelled without the sigils,
 so the census never matches its own index.
 
 #+begin: plan-toc
-- [[file:BOOK.org::75][75]] entry: PLANNED Stage 1: the skeleton
-- [[file:BOOK.org::134][134]] entry: PLANNED Stage 2: the document tree
-- [[file:BOOK.org::173][173]] entry: PLANNED Stage 3: blocks in the tree
-- [[file:BOOK.org::216][216]] entry: PLANNED Stage 4: header resolution
-- [[file:BOOK.org::262][262]] entry: PLANNED Stage 5: tangle
-- [[file:BOOK.org::302][302]] entry: PLANNED Stage 6: the oracle harness
-- [[file:BOOK.org::336][336]] entry: PLANNED Stage 7: org comments
-- [[file:BOOK.org::379][379]] entry: PLANNED Stage 8: noweb
-- [[file:BOOK.org::416][416]] entry: PLANNED Stage 9: dynamic blocks
-- [[file:BOOK.org::463][463]] entry: PLANNED Stage 10: the fence
-- [[file:BOOK.org::492][492]] entry: PLANNED Stage 11: parity and self-hosting
-- [[file:BOOK.org::1257][1257]] badge: PLANNED stage 1 replaces the Hello chapter (plan)
-- [[file:BOOK.org::1290][1290]] badge: PLANNED stage 1 rewrites the lit.mk sentence below (plan)
+- [[file:BOOK.org::74][74]] entry: PLANNED Stage 1: the skeleton
+- [[file:BOOK.org::130][130]] entry: PLANNED Stage 2: the document tree
+- [[file:BOOK.org::169][169]] entry: PLANNED Stage 3: blocks in the tree
+- [[file:BOOK.org::212][212]] entry: PLANNED Stage 4: header resolution
+- [[file:BOOK.org::258][258]] entry: PLANNED Stage 5: tangle
+- [[file:BOOK.org::298][298]] entry: PLANNED Stage 6: the oracle harness
+- [[file:BOOK.org::332][332]] entry: PLANNED Stage 7: org comments
+- [[file:BOOK.org::375][375]] entry: PLANNED Stage 8: noweb
+- [[file:BOOK.org::412][412]] entry: PLANNED Stage 9: dynamic blocks
+- [[file:BOOK.org::459][459]] entry: PLANNED Stage 10: the fence
+- [[file:BOOK.org::488][488]] entry: PLANNED Stage 11: parity and self-hosting
+- [[file:BOOK.org::1253][1253]] badge: PLANNED stage 1 replaces the Hello chapter (plan)
 
 #+end:
 
@@ -94,11 +93,11 @@ for the frontend (org recognition, spans, header-string parsing),
 ~internal/dblock~ for dynamic-block refresh and the two writers
 (one generator per dynamic-block name). Org spellings stay in
 ~internal/org~; the engine sees the tree.
-(2) The book adopts ~lit/lit.mk~ (the copy carried since bootstrap,
-with ~PROMPT.md~, ~babble~, ~testdata~, and ~.github~ added to the
-check excludes) so the build glue is book-owned from the first code
-commit, the way reqsync (the sibling literate project this
-toolchain comes from) does it. (3) The template's Hello chapter
+(2) The build glue stays with the toolchain: lit/ is its own
+literate program (shared with reqsync, the sibling literate project
+this toolchain comes from), this book never tangles ~lit/lit.mk~,
+and the babble-specific check excludes ride in the Makefile's
+~CHECK_EXTRA~. (3) The template's Hello chapter
 dies here; the skeleton chapters replace it. (4) Tests are external
 test packages (~package foo_test~) throughout; the testscript
 harness (script-driven CLI tests) lands wired but with no fixtures
@@ -108,9 +107,7 @@ yet.
 - [ ] inserted prose reads steady-state (no "now", "no longer", "still")
 - [ ] Changes draft below reads right in the journal
 - [ ] census lists exactly the holes named here, suite green
-- [ ] root AGENTS.md present, lit.mk book-owned, Hello gone
-- [ ] Reproducing this document reads steady-state (the lit.mk
-  sentence)
+- [ ] root AGENTS.md present, Hello gone
 - [ ] Changes entry dated and filed, plan entry deleted
 
 Holes this skeleton introduces, by the stage that fills each
@@ -127,8 +124,7 @@ and writers, HOLE(10) the lint fence.
 The whole shape of babble landed as a typed skeleton tangled from
 the book: CLI, org frontend, document tree, tangle engine,
 dynamic-block writers, every body a named hole. AGENTS.md took over
-from PROMPT.md as the session brief, and the book took ownership of
-lit/lit.mk.
+from PROMPT.md as the session brief.
 #+end_quote
 
 ** PLANNED Stage 2: the document tree                              :stage2:
@@ -1287,12 +1283,6 @@ no date at all.
 
 * Reproducing this document
 
-*************** PLANNED stage 1 rewrites the lit.mk sentence below ([[#stage-1][plan]]) :stage1:
-Ownership flips at the skeleton; the steady-state sentence then
-reads: lit/lit.mk is tangled from this book, with the
-babble-specific check excludes.
-*************** END
-
 Four make targets reproduce everything here. ~make tangle~
 regenerates the sources through batch Emacs and lit/tangle.el;
 ~make check~ tangles into a scratch directory and diffs;
@@ -1300,11 +1290,9 @@ regenerates the sources through batch Emacs and lit/tangle.el;
 through mmdc (the mermaid CLI) and any in-flight plan styled; and
 ~make review~ is the same weave, named for the review gate.
 
-The toolchain under lit/ is a copy from reqsync plus two local
-pieces, lit/mermaid.lua and the weave recipe line that runs it;
-both belong upstream in reqsync eventually. lit/lit.mk is
-hand-managed until the skeleton stage, when this book takes
-ownership of it with the babble-specific check excludes. The
-Makefile is one hand-written line including it, and go.mod,
-.gitignore, and the fixture data under testdata stay outside the
-book the way manifests always do.
+The toolchain under lit/ is its own literate program, shared with
+reqsync: lit/BOOK.org tangles lit/lit.mk and the scripts, and this
+book only consumes them. The Makefile is one hand-written line
+including lit/lit.mk, plus the babble-specific check excludes in
+~CHECK_EXTRA~; go.mod, .gitignore, and the fixture data under
+testdata stay outside the book the way manifests always do.

@@ -277,9 +277,9 @@ corpus or together with an explicit one-time regeneration story.
   emacs-produced by construction. Include a small runner script or
   make targets: test (pure Go), oracle, update-goldens.
 - Real-book sweep: the oracle harness also copies the reqsync book,
-  the lit/example book, and babble's own BOOK.org (with the lit/
-  driver for the oracle side) into temp trees and cross-checks both
-  engines over them.
+  the lit/example book, the lit/BOOK.org toolchain book, and
+  babble's own BOOK.org (with the lit/ driver for the oracle side)
+  into temp trees and cross-checks both engines over them.
 - Fixture coverage to reach, with original fixtures inspired by the
   upstream areas: block ordering across multiple target files;
   :tangle yes/no/path; COMMENT skip with inheritance; :mkdirp;
