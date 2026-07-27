@@ -7,6 +7,17 @@ the census there, not by reading everything. reqsync
 (~/dev/bilus/reqsync) is the read-only oracle corpus; nothing in
 this repository ever writes there.
 
+## Gates
+
+The review gates follow lit/AGENTS.md: the human approves plans
+and skeletons, and an agent never approves work it authored. When
+the human states approval in conversation ("approved", "skeleton
+approved"), the agent ticks the matching checkbox in the book's
+plan entry on their behalf; the chat message is the approval, the
+tick is clerical. The other checklist boxes are verification
+items: the agent ticks each one only at the moment it has actually
+verified it, output in hand.
+
 ## The oracle workflow
 
 babble must match batch Emacs byte for byte, and the test suite
