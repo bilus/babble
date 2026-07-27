@@ -56,40 +56,39 @@ every dynamic block, and the labels are spelled without the sigils,
 so the census never matches its own index.
 
 #+begin: plan-toc
-- [[file:BOOK.org::96][96]] entry: PLANNED Stage 2: the document tree
-- [[file:BOOK.org::135][135]] entry: PLANNED Stage 3: blocks in the tree
-- [[file:BOOK.org::178][178]] entry: PLANNED Stage 4: header resolution
-- [[file:BOOK.org::224][224]] entry: PLANNED Stage 5: tangle
-- [[file:BOOK.org::264][264]] entry: PLANNED Stage 6: the oracle harness
-- [[file:BOOK.org::298][298]] entry: PLANNED Stage 7: org comments
-- [[file:BOOK.org::341][341]] entry: PLANNED Stage 8: noweb
-- [[file:BOOK.org::378][378]] entry: PLANNED Stage 9: dynamic blocks
-- [[file:BOOK.org::425][425]] entry: PLANNED Stage 10: the fence
-- [[file:BOOK.org::454][454]] entry: PLANNED Stage 11: parity and self-hosting
-- [[file:BOOK.org::1259][1259]] hole 5: parse, refresh, reparse, tangle; errors to stderr
-- [[file:BOOK.org::1423][1423]] hole 2: document-order walk, fn returning false prunes the subtree
-- [[file:BOOK.org::1438][1438]] hole 2: stable JSON rendering of the tree
-- [[file:BOOK.org::1469][1469]] hole 2: headlines, keywords, and prose into a spanned tree
-- [[file:BOOK.org::1479][1479]] hole 3: blocks with names, spans, and the two extent anchors
-- [[file:BOOK.org::1490][1490]] hole 4: every block's Params through the closed table, unknown ke...
-- [[file:BOOK.org::1496][1496]] hole 4: split on space-then-colon outside parens, brackets, and d...
-- [[file:BOOK.org::1500][1500]] hole 4: chomp, unquote an elisp string literal, reject lisp
-- [[file:BOOK.org::1509][1509]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
-- [[file:BOOK.org::1525][1525]] hole 5: collect, resolve targets, assemble with banners, write
-- [[file:BOOK.org::1542][1542]] hole 5: eligible blocks grouped by target in first-appearance order
-- [[file:BOOK.org::1546][1546]] hole 5: no, yes, or a path relative to the book's directory
-- [[file:BOOK.org::1556][1556]] hole 5: unescape commas, dedent by column, expand noweb, dedent a...
-- [[file:BOOK.org::1566][1566]] hole 7: extent between the anchors, then the docstring rule
-- [[file:BOOK.org::1572][1572]] hole 7: line-comment table per language, blank lines as a bare ma...
-- [[file:BOOK.org::1582][1582]] hole 8: named block first, else noweb-ref concatenation; cycles a...
-- [[file:BOOK.org::1593][1593]] hole 5: the generated-file banner in the target's own comment syntax
-- [[file:BOOK.org::1599][1599]] hole 5: refuse the book itself, mkdirp on demand, skip byte-ident...
-- [[file:BOOK.org::1615][1615]] hole 9: splice fresh interiors into the retained bytes, report ch...
-- [[file:BOOK.org::1625][1625]] hole 9: a line link per plan site, sites below the block shifted ...
-- [[file:BOOK.org::1631][1631]] hole 9: system diff -u over the two named bodies, temp-file heade...
-- [[file:BOOK.org::1747][1747]] hole 6: ORACLE=1 in the environment
-- [[file:BOOK.org::1751][1751]] hole 6: UPDATE=1 in the environment
-- [[file:BOOK.org::1757][1757]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
+- [[file:BOOK.org::95][95]] entry: PLANNED Stage 2: the document tree
+- [[file:BOOK.org::134][134]] entry: PLANNED Stage 3: blocks in the tree
+- [[file:BOOK.org::177][177]] entry: PLANNED Stage 4: header resolution
+- [[file:BOOK.org::223][223]] entry: PLANNED Stage 5: tangle
+- [[file:BOOK.org::263][263]] entry: PLANNED Stage 6: the oracle harness
+- [[file:BOOK.org::297][297]] entry: PLANNED Stage 7: org comments
+- [[file:BOOK.org::340][340]] entry: PLANNED Stage 8: noweb
+- [[file:BOOK.org::377][377]] entry: PLANNED Stage 9: dynamic blocks
+- [[file:BOOK.org::424][424]] entry: PLANNED Stage 10: the fence
+- [[file:BOOK.org::453][453]] entry: PLANNED Stage 11: parity and self-hosting
+- [[file:BOOK.org::1258][1258]] hole 5: parse, refresh, reparse, tangle; errors to stderr
+- [[file:BOOK.org::1455][1455]] hole 2: stable JSON rendering of the tree
+- [[file:BOOK.org::1486][1486]] hole 2: headlines, keywords, and prose into a spanned tree
+- [[file:BOOK.org::1496][1496]] hole 3: blocks with names, spans, and the two extent anchors
+- [[file:BOOK.org::1507][1507]] hole 4: every block's Params through the closed table, unknown ke...
+- [[file:BOOK.org::1513][1513]] hole 4: split on space-then-colon outside parens, brackets, and d...
+- [[file:BOOK.org::1517][1517]] hole 4: chomp, unquote an elisp string literal, reject lisp
+- [[file:BOOK.org::1526][1526]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
+- [[file:BOOK.org::1542][1542]] hole 5: collect, resolve targets, assemble with banners, write
+- [[file:BOOK.org::1559][1559]] hole 5: eligible blocks grouped by target in first-appearance order
+- [[file:BOOK.org::1563][1563]] hole 5: no, yes, or a path relative to the book's directory
+- [[file:BOOK.org::1573][1573]] hole 5: unescape commas, dedent by column, expand noweb, dedent a...
+- [[file:BOOK.org::1583][1583]] hole 7: extent between the anchors, then the docstring rule
+- [[file:BOOK.org::1589][1589]] hole 7: line-comment table per language, blank lines as a bare ma...
+- [[file:BOOK.org::1599][1599]] hole 8: named block first, else noweb-ref concatenation; cycles a...
+- [[file:BOOK.org::1610][1610]] hole 5: the generated-file banner in the target's own comment syntax
+- [[file:BOOK.org::1616][1616]] hole 5: refuse the book itself, mkdirp on demand, skip byte-ident...
+- [[file:BOOK.org::1632][1632]] hole 9: splice fresh interiors into the retained bytes, report ch...
+- [[file:BOOK.org::1642][1642]] hole 9: a line link per plan site, sites below the block shifted ...
+- [[file:BOOK.org::1648][1648]] hole 9: system diff -u over the two named bodies, temp-file heade...
+- [[file:BOOK.org::1764][1764]] hole 6: ORACLE=1 in the environment
+- [[file:BOOK.org::1768][1768]] hole 6: UPDATE=1 in the environment
+- [[file:BOOK.org::1774][1774]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
 
 #+end:
 
@@ -1420,7 +1419,25 @@ COMMENT skipping stays one line at the call site.
 
 #+begin_src go :tangle internal/book/book.go :comments org
 func (d *Document) Walk(fn func(Node) bool) {
-	panic("HOLE(2): document-order walk, fn returning false prunes the subtree")
+	walk(d.Nodes, fn)
+}
+#+end_src
+
+#+begin_src go :tangle internal/book/book.go
+func walk(nodes []Node, fn func(Node) bool) {
+	for _, n := range nodes {
+		if !fn(n) {
+			continue
+		}
+		switch n := n.(type) {
+		case *Headline:
+			walk(n.Children, fn)
+		case *DynamicBlock:
+			walk(n.Children, fn)
+		case *QuoteBlock:
+			walk(n.Children, fn)
+		}
+	}
 }
 #+end_src
 
@@ -1784,6 +1801,41 @@ func TestLineAt(t *testing.T) {
 	} {
 		if got := d.LineAt(tc.off); got != tc.line {
 			t.Errorf("LineAt(%d) = %d, want %d", tc.off, got, tc.line)
+		}
+	}
+}
+#+end_src
+
+TestWalk pins the pruning contract: returning false skips a
+subtree's children without touching its siblings, which is exactly
+what COMMENT skipping needs.
+
+#+name: TestWalk
+#+begin_src go :tangle internal/book/book_test.go :comments org
+func TestWalk(t *testing.T) {
+	d := &book.Document{Nodes: []book.Node{
+		&book.Headline{Line: 1, Children: []book.Node{&book.Prose{Line: 2}}},
+		&book.Headline{Line: 3, Children: []book.Node{&book.Prose{Line: 4}}},
+		&book.Prose{Line: 5},
+	}}
+	var lines []int
+	d.Walk(func(n book.Node) bool {
+		switch n := n.(type) {
+		case *book.Headline:
+			lines = append(lines, n.Line)
+			return n.Line != 3
+		case *book.Prose:
+			lines = append(lines, n.Line)
+		}
+		return true
+	})
+	want := []int{1, 2, 3, 5}
+	if len(lines) != len(want) {
+		t.Fatalf("visited %v, want %v", lines, want)
+	}
+	for i := range want {
+		if lines[i] != want[i] {
+			t.Fatalf("visited %v, want %v", lines, want)
 		}
 	}
 }

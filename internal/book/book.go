@@ -121,7 +121,23 @@ type Params struct {
 // children; fn returning false prunes the subtree, which is how
 // COMMENT skipping stays one line at the call site.
 func (d *Document) Walk(fn func(Node) bool) {
-	panic("HOLE(2): document-order walk, fn returning false prunes the subtree")
+	walk(d.Nodes, fn)
+}
+
+func walk(nodes []Node, fn func(Node) bool) {
+	for _, n := range nodes {
+		if !fn(n) {
+			continue
+		}
+		switch n := n.(type) {
+		case *Headline:
+			walk(n.Children, fn)
+		case *DynamicBlock:
+			walk(n.Children, fn)
+		case *QuoteBlock:
+			walk(n.Children, fn)
+		}
+	}
 }
 
 func (d *Document) LineAt(off int) int {

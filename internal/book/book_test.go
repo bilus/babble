@@ -22,3 +22,34 @@ func TestLineAt(t *testing.T) {
 		}
 	}
 }
+
+// TestWalk pins the pruning contract: returning false skips a
+// subtree's children without touching its siblings, which is exactly
+// what COMMENT skipping needs.
+func TestWalk(t *testing.T) {
+	d := &book.Document{Nodes: []book.Node{
+		&book.Headline{Line: 1, Children: []book.Node{&book.Prose{Line: 2}}},
+		&book.Headline{Line: 3, Children: []book.Node{&book.Prose{Line: 4}}},
+		&book.Prose{Line: 5},
+	}}
+	var lines []int
+	d.Walk(func(n book.Node) bool {
+		switch n := n.(type) {
+		case *book.Headline:
+			lines = append(lines, n.Line)
+			return n.Line != 3
+		case *book.Prose:
+			lines = append(lines, n.Line)
+		}
+		return true
+	})
+	want := []int{1, 2, 3, 5}
+	if len(lines) != len(want) {
+		t.Fatalf("visited %v, want %v", lines, want)
+	}
+	for i := range want {
+		if lines[i] != want[i] {
+			t.Fatalf("visited %v, want %v", lines, want)
+		}
+	}
+}
