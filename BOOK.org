@@ -56,34 +56,43 @@ every dynamic block, and the labels are spelled without the sigils,
 so the census never matches its own index.
 
 #+begin: plan-toc
-- [[file:BOOK.org::90][90]] entry: PLANNED Stage 4: header resolution
-- [[file:BOOK.org::136][136]] entry: PLANNED Stage 5: tangle
-- [[file:BOOK.org::176][176]] entry: PLANNED Stage 6: the oracle harness
-- [[file:BOOK.org::210][210]] entry: PLANNED Stage 7: org comments
-- [[file:BOOK.org::253][253]] entry: PLANNED Stage 8: noweb
-- [[file:BOOK.org::290][290]] entry: PLANNED Stage 9: dynamic blocks
-- [[file:BOOK.org::337][337]] entry: PLANNED Stage 10: the fence
-- [[file:BOOK.org::366][366]] entry: PLANNED Stage 11: parity and self-hosting
-- [[file:BOOK.org::1180][1180]] hole 5: parse, refresh, reparse, tangle; errors to stderr
-- [[file:BOOK.org::2507][2507]] hole 4: every block's Params through the closed table, unknown ke...
-- [[file:BOOK.org::2513][2513]] hole 4: split on space-then-colon outside parens, brackets, and d...
-- [[file:BOOK.org::2517][2517]] hole 4: chomp, unquote an elisp string literal, reject lisp
-- [[file:BOOK.org::2526][2526]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
-- [[file:BOOK.org::2542][2542]] hole 5: collect, resolve targets, assemble with banners, write
-- [[file:BOOK.org::2559][2559]] hole 5: eligible blocks grouped by target in first-appearance order
-- [[file:BOOK.org::2563][2563]] hole 5: no, yes, or a path relative to the book's directory
-- [[file:BOOK.org::2573][2573]] hole 5: unescape commas, dedent by column, expand noweb, dedent a...
-- [[file:BOOK.org::2583][2583]] hole 7: extent between the anchors, then the docstring rule
-- [[file:BOOK.org::2589][2589]] hole 7: line-comment table per language, blank lines as a bare ma...
-- [[file:BOOK.org::2599][2599]] hole 8: named block first, else noweb-ref concatenation; cycles a...
-- [[file:BOOK.org::2610][2610]] hole 5: the generated-file banner in the target's own comment syntax
-- [[file:BOOK.org::2616][2616]] hole 5: refuse the book itself, mkdirp on demand, skip byte-ident...
-- [[file:BOOK.org::2632][2632]] hole 9: splice fresh interiors into the retained bytes, report ch...
-- [[file:BOOK.org::2642][2642]] hole 9: a line link per plan site, sites below the block shifted ...
-- [[file:BOOK.org::2648][2648]] hole 9: system diff -u over the two named bodies, temp-file heade...
-- [[file:BOOK.org::2858][2858]] hole 6: ORACLE=1 in the environment
-- [[file:BOOK.org::2862][2862]] hole 6: UPDATE=1 in the environment
-- [[file:BOOK.org::2868][2868]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
+- [[file:BOOK.org::99][99]] entry: PLANNED Stage 4: header resolution
+- [[file:BOOK.org::160][160]] entry: PLANNED Stage 5: tangle
+- [[file:BOOK.org::200][200]] entry: PLANNED Stage 6: the oracle harness
+- [[file:BOOK.org::234][234]] entry: PLANNED Stage 7: org comments
+- [[file:BOOK.org::277][277]] entry: PLANNED Stage 8: noweb
+- [[file:BOOK.org::314][314]] entry: PLANNED Stage 9: dynamic blocks
+- [[file:BOOK.org::361][361]] entry: PLANNED Stage 10: the fence
+- [[file:BOOK.org::390][390]] entry: PLANNED Stage 11: parity and self-hosting
+- [[file:BOOK.org::1197][1197]] badge: PLANNED stage 4 replaces the block above (plan)
+- [[file:BOOK.org::1205][1205]] twin of run
+- [[file:BOOK.org::1262][1262]] hole 5: parse, refresh, reparse, tangle; errors to stderr
+- [[file:BOOK.org::2143][2143]] badge: PLANNED stage 4 replaces the block above (plan)
+- [[file:BOOK.org::2164][2164]] twin of headlineParser
+- [[file:BOOK.org::2167][2167]] hole 4: as before, but step over a planning line before the drawer
+- [[file:BOOK.org::2615][2615]] badge: PLANNED stage 4 fills the holes below (plan)
+- [[file:BOOK.org::2625][2625]] hole 4: every block's Params through the closed table, unknown ke...
+- [[file:BOOK.org::2636][2636]] hole 4: walk, appending each headline's header-args, resolving ea...
+- [[file:BOOK.org::2642][2642]] hole 4: defaults, then inherited, then the block's own header, la...
+- [[file:BOOK.org::2661][2661]] hole 4: the closed table, and false for a key it does not know
+- [[file:BOOK.org::2667][2667]] hole 4: split on space-then-colon outside parens, brackets, and d...
+- [[file:BOOK.org::2671][2671]] hole 4: chomp, unquote an elisp string literal, reject lisp
+- [[file:BOOK.org::2680][2680]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
+- [[file:BOOK.org::2696][2696]] hole 5: collect, resolve targets, assemble with banners, write
+- [[file:BOOK.org::2713][2713]] hole 5: eligible blocks grouped by target in first-appearance order
+- [[file:BOOK.org::2717][2717]] hole 5: no, yes, or a path relative to the book's directory
+- [[file:BOOK.org::2727][2727]] hole 5: unescape commas, dedent by column, expand noweb, dedent a...
+- [[file:BOOK.org::2737][2737]] hole 7: extent between the anchors, then the docstring rule
+- [[file:BOOK.org::2743][2743]] hole 7: line-comment table per language, blank lines as a bare ma...
+- [[file:BOOK.org::2753][2753]] hole 8: named block first, else noweb-ref concatenation; cycles a...
+- [[file:BOOK.org::2764][2764]] hole 5: the generated-file banner in the target's own comment syntax
+- [[file:BOOK.org::2770][2770]] hole 5: refuse the book itself, mkdirp on demand, skip byte-ident...
+- [[file:BOOK.org::2786][2786]] hole 9: splice fresh interiors into the retained bytes, report ch...
+- [[file:BOOK.org::2796][2796]] hole 9: a line link per plan site, sites below the block shifted ...
+- [[file:BOOK.org::2802][2802]] hole 9: system diff -u over the two named bodies, temp-file heade...
+- [[file:BOOK.org::3012][3012]] hole 6: ORACLE=1 in the environment
+- [[file:BOOK.org::3016][3016]] hole 6: UPDATE=1 in the environment
+- [[file:BOOK.org::3022][3022]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
 
 #+end:
 
@@ -117,11 +126,26 @@ are proven exhaustive by enumeration of the parameter lookups on
 org's tangle code path, done during the source reading that shaped
 this plan; the inert bin is every key that path never touches, and
 an ORACLE fixture pins that a block carrying the inert keys tangles
-to the same bytes in both engines.
+to the same bytes in both engines. (4) The planning line closes
+with this stage: org admits a ~SCHEDULED:~ or ~DEADLINE:~ line
+between a headline and its property drawer, babble reads the
+drawer only when it comes first, and a drawer missed is inheritance
+lost, which starts mattering the moment inheritance exists.
+(5) Resolution runs where the tree is built for a command that
+needs it, so ~parse --dump~ resolves before dumping and the block
+fixtures gain a resolved header set; their goldens are regenerated
+in the same commit and read by hand. (6) Language defaults have no
+counterpart: org merges ~org-babel-default-header-args:LANG~ if a
+language pack defines it, and batch Emacs loads none, so the merge
+order here is driver defaults, inherited properties, then the
+block's own line.
 
+- [ ] skeleton approved (the human ticks this box)
 - [ ] inserted prose reads steady-state
 - [ ] Changes draft below reads right in the journal
 - [ ] HOLE(4) cluster filled, fixtures in the same commits
+- [ ] twins accepted: the planning line and the resolving parse
+- [ ] block goldens regenerated and read, not merely accepted
 - [ ] census clean for stage 4, suite green
 - [ ] Changes entry dated and filed, plan entry deleted
 
@@ -1170,6 +1194,64 @@ func run(args []string, stdout, stderr io.Writer) int {
 }
 #+end_src
 
+*************** PLANNED stage 4 replaces the block above ([[#stage-4][plan]]) :stage4:
+The twin resolves the header arguments before dumping, so the tree
+a reader sees carries the same parameters the tangler will act on.
+Accept by swapping the two blocks' ~:tangle~ headers.
+*************** END
+
+run dispatches the subcommands and owns the exit codes.
+
+#+name: run--planned
+#+begin_src go :tangle no :comments org
+func run(args []string, stdout, stderr io.Writer) int {
+	if len(args) < 1 {
+		fmt.Fprint(stderr, usage)
+		return 2
+	}
+	switch args[0] {
+	case "parse":
+		fs := flag.NewFlagSet("parse", flag.ContinueOnError)
+		fs.SetOutput(stderr)
+		dump := fs.Bool("dump", false, "print the tree as JSON")
+		if err := fs.Parse(args[1:]); err != nil {
+			return 2
+		}
+		if fs.NArg() != 1 {
+			fmt.Fprint(stderr, usage)
+			return 2
+		}
+		d, err := org.Parse(fs.Arg(0))
+		if err == nil {
+			err = org.ResolveAll(d)
+		}
+		if err != nil {
+			fmt.Fprintln(stderr, "babble:", err)
+			return 1
+		}
+		if *dump {
+			out, err := book.Dump(d)
+			if err != nil {
+				fmt.Fprintln(stderr, "babble:", err)
+				return 1
+			}
+			if _, err := stdout.Write(out); err != nil {
+				return 1
+			}
+		}
+		return 0
+	case "tangle":
+		if len(args) != 2 {
+			fmt.Fprint(stderr, usage)
+			return 2
+		}
+		return tangleCmd(args[1], stderr)
+	}
+	fmt.Fprint(stderr, usage)
+	return 2
+}
+#+end_src
+
 tangleCmd is the whole tangle flow in one place: parse the book,
 refresh its dynamic blocks, reparse the refreshed bytes, then
 write the targets. The reparse matters because refresh moves line
@@ -2058,6 +2140,34 @@ func (p *parser) headlineParser(text string, next, limit int) (parsed, int, erro
 }
 #+end_src
 
+*************** PLANNED stage 4 replaces the block above ([[#stage-4][plan]]) :stage4:
+Org lets a planning line stand between a headline and its drawer,
+and a drawer read as prose is inheritance lost. The twin steps over
+one before asking for the drawer. Accept by swapping the two
+blocks' ~:tangle~ headers.
+*************** END
+
+A headline owns its subtree, which ends at the next headline of
+its level or shallower. A planning line may stand between the
+heading and its property drawer, and the drawer is the headline's
+own data either way, so the parser steps over the one and asks for
+the other before handing the rest of the range to the loop.
+Everything after the stars is optional except the title:
+#+begin_example
+  ** DONE [#A] COMMENT Ship it            :release:tools:
+     SCHEDULED: <2026-07-27 Mon>
+     :PROPERTIES:
+     :header-args: :comments org
+     :END:
+#+end_example
+
+#+name: headlineParser--planned
+#+begin_src go :tangle no :comments org
+func (p *parser) headlineParser(text string, next, limit int) (parsed, int, error) {
+	panic("HOLE(4): as before, but step over a planning line before the drawer")
+}
+#+end_src
+
 #+begin_src go :tangle internal/org/org.go
 func firstWord(s string) (word, rest string, ok bool) {
 	i := strings.IndexAny(s, " \t")
@@ -2421,7 +2531,7 @@ func todoWords(src []byte) []string {
 }
 #+end_src
 
-The begin_src line splits three ways: the language, then a run of
+The =begin_src= line splits three ways: the language, then a run of
 switches, then the header string. Only the switch run needs
 grammar, since org accepts exactly -i, -k, -r, -n and +n with an
 optional count, and -l with a quoted format. Whatever follows the
@@ -2502,9 +2612,53 @@ table: the merge order, then the three bins, an unknown key an
 error. The splitter and reader below are its tools, ported from
 org's balanced splitter and value reader.
 
+*************** PLANNED stage 4 fills the holes below ([[#stage-4][plan]]) :stage4:
+Resolution is four seams: the walk that carries inherited headers
+down the tree, the merge that produces one block's parameters, the
+table that says which bin a key falls in, and the two readers the
+contract already describes. Only the walk is new work; the rest
+were holed at the skeleton.
+*************** END
+
 #+begin_src go :tangle internal/org/org.go :comments org
 func ResolveAll(d *book.Document) error {
 	panic("HOLE(4): every block's Params through the closed table, unknown keys error by name")
+}
+#+end_src
+
+The walk carries what a block inherits: the file's own
+~#+property~ line first, then each ancestor's drawer, nearest
+last, so a nearer setting overrides a farther one by arriving
+later in the merge.
+
+#+begin_src go :tangle internal/org/org.go :comments org
+func resolveNodes(d *book.Document, nodes []book.Node, inherited []string) error {
+	panic("HOLE(4): walk, appending each headline's header-args, resolving each src block")
+}
+#+end_src
+
+#+begin_src go :tangle internal/org/org.go
+func resolveBlock(b *book.SrcBlock, inherited []string) (book.Params, error) {
+	panic("HOLE(4): defaults, then inherited, then the block's own header, later winning")
+}
+#+end_src
+
+Every key on every src block lands in one of three bins, and a key
+the table does not know is an error rather than a guess. That is
+the whole fence around org's option space, and it is a lookup, not
+a heuristic.
+
+#+begin_src go :tangle internal/org/org.go :comments org
+type headerBin int
+
+const (
+	binImplemented headerBin = iota // babble acts on it
+	binRejected                     // babble refuses it by name
+	binInert                        // org's tangler never reads it
+)
+
+func classify(key string) (headerBin, bool) {
+	panic("HOLE(4): the closed table, and false for a key it does not know")
 }
 #+end_src
 

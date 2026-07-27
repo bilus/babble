@@ -566,7 +566,7 @@ func todoWords(src []byte) []string {
 	return words
 }
 
-// The begin_src line splits three ways: the language, then a run of
+// The =begin_src= line splits three ways: the language, then a run of
 // switches, then the header string. Only the switch run needs
 // grammar, since org accepts exactly -i, -k, -r, -n and +n with an
 // optional count, and -l with a quoted format. Whatever follows the
@@ -635,12 +635,37 @@ func isNumber(s string) bool {
 	return true
 }
 
-// ResolveAll fills every src block's Params through the closed
-// table: the merge order, then the three bins, an unknown key an
-// error. The splitter and reader below are its tools, ported from
-// org's balanced splitter and value reader.
+// END
 func ResolveAll(d *book.Document) error {
 	panic("HOLE(4): every block's Params through the closed table, unknown keys error by name")
+}
+
+// The walk carries what a block inherits: the file's own
+// ~#+property~ line first, then each ancestor's drawer, nearest
+// last, so a nearer setting overrides a farther one by arriving
+// later in the merge.
+func resolveNodes(d *book.Document, nodes []book.Node, inherited []string) error {
+	panic("HOLE(4): walk, appending each headline's header-args, resolving each src block")
+}
+
+func resolveBlock(b *book.SrcBlock, inherited []string) (book.Params, error) {
+	panic("HOLE(4): defaults, then inherited, then the block's own header, later winning")
+}
+
+// Every key on every src block lands in one of three bins, and a key
+// the table does not know is an error rather than a guess. That is
+// the whole fence around org's option space, and it is a lookup, not
+// a heuristic.
+type headerBin int
+
+const (
+	binImplemented headerBin = iota // babble acts on it
+	binRejected                     // babble refuses it by name
+	binInert                        // org's tangler never reads it
+)
+
+func classify(key string) (headerBin, bool) {
+	panic("HOLE(4): the closed table, and false for a key it does not know")
 }
 
 func balancedSplit(s string) []string {
