@@ -3,13 +3,21 @@
 BOOK.org is the program. Everything in this directory turns that one
 file into sources, PDFs, and a reviewable plan: lit.mk carries the
 make targets (the top-level Makefile just includes it), tangle.el
-drives org-babel in batch and defines the dynamic blocks, notes.lua
-and plan.lua style the weaves, and preprocess.py rewrites plan markup
-into org that pandoc understands. Agents should read AGENTS.md in
+drives org-babel in batch and defines the dynamic blocks, notes.lua,
+plan.lua, and mermaid.lua style the weaves, preprocess.py rewrites
+plan markup into org that pandoc understands, and texlinks.py turns
+noweb references into PDF links. Agents should read AGENTS.md in
 this directory; this file is for people. example/ is a complete toy
 book exercising the whole convention, and doubles as the toolchain's
 smoke test: `make -C example tangle check`, or the same targets from
 inside the directory.
+
+The toolchain is itself a literate program: BOOK.org in this
+directory is the book the scripts tangle from, its Makefile points
+the targets at ".", and `make weave` here renders the full
+requirements and implementation story. To change a script, edit
+lit/BOOK.org and retangle; the scripts carry generated-file banners
+like any other tangled source.
 
 ## The flow
 
@@ -21,8 +29,12 @@ Edit BOOK.org, never the generated files. Then:
     make weave     # book.pdf, with any in-flight plan rendered
 
 A book with no plan in flight weaves as a plain book; make review is
-an alias of weave. Everything here is local and safe to run at any
-time.
+an alias of weave. In the PDF every block that tangles carries a
+numbered Listing caption naming its target file and, when the block
+is named, its <<name>>; a noweb reference inside a listing is a
+clickable link to the block it names. A consumer's Makefile can pass
+extra check exclusions as diff flags: CHECK_EXTRA := -x testdata.
+Everything here is local and safe to run at any time.
 
 ## Starting a new Go project
 

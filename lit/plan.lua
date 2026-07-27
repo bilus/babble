@@ -1,3 +1,5 @@
+-- Code generated from BOOK.org by make tangle. DO NOT EDIT.
+
 -- Review-weave styling for plan markup: badge boxes, colored state
 -- keywords, gray tags. Runs after lit/preprocess.py has rewritten
 -- inline tasks into planned/hole special blocks.

@@ -1,3 +1,5 @@
+;; Code generated from BOOK.org by make tangle. DO NOT EDIT.
+
 ;; Batch tangler for the org literate experiment.
 ;; Provides Go comment syntax (no go-mode in batch) and turns the last
 ;; prose paragraph before a :comments org block into its comment.

@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# Code generated from BOOK.org by make tangle. DO NOT EDIT.
+
 """Review-weave preprocessor: org with plan markup -> pandoc-friendly org.
 
 - inline tasks (15+ stars) -> #+begin_planned / #+begin_hole special blocks
@@ -38,8 +40,20 @@ PREAMBLE = [
     # under Highlights and Notes
     "#+latex_header: \\newcommand{\\planbadgemark}[3]{\\marginnote{\\special{pdf:ann width 8pt height 8pt << /Type /Annot /Subtype /Text /Name /Comment /C [0.69 0.38 0.08] /Contents (#3) >>}\\hspace{14pt}\\textcolor{#1}{\\rule{2.5pt}{9pt}\\,{\\scriptsize #2}}}}",
     "#+latex_header: \\newenvironment{planbox}[1]{\\def\\FrameCommand{{\\color{#1}\\vrule width 3pt}\\hspace{8pt}}\\MakeFramed{\\advance\\hsize-\\width\\FrameRestore}\\begingroup\\color{#1}\\itshape}{\\endgroup\\endMakeFramed}",
+    # numbered caption above every tangling block (notes.lua emits the
+    # calls, adding [name] when the block has one); detokenize keeps
+    # underscores in filenames and block names typesettable
+    "#+latex_header: \\newcounter{codelisting}",
+    "#+latex_header: \\newcommand{\\codecaption}[2][]{\\par\\medskip\\noindent{\\stepcounter{codelisting}\\small\\textbf{Listing \\thecodelisting:} \\texttt{\\detokenize{#2}}\\if\\relax\\detokenize{#1}\\relax\\else\\quad\\textcolor{gray}{\\texttt{\\detokenize{<<#1>>}}}\\fi}\\par\\nopagebreak\\vspace{2pt}}",
+    # noweb references inside highlighted code: texlinks.py rewrites
+    # the placeholders notes.lua planted into \NowebRef calls. Plain
+    # \hyperlink, not \hyperref[label]: label lookup explodes under
+    # fancyvrb's verbatim catcodes, so notes.lua plants matching
+    # \hypertarget anchors at the named blocks instead. The dest name
+    # is detokenized too: fancyvrb makes - active, and an active -
+    # expands to hyphenation boxes inside the destination string
+    "#+latex_header: \\newcommand{\\NowebRef}[1]{\\hyperlink{noweb:\\detokenize{#1}}{\\detokenize{<<#1>>}}}",
 ]
-
 
 # The content between the delimiters stays org: pandoc renders its
 # markup (verbatim, links, braces) and only the \cm..{ } shells are
@@ -47,7 +61,6 @@ PREAMBLE = [
 # inner braces and turns org markup into literal TeX.
 def cm(macro, s):
     return "@@latex:\\%s{@@%s@@latex:}@@" % (macro, s)
-
 
 def criticmarkup(text):
     text = re.sub(r"\{~~(.+?)~>(.+?)~~\}",
@@ -64,12 +77,10 @@ def criticmarkup(text):
                   text, flags=re.S)
     return text
 
-
 def strip_org(s):
     s = re.sub(r"\[\[[^]]*\]\[([^]]*)\]\]", r"\1", s)
     s = re.sub(r"\[\[([^]]*)\]\]", r"\1", s)
     return s.strip()
-
 
 def badge_titles(text):
     """Badge display titles, in the same order badges() counts them."""
@@ -85,7 +96,6 @@ def badge_titles(text):
             t = tm.group(1)
         out.append(strip_org(t))
     return out
-
 
 def pdf_note(title, body):
     """Sticky-note contents: PDF-string- and macro-arg-safe ASCII.
@@ -110,7 +120,6 @@ def pdf_note(title, body):
     if depth != 0:
         s = " ".join(s.replace("(", " ").replace(")", " ").split())
     return s[:237] + "..." if len(s) > 240 else s
-
 
 def badges(lines):
     star = re.compile(r"^\*{15,}\s+(.*\S)\s*$")
@@ -143,7 +152,7 @@ def badges(lines):
             kw = parts[0]
             title = parts[1] if len(parts) > 1 else ""
         block = KEYWORDS.get(kw, "planned")
-        label = ("*%s* — " % kw if kw else "") + title
+        label = ("*%s* \u2014 " % kw if kw else "") + title
         if tags:
             label += "  (" + tags.strip(":").replace(":", ", ") + ")"
         stage = re.search(r"stage(\d+)", tags)
@@ -165,11 +174,10 @@ def badges(lines):
         i += 1
     return out
 
-
 def main(src, dst):
     text = open(src, encoding="utf-8").read()
     text = criticmarkup(text)
-    text = text.replace("→", "$\\rightarrow$")
+    text = text.replace("\u2192", "$\\rightarrow$")
     has_geometry = re.search(r"^#\+latex_header:.*geometry", text,
                              re.IGNORECASE | re.MULTILINE)
     preamble = [p for p in PREAMBLE
@@ -222,7 +230,6 @@ def main(src, dst):
             injected = True
     open(dst, "w", encoding="utf-8", newline="\n").write(
         "\n".join(badges(lines)) + "\n")
-
 
 if __name__ == "__main__":
     main(sys.argv[1], sys.argv[2])

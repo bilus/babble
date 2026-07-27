@@ -1,0 +1,2 @@
+LIT := .
+include lit.mk

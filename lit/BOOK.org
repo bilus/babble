@@ -1,0 +1,1190 @@
+#+title: lit, a toolchain for literate programs
+#+todo: PLANNED(p!) HOLE(h!) FILLING(f!) | LIVE(l!) DROPPED(d@)
+
+* Introduction
+
+A program and its explanation drift apart because they live in
+different files. The code moves with every commit; the document
+moves when someone remembers it exists. Every project accepts some
+version of this drift, and every project pays for it.
+
+lit removes the second file. A project using lit keeps its source
+code and its narrative in one org document called the book, named
+BOOK.org by convention. The book reads as a paper: chapters, prose,
+diagrams, and code listings in an order chosen for the reader.
+Two operations connect it to the working program. Tangling extracts
+every code listing into ordinary source files, and weaving renders
+the whole book as a PDF. The prose cannot drift from the code
+because deleting the prose would delete the program.
+
+This document is the lit toolchain's own book. The scripts that
+tangle and weave every other book are tangled from this one, so the
+toolchain is proof of its own method. The chapters go from the
+outside in: first what the system promises, then the programs it
+stands on, then the flows, then each script in full.
+
+* The contract
+
+These are the requirements. Everything after this chapter is
+implementation.
+
+** One source of truth
+
+The book is the program. Every generated file opens with a banner
+comment, "Code generated from BOOK.org by make tangle. DO NOT
+EDIT.", in the comment syntax of its own language. A hand edit to a
+generated file is always a mistake; the next tangle silently
+reverses it. Files the book does not generate, dependency
+manifests, the one-line Makefile, .gitignore, README files, are
+hand-managed and never touched by the toolchain.
+
+** Tangling
+
+A code block in the book names a target, the file it lands in.
+Tangling writes every target from its blocks, in the order the
+blocks appear in the book, separated by exactly one blank line,
+with a final newline at the end of the file. Parent directories are
+created as needed. A target whose new content is byte-identical to
+what is on disk is not rewritten, so timestamps survive and build
+tools stay calm.
+
+The paragraph directly above a code block is that block's
+docstring. It tangles into the source file as a comment above the
+code, so the explanation a reader sees in the book is the comment a
+maintainer sees in the file. A paragraph that begins with "Note: "
+or "Apropos: " is an aside; the sigil is presentation and is
+stripped on the way into the source. When a docstring needs several
+paragraphs, an invisible marker line in the book separates
+narrative from docstring; the rules live in AGENTS.md next to this
+file.
+
+Books may also hold generated views: blocks whose content is
+derived from the rest of the book, such as a diff between a block
+and its planned replacement, or a jump list of every planned
+change. Tangling refreshes all of them before extracting code, so a
+committed view can never disagree with the book that contains it.
+
+** Weaving
+
+Weaving produces book.pdf, a paper-like rendering of the book. The
+PDF must carry a table of contents, syntax-highlighted code, and
+three affordances that make the code navigable:
+
+- Every block that tangles gets a numbered caption, "Listing N:",
+  naming its target file, the way figures are captioned in a paper.
+- A named block shows its name in the caption, spelled ~<<name>>~,
+  the same spelling a reference uses.
+- A named region block, one that reaches a file only by being
+  referenced from another block, is captioned with the file it
+  lands in, resolved through the references. A named block that
+  neither tangles nor is referenced, a planned twin for instance,
+  stays uncaptioned.
+- A reference to a named block inside another listing is a
+  hyperlink; clicking it jumps to the named block's caption.
+
+Diagrams written in mermaid, a plain-text diagram language, render
+as pictures. Note and Apropos asides render as indented quotations.
+Prose links to named blocks become internal PDF links.
+
+** Plans render in place
+
+A book can carry its own change plan: a temporary Plan chapter,
+marked paragraphs at every site a change touches, and proposed
+replacements beside the code they replace. The authoring rules are
+AGENTS.md's business, not this book's. The toolchain's obligation
+is rendering: the weave must show badges as colored ruled boxes
+with margin marks, insertions in green and deletions in red, a
+"Plan sites" branch in the PDF outline, a sticky-note annotation
+per badge, and a jump list whose entries link to their badges. A
+book with no plan in flight weaves as a plain book, and make review
+is the same weave under the name the review gate uses.
+
+** Checking
+
+make check proves the book and the tree agree: it tangles the book
+into a scratch directory and compares the result against the
+working tree, byte for byte, recursively. Hand-managed files are
+excluded from the comparison; everything else must match. A
+consumer can extend the exclusion list through the ~CHECK_EXTRA~
+variable without editing the toolchain.
+
+** Starting a project
+
+make setup bootstraps a fresh project: it copies a starter book
+from the templates directory, go or python by autodetection
+(TARGET= forces the choice), writes the one-line Makefile when none
+exists, refuses to overwrite an existing book, and runs the first
+tangle. The example directory holds a complete toy book that
+doubles as the toolchain's smoke test.
+
+** Self-hosting
+
+This book tangles the toolchain: the make targets and the six
+scripts below. Running make inside lit/ regenerates them; running
+make check inside lit/ proves this book and the scripts agree. The
+committed driver runs the tangle that regenerates the driver, which
+is circular only at first glance: the running copy is already in
+memory when its file is rewritten.
+
+* The programs
+
+lit writes none of its own parsers or typesetters. It stands on six
+programs, each doing the one thing it is best at.
+
+Emacs with org-babel does the tangling. org-babel is the reference
+implementation of org's literate features, and batch Emacs, started
+with a blank configuration, runs it headless and reproducibly. The
+driver script tangle.el configures it and adds what lit needs.
+
+Pandoc converts the book to LaTeX. Pandoc reads org natively and
+accepts filters, small Lua programs that rewrite the document tree
+between reading and writing. lit's three filters run inside pandoc,
+so they need no separate Lua installation.
+
+Tectonic compiles the LaTeX to PDF. It is a self-contained XeTeX
+engine that downloads the packages a document needs on first use,
+so there is no TeX distribution to install or maintain.
+
+Python 3 runs the two rewriters that bracket pandoc: one prepares
+the org before pandoc sees it, one repairs the LaTeX after pandoc
+writes it.
+
+mmdc, the mermaid command-line compiler, turns mermaid diagram
+source into PDF images at weave time. Without it, diagrams degrade
+to source listings and the weave still completes.
+
+make and diff are the glue: make sequences the steps, diff powers
+both the byte-identity check and the generated diff views.
+
+* The flows
+
+** Tangling
+
+#+begin_src mermaid
+flowchart LR
+  B[BOOK.org] --> E[batch Emacs + tangle.el]
+  E --> R[refresh generated views]
+  R --> B
+  E --> S[source files, banner stamped]
+#+end_src
+
+make tangle starts batch Emacs, loads tangle.el, and calls its
+entry point on the book. The driver first refreshes every generated
+view and saves the book if any changed, then extracts all code
+blocks. Two hooks run on every written file: one normalizes blank
+comment lines, one stamps the banner.
+
+** Weaving
+
+#+begin_src mermaid
+flowchart LR
+  B[BOOK.org] --> P[preprocess.py]
+  P --> W[book-weave.org]
+  W --> PD[pandoc + three filters]
+  PD --> T[book-weave.tex]
+  T --> X[texlinks.py]
+  X --> TC[tectonic]
+  TC --> PDF[book.pdf]
+#+end_src
+
+make weave is a pipeline of five steps. preprocess.py rewrites plan
+markup into org pandoc understands and injects the LaTeX preamble.
+Pandoc converts that org to LaTeX, running the three filters in
+order: mermaid.lua renders diagrams, notes.lua handles captions,
+references, and asides, plan.lua styles the plan. texlinks.py then
+rewrites reference placeholders in the LaTeX into hyperlinks, and
+tectonic compiles the result. The intermediate files are removed
+whether the weave succeeds or fails.
+
+** Checking
+
+make check needs no diagram: copy the book and the toolchain into a
+scratch directory, tangle there, and diff the scratch tree against
+the working tree with the hand-managed files excluded. The output
+is either "ok" or the first disagreement.
+
+* The make targets
+
+Everything a consumer touches is a make target, and all the targets
+live in one file, lit.mk. A consuming project's Makefile is a
+single line, "include lit/lit.mk". The LIT variable names the
+directory the toolchain lives in; it defaults to lit, and this
+directory's own Makefile points it at "." so the same targets work
+here.
+
+#+name: lit-mk-targets
+#+begin_src makefile :tangle lit.mk
+LIT ?= lit
+
+.PHONY: tangle weave review check setup
+
+tangle:
+	emacs -Q --batch -l $(LIT)/tangle.el --eval '(lit-tangle "BOOK.org")'
+
+weave: book.pdf
+
+book.pdf: BOOK.org $(LIT)/preprocess.py $(LIT)/plan.lua $(LIT)/notes.lua $(LIT)/mermaid.lua $(LIT)/texlinks.py
+	python3 $(LIT)/preprocess.py BOOK.org book-weave.org
+	t=$$(mktemp -d) && MERMAID_TMP=$$t pandoc book-weave.org -s --toc \
+	  --lua-filter=$(LIT)/mermaid.lua --lua-filter=$(LIT)/notes.lua \
+	  --lua-filter=$(LIT)/plan.lua -V colorlinks -V linkcolor=NavyBlue \
+	  -o book-weave.tex && \
+	  python3 $(LIT)/texlinks.py book-weave.tex && \
+	  tectonic book-weave.tex && \
+	  mv book-weave.pdf book.pdf; rc=$$?; \
+	  rm -rf "$$t" book-weave.org book-weave.tex book-weave.pdf; exit $$rc
+
+review: weave
+#+end_src
+
+setup bootstraps a new project, as the contract describes. It never
+overwrites an existing book, and it writes the one-line Makefile
+only when the project has none.
+
+#+name: lit-mk-setup
+#+begin_src makefile :tangle lit.mk
+setup:
+	@test ! -f BOOK.org || { echo "BOOK.org already exists"; exit 1; }
+	@t="$(TARGET)"; \
+	if [ -z "$$t" ]; then \
+	  if [ -f go.mod ]; then t=go; \
+	  elif [ -f requirements.txt ]; then t=python; fi; \
+	fi; \
+	test -n "$$t" || { echo "no go.mod or requirements.txt here; use TARGET=go or TARGET=python"; exit 1; }; \
+	test -f "$(LIT)/templates/$$t/BOOK.org" || { echo "unknown TARGET '$$t'"; exit 1; }; \
+	cp "$(LIT)/templates/$$t/BOOK.org" BOOK.org && \
+	echo "BOOK.org created from the $$t template" && \
+	{ test -f Makefile || printf 'include lit/lit.mk\n' > Makefile; } && \
+	$(MAKE) -f $(LIT)/lit.mk tangle
+#+end_src
+
+check tangles into a scratch directory and diffs. The exclusion
+list is the hand-managed set plus the toolchain directory itself
+(the scratch copy exists to run the tangle, not to be compared),
+and ~CHECK_EXTRA~ appends a consumer's own exclusions, spelled as
+diff flags: ~CHECK_EXTRA = -x PROMPT.md -x testdata~.
+
+#+name: lit-mk-check
+#+begin_src makefile :tangle lit.mk
+check:
+	@d=$$(mktemp -d) && mkdir $$d/lit && cp BOOK.org $$d && \
+	  cp -R $(LIT)/* $$d/lit/ && ( \
+	  cd $$d && emacs -Q --batch -l lit/tangle.el \
+	    --eval '(lit-tangle "BOOK.org")' >/dev/null 2>&1 \
+	) && diff -r -x BOOK.org -x lit -x example -x templates \
+	  -x Makefile -x .gitignore -x go.mod -x go.sum \
+	  -x requirements.txt -x README.md -x AGENTS.md -x book.pdf \
+	  -x book-review.pdf -x docs -x .git -x .DS_Store \
+	  $(CHECK_EXTRA) $$d . \
+	  && echo ok
+#+end_src
+
+* The tangling driver
+
+tangle.el is everything batch Emacs needs to tangle a lit book. It
+loads org-babel, then patches the gaps a blank batch session has.
+Go files need comment syntax and batch Emacs has no go-mode, so a
+stub supplies one; the guard keeps it from shadowing a real go-mode
+in an interactive session. Backup files are suppressed because the
+post-tangle hooks save every written file, and each save would
+otherwise strew a backup through the tree. Directory creation is on
+by default so a block can target a path that does not exist yet.
+
+#+name: tangle-setup
+#+begin_src emacs-lisp :tangle tangle.el
+;; Batch tangler for the org literate experiment.
+;; Provides Go comment syntax (no go-mode in batch) and turns the last
+;; prose paragraph before a :comments org block into its comment.
+
+(require 'org)
+(require 'ob-tangle)
+
+;; batch has no go-mode; never shadow a real one loaded interactively
+(unless (fboundp 'go-mode)
+  (define-derived-mode go-mode prog-mode "Go"
+    (setq-local comment-start "//")
+    (setq-local comment-end "")
+    (setq-local comment-padding 1)))
+
+(setq comment-empty-lines t)
+
+;; the post-tangle hooks modify and save every tangled file; without
+;; this, batch Emacs strews foo~ backups through the tree
+(when noninteractive
+  (setq make-backup-files nil))
+
+(setq org-babel-default-header-args
+      (cons '(:mkdirp . "yes") org-babel-default-header-args))
+#+end_src
+
+The docstring rule from the contract lives in one function. Org
+hands it the raw text between the previous block or heading and the
+block being tangled; it picks the docstring out of that text: the
+part after the last marker line when one is present, else the last
+paragraph, with org keyword lines removed and the aside sigil
+stripped.
+
+#+name: tangle-docstring
+#+begin_src emacs-lisp :tangle tangle.el
+;; The docstring for a :comments org block is the text after the last
+;; "# doc" marker line when one is present, else the last paragraph.
+;; Earlier text is narrative. A leading "Note: " or "Apropos: " sigil is
+;; presentation, not part of the source comment.
+(defun lit-docstring (text)
+  (let* ((doc-end (let ((start 0) (end nil))
+                    (while (string-match "^# doc\n" text start)
+                      (setq end (match-end 0) start (match-end 0)))
+                    end))
+         (sliced (if doc-end (substring text doc-end) text))
+         ;; #+name: and other org keyword/comment lines sit between the
+         ;; docstring and the block; they are not comment material
+         (clean (replace-regexp-in-string "^#\\+[^\n]*\n?" "" sliced))
+         (chosen (if doc-end
+                     clean
+                   (car (last (split-string clean "\n\n+" t)))))
+         (trimmed (string-trim (or chosen ""))))
+    (replace-regexp-in-string "\\`\\(Note\\|Apropos\\): " "" trimmed)))
+
+(setq org-babel-process-comment-text #'lit-docstring)
+#+end_src
+
+Two hooks run after every file is written. The first exists because
+Emacs pads an empty comment line to "// " and Go spells it "//".
+The second stamps the banner, choosing the comment prefix from the
+file extension and skipping past a shebang when one is present. The
+Go spelling of the banner is canonical so Go tooling recognizes
+generated files.
+
+#+name: tangle-banner
+#+begin_src emacs-lisp :tangle tangle.el
+;; comment-region writes a blank comment line as "// "; Go writes "//".
+(defun lit-trim-empty-comment-lines ()
+  (goto-char (point-min))
+  (while (re-search-forward "^// $" nil t)
+    (replace-match "//"))
+  (save-buffer))
+
+(add-hook 'org-babel-post-tangle-hook #'lit-trim-empty-comment-lines)
+
+;; Every tangled file opens with a generated-file banner in its own
+;; comment syntax, after a shebang when one is present. The Go
+;; spelling is canonical ("Code generated ... DO NOT EDIT.") so Go
+;; tooling recognizes it too.
+(defconst lit-banner
+  "Code generated from BOOK.org by make tangle. DO NOT EDIT.")
+
+(defun lit-banner-prefix ()
+  (let ((name (file-name-nondirectory (buffer-file-name))))
+    (cond ((string-suffix-p ".go" name) "// ")
+          ((string-suffix-p ".el" name) ";; ")
+          ((string-suffix-p ".lua" name) "-- ")
+          (t "# "))))
+
+(defun lit-insert-banner ()
+  (goto-char (point-min))
+  (let ((banner (concat (lit-banner-prefix) lit-banner "\n")))
+    (when (looking-at "#!.*\n")
+      (goto-char (match-end 0)))
+    (unless (looking-at-p (regexp-quote banner))
+      (insert banner "\n"))
+    (save-buffer)))
+
+(add-hook 'org-babel-post-tangle-hook #'lit-insert-banner t)
+#+end_src
+
+The first generated view: a diff between two named blocks, used to
+show a planned replacement beside the code it replaces. The writer
+resolves both blocks, runs diff, drops the two header lines that
+only name temporary files, and wraps the rest so both Emacs and the
+weave fontify it.
+
+#+name: tangle-diff-view
+#+begin_src emacs-lisp :tangle tangle.el
+;; A "#+begin: src-block-diff :old A :new B" dynamic block renders as
+;; a unified diff of the two named blocks' bodies. The content is
+;; derived: refresh one with C-c C-c on its begin line, and tangling
+;; refreshes them all first, so a committed diff cannot disagree with
+;; the blocks it describes.
+(defun lit-named-block-body (name)
+  (save-excursion
+    (goto-char (or (org-babel-find-named-block name)
+                   (error "no block named %s" name)))
+    (nth 1 (org-babel-get-src-block-info t))))
+
+(defun org-dblock-write:src-block-diff (params)
+  ;; fetch both bodies before with-temp-file switches buffers
+  (let ((old-body (lit-named-block-body
+                   (format "%s" (plist-get params :old))))
+        (new-body (lit-named-block-body
+                   (format "%s" (plist-get params :new))))
+        (old (make-temp-file "src-block-diff"))
+        (new (make-temp-file "src-block-diff")))
+    (unwind-protect
+        (progn
+          (with-temp-file old (insert old-body "\n"))
+          (with-temp-file new (insert new-body "\n"))
+          (let ((diff (with-temp-buffer
+                        (call-process "diff" nil t nil "-u" old new)
+                        (buffer-string))))
+            (if (string= diff "")
+                (insert "no differences")
+              ;; the ---/+++ header lines only name the temp files
+              (insert "#+begin_src diff\n"
+                      (mapconcat #'identity
+                                 (cddr (split-string diff "\n")) "\n")
+                      "#+end_src"))))
+      (delete-file old)
+      (delete-file new))))
+#+end_src
+
+The second generated view: the jump list of every plan site in the
+book. One regular expression recognizes every kind of plan markup;
+a classifier turns each hit into a label spelled without the markup
+itself, so a search for the markup never matches the index it
+feeds. The writer inserts its own lines above some of the sites it
+just numbered, so sites below the insertion point are shifted by
+the number of lines inserted, which keeps the line links exact and
+the refresh idempotent.
+
+#+name: tangle-plan-toc
+#+begin_src emacs-lisp :tangle tangle.el
+;; A "#+begin: plan-toc" dynamic block renders a jump list of every
+;; plan-markup site in the buffer: the human twin of the census grep.
+;; Labels are spelled without the sigils, so the census never matches
+;; the index it feeds.
+(defconst lit-plan-site-re
+  (concat "^\\*+ \\(?:PLANNED\\|FILLING\\|HOLE\\|LIVE\\|DROPPED\\) "
+          "\\|^\\*\\{15,\\} "
+          "\\|HOLE("
+          "\\|{\\+\\+\\|{--\\|{~~\\|{>>"
+          "\\|^#\\+begin: src-block-diff"
+          "\\|--planned"))
+
+(defun lit-plan-strip (s)
+  (let* ((s (string-trim s))
+         (s (replace-regexp-in-string
+             "\\[\\[[^]]*\\]\\[\\([^]]*\\)\\]\\]" "\\1" s))
+         (s (replace-regexp-in-string "\\s-+:[a-zA-Z0-9_@:]+:$" "" s)))
+    (if (> (length s) 60) (concat (substring s 0 57) "...") s)))
+
+(defun lit-plan-site-label ()
+  (let ((line (buffer-substring-no-properties
+               (line-beginning-position) (line-end-position))))
+    (cond
+     ((string-match "^#\\+todo:" line) nil)
+     ((string-match "^\\*\\{15,\\} END" line) nil)
+     ((string-match "^\\*\\{15,\\} \\(.*\\)" line)
+      (concat "badge: " (lit-plan-strip (match-string 1 line))))
+     ((string-match "^\\*+ \\([A-Z]+ .*\\)" line)
+      (concat "entry: " (lit-plan-strip (match-string 1 line))))
+     ((string-match "^#\\+begin: src-block-diff" line) "generated diff")
+     ((string-match "HOLE(\\([0-9]+\\)): \\([^\"]*\\)" line)
+      (format "hole %s: %s" (match-string 1 line)
+              (lit-plan-strip (match-string 2 line))))
+     ((string-match "{\\+\\+\\(.*\\)" line)
+      (concat "insertion: " (lit-plan-strip (match-string 1 line))))
+     ((string-match "{--\\(.*\\)" line)
+      (concat "deletion: " (lit-plan-strip (match-string 1 line))))
+     ((string-match "{~~\\(.*\\)" line)
+      (concat "replacement: " (lit-plan-strip (match-string 1 line))))
+     ((string-match "{>>\\(.*\\)" line)
+      (concat "note: " (lit-plan-strip (match-string 1 line))))
+     ((string-match "#\\+name: \\(.*\\)--planned" line)
+      (concat "twin of " (match-string 1 line)))
+     (t nil))))
+
+(defun org-dblock-write:plan-toc (_params)
+  (let ((file (file-name-nondirectory (buffer-file-name)))
+        (self (line-number-at-pos))
+        (hits ()))
+    (save-excursion
+      (goto-char (point-min))
+      (while (re-search-forward lit-plan-site-re nil t)
+        (beginning-of-line)
+        (let ((label (lit-plan-site-label)))
+          (when label
+            (push (cons (line-number-at-pos) label) hits)))
+        (forward-line 1)))
+    (setq hits (nreverse hits))
+    ;; sites below this block shift down by the lines inserted here
+    (let ((shift (length hits)))
+      (dolist (h hits)
+        (let ((n (if (> (car h) self) (+ (car h) shift) (car h))))
+          (insert (format "- [[file:%s::%d][%d]] %s\n"
+                          file n n (cdr h))))))))
+#+end_src
+
+The entry point ties the tangle flow together: refresh every
+generated view, save the book if that changed it, then tangle.
+
+#+name: tangle-entry
+#+begin_src emacs-lisp :tangle tangle.el
+(defun lit-tangle (file)
+  (with-current-buffer (find-file-noselect file)
+    (org-update-all-dblocks)
+    (when (buffer-modified-p)
+      (save-buffer)))
+  (org-babel-tangle-file file))
+#+end_src
+
+* The weave preprocessor
+
+preprocess.py runs before pandoc and exists because pandoc alone
+ignores three things books rely on: custom heading keywords, the
+badge markup that flags plan sites, and CriticMarkup, the
+bracket-based notation for insertions, deletions, and comments in
+prose. The preprocessor rewrites all three into org and raw LaTeX
+that pandoc passes through, and it injects the LaTeX preamble the
+rest of the weave depends on.
+
+#+name: preprocess-preamble
+#+begin_src python :tangle preprocess.py
+#!/usr/bin/env python3
+"""Review-weave preprocessor: org with plan markup -> pandoc-friendly org.
+
+- inline tasks (15+ stars) -> #+begin_planned / #+begin_hole special blocks
+- CriticMarkup {++new++} {--old--} {~~old~>new~~} {>>note<<} -> LaTeX
+- #+begin:/#+end: dynamic-block wrapper lines dropped (inner content kept)
+- LaTeX preamble injected after #+options: (geometry only if absent)
+"""
+import bisect
+import re
+import sys
+
+KEYWORDS = {"PLANNED": "planned", "FILLING": "planned", "LIVE": "planned",
+            "DROPPED": "planned", "HOLE": "planned"}
+
+PREAMBLE = [
+    "#+latex_header: \\usepackage[margin=2.6cm]{geometry}",
+    "#+latex_header: \\usepackage{xcolor}",
+    "#+latex_header: \\usepackage[normalem]{ulem}",
+    "#+latex_header: \\definecolor{cmdel}{RGB}{176,32,32}",
+    "#+latex_header: \\definecolor{cmins}{RGB}{22,122,48}",
+    "#+latex_header: \\definecolor{cmnote}{RGB}{28,82,160}",
+    "#+latex_header: \\definecolor{badgeplan}{RGB}{176,98,20}",
+    "#+latex_header: \\definecolor{badgehole}{RGB}{104,54,160}",
+    "#+latex_header: \\newcommand{\\cmdel}[1]{\\textcolor{cmdel}{\\sout{#1}}}",
+    "#+latex_header: \\newcommand{\\cmins}[1]{\\textcolor{cmins}{#1}}",
+    "#+latex_header: \\newcommand{\\cmnote}[1]{\\textcolor{cmnote}{\\itshape [#1]}}",
+    "#+latex_header: \\usepackage{framed}",
+    "#+latex_header: \\usepackage{marginnote}",
+    "#+latex_header: \\reversemarginpar",
+    "#+latex_header: \\usepackage{bookmark}",
+    # inside framed environments, color must be explicitly paired
+    # (begingroup/endgroup or textcolor): a bare \color relying on the
+    # environment group leaks past the box under framed's splitting
+    "#+latex_header: \\newcommand{\\planmark}[2]{\\marginnote{\\textcolor{#1}{\\rule{2.5pt}{9pt}\\,{\\scriptsize #2}}}}",
+    # badge variant: same margin mark plus a sticky-note annotation
+    # (xdvipdfmx pdf:ann special), so PDF viewers list the badge's why
+    # under Highlights and Notes
+    "#+latex_header: \\newcommand{\\planbadgemark}[3]{\\marginnote{\\special{pdf:ann width 8pt height 8pt << /Type /Annot /Subtype /Text /Name /Comment /C [0.69 0.38 0.08] /Contents (#3) >>}\\hspace{14pt}\\textcolor{#1}{\\rule{2.5pt}{9pt}\\,{\\scriptsize #2}}}}",
+    "#+latex_header: \\newenvironment{planbox}[1]{\\def\\FrameCommand{{\\color{#1}\\vrule width 3pt}\\hspace{8pt}}\\MakeFramed{\\advance\\hsize-\\width\\FrameRestore}\\begingroup\\color{#1}\\itshape}{\\endgroup\\endMakeFramed}",
+    # numbered caption above every tangling block (notes.lua emits the
+    # calls, adding [name] when the block has one); detokenize keeps
+    # underscores in filenames and block names typesettable
+    "#+latex_header: \\newcounter{codelisting}",
+    "#+latex_header: \\newcommand{\\codecaption}[2][]{\\par\\medskip\\noindent{\\stepcounter{codelisting}\\small\\textbf{Listing \\thecodelisting:} \\texttt{\\detokenize{#2}}\\if\\relax\\detokenize{#1}\\relax\\else\\quad\\textcolor{gray}{\\texttt{\\detokenize{<<#1>>}}}\\fi}\\par\\nopagebreak\\vspace{2pt}}",
+    # noweb references inside highlighted code: texlinks.py rewrites
+    # the placeholders notes.lua planted into \NowebRef calls. Plain
+    # \hyperlink, not \hyperref[label]: label lookup explodes under
+    # fancyvrb's verbatim catcodes, so notes.lua plants matching
+    # \hypertarget anchors at the named blocks instead. The dest name
+    # is detokenized too: fancyvrb makes - active, and an active -
+    # expands to hyphenation boxes inside the destination string
+    "#+latex_header: \\newcommand{\\NowebRef}[1]{\\hyperlink{noweb:\\detokenize{#1}}{\\detokenize{<<#1>>}}}",
+]
+#+end_src
+
+CriticMarkup spans become LaTeX color macros, but only the shells
+are raw: the content between the braces stays org, so links and
+verbatim inside an insertion keep rendering as org.
+
+#+name: preprocess-criticmarkup
+#+begin_src python :tangle preprocess.py
+# The content between the delimiters stays org: pandoc renders its
+# markup (verbatim, links, braces) and only the \cm..{ } shells are
+# raw. Flattening the content into the raw span instead breaks on
+# inner braces and turns org markup into literal TeX.
+def cm(macro, s):
+    return "@@latex:\\%s{@@%s@@latex:}@@" % (macro, s)
+
+def criticmarkup(text):
+    text = re.sub(r"\{~~(.+?)~>(.+?)~~\}",
+                  lambda m: cm("cmdel", m.group(1)) + " " + cm("cmins", m.group(2)),
+                  text, flags=re.S)
+    text = re.sub(r"\{\+\+(.+?)\+\+\}",
+                  lambda m: cm("cmins", m.group(1)),
+                  text, flags=re.S)
+    text = re.sub(r"\{--(.+?)--\}",
+                  lambda m: cm("cmdel", m.group(1)),
+                  text, flags=re.S)
+    text = re.sub(r"\{>>(.+?)<<\}",
+                  lambda m: cm("cmnote", m.group(1)),
+                  text, flags=re.S)
+    return text
+
+def strip_org(s):
+    s = re.sub(r"\[\[[^]]*\]\[([^]]*)\]\]", r"\1", s)
+    s = re.sub(r"\[\[([^]]*)\]\]", r"\1", s)
+    return s.strip()
+#+end_src
+
+Badges are the plan's road signs, and the weave gives each one a
+box, a margin mark, an anchor for the jump list, and a sticky-note
+annotation. The note text must survive two hostile containers, a
+PDF literal string and a TeX macro argument, so it is reduced to
+safe ASCII; parens stay only when they balance, which the PDF
+string grammar requires.
+
+#+name: preprocess-badges
+#+begin_src python :tangle preprocess.py
+def badge_titles(text):
+    """Badge display titles, in the same order badges() counts them."""
+    star = re.compile(r"^\*{15,}\s+(.*\S)\s*$")
+    out = []
+    for l in text.split("\n"):
+        m = star.match(l)
+        if not m or m.group(1).strip() == "END":
+            continue
+        t = m.group(1)
+        tm = re.match(r"^(.*?)\s+(:[A-Za-z0-9_@:]+:)$", t)
+        if tm:
+            t = tm.group(1)
+        out.append(strip_org(t))
+    return out
+
+def pdf_note(title, body):
+    """Sticky-note contents: PDF-string- and macro-arg-safe ASCII.
+
+    Balanced parens are legal unescaped in a PDF literal string, and
+    backslash escapes would be undefined control sequences inside the
+    special, so parens stay only when balanced in order."""
+    s = title
+    if body:
+        s += ": " + " ".join(l.strip() for l in body if l.strip())
+    s = strip_org(s)
+    s = re.sub(r"[{}~%$&^_\\#]", " ", s)
+    s = " ".join(s.split())
+    depth = 0
+    for c in s:
+        if c == "(":
+            depth += 1
+        elif c == ")":
+            depth -= 1
+            if depth < 0:
+                break
+    if depth != 0:
+        s = " ".join(s.replace("(", " ").replace(")", " ").split())
+    return s[:237] + "..." if len(s) > 240 else s
+
+def badges(lines):
+    star = re.compile(r"^\*{15,}\s+(.*\S)\s*$")
+    head = re.compile(r"^\*+\s")
+    out, i, k = [], 0, 0
+    while i < len(lines):
+        m = star.match(lines[i])
+        if not m:
+            out.append(lines[i])
+            i += 1
+            continue
+        title = m.group(1)
+        body = None
+        j = i + 1
+        while j < len(lines):
+            if head.match(lines[j]):
+                mm = star.match(lines[j])
+                if mm and mm.group(1).strip() == "END":
+                    body = lines[i + 1:j]
+                    i = j
+                break
+            j += 1
+        tags = ""
+        tm = re.match(r"^(.*?)\s+(:[A-Za-z0-9_@:]+:)$", title)
+        if tm:
+            title, tags = tm.group(1), tm.group(2)
+        kw = None
+        parts = title.split(None, 1)
+        if parts and parts[0] in KEYWORDS:
+            kw = parts[0]
+            title = parts[1] if len(parts) > 1 else ""
+        block = KEYWORDS.get(kw, "planned")
+        label = ("*%s* \u2014 " % kw if kw else "") + title
+        if tags:
+            label += "  (" + tags.strip(":").replace(":", ", ") + ")"
+        stage = re.search(r"stage(\d+)", tags)
+        # inline in the label line: the margin mark aligns with the
+        # box's first line, the hypertarget (ordinal k, matching the
+        # badge order the plan-toc rewrite counts) receives the index
+        # links, and the sticky note carries the badge's why
+        k += 1
+        mark = ("@@latex:\\hypertarget{planbadge-%d}{}"
+                "\\planbadgemark{badgeplan}{%s}{%s}@@ ") % (
+            k, "s" + stage.group(1) if stage else "",
+            pdf_note(strip_org(title), body))
+        out.append("#+begin_" + block)
+        out.append(mark + label)
+        if body:
+            out.append("")
+            out.extend(body)
+        out.append("#+end_" + block)
+        i += 1
+    return out
+#+end_src
+
+The main pass stitches it together: CriticMarkup first, then the
+preamble injection (after the options line when the book has one,
+else before the first content line, so headerless books weave too),
+the "Plan sites" outline branch, and the jump-list rewrite that
+turns file links, which are dead in a PDF, into internal links to
+each site's governing badge.
+
+#+name: preprocess-main
+#+begin_src python :tangle preprocess.py
+def main(src, dst):
+    text = open(src, encoding="utf-8").read()
+    text = criticmarkup(text)
+    text = text.replace("\u2192", "$\\rightarrow$")
+    has_geometry = re.search(r"^#\+latex_header:.*geometry", text,
+                             re.IGNORECASE | re.MULTILINE)
+    preamble = [p for p in PREAMBLE
+                if "geometry" not in p or not has_geometry]
+    # badge ordinals by original line number: the jump list's targets
+    badge_lines = [i + 1 for i, l in enumerate(text.split("\n"))
+                   if re.match(r"^\*{15,}\s+(?!END\b)", l)]
+    # a "Plan sites" branch in the PDF outline, one entry per badge;
+    # level 1 keeps the book's chapters as siblings, not children
+    marks = []
+    titles = badge_titles(text)
+    if titles:
+        marks.append("#+latex: \\bookmark[level=1,dest=planbadge-1]"
+                     "{Plan sites}")
+        for j, t in enumerate(titles, 1):
+            marks.append("#+latex: \\bookmark[level=2,dest=planbadge-%d]"
+                         "{%s}" % (j, re.sub(r"[{}\\%$&#^_~]", " ", t)))
+    lines = []
+    in_toc = False
+    injected = False
+    for line in text.split("\n"):
+        if re.match(r"^#\+begin: plan-toc", line):
+            in_toc = True
+            continue
+        if re.match(r"^#\+(begin|end):", line):
+            if line.startswith("#+end:"):
+                in_toc = False
+            continue
+        if in_toc:
+            # file links are external in a PDF; link each item to its
+            # governing badge instead, the nearest one above the site
+            m = re.match(r"^- \[\[file:[^]]*::(\d+)\]\[(\d+)\]\] (.*)$", line)
+            if m and bisect.bisect_right(badge_lines, int(m.group(1))):
+                k = bisect.bisect_right(badge_lines, int(m.group(1)))
+                line = "- @@latex:\\hyperlink{planbadge-%d}{%s}@@ %s" % (
+                    k, m.group(2), m.group(3))
+            else:
+                line = re.sub(r"\[\[file:[^]]*\]\[([^]]*)\]\]", r"\1", line)
+        # inject after #+options: when the book has one, else before
+        # the first content line, so headerless books weave too
+        if (not injected and line.strip()
+                and not line.startswith("#+")):
+            lines.extend(preamble)
+            lines.extend(marks)
+            injected = True
+        lines.append(line)
+        if not injected and line.startswith("#+options:"):
+            lines.extend(preamble)
+            lines.extend(marks)
+            injected = True
+    open(dst, "w", encoding="utf-8", newline="\n").write(
+        "\n".join(badges(lines)) + "\n")
+
+if __name__ == "__main__":
+    main(sys.argv[1], sys.argv[2])
+#+end_src
+
+* The pandoc filters
+
+Three Lua filters run inside pandoc, in the order the weave recipe
+lists them.
+
+** Diagrams
+
+mermaid.lua renders each mermaid block to a PDF image through mmdc
+and swaps the block for the image. When mmdc is missing or a
+diagram fails to render, the block stays as source and the weave
+completes anyway; a broken diagram should cost a picture, not the
+whole book.
+
+#+name: mermaid-filter
+#+begin_src lua :tangle mermaid.lua
+-- Render mermaid src blocks to PDF images at weave time via mmdc.
+-- MERMAID_TMP names the scratch directory for generated files; the
+-- weave recipe creates and removes it. When mmdc is missing or a
+-- render fails, the block stays as fontified source and the weave
+-- still completes.
+local dir = os.getenv("MERMAID_TMP") or "."
+local n = 0
+
+function CodeBlock(el)
+  if not el.classes:includes("mermaid") then return nil end
+  n = n + 1
+  local base = string.format("%s/mermaid-%d", dir, n)
+  local f = assert(io.open(base .. ".mmd", "w"))
+  f:write(el.text)
+  f:close()
+  local ok = os.execute(string.format(
+    "mmdc -q -i %s.mmd -o %s.pdf -f -b transparent >/dev/null 2>&1",
+    base, base))
+  if not ok then
+    io.stderr:write("mermaid.lua: mmdc failed; keeping source block\n")
+    return nil
+  end
+  return pandoc.Para({ pandoc.Image({}, base .. ".pdf") })
+end
+#+end_src
+
+** Captions, references, asides
+
+notes.lua carries the weave's general-purpose repairs and the
+listing machinery. The strikeout guard exists for pandoc run by
+hand without the preprocessor: org parses a short CriticMarkup span
+as strikethrough and hands it to a LaTeX command that cannot
+typeset it, so the guard restores the plus signs. The span repair
+turns pandoc's dead links to named blocks into working internal
+links.
+
+#+name: notes-guards
+#+begin_src lua :tangle notes.lua
+-- CriticMarkup pluses in a plain weave parse as org strikeout, and
+-- soul's \st cannot typeset what lands inside ("Reconstruction
+-- failed"); render the span raw instead, pluses restored. The review
+-- weave never gets here: preprocess.py rewrites the marks first.
+function Strikeout(el)
+  local out = pandoc.List({ pandoc.Str('+') })
+  out:extend(el.content)
+  out:insert(pandoc.Str('+'))
+  return out
+end
+
+-- Org links to #+name:'d blocks work in the buffer, but pandoc's org
+-- reader leaves them as "spurious-link" spans; the named block itself
+-- does get a \label. Repair the spans into real internal links.
+function Span(el)
+  if el.classes:includes('spurious-link') and el.attributes['target'] then
+    local name = pandoc.utils.stringify(el.content)
+    return pandoc.Link({ pandoc.Code(name) }, '#' .. el.attributes['target'])
+  end
+end
+#+end_src
+
+The caption and reference machinery implements the weave contract.
+Pandoc keeps the block's target and name as attributes, so a
+tangling block's caption is direct. A region block needs a second
+look: its file is whatever its includer tangles to, so the filter
+first walks the whole document, recording every block's own target
+and every reference each expanding block makes, then resolves
+region names to files through those references until nothing
+changes. A named block nothing references and nothing tangles, a
+planned twin for instance, resolves to no file and gets no caption.
+References are the hard half: syntax highlighting shreds a
+reference into operator and identifier tokens, so no literal
+reference survives into the LaTeX for anything to linkify. The
+filter therefore swaps each reference in an expanding block for an
+alphanumeric placeholder, the one spelling every language's lexer
+keeps whole, and texlinks.py decodes the placeholders after pandoc
+has written the LaTeX.
+
+#+name: notes-captions
+#+begin_src lua :tangle notes.lua
+-- Pandoc's org reader keeps :tangle and :noweb as block attributes;
+-- blocks that land in a file get a paper-style numbered caption
+-- naming it, plus the block's <<name>> when it has one. A named
+-- region block (no target of its own, included through a reference)
+-- is captioned with the file its includer tangles to, resolved
+-- transitively over the whole document. Twins and illustrations are
+-- referenced by nothing and tangle nowhere, so they stay
+-- uncaptioned.
+--
+-- Syntax highlighting shreds a <<ref>> into operator and identifier
+-- tokens, so no literal <<ref>> survives into the .tex for a filter
+-- to linkify. Instead, in :noweb yes blocks each ref is swapped for
+-- an alphanumeric placeholder (hex-encoded name), which every
+-- lexer keeps whole; texlinks.py decodes it back into a \NowebRef
+-- hyperlink after pandoc writes the .tex.
+local function hex(s)
+  return (s:gsub('.', function(c) return string.format('%02x', c:byte()) end))
+end
+
+local REF = '<<([%w_][%w_.%-]*)>>'
+
+function Pandoc(doc)
+  -- first pass: each block's own target, and who references whom
+  local blocks = {}
+  doc:walk({ CodeBlock = function(el)
+    local t = el.attributes['tangle']
+    local entry = { id = el.identifier, names = {} }
+    if t and t ~= 'no' then
+      entry.target = t
+    end
+    if el.attributes['noweb'] == 'yes' then
+      for name in el.text:gmatch(REF) do
+        table.insert(entry.names, name)
+      end
+    end
+    table.insert(blocks, entry)
+  end })
+  -- resolve region names to their includer's file, transitively
+  local resolved = {}
+  for _, e in ipairs(blocks) do
+    if e.target and e.id ~= '' then
+      resolved[e.id] = e.target
+    end
+  end
+  for _ = 1, #blocks do
+    local changed = false
+    for _, e in ipairs(blocks) do
+      local t = e.target or (e.id ~= '' and resolved[e.id])
+      if t then
+        for _, name in ipairs(e.names) do
+          if not resolved[name] then
+            resolved[name] = t
+            changed = true
+          end
+        end
+      end
+    end
+    if not changed then
+      break
+    end
+  end
+  -- second pass: captions, anchors, and reference placeholders
+  return doc:walk({ CodeBlock = function(el)
+    local out = el
+    if el.attributes['noweb'] == 'yes' then
+      local text = el.text:gsub(REF, function(name)
+        return 'NOWEBREF' .. hex(name) .. 'FERBEWON'
+      end)
+      if text ~= el.text then
+        out = el:clone()
+        out.text = text
+      end
+    end
+    local anchor = ''
+    if el.identifier ~= '' then
+      anchor = '\\hypertarget{noweb:' .. el.identifier .. '}{}'
+    end
+    local t = el.attributes['tangle']
+    local file = (t and t ~= 'no') and t or nil
+    if not file and el.identifier ~= '' then
+      file = resolved[el.identifier]
+    end
+    if file then
+      local caption
+      if el.identifier ~= '' then
+        caption = anchor .. '\\codecaption[' .. el.identifier .. ']{' .. file .. '}'
+      else
+        caption = '\\codecaption{' .. file .. '}'
+      end
+      return { pandoc.RawBlock('latex', caption), out }
+    end
+    if anchor ~= '' then
+      return { pandoc.RawBlock('latex', anchor), out }
+    end
+    if out ~= el then
+      return out
+    end
+  end })
+end
+#+end_src
+
+The aside styling promotes "Note:" and "Apropos:" paragraphs into
+indented quotations with a bold lead, so promoted source comments
+stand apart from the narrative.
+
+#+name: notes-asides
+#+begin_src lua :tangle notes.lua
+-- Style "Note:" / "Apropos:" paragraphs as indented asides with a bold
+-- lead, so promoted source comments stand apart from the narrative.
+function Para(p)
+  local first = p.content[1]
+  if first and first.t == 'Str' and (first.text == 'Note:' or first.text == 'Apropos:') then
+    local sigil = first.text:sub(1, -2)
+    table.remove(p.content, 1)
+    if p.content[1] and p.content[1].t == 'Space' then
+      table.remove(p.content, 1)
+    end
+    table.insert(p.content, 1, pandoc.Space())
+    table.insert(p.content, 1, pandoc.Strong{pandoc.Str(sigil .. '.')})
+    return pandoc.BlockQuote{pandoc.Para(p.content)}
+  end
+end
+#+end_src
+
+** Plan styling
+
+plan.lua styles what preprocess.py rewrote: badge boxes get their
+colored rule, heading keywords their colors (pandoc drops custom
+keyword definitions, so the filter recognizes the words
+themselves), and every paragraph carrying CriticMarkup a small
+margin mark, so a scrolling eye catches edits without reading.
+
+#+name: plan-filter
+#+begin_src lua :tangle plan.lua
+-- Review-weave styling for plan markup: badge boxes, colored state
+-- keywords, gray tags. Runs after lit/preprocess.py has rewritten
+-- inline tasks into planned/hole special blocks.
+
+local function box(el, color)
+  local blocks = pandoc.List({ pandoc.RawBlock('latex', '\\begin{planbox}{' .. color .. '}') })
+  blocks:extend(el.content)
+  blocks:insert(pandoc.RawBlock('latex', '\\end{planbox}'))
+  return blocks
+end
+
+function Div(el)
+  if el.classes:includes('planned') then return box(el, 'badgeplan') end
+  if el.classes:includes('hole') then return box(el, 'badgehole') end
+end
+
+-- pandoc's org reader leaves custom #+TODO keywords as plain text, so
+-- color them here when a heading starts with one.
+local NOT_DONE = { PLANNED = true, HOLE = true, FILLING = true }
+local DONE = { LIVE = true, DROPPED = true }
+
+function Header(el)
+  local first = el.content[1]
+  if first and first.t == 'Str' then
+    local color = (NOT_DONE[first.text] and 'cmdel') or (DONE[first.text] and 'cmins')
+    if color then
+      el.content[1] = pandoc.Span({
+        pandoc.RawInline('latex', '\\texorpdfstring{\\textcolor{' .. color .. '}{'),
+        pandoc.Str(first.text),
+        pandoc.RawInline('latex', '}}{' .. first.text .. '}'),
+      })
+      return el
+    end
+  end
+end
+
+-- Paragraphs carrying CriticMarkup get a small mark in the margin so
+-- a scrolling eye catches them without reading.
+local function has_cm(inlines)
+  for _, il in ipairs(inlines) do
+    if il.t == 'RawInline' and il.format:match('tex')
+       and il.text:match('\\cm') then
+      return true
+    end
+  end
+  return false
+end
+
+function Para(el)
+  if has_cm(el.content) then
+    el.content:insert(1, pandoc.RawInline('latex', '\\planmark{cmnote}{}'))
+    return el
+  end
+end
+
+local function tint(el, latex)
+  local out = pandoc.List({ pandoc.RawInline('latex', latex) })
+  out:extend(el.content)
+  out:insert(pandoc.RawInline('latex', '}'))
+  return out
+end
+
+function Span(el)
+  if el.classes:includes('todo') then
+    return tint(el, '\\textcolor{cmdel}{\\bfseries ')
+  end
+  if el.classes:includes('done') then
+    return tint(el, '\\textcolor{cmins}{\\bfseries ')
+  end
+  if el.classes:includes('tag') then
+    return tint(el, '{\\small\\color{gray}')
+  end
+end
+#+end_src
+
+* The LaTeX postprocessor
+
+texlinks.py is the second half of the reference machinery: it scans
+the LaTeX pandoc wrote and decodes every placeholder notes.lua
+planted. Inside highlighted code the placeholder becomes a
+hyperlink call; anywhere else, in a verbatim fallback that takes no
+commands, it decodes back to the literal reference text.
+
+#+name: texlinks
+#+begin_src python :tangle texlinks.py
+#!/usr/bin/env python3
+"""Rewrite noweb placeholders in the woven .tex into hyperlinks.
+
+notes.lua swaps each <<ref>> in a :noweb yes block for an
+alphanumeric placeholder, the only spelling that survives syntax
+highlighting in one piece. Here the placeholder turns back into
+\\NowebRef{name} where LaTeX commands work (pandoc's Highlighting
+environment) and into the literal <<name>> everywhere else, since
+verbatim fallbacks take no commands.
+"""
+import re
+import sys
+
+PLACEHOLDER = re.compile(r"NOWEBREF([0-9a-f]+)FERBEWON")
+
+
+def decode(match):
+    return bytes.fromhex(match.group(1)).decode("utf-8")
+
+
+def rewrite(lines):
+    out = []
+    highlighted = False
+    for line in lines:
+        if "\\begin{Highlighting}" in line:
+            highlighted = True
+        if "\\end{Highlighting}" in line:
+            highlighted = False
+        if highlighted:
+            line = PLACEHOLDER.sub(lambda m: "\\NowebRef{%s}" % decode(m), line)
+        else:
+            line = PLACEHOLDER.sub(lambda m: "<<%s>>" % decode(m), line)
+        out.append(line)
+    return out
+
+
+def main():
+    path = sys.argv[1]
+    with open(path, encoding="utf-8") as f:
+        lines = f.readlines()
+    with open(path, "w", encoding="utf-8", newline="\n") as f:
+        f.writelines(rewrite(lines))
+
+
+if __name__ == "__main__":
+    main()
+#+end_src
+
+* Reproducing this document
+
+This directory is a lit project like any other. Its Makefile sets
+LIT to "." and includes lit.mk, so the usual targets work here:
+make tangle regenerates the seven files above from this book, make
+check proves book and files agree, make weave renders this PDF. The
+Makefile, .gitignore, README.md, AGENTS.md, the templates
+directory, and the example directory are the hand-managed remainder
+outside the book, exactly as the contract prescribes for every
+project.
+
+* Changes
+
+- [2026-07-27] The toolchain became its own book. lit.mk, formerly
+  tangled from a consuming project's book, moved here along with
+  tangle.el, preprocess.py, notes.lua, plan.lua, mermaid.lua, and
+  the new texlinks.py; consumers now include lit/lit.mk unchanged
+  and pass project-specific check exclusions through ~CHECK_EXTRA~.
+  The weave gained listing captions (numbered, naming the target
+  file and the block's ~<<name>>~; a region block resolves its file
+  through the references that include it) and clickable noweb
+  references,
+  which forced the weave recipe apart into pandoc, a LaTeX
+  postprocessing step, and tectonic: highlighting shreds references
+  into tokens, so notes.lua plants placeholders and texlinks.py
+  decodes them into hyperlinks after pandoc has written the LaTeX.

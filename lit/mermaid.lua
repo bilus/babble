@@ -1,3 +1,5 @@
+-- Code generated from BOOK.org by make tangle. DO NOT EDIT.
+
 -- Render mermaid src blocks to PDF images at weave time via mmdc.
 -- MERMAID_TMP names the scratch directory for generated files; the
 -- weave recipe creates and removes it. When mmdc is missing or a
