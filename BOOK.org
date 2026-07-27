@@ -56,54 +56,35 @@ every dynamic block, and the labels are spelled without the sigils,
 so the census never matches its own index.
 
 #+begin: plan-toc
-- [[file:BOOK.org::110][110]] entry: PLANNED Stage 3: blocks in the tree
-- [[file:BOOK.org::177][177]] entry: PLANNED Stage 4: header resolution
-- [[file:BOOK.org::223][223]] entry: PLANNED Stage 5: tangle
-- [[file:BOOK.org::263][263]] entry: PLANNED Stage 6: the oracle harness
-- [[file:BOOK.org::297][297]] entry: PLANNED Stage 7: org comments
-- [[file:BOOK.org::340][340]] entry: PLANNED Stage 8: noweb
-- [[file:BOOK.org::377][377]] entry: PLANNED Stage 9: dynamic blocks
-- [[file:BOOK.org::424][424]] entry: PLANNED Stage 10: the fence
-- [[file:BOOK.org::453][453]] entry: PLANNED Stage 11: parity and self-hosting
-- [[file:BOOK.org::1258][1258]] hole 5: parse, refresh, reparse, tangle; errors to stderr
-- [[file:BOOK.org::1831][1831]] badge: PLANNED stage 3 replaces this section (plan)
-- [[file:BOOK.org::2451][2451]] hole 4: every block's Params through the closed table, unknown ke...
-- [[file:BOOK.org::2457][2457]] hole 4: split on space-then-colon outside parens, brackets, and d...
-- [[file:BOOK.org::2461][2461]] hole 4: chomp, unquote an elisp string literal, reject lisp
-- [[file:BOOK.org::2467][2467]] badge: PLANNED stage 3 adds the section below (plan)
-- [[file:BOOK.org::2477][2477]] twin of org-parser
-- [[file:BOOK.org::2491][2491]] twin of org-mode-enum
-- [[file:BOOK.org::2511][2511]] twin of org-container
-- [[file:BOOK.org::2524][2524]] twin of org-parse-elements
-- [[file:BOOK.org::2527][2527]] hole 3: the bounded loop; recurse only into containers
-- [[file:BOOK.org::2538][2538]] twin of org-current-element
-- [[file:BOOK.org::2541][2541]] hole 3: the dispatch table in order: mode, stars, affiliated, key...
-- [[file:BOOK.org::2550][2550]] twin of org-element-parsers
-- [[file:BOOK.org::2553][2553]] hole 3: stars, todo, priority, COMMENT, title, tags; contents to ...
-- [[file:BOOK.org::2557][2557]] hole 3: find end_src within limit; language, switches, header, bo...
-- [[file:BOOK.org::2561][2561]] hole 3: find end: within limit; name, args, interior span
-- [[file:BOOK.org::2565][2565]] hole 3: find the matching end within limit; contents recurse
-- [[file:BOOK.org::2569][2569]] hole 3: find the matching end within limit; body stays text
-- [[file:BOOK.org::2573][2573]] hole 3: only in modePropertyDrawer; a malformed drawer is not a d...
-- [[file:BOOK.org::2577][2577]] hole 3: run to the next line that cannot be prose, verifying pairs
-- [[file:BOOK.org::2587][2587]] twin of org-affiliated
-- [[file:BOOK.org::2596][2596]] hole 3: consume affiliated keyword lines; report name and the ele...
-- [[file:BOOK.org::2605][2605]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
-- [[file:BOOK.org::2621][2621]] hole 5: collect, resolve targets, assemble with banners, write
-- [[file:BOOK.org::2638][2638]] hole 5: eligible blocks grouped by target in first-appearance order
-- [[file:BOOK.org::2642][2642]] hole 5: no, yes, or a path relative to the book's directory
-- [[file:BOOK.org::2652][2652]] hole 5: unescape commas, dedent by column, expand noweb, dedent a...
-- [[file:BOOK.org::2662][2662]] hole 7: extent between the anchors, then the docstring rule
-- [[file:BOOK.org::2668][2668]] hole 7: line-comment table per language, blank lines as a bare ma...
-- [[file:BOOK.org::2678][2678]] hole 8: named block first, else noweb-ref concatenation; cycles a...
-- [[file:BOOK.org::2689][2689]] hole 5: the generated-file banner in the target's own comment syntax
-- [[file:BOOK.org::2695][2695]] hole 5: refuse the book itself, mkdirp on demand, skip byte-ident...
-- [[file:BOOK.org::2711][2711]] hole 9: splice fresh interiors into the retained bytes, report ch...
-- [[file:BOOK.org::2721][2721]] hole 9: a line link per plan site, sites below the block shifted ...
-- [[file:BOOK.org::2727][2727]] hole 9: system diff -u over the two named bodies, temp-file heade...
-- [[file:BOOK.org::2906][2906]] hole 6: ORACLE=1 in the environment
-- [[file:BOOK.org::2910][2910]] hole 6: UPDATE=1 in the environment
-- [[file:BOOK.org::2916][2916]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
+- [[file:BOOK.org::91][91]] entry: PLANNED Stage 3: blocks in the tree
+- [[file:BOOK.org::158][158]] entry: PLANNED Stage 4: header resolution
+- [[file:BOOK.org::204][204]] entry: PLANNED Stage 5: tangle
+- [[file:BOOK.org::244][244]] entry: PLANNED Stage 6: the oracle harness
+- [[file:BOOK.org::278][278]] entry: PLANNED Stage 7: org comments
+- [[file:BOOK.org::321][321]] entry: PLANNED Stage 8: noweb
+- [[file:BOOK.org::358][358]] entry: PLANNED Stage 9: dynamic blocks
+- [[file:BOOK.org::405][405]] entry: PLANNED Stage 10: the fence
+- [[file:BOOK.org::434][434]] entry: PLANNED Stage 11: parity and self-hosting
+- [[file:BOOK.org::1239][1239]] hole 5: parse, refresh, reparse, tangle; errors to stderr
+- [[file:BOOK.org::2468][2468]] hole 4: every block's Params through the closed table, unknown ke...
+- [[file:BOOK.org::2474][2474]] hole 4: split on space-then-colon outside parens, brackets, and d...
+- [[file:BOOK.org::2478][2478]] hole 4: chomp, unquote an elisp string literal, reject lisp
+- [[file:BOOK.org::2487][2487]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
+- [[file:BOOK.org::2503][2503]] hole 5: collect, resolve targets, assemble with banners, write
+- [[file:BOOK.org::2520][2520]] hole 5: eligible blocks grouped by target in first-appearance order
+- [[file:BOOK.org::2524][2524]] hole 5: no, yes, or a path relative to the book's directory
+- [[file:BOOK.org::2534][2534]] hole 5: unescape commas, dedent by column, expand noweb, dedent a...
+- [[file:BOOK.org::2544][2544]] hole 7: extent between the anchors, then the docstring rule
+- [[file:BOOK.org::2550][2550]] hole 7: line-comment table per language, blank lines as a bare ma...
+- [[file:BOOK.org::2560][2560]] hole 8: named block first, else noweb-ref concatenation; cycles a...
+- [[file:BOOK.org::2571][2571]] hole 5: the generated-file banner in the target's own comment syntax
+- [[file:BOOK.org::2577][2577]] hole 5: refuse the book itself, mkdirp on demand, skip byte-ident...
+- [[file:BOOK.org::2593][2593]] hole 9: splice fresh interiors into the retained bytes, report ch...
+- [[file:BOOK.org::2603][2603]] hole 9: a line link per plan site, sites below the block shifted ...
+- [[file:BOOK.org::2609][2609]] hole 9: system diff -u over the two named bodies, temp-file heade...
+- [[file:BOOK.org::2788][2788]] hole 6: ORACLE=1 in the environment
+- [[file:BOOK.org::2792][2792]] hole 6: UPDATE=1 in the environment
+- [[file:BOOK.org::2798][2798]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
 
 #+end:
 
@@ -148,13 +129,13 @@ them. (6) The anchor cross-check against org, 252 src blocks over
 four books, is repeated after the swap, with Emacs character
 positions converted to byte offsets.
 
-- [ ] skeleton approved (the human ticks this box)
-- [ ] inserted prose reads steady-state
-- [ ] Changes draft below reads right in the journal
-- [ ] HOLE(3) cluster filled, one element parser at a time
-- [ ] stage 2 and block fixtures green with no edit to any golden
-- [ ] anchors re-checked against org on all four books
-- [ ] twins accepted, tokenizer blocks deleted, census clean
+- [X] skeleton approved (the human ticks this box)
+- [X] inserted prose reads steady-state
+- [X] Changes draft below reads right in the journal
+- [X] HOLE(3) cluster filled, one element parser at a time
+- [X] stage 2 and block fixtures green with no edit to any golden
+- [X] anchors re-checked against org on all four books
+- [X] twins accepted, tokenizer blocks deleted, census clean
 - [ ] Changes entry dated and filed, plan entry deleted
 
 *** Changes draft
@@ -1797,6 +1778,7 @@ import (
 	"bytes"
 	"fmt"
 	"os"
+	"sort"
 	"strings"
 
 	"github.com/bilus/babble/internal/book"
@@ -1813,314 +1795,248 @@ func Parse(path string) (*book.Document, error) {
 
 #+begin_src go :tangle internal/org/org.go
 func ParseBytes(src []byte, path string) (*book.Document, error) {
-	toks := tokenize(src)
 	d := &book.Document{Path: path, Source: src,
-		Keywords: map[string][]string{}, Todo: todoWords(toks)}
-	p := &parser{src: src, d: d, toks: toks, todo: map[string]bool{}}
+		Keywords: map[string][]string{}, Todo: todoWords(src)}
+	p := &parser{src: src, path: path, d: d,
+		todo: map[string]bool{}, lines: lineStarts(src)}
 	for _, w := range d.Todo {
 		p.todo[w] = true
 	}
-	if err := p.parse(); err != nil {
+	nodes, err := p.parseElements(0, len(src), modeFirstSection)
+	if err != nil {
 		return nil, err
 	}
-	d.Nodes = p.roots
+	d.Nodes = nodes
 	return d, nil
 }
 #+end_src
 
-*************** PLANNED stage 3 replaces this section ([[#stage-3][plan]]) :stage3:
-Everything from here to the end of the chapter is the two-phase
-frontend this stage retires, and the planned replacement sits
-at the end of the chapter under [[*The planned frontend]]. The
-paragraph below is the claim that motivated the change and that
-the code does not keep: the tokenizer lowercases block names and
-computes the extent anchor, which is grammar in the lexical phase.
-*************** END
-
-Parsing is two phases with a hard boundary. The tokenizer
-classifies every line by shape alone and knows no grammar; the
-parser consumes tokens and owns all grammar and meaning. Nothing
-semantic, not even the todo words, reaches the first phase.
-
-A token is one line. The shapes: a run of stars and a space, a
-block delimiter, a #+key: line, a colon-fenced line, or plain
-text. What any of them means is not the tokenizer's business; that
-a delimiter pair forms a block, and that a colon-line run forms a
-drawer, are grammatical facts the parser establishes from
-position.
-
-#+begin_src go :tangle internal/org/org.go :comments org
-type tokKind int
-
-const (
-	tokText tokKind = iota
-	tokHeadline
-	tokKeyword
-	tokColonLine
-	tokBlockBegin
-	tokBlockEnd
-)
-
-type token struct {
-	kind  tokKind
-	line  int    // 1-based
-	start int    // offset of the line's first byte
-	end   int    // offset past its text, newline excluded
-	next  int    // offset of the next line
-	stars int    // tokHeadline: how many
-	key   string // tokKeyword, tokBlockBegin, tokBlockEnd: lowercased; tokColonLine as written
-	value string // everything after the key, trimmed
-	after int    // tokBlockEnd: offset just past the delimiter keyword
-}
-#+end_src
-
-#+begin_src go :tangle internal/org/org.go
-func tokenize(src []byte) []token {
-	var toks []token
-	off, ln := 0, 1
-	for off < len(src) {
-		text, next := line(src, off)
-		t := token{kind: tokText, line: ln, start: off,
-			end: off + len(text), next: next}
-		if stars := starRun(text); stars > 0 {
-			t.kind, t.stars = tokHeadline, stars
-		} else if name, rest, after, ok := blockDelim(text, "begin"); ok {
-			t.kind, t.key, t.value = tokBlockBegin, name, rest
-			t.after = off + after
-		} else if name, rest, after, ok := blockDelim(text, "end"); ok {
-			t.kind, t.key, t.value = tokBlockEnd, name, rest
-			t.after = off + after
-		} else if key, value, ok := keywordLine(text); ok {
-			t.kind, t.key, t.value = tokKeyword, key, value
-		} else if key, value, ok := colonLine(text); ok {
-			t.kind, t.key, t.value = tokColonLine, key, value
-		}
-		toks = append(toks, t)
-		off = next
-		ln++
-	}
-	return toks
-}
-
-func line(src []byte, off int) (string, int) {
-	eol := bytes.IndexByte(src[off:], '\n')
-	if eol < 0 {
-		return string(src[off:]), len(src)
-	}
-	return string(src[off : off+eol]), off + eol + 1
-}
-
-func starRun(text string) int {
-	i := 0
-	for i < len(text) && text[i] == '*' {
-		i++
-	}
-	if i > 0 && i < len(text) && text[i] == ' ' {
-		return i
-	}
-	return 0
-}
-
-func blockDelim(text, word string) (name, rest string, after int, ok bool) {
-	i := 0
-	for i < len(text) && (text[i] == ' ' || text[i] == '\t') {
-		i++
-	}
-	prefix := "#+" + word + "_"
-	if len(text) < i+len(prefix) || !strings.EqualFold(text[i:i+len(prefix)], prefix) {
-		return "", "", 0, false
-	}
-	j := i + len(prefix)
-	k := j
-	for k < len(text) && text[k] != ' ' && text[k] != '\t' {
-		k++
-	}
-	if k == j {
-		return "", "", 0, false
-	}
-	return strings.ToLower(text[j:k]), strings.TrimSpace(text[k:]), k, true
-}
-
-func colonLine(text string) (key, value string, ok bool) {
-	t := strings.TrimSpace(text)
-	if len(t) < 3 || t[0] != ':' {
-		return "", "", false
-	}
-	j := strings.IndexByte(t[1:], ':')
-	if j <= 0 || strings.ContainsAny(t[1:1+j], " \t") {
-		return "", "", false
-	}
-	return t[1 : 1+j], strings.TrimSpace(t[2+j:]), true
-}
-#+end_src
-
-The todo words come from the token stream before the parser runs,
-because org applies a #+todo line to the whole file wherever it
-sits. Each word drops its shortcut-and-logging suffix, and the bar
-between active and done states drops too, since recognizing the
-words is all the tangler needs. The three keyword spellings are
-the org set.
-
-#+begin_src go :tangle internal/org/org.go :comments org
-const (
-	kwTodo    = "todo"
-	kwSeqTodo = "seq_todo"
-	kwTypTodo = "typ_todo"
-	kwName    = "name"
-	kwBegin   = "begin" // the dynamic-block opener, #+begin:
-	kwEnd     = "end"   // and its closer
-)
-
-func todoWords(toks []token) []string {
-	var words []string
-	for _, t := range toks {
-		if t.kind != tokKeyword {
-			continue
-		}
-		switch t.key {
-		case kwTodo, kwSeqTodo, kwTypTodo:
-		default:
-			continue
-		}
-		for _, f := range strings.Fields(t.value) {
-			if f == "|" {
-				continue
-			}
-			if j := strings.IndexByte(f, '('); j >= 0 {
-				f = f[:j]
-			}
-			if f != "" {
-				words = append(words, f)
-			}
-		}
-	}
-	if words == nil {
-		words = []string{"TODO", "DONE"}
-	}
-	return words
-}
-#+end_src
-
-The parser owns the grammar: which star lines open which
-subtrees, which colon lines form a drawer, and where a prose run
-ends. It walks the token slice with one cursor; every branch of
-parse advances it.
+The parser holds the source, a line index and an offset, which is
+the buffer position org calls point. Every element parser reads
+the line at that offset when it needs to decide something, which
+is what keeps the byte anchors exact: the parser always knows
+where it is looking.
 
 #+begin_src go :tangle internal/org/org.go :comments org
 type parser struct {
 	src   []byte
+	path  string
 	d     *book.Document
 	todo  map[string]bool
-	toks  []token
-	pos   int
-	stack []*book.Headline
-	roots []book.Node
+	lines []int // offset of every line start, for line numbers
+	off   int   // point
+}
+#+end_src
+
+#+begin_src go :tangle internal/org/org.go
+func lineStarts(src []byte) []int {
+	starts := []int{0}
+	for i, b := range src {
+		if b == '\n' {
+			starts = append(starts, i+1)
+		}
+	}
+	return starts
 }
 
-func (p *parser) parse() error {
-	for p.pos < len(p.toks) {
-		t := p.toks[p.pos]
-		switch {
-		case t.kind == tokHeadline:
-			p.headline(t)
-		case p.atBlock():
-			if err := p.block(); err != nil {
-				return err
+func (p *parser) lineNum(off int) int {
+	return sort.SearchInts(p.lines, off+1)
+}
+
+func (p *parser) line(off int) (string, int) { return line(p.src, off) }
+
+func line(src []byte, off int) (string, int) {
+	if i := bytes.IndexByte(src[off:], '\n'); i >= 0 {
+		return string(src[off : off+i]), off + i + 1
+	}
+	return string(src[off:]), len(src)
+}
+#+end_src
+
+Mode is the context a parent hands its children. Org threads seven
+of them; the three below are the ones this subset can reach, and
+the dispatcher branches on the third. Planning arrives with stage
+4, which needs it to let a planning line sit between a heading and
+its drawer.
+
+#+begin_src go :tangle internal/org/org.go :comments org
+type mode int
+
+const (
+	modeFirstSection mode = iota
+	modeSection
+	modePropertyDrawer
+)
+#+end_src
+
+An element parser returns the node, and, when the element holds
+other elements, the byte range they live in and the way to adopt
+them. A verbatim block leaves both empty, so the loop cannot
+recurse into text that must stay text. Properties ride here too,
+because a drawer is an element in org's model but a field of the
+headline in ours.
+
+#+begin_src go :tangle internal/org/org.go :comments org
+type parsed struct {
+	node      book.Node
+	props     map[string]string // a property drawer's payload
+	contents  book.Span         // where child elements live
+	adopt     func([]book.Node)
+	childMode mode
+}
+#+end_src
+
+parseElements is the loop from [[*The loop]]: identify what starts
+here, recurse when it holds elements, jump to its end, repeat. The
+bound matters twice over. Elements are parsed within it, and a
+non-headline element gets the tighter bound of the next headline,
+which is org's section, and the reason a block cannot reach past
+a heading to find its terminator.
+
+#+begin_src go :tangle internal/org/org.go :comments org
+func (p *parser) parseElements(beg, end int, m mode) ([]book.Node, error) {
+	var out []book.Node
+	for off := beg; off < end; {
+		p.off = off
+		text, _ := p.line(off)
+		limit := end
+		if starRun(text) == 0 {
+			limit = p.nextHeadline(off, end, anyLevel)
+		}
+		el, next, err := p.currentElement(limit, m)
+		if err != nil {
+			return nil, err
+		}
+		if el.node != nil {
+			if el.adopt != nil && el.contents.End > el.contents.Start {
+				kids, err := p.parseElements(el.contents.Start, el.contents.End, el.childMode)
+				if err != nil {
+					return nil, err
+				}
+				el.adopt(kids)
 			}
-		case t.kind == tokKeyword:
-			p.keyword(t)
+			out = append(out, el.node)
+		}
+		off = next
+		m = modeSection
+	}
+	return out, nil
+}
+#+end_src
+
+currentElement is the dispatcher, and its order is the table in
+[[*The dispatch]]: the mode branch, then a star run, then the
+affiliated name line, then the block delimiters, then the keyword
+shape, then a paragraph for everything left. The first branch that
+matches wins, which is why the order is the contract and not a
+detail.
+
+#+begin_src go :tangle internal/org/org.go :comments org
+func (p *parser) currentElement(limit int, m mode) (parsed, int, error) {
+	start := p.off
+	text, next := p.line(start)
+	if starRun(text) > 0 {
+		return p.headlineParser(text, next, limit)
+	}
+	if m == modePropertyDrawer {
+		if props, after, ok := p.propertyDrawerParser(start, limit); ok {
+			return parsed{props: props}, after, nil
+		}
+	}
+	aff := affiliated{begin: start}
+	if key, value, ok := keywordLine(text); ok && key == kwName && next < limit {
+		if t2, n2 := p.line(next); opensBlock(t2) {
+			aff.name = value
+			p.off, text, next = next, t2, n2
+		}
+	}
+	if name, rest, _, ok := blockDelim(text, "begin"); ok {
+		switch name {
+		case "src":
+			return p.srcBlockParser(rest, next, limit, aff)
+		case "example", "export", "comment", "verse":
+			return p.verbatimBlockParser(name, next, limit, aff)
 		default:
-			p.prose()
+			return p.greaterBlockParser(name, next, limit, aff)
 		}
 	}
-	return nil
-}
-#+end_src
-
-A block may wear an affiliated name line, so the cursor is at a
-block when it sits on a delimiter or on a name line with a
-delimiter behind it. That lookahead is the only place the parser
-needs two tokens at once.
-
-#+begin_src go :tangle internal/org/org.go :comments org
-func (p *parser) atBlock() bool {
-	i := p.pos
-	if t := p.toks[i]; t.kind == tokKeyword && t.key == kwName && i+1 < len(p.toks) {
-		i++
-	}
-	t := p.toks[i]
-	return t.kind == tokBlockBegin || (t.kind == tokKeyword && t.key == kwBegin)
-}
-#+end_src
-
-A keyword line is one node and one map entry. Prose swallows
-every token that opens nothing, stray colon lines included, blank
-lines included; its span runs from its first line to the start of
-whatever interrupts it. A block delimiter interrupts it, or a run
-of prose would eat every block below it.
-
-#+begin_src go :tangle internal/org/org.go :comments org
-func (p *parser) keyword(t token) {
-	k := &book.Keyword{Key: t.key, Value: t.value, Line: t.line,
-		Raw: book.Span{Start: t.start, End: t.end}}
-	p.d.Keywords[t.key] = append(p.d.Keywords[t.key], t.value)
-	p.attach(k)
-	p.pos++
-}
-
-func (p *parser) prose() {
-	first := p.toks[p.pos]
-	last := first
-	for p.pos < len(p.toks) {
-		t := p.toks[p.pos]
-		if t.kind == tokHeadline || t.kind == tokKeyword || t.kind == tokBlockBegin {
-			break
+	if key, value, ok := keywordLine(text); ok {
+		if key == kwBegin {
+			return p.dynamicBlockParser(value, next, limit, aff)
 		}
-		last = t
-		p.pos++
+		return p.keywordParser(key, value, text, next)
 	}
-	p.attach(&book.Prose{Line: first.line,
-		Text: book.Span{Start: first.start, End: last.next}})
+	return p.paragraphParser(limit)
 }
 #+end_src
 
-Attachment is a stack of open headlines: a new headline pops
-everything at its level or deeper and becomes a child of what
-remains, and every other node joins the innermost open headline.
-A fifteen-star badge is just a very deep entry in that stack.
+#+begin_src go :tangle internal/org/org.go
+const anyLevel = 1 << 30
 
-#+begin_src go :tangle internal/org/org.go :comments org
-func (p *parser) attach(n book.Node) {
-	if len(p.stack) == 0 {
-		p.roots = append(p.roots, n)
-		return
+func opensBlock(text string) bool {
+	if _, _, _, ok := blockDelim(text, "begin"); ok {
+		return true
 	}
-	top := p.stack[len(p.stack)-1]
-	top.Children = append(top.Children, n)
+	key, _, ok := keywordLine(text)
+	return ok && key == kwBegin
 }
 
-func (p *parser) attachHeadline(h *book.Headline) {
-	for len(p.stack) > 0 && p.stack[len(p.stack)-1].Level >= h.Level {
-		p.stack = p.stack[:len(p.stack)-1]
+func startsElement(text string) bool {
+	if starRun(text) > 0 || opensBlock(text) {
+		return true
 	}
-	p.attach(h)
-	p.stack = append(p.stack, h)
+	_, _, ok := keywordLine(text)
+	return ok
+}
+
+func (p *parser) nextHeadline(from, limit, maxLevel int) int {
+	for off := from; off < limit; {
+		text, next := p.line(off)
+		if lvl := starRun(text); lvl > 0 && lvl <= maxLevel {
+			return off
+		}
+		off = next
+	}
+	return limit
+}
+
+func (p *parser) findEnd(from, limit int, closes func(string) bool) (int, string, bool) {
+	for off := from; off < limit; {
+		text, next := p.line(off)
+		if closes(text) {
+			return off, text, true
+		}
+		off = next
+	}
+	return 0, "", false
 }
 #+end_src
 
-Headline anatomy, in org's order: stars and one space (the token
-carries the count), an optional todo word from the book's own set,
-an optional [#A] priority, an optional COMMENT marker, the title,
-and trailing tags. The ARCHIVE tag sets Archived on the way
-through, and a well-formed property drawer directly below attaches
-before the parser moves on.
+An affiliated keyword line belongs to the element below it. The
+subset uses one, ~#+name:~, and the two offsets it produces are
+both load bearing: the element's extent opens at the name line,
+and the tangler's anchor stays on the block's own first line.
 
 #+begin_src go :tangle internal/org/org.go :comments org
-func (p *parser) headline(t token) {
-	h := &book.Headline{Level: t.stars, Line: t.line,
-		AfterStars: t.start + t.stars + 1,
-		Head:       book.Span{Start: t.start, End: t.end}}
-	rest := strings.TrimLeft(string(p.src[t.start+t.stars+1:t.end]), " \t")
+type affiliated struct {
+	name  string // the #+name: value, or ""
+	begin int    // where the element's extent starts
+}
+#+end_src
+
+A headline owns its subtree, which ends at the next headline of
+its level or shallower. The property drawer directly below it is
+the headline's own data, so the parser asks for it in property
+drawer mode before handing the rest of the range to the loop.
+
+#+begin_src go :tangle internal/org/org.go :comments org
+func (p *parser) headlineParser(text string, next, limit int) (parsed, int, error) {
+	off := p.off
+	stars := starRun(text)
+	h := &book.Headline{Level: stars, Line: p.lineNum(off),
+		AfterStars: off + stars + 1,
+		Head:       book.Span{Start: off, End: off + len(text)}}
+	rest := strings.TrimLeft(text[stars+1:], " \t")
 	if w, r, ok := firstWord(rest); ok && p.todo[w] {
 		h.Todo = w
 		rest = r
@@ -2139,13 +2055,20 @@ func (p *parser) headline(t token) {
 			h.Archived = true
 		}
 	}
-	p.attachHeadline(h)
-	p.pos++
-	if props, ok := p.drawer(); ok {
-		h.Properties = props
+	end := p.nextHeadline(next, limit, stars)
+	contents := next
+	p.off = next
+	if el, after, err := p.currentElement(end, modePropertyDrawer); err == nil && el.props != nil {
+		h.Properties = el.props
+		contents = after
 	}
+	return parsed{node: h, contents: book.Span{Start: contents, End: end},
+		adopt:     func(kids []book.Node) { h.Children = kids },
+		childMode: modeSection}, end, nil
 }
+#+end_src
 
+#+begin_src go :tangle internal/org/org.go
 func firstWord(s string) (word, rest string, ok bool) {
 	i := strings.IndexAny(s, " \t")
 	if i < 0 {
@@ -2192,12 +2115,199 @@ func tagWord(s string) bool {
 }
 #+end_src
 
-The keyword shape is #+key: value, the key one colon-free word;
-the begin line of a block has a space before its first colon, so
-it tokenizes as text until stage 3 teaches the tokenizer the
-delimiter shapes.
+The property drawer is a run of colon lines opening with
+:PROPERTIES: and closing with :END:. A malformed drawer is not a
+drawer at all, and its lines fall to prose, which is also what org
+does.
 
 #+begin_src go :tangle internal/org/org.go :comments org
+func (p *parser) propertyDrawerParser(from, limit int) (map[string]string, int, bool) {
+	text, next := p.line(from)
+	key, value, ok := colonLine(text)
+	if !ok || !strings.EqualFold(key, "PROPERTIES") || value != "" {
+		return nil, from, false
+	}
+	props := map[string]string{}
+	for off := next; off < limit; {
+		text, next := p.line(off)
+		key, value, ok := colonLine(text)
+		if !ok {
+			return nil, from, false
+		}
+		if strings.EqualFold(key, "END") && value == "" {
+			return props, next, true
+		}
+		props[strings.ToLower(key)] = value
+		off = next
+	}
+	return nil, from, false
+}
+#+end_src
+
+A src block records the two raw anchors beside its parsed
+attributes: where its own first line starts, and the offset just
+past the literal end keyword, which is where org's backward search
+stops. The terminator has to name the same block and carry nothing
+after it, and the bound keeps the search inside one section.
+
+#+begin_src go :tangle internal/org/org.go :comments org
+func (p *parser) srcBlockParser(rest string, bodyStart, limit int, aff affiliated) (parsed, int, error) {
+	beginAt := p.off
+	endOff, endText, ok := p.findEnd(bodyStart, limit, closesBlock("src"))
+	if !ok {
+		return parsed{}, 0, fmt.Errorf("%s:%d: unterminated src block", p.path, p.lineNum(beginAt))
+	}
+	_, _, after, _ := blockDelim(endText, "end")
+	lang, switches, header := srcHeader(rest)
+	_, next := p.line(endOff)
+	return parsed{node: &book.SrcBlock{Lang: lang, Name: aff.name,
+		Switches: switches, RawHeader: header,
+		Body:     book.Span{Start: bodyStart, End: endOff},
+		BeginAt:  beginAt, AfterEnd: endOff + after,
+		Line:     p.lineNum(beginAt),
+		Full:     book.Span{Start: aff.begin, End: endOff + len(endText)}}}, next, nil
+}
+#+end_src
+
+#+begin_src go :tangle internal/org/org.go
+func closesBlock(name string) func(string) bool {
+	return func(text string) bool {
+		got, tail, _, ok := blockDelim(text, "end")
+		return ok && got == name && tail == ""
+	}
+}
+#+end_src
+
+Verbatim blocks hold text, so they report no contents range and
+the loop cannot descend into them. That is what keeps a
+comma-escaped delimiter inside an example block from being read as
+a block.
+
+#+begin_src go :tangle internal/org/org.go :comments org
+func (p *parser) verbatimBlockParser(kind string, bodyStart, limit int, aff affiliated) (parsed, int, error) {
+	beginAt := p.off
+	endOff, endText, ok := p.findEnd(bodyStart, limit, closesBlock(kind))
+	if !ok {
+		return parsed{}, 0, fmt.Errorf("%s:%d: unterminated %s block", p.path, p.lineNum(beginAt), kind)
+	}
+	_, next := p.line(endOff)
+	return parsed{node: &book.VerbatimBlock{Kind: kind,
+		Body: book.Span{Start: bodyStart, End: endOff},
+		Line: p.lineNum(beginAt),
+		Full: book.Span{Start: aff.begin, End: endOff + len(endText)}}}, next, nil
+}
+#+end_src
+
+Greater blocks hold elements, so they hand the loop their interior
+and adopt what comes back.
+
+#+begin_src go :tangle internal/org/org.go :comments org
+func (p *parser) greaterBlockParser(kind string, bodyStart, limit int, aff affiliated) (parsed, int, error) {
+	beginAt := p.off
+	endOff, endText, ok := p.findEnd(bodyStart, limit, closesBlock(kind))
+	if !ok {
+		return parsed{}, 0, fmt.Errorf("%s:%d: unterminated %s block", p.path, p.lineNum(beginAt), kind)
+	}
+	q := &book.QuoteBlock{Kind: kind, Line: p.lineNum(beginAt),
+		Full: book.Span{Start: aff.begin, End: endOff + len(endText)}}
+	_, next := p.line(endOff)
+	return parsed{node: q, contents: book.Span{Start: bodyStart, End: endOff},
+		adopt:     func(kids []book.Node) { q.Children = kids },
+		childMode: modeSection}, next, nil
+}
+#+end_src
+
+A dynamic block keeps its interior twice over: the span refresh
+rewrites, and the nodes inside it, because a generated diff holds
+a real src block that collection has to see.
+
+#+begin_src go :tangle internal/org/org.go :comments org
+func (p *parser) dynamicBlockParser(args string, bodyStart, limit int, aff affiliated) (parsed, int, error) {
+	beginAt := p.off
+	endOff, endText, ok := p.findEnd(bodyStart, limit, func(text string) bool {
+		key, value, ok := keywordLine(text)
+		return ok && key == kwEnd && value == ""
+	})
+	if !ok {
+		return parsed{}, 0, fmt.Errorf("%s:%d: unterminated dynamic block", p.path, p.lineNum(beginAt))
+	}
+	name, rest, _ := strings.Cut(args, " ")
+	db := &book.DynamicBlock{Name: name, Args: strings.TrimSpace(rest),
+		Interior: book.Span{Start: bodyStart, End: endOff},
+		Line:     p.lineNum(beginAt),
+		Full:     book.Span{Start: aff.begin, End: endOff + len(endText)}}
+	_, next := p.line(endOff)
+	return parsed{node: db, contents: book.Span{Start: bodyStart, End: endOff},
+		adopt:     func(kids []book.Node) { db.Children = kids },
+		childMode: modeSection}, next, nil
+}
+#+end_src
+
+A keyword line is one node and one map entry. Prose is everything
+left over: it runs from its first line to whatever interrupts it,
+blank lines and stray colon lines included.
+
+#+begin_src go :tangle internal/org/org.go :comments org
+func (p *parser) keywordParser(key, value, text string, next int) (parsed, int, error) {
+	k := &book.Keyword{Key: key, Value: value, Line: p.lineNum(p.off),
+		Raw: book.Span{Start: p.off, End: p.off + len(text)}}
+	p.d.Keywords[key] = append(p.d.Keywords[key], value)
+	return parsed{node: k}, next, nil
+}
+
+func (p *parser) paragraphParser(limit int) (parsed, int, error) {
+	start := p.off
+	off := start
+	for off < limit {
+		text, next := p.line(off)
+		if off != start && startsElement(text) {
+			break
+		}
+		off = next
+	}
+	return parsed{node: &book.Prose{Line: p.lineNum(start),
+		Text: book.Span{Start: start, End: off}}}, off, nil
+}
+#+end_src
+
+The shape tests below are the only place a line's spelling is
+examined, and every one of them is a pure function of the line
+plus a position. They are read at the point of decision, never
+ahead of time, which is what stops a lexical phase from deciding
+grammar.
+
+#+begin_src go :tangle internal/org/org.go :comments org
+func starRun(text string) int {
+	i := 0
+	for i < len(text) && text[i] == '*' {
+		i++
+	}
+	if i > 0 && i < len(text) && text[i] == ' ' {
+		return i
+	}
+	return 0
+}
+
+func blockDelim(text, word string) (name, rest string, after int, ok bool) {
+	i := 0
+	for i < len(text) && (text[i] == ' ' || text[i] == '\t') {
+		i++
+	}
+	prefix := "#+" + word + "_"
+	if len(text) < i+len(prefix) || !strings.EqualFold(text[i:i+len(prefix)], prefix) {
+		return "", "", 0, false
+	}
+	j := i + len(prefix)
+	k := j
+	for k < len(text) && text[k] != ' ' && text[k] != '\t' {
+		k++
+	}
+	if k == j {
+		return "", "", 0, false
+	}
+	return strings.ToLower(text[j:k]), strings.TrimSpace(text[k:]), k, true
+}
+
 func keywordLine(text string) (key, value string, ok bool) {
 	t := strings.TrimLeft(text, " \t")
 	if !strings.HasPrefix(t, "#+") {
@@ -2218,155 +2328,62 @@ func keywordLine(text string) (key, value string, ok bool) {
 	}
 	return strings.ToLower(rest[:i]), strings.TrimSpace(rest[i+1:]), true
 }
+
+func colonLine(text string) (key, value string, ok bool) {
+	t := strings.TrimSpace(text)
+	if len(t) < 3 || t[0] != ':' {
+		return "", "", false
+	}
+	j := strings.IndexByte(t[1:], ':')
+	if j <= 0 || strings.ContainsAny(t[1:1+j], " \t") {
+		return "", "", false
+	}
+	return t[1 : 1+j], strings.TrimSpace(t[2+j:]), true
+}
 #+end_src
 
-The property drawer is grammar, not shape: an unbroken run of
-colon-line tokens opening with :PROPERTIES: and closing with
-:END:, directly under a heading. Anything else leaves the cursor
-untouched, and those tokens fall to prose, which is also what org
-does. No line arithmetic survives here; the tokens carry it.
+The todo words come from the book's own header before any headline
+is read, because org applies a ~#+todo~ line to the whole file
+wherever it sits. Each word drops its shortcut and logging suffix,
+and the bar between active and done states drops too, since
+recognizing the words is all a tangler needs.
 
 #+begin_src go :tangle internal/org/org.go :comments org
-func (p *parser) drawer() (map[string]string, bool) {
-	i := p.pos
-	if i >= len(p.toks) {
-		return nil, false
-	}
-	t := p.toks[i]
-	if t.kind != tokColonLine || !strings.EqualFold(t.key, "PROPERTIES") || t.value != "" {
-		return nil, false
-	}
-	props := map[string]string{}
-	for i++; i < len(p.toks); i++ {
-		t := p.toks[i]
-		if t.kind != tokColonLine {
-			return nil, false
+const (
+	kwTodo    = "todo"
+	kwSeqTodo = "seq_todo"
+	kwTypTodo = "typ_todo"
+	kwName    = "name"
+	kwBegin   = "begin" // the dynamic-block opener, #+begin:
+	kwEnd     = "end"   // and its closer
+)
+
+func todoWords(src []byte) []string {
+	var words []string
+	for off := 0; off < len(src); {
+		text, next := line(src, off)
+		if key, value, ok := keywordLine(text); ok {
+			switch key {
+			case kwTodo, kwSeqTodo, kwTypTodo:
+				for _, f := range strings.Fields(value) {
+					if f == "|" {
+						continue
+					}
+					if j := strings.IndexByte(f, '('); j >= 0 {
+						f = f[:j]
+					}
+					if f != "" {
+						words = append(words, f)
+					}
+				}
+			}
 		}
-		if strings.EqualFold(t.key, "END") && t.value == "" {
-			p.pos = i + 1
-			return props, true
-		}
-		props[strings.ToLower(t.key)] = t.value
+		off = next
 	}
-	return nil, false
-}
-#+end_src
-
-block assembles whatever the delimiters enclose, name line
-included. The Full span opens at the name line when there is one,
-so a name sits inside the extent of the block below it, which is
-what the doc-comment rule needs later.
-
-#+begin_src go :tangle internal/org/org.go :comments org
-func (p *parser) block() error {
-	start := p.toks[p.pos]
-	name := ""
-	if start.kind == tokKeyword && start.key == kwName {
-		name = start.value
-		p.pos++
+	if words == nil {
+		words = []string{"TODO", "DONE"}
 	}
-	begin := p.toks[p.pos]
-	if begin.kind == tokKeyword {
-		return p.dynamicBlock(start, begin, name)
-	}
-	return p.delimitedBlock(start, begin, name)
-}
-#+end_src
-
-The end line must match the opener's name and carry nothing but
-whitespace, and the search stops at the next headline, since org
-looks for the closer inside one section only. A block that never
-closes is an error naming its line; org would quietly reparse the
-opener as a paragraph.
-
-#+begin_src go :tangle internal/org/org.go :comments org
-func (p *parser) matchingEnd(closes func(token) bool) (int, bool) {
-	for i := p.pos + 1; i < len(p.toks); i++ {
-		if t := p.toks[i]; t.kind == tokHeadline {
-			return 0, false
-		} else if closes(t) {
-			return i, true
-		}
-	}
-	return 0, false
-}
-#+end_src
-
-A src block carries the two raw anchors: BeginAt where its begin
-line starts, and AfterEnd just past the literal end keyword, which
-is where org's own backward search stops. Everything else in the
-tree is spans and parsed attributes.
-
-#+begin_src go :tangle internal/org/org.go :comments org
-func (p *parser) delimitedBlock(start, begin token, name string) error {
-	end, ok := p.matchingEnd(func(t token) bool {
-		return t.kind == tokBlockEnd && t.key == begin.key && t.value == ""
-	})
-	if !ok {
-		return fmt.Errorf("%s:%d: unterminated %s block", p.d.Path, begin.line, begin.key)
-	}
-	endTok := p.toks[end]
-	full := book.Span{Start: start.start, End: endTok.end}
-	body := book.Span{Start: begin.next, End: endTok.start}
-	switch begin.key {
-	case "src":
-		lang, switches, header := srcHeader(begin.value)
-		p.attach(&book.SrcBlock{Lang: lang, Name: name,
-			Switches: switches, RawHeader: header, Body: body,
-			BeginAt: begin.start, AfterEnd: endTok.after,
-			Line: begin.line, Full: full})
-	case "example", "export", "comment", "verse":
-		p.attach(&book.VerbatimBlock{Kind: begin.key, Body: body,
-			Line: begin.line, Full: full})
-	default:
-		kids, err := p.parseRange(p.toks[p.pos+1 : end])
-		if err != nil {
-			return err
-		}
-		p.attach(&book.QuoteBlock{Kind: begin.key, Line: begin.line,
-			Full: full, Children: kids})
-	}
-	p.pos = end + 1
-	return nil
-}
-#+end_src
-
-A dynamic block keeps its interior twice over: the span refresh
-rewrites, and the nodes inside it, because a generated diff holds
-a real src block that collection has to see.
-
-#+begin_src go :tangle internal/org/org.go :comments org
-func (p *parser) dynamicBlock(start, begin token, name string) error {
-	end, ok := p.matchingEnd(func(t token) bool {
-		return t.kind == tokKeyword && t.key == kwEnd && t.value == ""
-	})
-	if !ok {
-		return fmt.Errorf("%s:%d: unterminated dynamic block", p.d.Path, begin.line)
-	}
-	endTok := p.toks[end]
-	blockName, args, _ := strings.Cut(begin.value, " ")
-	kids, err := p.parseRange(p.toks[p.pos+1 : end])
-	if err != nil {
-		return err
-	}
-	p.attach(&book.DynamicBlock{Name: blockName,
-		Args:     strings.TrimSpace(args),
-		Interior: book.Span{Start: begin.next, End: endTok.start},
-		Line:     begin.line,
-		Full:     book.Span{Start: start.start, End: endTok.end},
-		Children: kids})
-	p.pos = end + 1
-	return nil
-}
-#+end_src
-
-#+begin_src go :tangle internal/org/org.go
-func (p *parser) parseRange(toks []token) ([]book.Node, error) {
-	sub := &parser{src: p.src, d: p.d, todo: p.todo, toks: toks}
-	if err := sub.parse(); err != nil {
-		return nil, err
-	}
-	return sub.roots, nil
+	return words
 }
 #+end_src
 
@@ -2459,141 +2476,6 @@ func balancedSplit(s string) []string {
 
 func readValue(s string) (string, error) {
 	panic("HOLE(4): chomp, unquote an elisp string literal, reject lisp")
-}
-#+end_src
-
-** The planned frontend
-
-*************** PLANNED stage 3 adds the section below ([[#stage-3][plan]]) :stage3:
-These blocks carry ~:tangle no~ until acceptance, so the live
-frontend above keeps tangling while this one is reviewed. The
-bodies are holes; the shape is what the gate is for.
-*************** END
-
-The parser holds the source and an offset, which is the buffer
-position org calls point. Everything else it needs is derivable,
-so there is nothing to keep in step.
-
-#+name: org-parser--planned
-#+begin_src go :tangle no
-type parser struct {
-	src  []byte
-	path string
-	off  int // point: the offset the parser is looking at
-}
-#+end_src
-
-Mode is the context a parent hands its children, and it is the
-reason a colon line means one thing under a heading and another
-inside a list. Naming the whole set here keeps the dispatcher's
-first question honest: every value is a case the code answers.
-
-#+name: org-mode-enum--planned
-#+begin_src go :tangle no
-type mode int
-
-const (
-	modeNone mode = iota
-	modeFirstSection
-	modeSection
-	modePlanning
-	modePropertyDrawer
-	modeItem
-	modeNodeProperty
-)
-#+end_src
-
-A container is a node the loop may recurse into. Verbatim blocks
-and src blocks do not satisfy it, so the recursion cannot be
-aimed at text that must stay text; that is org's greater-element
-list expressed as a type rather than a lookup.
-
-#+name: org-container--planned
-#+begin_src go :tangle no
-type container interface {
-	book.Node
-	contents() book.Span
-	adopt([]book.Node)
-}
-#+end_src
-
-parseElements is the loop from [[*The loop]]: identify, jump to the
-element's end, recurse when it holds elements. The bound is what
-stops a block from reaching past a heading.
-
-#+name: org-parse-elements--planned
-#+begin_src go :tangle no
-func (p *parser) parseElements(beg, end int, m mode) ([]book.Node, error) {
-	panic("HOLE(3): the bounded loop; recurse only into containers")
-}
-#+end_src
-
-currentElement is the dispatcher, and its body is the table in
-[[*The dispatch]] read top to bottom: the mode branches first, then
-the star run, then the affiliated keywords, then the line's
-keyword shape, then paragraph as the fallback. Order is the
-contract, so the fills add branches in the table's order and never
-between two of them.
-
-#+name: org-current-element--planned
-#+begin_src go :tangle no
-func (p *parser) currentElement(limit int, m mode) (book.Node, int, error) {
-	panic("HOLE(3): the dispatch table in order: mode, stars, affiliated, keyword shape, paragraph")
-}
-#+end_src
-
-Each element parser searches for its own terminator inside the
-bound and reports where it ends, exactly as the elisp parsers do.
-The affiliated name arrives as an argument, since the collector
-runs before the parser it feeds.
-
-#+name: org-element-parsers--planned
-#+begin_src go :tangle no
-func (p *parser) headlineParser(limit int) (*book.Headline, int, error) {
-	panic("HOLE(3): stars, todo, priority, COMMENT, title, tags; contents to the next headline of this level or shallower")
-}
-
-func (p *parser) srcBlockParser(limit int, aff affiliated) (*book.SrcBlock, int, error) {
-	panic("HOLE(3): find end_src within limit; language, switches, header, both anchors")
-}
-
-func (p *parser) dynamicBlockParser(limit int, aff affiliated) (*book.DynamicBlock, int, error) {
-	panic("HOLE(3): find end: within limit; name, args, interior span")
-}
-
-func (p *parser) greaterBlockParser(limit int, aff affiliated) (*book.QuoteBlock, int, error) {
-	panic("HOLE(3): find the matching end within limit; contents recurse")
-}
-
-func (p *parser) verbatimBlockParser(limit int, aff affiliated) (*book.VerbatimBlock, int, error) {
-	panic("HOLE(3): find the matching end within limit; body stays text")
-}
-
-func (p *parser) propertyDrawerParser(limit int) (map[string]string, int, bool) {
-	panic("HOLE(3): only in modePropertyDrawer; a malformed drawer is not a drawer")
-}
-
-func (p *parser) paragraphParser(limit int) (*book.Prose, int) {
-	panic("HOLE(3): run to the next line that cannot be prose, verifying pairs")
-}
-#+end_src
-
-Affiliated keywords are collected before the element they belong
-to, so the collector returns both the name and the offset where
-the element's own first line starts. That offset is the tangler's
-anchor, and keeping the two apart is what makes a name line sit
-inside the following block's comment extent.
-
-#+name: org-affiliated--planned
-#+begin_src go :tangle no
-type affiliated struct {
-	name       string     // the #+name: value, or ""
-	begin      int        // offset of the first affiliated line
-	spans      []book.Span // the affiliated lines themselves
-}
-
-func (p *parser) collectAffiliated(limit int) affiliated {
-	panic("HOLE(3): consume affiliated keyword lines; report name and the element's own start")
 }
 #+end_src
 
