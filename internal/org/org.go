@@ -23,51 +23,61 @@ func Parse(path string) (*book.Document, error) {
 }
 
 func ParseBytes(src []byte, path string) (*book.Document, error) {
+	toks := tokenize(src)
 	d := &book.Document{Path: path, Source: src,
-		Keywords: map[string][]string{}, Todo: todoWords(src)}
-	sc := &scanner{d: d, todo: map[string]bool{}}
+		Keywords: map[string][]string{}, Todo: todoWords(toks)}
+	p := &parser{src: src, d: d, toks: toks, todo: map[string]bool{}}
 	for _, w := range d.Todo {
-		sc.todo[w] = true
+		p.todo[w] = true
 	}
-	sc.scan()
+	p.parse()
 	return d, nil
 }
 
-// The scanner is a single pass over lines, with one exception made
-// first: the todo words. Org applies a #+todo line to the whole
-// file, wherever it sits, so a prescan collects the words before any
-// headline is read. Each word drops its shortcut-and-logging suffix,
-// and the bar that separates active from done states drops too,
-// since the tangler only needs to recognize the words.
-func todoWords(src []byte) []string {
-	var words []string
-	for off := 0; off < len(src); {
-		text, next := line(src, off)
-		if key, value, ok := keywordLine(text); ok {
-			if key == "todo" || key == "seq_todo" || key == "typ_todo" {
-				for _, f := range strings.Fields(value) {
-					if f == "|" {
-						continue
-					}
-					if j := strings.IndexByte(f, '('); j >= 0 {
-						f = f[:j]
-					}
-					if f != "" {
-						words = append(words, f)
-					}
-				}
-			}
-		}
-		off = next
-	}
-	if words == nil {
-		words = []string{"TODO", "DONE"}
-	}
-	return words
+// A token is one line. The shapes: a run of stars and a space, a
+// means is not the tokenizer's business; a drawer is a grammatical
+// fact the parser establishes from position.
+type tokKind int
+
+const (
+	tokText tokKind = iota
+	tokHeadline
+	tokKeyword
+	tokColonLine
+)
+
+type token struct {
+	kind  tokKind
+	line  int    // 1-based
+	start int    // offset of the line's first byte
+	end   int    // offset past its text, newline excluded
+	next  int    // offset of the next line
+	stars int    // tokHeadline: how many
+	key   string // tokKeyword lowercased; tokColonLine as written
+	value string // tokKeyword, tokColonLine: trimmed
 }
 
-// line yields one line's text without its newline and the offset of
-// the next line; the scanner and every lookahead share it.
+func tokenize(src []byte) []token {
+	var toks []token
+	off, ln := 0, 1
+	for off < len(src) {
+		text, next := line(src, off)
+		t := token{kind: tokText, line: ln, start: off,
+			end: off + len(text), next: next}
+		if stars := starRun(text); stars > 0 {
+			t.kind, t.stars = tokHeadline, stars
+		} else if key, value, ok := keywordLine(text); ok {
+			t.kind, t.key, t.value = tokKeyword, key, value
+		} else if key, value, ok := colonLine(text); ok {
+			t.kind, t.key, t.value = tokColonLine, key, value
+		}
+		toks = append(toks, t)
+		off = next
+		ln++
+	}
+	return toks
+}
+
 func line(src []byte, off int) (string, int) {
 	eol := bytes.IndexByte(src[off:], '\n')
 	if eol < 0 {
@@ -76,97 +86,156 @@ func line(src []byte, off int) (string, int) {
 	return string(src[off : off+eol]), off + eol + 1
 }
 
-// The scanner proper. Headlines and keyword lines are structural;
-// everything else joins the open prose run, blank lines included,
-// and a run flushes whenever structure interrupts it. A property
-// drawer is recognized only directly under its headline, which is
-// org's own rule.
-type scanner struct {
+func starRun(text string) int {
+	i := 0
+	for i < len(text) && text[i] == '*' {
+		i++
+	}
+	if i > 0 && i < len(text) && text[i] == ' ' {
+		return i
+	}
+	return 0
+}
+
+func colonLine(text string) (key, value string, ok bool) {
+	t := strings.TrimSpace(text)
+	if len(t) < 3 || t[0] != ':' {
+		return "", "", false
+	}
+	j := strings.IndexByte(t[1:], ':')
+	if j <= 0 || strings.ContainsAny(t[1:1+j], " \t") {
+		return "", "", false
+	}
+	return t[1 : 1+j], strings.TrimSpace(t[2+j:]), true
+}
+
+// The todo words come from the token stream before the parser runs,
+// because org applies a #+todo line to the whole file wherever it
+// sits. Each word drops its shortcut-and-logging suffix, and the bar
+// between active and done states drops too, since recognizing the
+// words is all the tangler needs. The three keyword spellings are
+// the org set.
+const (
+	kwTodo    = "todo"
+	kwSeqTodo = "seq_todo"
+	kwTypTodo = "typ_todo"
+)
+
+func todoWords(toks []token) []string {
+	var words []string
+	for _, t := range toks {
+		if t.kind != tokKeyword {
+			continue
+		}
+		switch t.key {
+		case kwTodo, kwSeqTodo, kwTypTodo:
+		default:
+			continue
+		}
+		for _, f := range strings.Fields(t.value) {
+			if f == "|" {
+				continue
+			}
+			if j := strings.IndexByte(f, '('); j >= 0 {
+				f = f[:j]
+			}
+			if f != "" {
+				words = append(words, f)
+			}
+		}
+	}
+	if words == nil {
+		words = []string{"TODO", "DONE"}
+	}
+	return words
+}
+
+// The parser owns the grammar: which star lines open which
+// subtrees, which colon lines form a drawer, and where a prose run
+// ends. It walks the token slice with one cursor; every branch of
+// parse advances it.
+type parser struct {
+	src   []byte
 	d     *book.Document
 	todo  map[string]bool
+	toks  []token
+	pos   int
 	stack []*book.Headline
 }
 
-func (sc *scanner) scan() {
-	src := sc.d.Source
-	off, ln := 0, 1
-	proseStart, proseLine := -1, 0
-	flush := func(end int) {
-		if proseStart >= 0 {
-			sc.attach(&book.Prose{Line: proseLine,
-				Text: book.Span{Start: proseStart, End: end}})
-			proseStart = -1
-		}
-	}
-	for off < len(src) {
-		text, next := line(src, off)
-		switch {
-		case headlineLine(text):
-			flush(off)
-			h := sc.headline(text, off, ln)
-			sc.attachHeadline(h)
-			if props, dOff, dLn, ok := drawer(src, next, ln+1); ok {
-				h.Properties = props
-				next, ln = dOff, dLn-1
-			}
-		case isKeyword(text):
-			flush(off)
-			key, value, _ := keywordLine(text)
-			k := &book.Keyword{Key: key, Value: value, Line: ln,
-				Raw: book.Span{Start: off, End: off + len(text)}}
-			sc.d.Keywords[key] = append(sc.d.Keywords[key], value)
-			sc.attach(k)
+func (p *parser) parse() {
+	for p.pos < len(p.toks) {
+		switch t := p.toks[p.pos]; t.kind {
+		case tokHeadline:
+			p.headline(t)
+		case tokKeyword:
+			p.keyword(t)
 		default:
-			if proseStart < 0 {
-				proseStart, proseLine = off, ln
-			}
+			p.prose()
 		}
-		off = next
-		ln++
 	}
-	flush(len(src))
+}
+
+// A keyword line is one node and one map entry. Prose swallows
+// every token that is neither a headline nor a keyword, stray colon
+// lines included, blank lines included; its span runs from its first
+// line to the start of whatever interrupts it.
+func (p *parser) keyword(t token) {
+	k := &book.Keyword{Key: t.key, Value: t.value, Line: t.line,
+		Raw: book.Span{Start: t.start, End: t.end}}
+	p.d.Keywords[t.key] = append(p.d.Keywords[t.key], t.value)
+	p.attach(k)
+	p.pos++
+}
+
+func (p *parser) prose() {
+	first := p.toks[p.pos]
+	last := first
+	for p.pos < len(p.toks) {
+		t := p.toks[p.pos]
+		if t.kind == tokHeadline || t.kind == tokKeyword {
+			break
+		}
+		last = t
+		p.pos++
+	}
+	p.attach(&book.Prose{Line: first.line,
+		Text: book.Span{Start: first.start, End: last.next}})
 }
 
 // Attachment is a stack of open headlines: a new headline pops
 // everything at its level or deeper and becomes a child of what
 // remains, and every other node joins the innermost open headline.
 // A fifteen-star badge is just a very deep entry in that stack.
-func (sc *scanner) attach(n book.Node) {
-	if len(sc.stack) == 0 {
-		sc.d.Nodes = append(sc.d.Nodes, n)
+func (p *parser) attach(n book.Node) {
+	if len(p.stack) == 0 {
+		p.d.Nodes = append(p.d.Nodes, n)
 		return
 	}
-	top := sc.stack[len(sc.stack)-1]
+	top := p.stack[len(p.stack)-1]
 	top.Children = append(top.Children, n)
 }
 
-func (sc *scanner) attachHeadline(h *book.Headline) {
-	for len(sc.stack) > 0 && sc.stack[len(sc.stack)-1].Level >= h.Level {
-		sc.stack = sc.stack[:len(sc.stack)-1]
+func (p *parser) attachHeadline(h *book.Headline) {
+	for len(p.stack) > 0 && p.stack[len(p.stack)-1].Level >= h.Level {
+		p.stack = p.stack[:len(p.stack)-1]
 	}
-	sc.attach(h)
-	sc.stack = append(sc.stack, h)
+	p.attach(h)
+	p.stack = append(p.stack, h)
 }
 
-// Headline anatomy, in org's order: stars and one space, an optional
-// todo word from the book's own set, an optional [#A] priority, an
-// optional COMMENT marker, the title, and trailing tags. The
-// ARCHIVE tag sets Archived on the way through.
-func headlineLine(text string) bool {
-	i := 0
-	for i < len(text) && text[i] == '*' {
-		i++
-	}
-	return i > 0 && i < len(text) && text[i] == ' '
-}
-
-func (sc *scanner) headline(text string, off, ln int) *book.Headline {
-	stars := strings.IndexByte(text, ' ')
-	h := &book.Headline{Level: stars, Line: ln,
-		AfterStars: off + stars + 1,
-		Head:       book.Span{Start: off, End: off + len(text)}}
-	rest := strings.TrimLeft(text[stars+1:], " \t")
-	if w, r, ok := firstWord(rest); ok && sc.todo[w] {
+// Headline anatomy, in org's order: stars and one space (the token
+// carries the count), an optional todo word from the book's own set,
+// an optional [#A] priority, an optional COMMENT marker, the title,
+// and trailing tags. The ARCHIVE tag sets Archived on the way
+// through, and a well-formed property drawer directly below attaches
+// before the parser moves on.
+func (p *parser) headline(t token) {
+	h := &book.Headline{Level: t.stars, Line: t.line,
+		AfterStars: t.start + t.stars + 1,
+		Head:       book.Span{Start: t.start, End: t.end}}
+	rest := strings.TrimLeft(string(p.src[t.start+t.stars+1:t.end]), " \t")
+	if w, r, ok := firstWord(rest); ok && p.todo[w] {
 		h.Todo = w
 		rest = r
 	}
@@ -184,7 +253,11 @@ func (sc *scanner) headline(text string, off, ln int) *book.Headline {
 			h.Archived = true
 		}
 	}
-	return h
+	p.attachHeadline(h)
+	p.pos++
+	if props, ok := p.drawer(); ok {
+		h.Properties = props
+	}
 }
 
 func firstWord(s string) (word, rest string, ok bool) {
@@ -229,9 +302,10 @@ func tagWord(s string) bool {
 	return true
 }
 
-// A keyword line is #+key: value, the key one colon-free word; the
-// begin line of a block has a space before its first colon, so it
-// falls through to prose until stage 3 claims it.
+// The keyword shape is #+key: value, the key one colon-free word;
+// the begin line of a block has a space before its first colon, so
+// it tokenizes as text until stage 3 teaches the tokenizer the
+// delimiter shapes.
 func keywordLine(text string) (key, value string, ok bool) {
 	t := strings.TrimLeft(text, " \t")
 	if !strings.HasPrefix(t, "#+") {
@@ -253,47 +327,40 @@ func keywordLine(text string) (key, value string, ok bool) {
 	return strings.ToLower(rest[:i]), strings.TrimSpace(rest[i+1:]), true
 }
 
-func isKeyword(text string) bool {
-	_, _, ok := keywordLine(text)
-	return ok
-}
-
-// The property drawer: a :PROPERTIES: line directly under the
-// heading, :KEY: value lines, a closing :END:. A malformed drawer is
-// not a drawer at all, and its lines stay prose, which is also what
-// org does.
-func drawer(src []byte, off, ln int) (map[string]string, int, int, bool) {
-	text, next := line(src, off)
-	if !strings.EqualFold(strings.TrimSpace(text), ":PROPERTIES:") {
-		return nil, off, ln, false
+// The property drawer is grammar, not shape: an unbroken run of
+// colon-line tokens opening with :PROPERTIES: and closing with
+// :END:, directly under a heading. Anything else leaves the cursor
+// untouched, and those tokens fall to prose, which is also what org
+// does. No line arithmetic survives here; the tokens carry it.
+func (p *parser) drawer() (map[string]string, bool) {
+	i := p.pos
+	if i >= len(p.toks) {
+		return nil, false
+	}
+	t := p.toks[i]
+	if t.kind != tokColonLine || !strings.EqualFold(t.key, "PROPERTIES") || t.value != "" {
+		return nil, false
 	}
 	props := map[string]string{}
-	lines := 1
-	for next < len(src) {
-		text, n2 := line(src, next)
-		lines++
-		t := strings.TrimSpace(text)
-		if strings.EqualFold(t, ":END:") {
-			return props, n2, ln + lines, true
+	for i++; i < len(p.toks); i++ {
+		t := p.toks[i]
+		if t.kind != tokColonLine {
+			return nil, false
 		}
-		if len(t) < 2 || t[0] != ':' {
-			return nil, off, ln, false
+		if strings.EqualFold(t.key, "END") && t.value == "" {
+			p.pos = i + 1
+			return props, true
 		}
-		j := strings.IndexByte(t[1:], ':')
-		if j < 0 {
-			return nil, off, ln, false
-		}
-		key := strings.ToLower(t[1 : 1+j])
-		props[key] = strings.TrimSpace(t[2+j:])
-		next = n2
+		props[strings.ToLower(t.key)] = t.value
 	}
-	return nil, off, ln, false
+	return nil, false
 }
 
-// parseBlocks is stage 3's half of the scanner: src, dynamic, quote,
-// and verbatim blocks, with names, spans, and the two extent
-// anchors.
-func parseBlocks(src []byte, d *book.Document) error {
+// parseBlocks is stage 3's seam: the tokenizer gains the block
+// delimiter shapes, and this parser method assembles src, dynamic,
+// quote, and verbatim blocks from them, with names, spans, and the
+// two extent anchors.
+func (p *parser) parseBlocks() error {
 	panic("HOLE(3): blocks with names, spans, and the two extent anchors")
 }
 
