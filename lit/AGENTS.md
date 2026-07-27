@@ -45,16 +45,54 @@ agents; lit/README.md is the human companion.
   what is pinned and why. Within a section, each test is its own
   named, described block, and the chapter's claims footnote to them
   (see Prose).
-- The build glue the book owns (lit/lit.mk here) is tangled from the
-  book, in the "Reproducing" chapter; the one-line Makefile that
-  includes it, .gitignore, and the dependency manifests are
-  hand-managed outside the book.
+- The build glue (lit/lit.mk) is tangled from the toolchain's own
+  book, lit/BOOK.org, never from a consuming project's; the one-line
+  Makefile that includes it, .gitignore, and the dependency
+  manifests are hand-managed outside the book.
+
+## Writing style
+
+How to write and edit book prose, in working order:
+
+1. Load the writing-like-user skill before drafting a sentence, and
+   keep its voice throughout: direct, conversational, varied sentence
+   length, dashes for asides. The skill is the voice; the rules below
+   are structure.
+2. Every chapter opens by stating its goal, in one or two sentences
+   the reader can test the rest against. Every section has one
+   overarching topic. Two topics may share a section when they
+   genuinely pair, but never as a sandwich: A, then B, then back to
+   A means the section wants splitting or reordering.
+3. Lead from high level to detail, in the book, in each chapter, and
+   in each section. Nothing dips into a mechanism the surrounding
+   text has not framed first.
+4. The book's Introduction presents the idealized system: inputs,
+   outputs, and the main principles, in common IT shapes (a
+   pipeline, views of one source) a developer can picture at once.
+   No edge cases, no hard features. Each hard problem opens the
+   chapter that solves it, as that chapter's motivation---the
+   mutual-reference deadlock opens the sync engine, not the book.
+5. Introduce every book-specific term once, before its first
+   load-bearing use. Keep a term table while editing: term, where
+   introduced, where first used. Terms a working developer already
+   owns (AST, fixture, regex) get no introduction; wasting a
+   paragraph on one is as bad as an unexplained coinage.
+6. Open a paragraph with its summary sentence and let the rest
+   unpack it; close with the consequence or moral when one exists.
+   Vary the shape (an occasional question opener, a two-sentence
+   paragraph with no moral), because the pattern applied ritually
+   numbs the reader.
+7. No flowery language: no personification of the program, no
+   metaphor that outlives its sentence, no applause lines. When a
+   phrase reads like it wants admiration, delete it and state the
+   fact it was decorating.
 
 ## Prose
 
-- Write to the asimov-tech-article style reference: windowpane prose,
-  open on the real puzzle, state the key early, put a mechanism behind
-  every fact, at most one rhetorical hinge per section.
+- Voice and structure follow "Writing style" above. The habits that
+  survive from the older asimov reference: open on the real puzzle,
+  state the key early, put a mechanism behind every fact, at most
+  one rhetorical hinge per section.
 - Apply avoiding-ai-tells to everything a human reads: prose, code
   comments, commit messages. ASCII only.
 - Doc comments are prose. The paragraph directly above a code block is
@@ -316,10 +354,15 @@ it, remains unwritten.
 ## This repository's toolchain (org + babel)
 
 - `make tangle`, `make weave`, `make check`, and `make review`, the
-  weave run at the review gate; the targets live in lit/lit.mk,
-  tangled from the book. The one-line Makefile including it is hand-written,
-  outside the book. The toolchain is `lit/`; the driver is
-  lit/tangle.el.
+  weave run at the review gate; the targets live in lit/lit.mk. The
+  one-line Makefile including it is hand-written, outside the book
+  (it may also set `CHECK_EXTRA` with extra `-x` exclusions for the
+  check diff). The toolchain is `lit/`; the driver is lit/tangle.el.
+- lit/ is itself a literate program: lit/BOOK.org tangles lit.mk,
+  tangle.el, preprocess.py, notes.lua, plan.lua, mermaid.lua, and
+  texlinks.py. To change the toolchain, edit lit/BOOK.org and run
+  `make -C lit tangle`; never edit those scripts directly, and never
+  tangle lit.mk from a consuming project's book.
 - `make setup` starts a fresh project: it copies
   lit/templates/<target>/BOOK.org into the working directory (go when
   go.mod exists, python when requirements.txt does, TARGET= forces)
@@ -345,9 +388,14 @@ it, remains unwritten.
   content lines but not blank lines. Consequences: cut regions at
   blank lines, and a standalone comment separated from its code by a
   blank line cannot be promoted to prose; leave it in the block.
-- The weave is pandoc with lit/notes.lua (Note/Apropos styling) and
-  tectonic. Name delivered PDFs uniquely, ideally commit-stamped;
-  publish an HTML artifact when someone needs the book on a phone.
+- The weave is preprocess.py, then pandoc with mermaid.lua,
+  notes.lua (Note/Apropos styling, listing captions, noweb-reference
+  placeholders), and plan.lua, then texlinks.py over the LaTeX, then
+  tectonic. Blocks that tangle get numbered Listing captions naming
+  the target file and the block's name; noweb references inside
+  listings weave as internal links. Name delivered PDFs uniquely,
+  ideally commit-stamped; publish an HTML artifact when someone
+  needs the book on a phone.
 - lit/example is a complete toy book, in Python, exercising the whole
   convention, and doubles as the toolchain's smoke test:
   `make -C lit/example tangle check`, or the same targets from inside
