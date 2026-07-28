@@ -62,20 +62,20 @@ so the census never matches its own index.
 - [[file:BOOK.org::270][270]] entry: PLANNED Stage 9: dynamic blocks
 - [[file:BOOK.org::317][317]] entry: PLANNED Stage 10: the fence
 - [[file:BOOK.org::346][346]] entry: PLANNED Stage 11: parity and self-hosting
-- [[file:BOOK.org::2848][2848]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
-- [[file:BOOK.org::3087][3087]] hole 7: extent between the anchors, then the docstring rule
-- [[file:BOOK.org::3093][3093]] hole 7: line-comment table per language, blank lines as a bare ma...
-- [[file:BOOK.org::3103][3103]] hole 8: named block first, else noweb-ref concatenation; cycles a...
-- [[file:BOOK.org::3200][3200]] hole 9: splice fresh interiors into the retained bytes, report ch...
-- [[file:BOOK.org::3210][3210]] hole 9: a line link per plan site, sites below the block shifted ...
-- [[file:BOOK.org::3216][3216]] hole 9: system diff -u over the two named bodies, temp-file heade...
-- [[file:BOOK.org::3622][3622]] hole 6: ORACLE=1 in the environment
-- [[file:BOOK.org::3626][3626]] hole 6: UPDATE=1 in the environment
-- [[file:BOOK.org::3632][3632]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
-- [[file:BOOK.org::3644][3644]] hole 6: write the txtar's input files into dir, and name the book...
-- [[file:BOOK.org::3650][3650]] hole 6: copy lit/ in, run batch Emacs with the driver, fail loudl...
-- [[file:BOOK.org::3654][3654]] hole 6: every file on both sides, byte for byte, ignoring the inputs
-- [[file:BOOK.org::3658][3658]] hole 6: rewrite the fixture's want/ files from the oracle tree
+- [[file:BOOK.org::2947][2947]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
+- [[file:BOOK.org::3186][3186]] hole 7: extent between the anchors, then the docstring rule
+- [[file:BOOK.org::3192][3192]] hole 7: line-comment table per language, blank lines as a bare ma...
+- [[file:BOOK.org::3202][3202]] hole 8: named block first, else noweb-ref concatenation; cycles a...
+- [[file:BOOK.org::3299][3299]] hole 9: splice fresh interiors into the retained bytes, report ch...
+- [[file:BOOK.org::3309][3309]] hole 9: a line link per plan site, sites below the block shifted ...
+- [[file:BOOK.org::3315][3315]] hole 9: system diff -u over the two named bodies, temp-file heade...
+- [[file:BOOK.org::3721][3721]] hole 6: ORACLE=1 in the environment
+- [[file:BOOK.org::3725][3725]] hole 6: UPDATE=1 in the environment
+- [[file:BOOK.org::3731][3731]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
+- [[file:BOOK.org::3743][3743]] hole 6: write the txtar's input files into dir, and name the book...
+- [[file:BOOK.org::3749][3749]] hole 6: copy lit/ in, run batch Emacs with the driver, fail loudl...
+- [[file:BOOK.org::3753][3753]] hole 6: every file on both sides, byte for byte, ignoring the inputs
+- [[file:BOOK.org::3757][3757]] hole 6: rewrite the fixture's want/ files from the oracle tree
 
 #+end:
 
@@ -980,12 +980,21 @@ construct and the supported alternative.
   form (org's attachment-directory feature), the ~-r~ and ~-l~
   coderef switches (org's code-reference labels), accumulating
   ~header-args+~ properties, inline src blocks (code blocks inside
-  a prose line), and ~#+include~ (org's file-inclusion keyword).
+  a prose line).
   The inert keys (evaluation-only arguments such as ~:results~ and
   ~:exports~, and the ~-n~ and ~-k~ switches) pass through because
   the oracle's tangle path never reads them; an oracle fixture
   holds a tangled block carrying them all and proves the bytes do
   not move.
+- ~#+include~ is refused, and the reason is what org does with it:
+  nothing. Inclusion happens during export, so the tangler walks
+  past the keyword and the included file's blocks reach no target,
+  silently. A book that expects them to tangle gets an empty
+  result and no warning, which is the failure the fence exists to
+  turn into a sentence. Refusing costs the book one convenience,
+  since a chapter cannot pull a file's text in for the weave, and
+  buys the guarantee that what a book appears to tangle is what it
+  tangles.
 - ~:comments org~ is limited to languages whose comment syntax the
   batch-Emacs driver actually has: go, python, emacs-lisp, sh,
   makefile. In batch Emacs a missing language mode silently leaves the
@@ -1065,6 +1074,96 @@ expansion is the generic path, which is the identity when nothing
 injects variables; babble expands nothing. And the driver pins the
 whole comment story to five language modes, so comment wrapping is
 a table, not a port of Emacs's comment machinery.
+
+* The fixtures
+
+The suite's inputs live on disk, not in this book, and this
+chapter says what they are, how to rebuild one, and how to add
+another. They stay outside because a golden is minted by Emacs and
+rewritten by a machine, and a file the machine owns does not
+belong in a document a human owns. The book cannot pull them in
+for the weave either: that would want ~#+include~, which the
+[[#deviations][Deviations]] refuse for a reason this chapter's own subject makes
+plain, since a fixture that failed to tangle silently is exactly
+what the suite exists to catch.
+
+** What is on disk
+
+Every fixture is one txtar file under testdata/script, holding
+three things: a script of commands and assertions, the input files
+those commands run on, and the outputs they are expected to
+produce. testscript extracts the files into a scratch directory,
+runs the script there, and fails on the first assertion that does
+not hold.
+
+The suite as it stands, by what each file pins:
+
+| file | pins |
+|---|---|
+| usage.txtar | dispatch, exit codes, a missing book |
+| parse-headlines.txtar | nesting, todo words, COMMENT, tags, badges |
+| parse-prose.txtar | keywords, prose runs, property drawers |
+| parse-blocks.txtar | every block shape, and resolved headers |
+| tangle-files.txtar | targets, order, banners, padline, mkdirp |
+| tangle-guards.txtar | the two refusals a tangle owes its reader |
+
+The parse fixtures compare against a dumped tree, so their goldens
+are JSON. The tangle fixtures compare against tangled files, so
+their goldens are source. Only the second kind has an oracle: org
+has no counterpart for a dumped tree, and no counterpart for a
+refusal either, which is why tangle-guards carries a line saying
+so.
+
+** Rebuilding a golden
+
+A golden is what Emacs produces, and the way to rebuild one is to
+ask Emacs. By hand, that is four steps, and doing it once is worth
+more than reading about it:
+
+#+begin_example
+  mkdir -p /tmp/fix && cd /tmp/fix
+  cp -R ~/dev/bilus/babble/lit lit
+  # write the fixture's book here as b.org
+  emacs -Q --batch -l lit/tangle.el --eval '(lit-tangle "b.org")'
+#+end_example
+
+What lands beside b.org is the golden, byte for byte, and it is
+the same command lit.mk runs for a real book. The harness does
+this for you: UPDATE=1 with the oracle enabled extracts each
+fixture, runs those steps, and writes the result back into the
+fixture's want entries. It never writes what babble produced,
+which is the whole point. A golden that came from babble would
+agree with babble by construction and prove nothing.
+
+** Adding a fixture
+
+Start from the behavior, not from the file. A fixture earns its
+place by pinning something that could plausibly break, and the
+book's own guide is a good quarry: the worked examples in
+[[#writing-a-book][Writing a book for babble]] are written to be lifted.
+
+Then, in order:
+
+1. Write the fixture book. Keep it to the smallest thing that
+   shows the behavior, and give the blocks targets that say what
+   they are for, greet.go rather than a.go.
+2. Mint the goldens with Emacs, by hand as above or with UPDATE=1
+   once the harness is in. Read what comes out. A golden accepted
+   without reading is a test that pins whatever the code did on
+   the day it was written.
+3. Write the script. Name the command, then compare each expected
+   file, then assert what should not exist. A fixture that only
+   checks what was produced will not notice a file that should not
+   have been.
+4. Add the comment at the top saying what the fixture pins, in one
+   or two sentences. It is the first thing a reader sees when the
+   fixture fails.
+5. If the fixture pins a deviation, say so in an oracle skip line
+   with the reason. Emacs does not refuse what babble refuses, so
+   a cross-check would fail on a difference that is the point.
+6. Run the suite twice: once plain, once with the oracle. The
+   first proves the goldens match what babble does, the second
+   proves they match what Emacs does. Only the pair is evidence.
 
 * The command line
 
