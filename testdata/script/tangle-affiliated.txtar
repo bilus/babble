@@ -1,0 +1,98 @@
+# Affiliated header lines, and the trim that keeps a block's lead.
+# Org merges a #+header: line after the begin_src line, so the header
+# line wins; a run of them ends at the first line that is neither
+# affiliated nor a block. Every book here tangles in both engines,
+# so the goldens are Emacs output and the oracle checks them.
+
+exec babble tangle prec.org
+cmp prec.go want/prec.go
+! exists ignored.go
+
+exec babble tangle multi.org
+cmp multi.go want/multi.go
+
+exec babble tangle later.org
+cmp later.go want/later.go
+! exists first.go
+
+exec babble tangle order.org
+cmp order.go want/order.go
+
+exec babble tangle broken.org
+! exists broken.go
+
+exec babble tangle lead.org
+cmp lead.go want/lead.go
+
+-- prec.org --
+#+header: :tangle prec.go
+#+begin_src go :tangle ignored.go
+package prec
+#+end_src
+-- multi.org --
+#+header: :tangle multi.go
+#+begin_src go
+package multi
+#+end_src
+
+#+header: :tangle multi.go
+#+header: :padline no
+#+begin_src go
+// no blank line above me
+#+end_src
+-- later.org --
+#+header: :tangle first.go
+#+header: :tangle later.go
+#+begin_src go
+package later
+#+end_src
+-- order.org --
+#+name: a
+#+header: :tangle order.go
+#+begin_src go
+package order
+#+end_src
+
+#+header: :tangle order.go
+#+name: b
+#+begin_src go
+// name after header works too
+#+end_src
+-- broken.org --
+#+header: :tangle broken.go
+
+#+begin_src go
+package broken
+#+end_src
+-- lead.org --
+#+begin_src go -i :tangle lead.go
+
+    package lead
+
+    // kept indented
+#+end_src
+-- want/prec.go --
+// Code generated from BOOK.org by make tangle. DO NOT EDIT.
+
+package prec
+-- want/multi.go --
+// Code generated from BOOK.org by make tangle. DO NOT EDIT.
+
+package multi
+// no blank line above me
+-- want/later.go --
+// Code generated from BOOK.org by make tangle. DO NOT EDIT.
+
+package later
+-- want/order.go --
+// Code generated from BOOK.org by make tangle. DO NOT EDIT.
+
+package order
+
+// name after header works too
+-- want/lead.go --
+// Code generated from BOOK.org by make tangle. DO NOT EDIT.
+
+    package lead
+
+    // kept indented

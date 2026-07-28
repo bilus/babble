@@ -61,39 +61,38 @@ every dynamic block, and the labels are spelled without the sigils,
 so the census never matches its own index.
 
 #+begin: plan-toc
-- [[file:BOOK.org::100][100]] entry: PLANNED Stage 12: the fixtures chapter
-- [[file:BOOK.org::163][163]] entry: PLANNED Stage 6: the oracle harness
-- [[file:BOOK.org::271][271]] entry: PLANNED Stage 7: org comments
-- [[file:BOOK.org::314][314]] entry: PLANNED Stage 8: noweb
-- [[file:BOOK.org::351][351]] entry: PLANNED Stage 9: dynamic blocks
-- [[file:BOOK.org::398][398]] entry: PLANNED Stage 10: the fence
-- [[file:BOOK.org::427][427]] entry: PLANNED Stage 11: parity and self-hosting
-- [[file:BOOK.org::475][475]] entry: PLANNED Stage 14: two defects the oracle found
-- [[file:BOOK.org::529][529]] entry: PLANNED Stage 15: one word, one meaning
-- [[file:BOOK.org::603][603]] entry: PLANNED Stage 16: rewriting the front matter
-- [[file:BOOK.org::646][646]] entry: PLANNED Stage 17: rewriting the contract
-- [[file:BOOK.org::694][694]] entry: PLANNED Stage 18: rewriting the guide
-- [[file:BOOK.org::739][739]] entry: PLANNED Stage 19: rewriting the internals
-- [[file:BOOK.org::790][790]] entry: PLANNED Stage 20: rewriting the testing chapters
-- [[file:BOOK.org::1238][1238]] badge: PLANNED stage 12 adds the paragraph below (plan)
-- [[file:BOOK.org::1439][1439]] deletion: , and ~#+include~ (org's file-inclusion
-- [[file:BOOK.org::1529][1529]] badge: PLANNED stage 12 adds the chapter below (plan)
-- [[file:BOOK.org::1570][1570]] badge: PLANNED stage 12 includes the two files below (plan)
-- [[file:BOOK.org::3447][3447]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
-- [[file:BOOK.org::3696][3696]] hole 7: extent between the anchors, then the docstring rule
-- [[file:BOOK.org::3702][3702]] hole 7: line-comment table per language, blank lines as a bare ma...
-- [[file:BOOK.org::3712][3712]] hole 8: named block first, else noweb-ref concatenation; cycles a...
-- [[file:BOOK.org::3813][3813]] hole 9: splice fresh interiors into the retained bytes, report ch...
-- [[file:BOOK.org::3823][3823]] hole 9: a line link per plan site, sites below the block shifted ...
-- [[file:BOOK.org::3829][3829]] hole 9: system diff -u over the two named bodies, temp-file heade...
-- [[file:BOOK.org::4228][4228]] badge: PLANNED stage 12 adds the test below (plan)
-- [[file:BOOK.org::4287][4287]] hole 6: ORACLE=1 in the environment
-- [[file:BOOK.org::4291][4291]] hole 6: UPDATE=1 in the environment
-- [[file:BOOK.org::4297][4297]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
-- [[file:BOOK.org::4309][4309]] hole 6: write the txtar's input files into dir, and name the book...
-- [[file:BOOK.org::4315][4315]] hole 6: copy lit/ in, run batch Emacs with the driver, fail loudl...
-- [[file:BOOK.org::4319][4319]] hole 6: every file on both sides, byte for byte, ignoring the inputs
-- [[file:BOOK.org::4323][4323]] hole 6: rewrite the fixture's want/ files from the oracle tree
+- [[file:BOOK.org::99][99]] entry: PLANNED Stage 12: the fixtures chapter
+- [[file:BOOK.org::162][162]] entry: PLANNED Stage 6: the oracle harness
+- [[file:BOOK.org::270][270]] entry: PLANNED Stage 7: org comments
+- [[file:BOOK.org::313][313]] entry: PLANNED Stage 8: noweb
+- [[file:BOOK.org::350][350]] entry: PLANNED Stage 9: dynamic blocks
+- [[file:BOOK.org::397][397]] entry: PLANNED Stage 10: the fence
+- [[file:BOOK.org::426][426]] entry: PLANNED Stage 11: parity and self-hosting
+- [[file:BOOK.org::474][474]] entry: PLANNED Stage 15: one word, one meaning
+- [[file:BOOK.org::548][548]] entry: PLANNED Stage 16: rewriting the front matter
+- [[file:BOOK.org::591][591]] entry: PLANNED Stage 17: rewriting the contract
+- [[file:BOOK.org::639][639]] entry: PLANNED Stage 18: rewriting the guide
+- [[file:BOOK.org::684][684]] entry: PLANNED Stage 19: rewriting the internals
+- [[file:BOOK.org::735][735]] entry: PLANNED Stage 20: rewriting the testing chapters
+- [[file:BOOK.org::1184][1184]] badge: PLANNED stage 12 adds the paragraph below (plan)
+- [[file:BOOK.org::1390][1390]] deletion: , and ~#+include~ (org's file-inclusion
+- [[file:BOOK.org::1480][1480]] badge: PLANNED stage 12 adds the chapter below (plan)
+- [[file:BOOK.org::1522][1522]] badge: PLANNED stage 12 includes the two files below (plan)
+- [[file:BOOK.org::3438][3438]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
+- [[file:BOOK.org::3720][3720]] hole 7: extent between the anchors, then the docstring rule
+- [[file:BOOK.org::3726][3726]] hole 7: line-comment table per language, blank lines as a bare ma...
+- [[file:BOOK.org::3736][3736]] hole 8: named block first, else noweb-ref concatenation; cycles a...
+- [[file:BOOK.org::3837][3837]] hole 9: splice fresh interiors into the retained bytes, report ch...
+- [[file:BOOK.org::3847][3847]] hole 9: a line link per plan site, sites below the block shifted ...
+- [[file:BOOK.org::3853][3853]] hole 9: system diff -u over the two named bodies, temp-file heade...
+- [[file:BOOK.org::4252][4252]] badge: PLANNED stage 12 adds the test below (plan)
+- [[file:BOOK.org::4311][4311]] hole 6: ORACLE=1 in the environment
+- [[file:BOOK.org::4315][4315]] hole 6: UPDATE=1 in the environment
+- [[file:BOOK.org::4321][4321]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
+- [[file:BOOK.org::4333][4333]] hole 6: write the txtar's input files into dir, and name the book...
+- [[file:BOOK.org::4339][4339]] hole 6: copy lit/ in, run batch Emacs with the driver, fail loudl...
+- [[file:BOOK.org::4343][4343]] hole 6: every file on both sides, byte for byte, ignoring the inputs
+- [[file:BOOK.org::4347][4347]] hole 6: rewrite the fixture's want/ files from the oracle tree
 
 #+end:
 
@@ -471,60 +470,6 @@ echo ---
 grep -nE '^\*+ (PLANNED|FILLING|HOLE|LIVE|DROPPED) |^\*{15,} |HOLE[(]|\{[+][+]|\{[-][-]|\{[~][~]|\{[>][>]|[-]-planned|^#\+begin: src-block-diff|:(plan|stage[0-9]+):' BOOK.org \
   || echo no plan markup in the book
 #+end_src
-
-** PLANNED Stage 14: two defects the oracle found                  :stage14:
-:PROPERTIES:
-:CUSTOM_ID: stage-14
-:SPEC:     The subset contract; Deviations
-:DEPS:     none
-:ACCEPTANCE: a fixture per defect, each compared against Emacs rather than against expectation
-:SIZE:     ~30 lines of Go, ~20 of prose
-:END:
-
-Claim: after this stage a ~#+header:~ line reaches the block below
-it, and a block that preserves its indentation loses its leading
-blank lines the way org loses them.
-
-Both defects were found by running the two engines over the same
-book and diffing, which is what the harness in stage 6 will do for
-every fixture. Neither was visible from reading the code, and
-neither fixture existed to catch it.
-
-Decided: (1) ~#+header:~ is implemented rather than refused. The
-Deviations chapter promised a refusal, but org reads the line and
-tangles the block, and babble reads nothing and skips it in
-silence. That silence is the failure the closed header table exists
-to prevent, and refusing a construct org handles plainly would be a
-deviation invented rather than found. (2) The final trim follows
-org's own, both branches. The oracle chooses between ~(org-trim
-body t)~ and ~(org-trim (org-remove-indentation body))~, and the
-flag means leading blank lines go while the first content line keeps
-its indentation. babble trims only the right-hand side when a block
-preserves indentation, so a blank line survives there that Emacs
-drops. (3) The trim's character set loses the carriage return. Org
-trims space, tab and newline; babble trims those and a carriage
-return, so a book saved with CRLF endings would part company. No
-book in the corpus has one, which is why the difference went unseen
-and why it is worth writing down rather than leaving to luck.
-
-- [ ] plan approved (the human ticks this box)
-- [ ] a fixture per defect, each seen to fail first
-- [ ] twins accepted, live blocks deleted
-- [ ] both fixes confirmed against Emacs, not against expectation
-- [ ] census clean for stage 14, suite green
-- [ ] Changes entry dated and filed, plan entry deleted
-
-*** Changes draft
-
-#+begin_quote
-A ~#+header:~ line now reaches the block below it. Org reads one
-and tangles the block; babble read nothing and skipped the block,
-so a block configured that way vanished without a word. The body
-pipeline's final trim now follows org's own, which drops leading
-blank lines from a block that preserves its indentation while
-leaving that block's first line indented, and which leaves a
-carriage return alone.
-#+end_quote
 
 ** PLANNED Stage 15: one word, one meaning                         :stage15:
 :PROPERTIES:
@@ -1229,7 +1174,8 @@ chapters that own the code carry the mechanics.
 A tangle candidate is a src block that has a language. Recognition
 follows org's element grammar: delimiter keywords are
 case-insensitive, only whitespace may follow ~#+end_src~ on its
-line, affiliated ~#+name:~ lines belong to the block below them, and
+line, affiliated ~#+name:~ and ~#+header:~ lines belong to the run
+above the block below them, and
 blocks inside example, export, comment, and quote blocks are text,
 not blocks. A src block without a language is an error
 (org's scanner cannot even see one, which is worse). A src block
@@ -1269,11 +1215,18 @@ sit on disk is not rewritten, so its mtime survives.
 
 ** Header arguments
 
-Effective headers merge in org's order: babel defaults (with the
-driver's mkdirp), language defaults, inherited ~header-args~ and
-~header-args:LANG~ properties (nearest ancestor wins, the
-accumulating ~+~ forms rejected), then the block's own header line,
-later entries winning. The header line splits on space-then-colon
+Effective headers merge in org's order, later entries winning:
+babel defaults (with the driver's mkdirp), language defaults,
+file-level ~#+property:~ lines, inherited ~header-args~ and
+~header-args:LANG~ properties, the block's own header line, then
+the ~#+header:~ lines above it. Language defaults are org's
+~org-babel-default-header-args:LANG~ variables, and they are empty
+here for the same reason body expansion is the identity: batch
+Emacs with no init file loads no language packs, so nothing defines
+them. Inheritance is wholesale and not per key: the nearest
+ancestor's drawer replaces a farther one entire, so a key the
+nearer drawer omits is not inherited from further up, and the
+accumulating ~+~ forms are rejected. The header line splits on space-then-colon
 outside balanced parentheses, brackets, and double quotes. A value
 is a string; a quoted value is read with elisp string escapes; a
 value org would evaluate as lisp is rejected.
@@ -1415,8 +1368,6 @@ construct and the supported alternative.
   silently ignores the block.
 - A src block that never closes is an error; org parses it as a
   paragraph.
-- ~#+header:~ affiliated keywords are rejected; org merges them
-  into the header with a precedence the books never use.
 - An unresolvable noweb reference is an error; org expands it to
   the empty string for most languages. A noweb cycle is an error;
   org recurses without bound. A noweb call reference,
@@ -1566,6 +1517,7 @@ The suite as it stands, by what each file pins:
 | tangle-files.txtar | targets, order, banners, padline, mkdirp |
 | tangle-guards.txtar | the two refusals a tangle owes its reader |
 | tangle-defects.txtar | five defects a claim audit found |
+| tangle-affiliated.txtar | header lines above a block, and the lead-keeping trim |
 
 *************** PLANNED stage 12 includes the two files below ([[#stage-12][plan]]) :stage12:
 The weave expands these; the tangle walks past them. What a reader
@@ -2515,11 +2467,10 @@ func (p *parser) currentElement(limit int, m mode) (parsed, int, error) {
 		}
 	}
 	aff := affiliated{begin: start}
-	if key, value, ok := keywordLine(text); ok && key == kwName && next < limit {
-		if t2, n2 := p.line(next); opensBlock(t2) {
-			aff.name = value
-			p.off, text, next = next, t2, n2
-		}
+	if blockAt, name, header, ok := p.affiliatedRun(start, limit); ok {
+		aff.name, aff.header = name, header
+		p.off = blockAt
+		text, next = p.line(blockAt)
 	}
 	if name, rest, _, ok := blockDelim(text, "begin"); ok {
 		switch name {
@@ -2584,14 +2535,53 @@ func (p *parser) findEnd(from, limit int, closes func(string) bool) (int, string
 #+end_src
 
 An affiliated keyword line belongs to the element below it. The
-subset uses one, ~#+name:~, and the two offsets it produces are
-both load bearing: the element's extent opens at the name line,
-and the tangler's anchor stays on the block's own first line.
+subset uses two, ~#+name:~ and ~#+header:~, and the offsets a run
+of them produces are load bearing: the element's extent opens at
+the first line of the run, and the tangler's anchor stays on the
+block's own first line.
 
 #+begin_src go :tangle internal/org/org.go :comments org
 type affiliated struct {
-	name  string // the #+name: value, or ""
-	begin int    // where the element's extent starts
+	name   string // the #+name: value, or ""
+	header string // the #+header: values, in document order
+	begin  int    // where the element's extent starts
+}
+#+end_src
+
+A run of affiliated lines belongs to the block it reaches, and to
+nothing otherwise. A blank line ends the run, so a header line
+separated from its block by one configures nothing and the block
+tangles as if it were not there. Order inside the run does not
+matter, and a repeated key is won by the lower line.
+
+#+begin_example
+  ,#+header: :tangle greet.go
+  ,#+name: greeting
+  ,#+begin_src go
+#+end_example
+
+#+begin_src go :tangle internal/org/org.go :comments org
+func (p *parser) affiliatedRun(from, limit int) (blockAt int, name, header string, ok bool) {
+	for off := from; off < limit; {
+		text, next := p.line(off)
+		if opensBlock(text) {
+			return off, name, header, off != from
+		}
+		key, value, isKeyword := keywordLine(text)
+		if !isKeyword {
+			return 0, "", "", false
+		}
+		switch key {
+		case kwName:
+			name = value
+		case kwHeader:
+			header += " " + value
+		default:
+			return 0, "", "", false
+		}
+		off = next
+	}
+	return 0, "", "", false
 }
 #+end_src
 
@@ -2783,7 +2773,7 @@ func (p *parser) srcBlockParser(rest string, bodyStart, limit int, aff affiliate
 	lang, switches, header := srcHeader(rest)
 	_, next := p.line(endOff)
 	return parsed{node: &book.SrcBlock{Lang: lang, Name: aff.name,
-		Switches: switches, RawHeader: header,
+		Switches: switches, RawHeader: header + aff.header,
 		Body:     book.Span{Start: bodyStart, End: endOff},
 		BeginAt:  beginAt, AfterEnd: endOff + after,
 		Line:     p.lineNum(beginAt),
@@ -3011,6 +3001,7 @@ const (
 	kwSeqTodo = "seq_todo"
 	kwTypTodo = "typ_todo"
 	kwName    = "name"
+	kwHeader  = "header"
 	kwBegin   = "begin" // the dynamic-block opener, #+begin:
 	kwEnd     = "end"   // and its closer
 )
@@ -3574,13 +3565,17 @@ func langExt(lang string) string {
 
 bodyText is the body pipeline in the contract's order; the second
 dedent and the final trim run after noweb expansion, exactly as
-the oracle orders them.
+the oracle orders them. A block that preserves its indentation
+skips both dedents and keeps its lead through the trim, which is
+the one branch in the pipeline and the reason the trim takes a
+flag.
 
 #+begin_src go :tangle internal/tangle/tangle.go :comments org
 func bodyText(d *book.Document, b *book.SrcBlock) (string, error) {
 	body := unescapeCommas(string(d.Source[b.Body.Start:b.Body.End]))
 	body = strings.TrimSuffix(body, "\n")
-	if !b.Params.PreserveIndent {
+	keepLead := b.Params.PreserveIndent
+	if !keepLead {
 		body = dedent(body)
 	}
 	if b.Params.Noweb {
@@ -3590,11 +3585,40 @@ func bodyText(d *book.Document, b *book.SrcBlock) (string, error) {
 		}
 		body = expanded
 	}
-	if b.Params.PreserveIndent {
-		return strings.TrimRight(body, " \t\n\r"), nil
+	if keepLead {
+		return orgTrim(body, keepLead), nil
 	}
-	return strings.Trim(dedent(body), " \t\n\r"), nil
+	return orgTrim(dedent(body), keepLead), nil
 }
+#+end_src
+
+The trim is org's own, and org's takes a flag. Without it both ends
+lose every space, tab and newline. With it the front loses whole
+blank lines and nothing else, so the first line of a block that
+preserves its indentation stays indented. The set is space, tab and
+newline; a carriage return is not whitespace to org and survives.
+
+#+begin_example
+  "\n\n    package main\n\n"  keeping the lead  ->  "    package main"
+  "\n\n    package main\n\n"  otherwise         ->  "package main"
+#+end_example
+
+#+begin_src go :tangle internal/tangle/tangle.go :comments org
+func orgTrim(s string, keepLead bool) string {
+	s = strings.TrimRight(s, orgSpace)
+	if !keepLead {
+		return strings.TrimLeft(s, orgSpace)
+	}
+	for {
+		nl := strings.IndexByte(s, '\n')
+		if nl < 0 || strings.Trim(s[:nl], " \t") != "" {
+			return s
+		}
+		s = s[nl+1:]
+	}
+}
+
+const orgSpace = " \t\n"
 #+end_src
 
 Org's own escape: a line that would otherwise open a block or a
@@ -4457,6 +4481,16 @@ this document cares about. Entries are written once, at acceptance,
 and never reworded; history that needs correcting gets a new entry.
 An entry speaks from its date; the rest of the document speaks from
 no date at all.
+
+** [2026-07-29 Wed] Two defects the oracle found
+
+A ~#+header:~ line now reaches the block below it. Org reads one
+and tangles the block; babble read nothing and skipped the block,
+so a block configured that way vanished without a word. The body
+pipeline's final trim now follows org's own, which drops leading
+blank lines from a block that preserves its indentation while
+leaving that block's first line indented, and which leaves a
+carriage return alone.
 
 ** [2026-07-28 Tue] Five defects from a claim audit
 

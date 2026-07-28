@@ -158,11 +158,10 @@ func (p *parser) currentElement(limit int, m mode) (parsed, int, error) {
 		}
 	}
 	aff := affiliated{begin: start}
-	if key, value, ok := keywordLine(text); ok && key == kwName && next < limit {
-		if t2, n2 := p.line(next); opensBlock(t2) {
-			aff.name = value
-			p.off, text, next = next, t2, n2
-		}
+	if blockAt, name, header, ok := p.affiliatedRun(start, limit); ok {
+		aff.name, aff.header = name, header
+		p.off = blockAt
+		text, next = p.line(blockAt)
 	}
 	if name, rest, _, ok := blockDelim(text, "begin"); ok {
 		switch name {
@@ -224,12 +223,40 @@ func (p *parser) findEnd(from, limit int, closes func(string) bool) (int, string
 }
 
 // An affiliated keyword line belongs to the element below it. The
-// subset uses one, ~#+name:~, and the two offsets it produces are
-// both load bearing: the element's extent opens at the name line,
-// and the tangler's anchor stays on the block's own first line.
+// subset uses two, ~#+name:~ and ~#+header:~, and the offsets a run
+// of them produces are load bearing: the element's extent opens at
+// the first line of the run, and the tangler's anchor stays on the
+// block's own first line.
 type affiliated struct {
-	name  string // the #+name: value, or ""
-	begin int    // where the element's extent starts
+	name   string // the #+name: value, or ""
+	header string // the #+header: values, in document order
+	begin  int    // where the element's extent starts
+}
+
+// ,#+header: :tangle greet.go
+//   ,#+name: greeting
+//   ,#+begin_src go
+func (p *parser) affiliatedRun(from, limit int) (blockAt int, name, header string, ok bool) {
+	for off := from; off < limit; {
+		text, next := p.line(off)
+		if opensBlock(text) {
+			return off, name, header, off != from
+		}
+		key, value, isKeyword := keywordLine(text)
+		if !isKeyword {
+			return 0, "", "", false
+		}
+		switch key {
+		case kwName:
+			name = value
+		case kwHeader:
+			header += " " + value
+		default:
+			return 0, "", "", false
+		}
+		off = next
+	}
+	return 0, "", "", false
 }
 
 // A headline owns its subtree, which ends at the next headline of
@@ -379,7 +406,7 @@ func (p *parser) srcBlockParser(rest string, bodyStart, limit int, aff affiliate
 	lang, switches, header := srcHeader(rest)
 	_, next := p.line(endOff)
 	return parsed{node: &book.SrcBlock{Lang: lang, Name: aff.name,
-		Switches: switches, RawHeader: header,
+		Switches: switches, RawHeader: header + aff.header,
 		Body:     book.Span{Start: bodyStart, End: endOff},
 		BeginAt:  beginAt, AfterEnd: endOff + after,
 		Line:     p.lineNum(beginAt),
@@ -556,6 +583,7 @@ const (
 	kwSeqTodo = "seq_todo"
 	kwTypTodo = "typ_todo"
 	kwName    = "name"
+	kwHeader  = "header"
 	kwBegin   = "begin" // the dynamic-block opener, #+begin:
 	kwEnd     = "end"   // and its closer
 )

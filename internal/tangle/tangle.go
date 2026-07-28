@@ -113,11 +113,15 @@ func langExt(lang string) string {
 
 // bodyText is the body pipeline in the contract's order; the second
 // dedent and the final trim run after noweb expansion, exactly as
-// the oracle orders them.
+// the oracle orders them. A block that preserves its indentation
+// skips both dedents and keeps its lead through the trim, which is
+// the one branch in the pipeline and the reason the trim takes a
+// flag.
 func bodyText(d *book.Document, b *book.SrcBlock) (string, error) {
 	body := unescapeCommas(string(d.Source[b.Body.Start:b.Body.End]))
 	body = strings.TrimSuffix(body, "\n")
-	if !b.Params.PreserveIndent {
+	keepLead := b.Params.PreserveIndent
+	if !keepLead {
 		body = dedent(body)
 	}
 	if b.Params.Noweb {
@@ -127,11 +131,29 @@ func bodyText(d *book.Document, b *book.SrcBlock) (string, error) {
 		}
 		body = expanded
 	}
-	if b.Params.PreserveIndent {
-		return strings.TrimRight(body, " \t\n\r"), nil
+	if keepLead {
+		return orgTrim(body, keepLead), nil
 	}
-	return strings.Trim(dedent(body), " \t\n\r"), nil
+	return orgTrim(dedent(body), keepLead), nil
 }
+
+// "\n\n    package main\n\n"  keeping the lead  ->  "    package main"
+//   "\n\n    package main\n\n"  otherwise         ->  "package main"
+func orgTrim(s string, keepLead bool) string {
+	s = strings.TrimRight(s, orgSpace)
+	if !keepLead {
+		return strings.TrimLeft(s, orgSpace)
+	}
+	for {
+		nl := strings.IndexByte(s, '\n')
+		if nl < 0 || strings.Trim(s[:nl], " \t") != "" {
+			return s
+		}
+		s = s[nl+1:]
+	}
+}
+
+const orgSpace = " \t\n"
 
 // Org's own escape: a line that would otherwise open a block or a
 // heading wears a comma, and tangling takes one comma off. The run
