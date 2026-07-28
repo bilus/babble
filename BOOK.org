@@ -73,25 +73,25 @@ so the census never matches its own index.
 - [[file:BOOK.org::564][564]] entry: PLANNED Stage 18: rewriting the guide
 - [[file:BOOK.org::609][609]] entry: PLANNED Stage 19: rewriting the internals
 - [[file:BOOK.org::660][660]] entry: PLANNED Stage 20: rewriting the testing chapters
-- [[file:BOOK.org::1122][1122]] badge: PLANNED stage 12 adds the paragraph below (plan)
-- [[file:BOOK.org::1329][1329]] deletion: , and ~#+include~ (org's file-inclusion
-- [[file:BOOK.org::1663][1663]] badge: PLANNED stage 12 adds the chapter below (plan)
-- [[file:BOOK.org::3294][3294]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
-- [[file:BOOK.org::3576][3576]] hole 7: extent between the anchors, then the docstring rule
-- [[file:BOOK.org::3582][3582]] hole 7: line-comment table per language, blank lines as a bare ma...
-- [[file:BOOK.org::3592][3592]] hole 8: named block first, else noweb-ref concatenation; cycles a...
-- [[file:BOOK.org::3693][3693]] hole 9: splice fresh interiors into the retained bytes, report ch...
-- [[file:BOOK.org::3703][3703]] hole 9: a line link per plan site, sites below the block shifted ...
-- [[file:BOOK.org::3709][3709]] hole 9: system diff -u over the two named bodies, temp-file heade...
-- [[file:BOOK.org::3749][3749]] badge: PLANNED stage 12 includes the two files below (plan)
-- [[file:BOOK.org::4226][4226]] badge: PLANNED stage 12 adds the test below (plan)
-- [[file:BOOK.org::4285][4285]] hole 6: ORACLE=1 in the environment
-- [[file:BOOK.org::4289][4289]] hole 6: UPDATE=1 in the environment
-- [[file:BOOK.org::4295][4295]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
-- [[file:BOOK.org::4307][4307]] hole 6: write the txtar's input files into dir, and name the book...
-- [[file:BOOK.org::4313][4313]] hole 6: copy lit/ in, run batch Emacs with the driver, fail loudl...
-- [[file:BOOK.org::4317][4317]] hole 6: every file on both sides, byte for byte, ignoring the inputs
-- [[file:BOOK.org::4321][4321]] hole 6: rewrite the fixture's want/ files from the oracle tree
+- [[file:BOOK.org::1134][1134]] badge: PLANNED stage 12 adds the paragraph below (plan)
+- [[file:BOOK.org::1341][1341]] deletion: , and ~#+include~ (org's file-inclusion
+- [[file:BOOK.org::1696][1696]] badge: PLANNED stage 12 adds the chapter below (plan)
+- [[file:BOOK.org::3327][3327]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
+- [[file:BOOK.org::3609][3609]] hole 7: extent between the anchors, then the docstring rule
+- [[file:BOOK.org::3615][3615]] hole 7: line-comment table per language, blank lines as a bare ma...
+- [[file:BOOK.org::3625][3625]] hole 8: named block first, else noweb-ref concatenation; cycles a...
+- [[file:BOOK.org::3726][3726]] hole 9: splice fresh interiors into the retained bytes, report ch...
+- [[file:BOOK.org::3736][3736]] hole 9: a line link per plan site, sites below the block shifted ...
+- [[file:BOOK.org::3742][3742]] hole 9: system diff -u over the two named bodies, temp-file heade...
+- [[file:BOOK.org::3782][3782]] badge: PLANNED stage 12 includes the two files below (plan)
+- [[file:BOOK.org::4259][4259]] badge: PLANNED stage 12 adds the test below (plan)
+- [[file:BOOK.org::4318][4318]] hole 6: ORACLE=1 in the environment
+- [[file:BOOK.org::4322][4322]] hole 6: UPDATE=1 in the environment
+- [[file:BOOK.org::4328][4328]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
+- [[file:BOOK.org::4340][4340]] hole 6: write the txtar's input files into dir, and name the book...
+- [[file:BOOK.org::4346][4346]] hole 6: copy lit/ in, run batch Emacs with the driver, fail loudl...
+- [[file:BOOK.org::4350][4350]] hole 6: every file on both sides, byte for byte, ignoring the inputs
+- [[file:BOOK.org::4354][4354]] hole 6: rewrite the fixture's want/ files from the oracle tree
 
 #+end:
 
@@ -470,49 +470,6 @@ grep -nE '^\*+ (PLANNED|FILLING|HOLE|LIVE|DROPPED) |^\*{15,} |HOLE[(]|\{[+][+]|\
   || echo no plan markup in the book
 #+end_src
 
-** PLANNED Stage 16: rewriting the front matter                    :stage16:
-:PROPERTIES:
-:CUSTOM_ID: stage-16
-:SPEC:     Introduction; Architecture
-:DEPS:     stage 15
-:ACCEPTANCE: a developer who does not know org can read both chapters in order
-:SIZE:     ~94 lines of prose, 12 paragraphs
-:END:
-
-Claim: after this stage the two chapters that frame the book state
-what babble is and how it is shaped, in that order, with nothing
-used before it is introduced.
-
-Decided: (1) The literate-programming explanation opens the
-Introduction, and the babble paragraph follows it. The chapter
-currently uses tangling four times before defining it. (2) The
-promise that the tooling reorders code gains its one missing
-clause: in this subset noweb does the reordering and nothing else
-does. As written the reader expects a mechanism the program does
-not have. (3) The four hundred megabytes and the one second get a
-measurement or they go. They are the only reason the book gives
-for babble existing, and the only claim in the book with no
-mechanism behind it. (4) Architecture stops claiming the tree
-decides everything, since one of the two dynamic-block writers
-decides by re-scanning text; the exception attaches to the claim
-instead of following it fourteen lines later.
-
-- [ ] plan approved (the human ticks this box)
-- [ ] every claim in both chapters traced to code or to a citation
-- [ ] the four-hundred-megabyte claim measured or removed
-- [ ] no term used before its definition
-- [ ] census clean for stage 16, suite green
-- [ ] Changes entry dated and filed, plan entry deleted
-
-*** Changes draft
-
-#+begin_quote
-The Introduction now explains literate programming before it
-explains babble, and says what does the reordering it promises.
-Architecture states its exception where it makes the claim rather
-than fourteen lines later.
-#+end_quote
-
 ** PLANNED Stage 17: rewriting the contract                        :stage17:
 :PROPERTIES:
 :CUSTOM_ID: stage-17
@@ -701,40 +658,52 @@ claim covers. The chapters now describe the suite on disk.
 
 * Introduction
 
-babble tangles lit books without Emacs. A lit book is one org
-file that is the whole program: prose says why, code blocks tangle
-into the sources, and two generated views (a plan index and a
-diff) keep the in-book planning in step with the code. Org is
-Emacs's plain-text outline format; lit is the convention and
-toolchain, carried under lit/, that turns such a file into a book
-like this one. Batch Emacs running org-babel (org's code-block
-machinery) plus lit/tangle.el, the driver from here on, does the
-tangling today. And it works. It is also four hundred megabytes of
-editor waking up for over a second every time I tangle, on every
-CI run and every fresh machine.
+babble tangles lit books without Emacs. Three words in that
+sentence need explaining, and this chapter explains them: literate
+programming, lit, and the oracle that decides when babble is right.
 
-Literate programming is an idea Donald Knuth came up with in 1984,
-and at a high level it goes like this: a program should be written
-for humans first, computers second. You write an essay, actual
-prose with a narrative flow, and embed the code inside it wherever
-the explanation calls for it. A tool then extracts the code and
-stitches it together into something a compiler can run
-("tangling"), while another pass produces a nicely typeset
-document for reading ("weaving").
+Literate programming is an idea Donald Knuth published in 1984. A
+program should be written for humans first and computers second.
+You write an essay, actual prose with a narrative flow, and embed
+the code inside it wherever the explanation calls for it. One tool
+extracts the code and stitches it together into something a
+compiler can run, which is tangling. Another produces a typeset
+document for reading, which is weaving.
 
 The radical part is the ordering. Traditional code follows the
 structure the machine needs: imports at the top, functions in
 dependency order. Literate programming follows the structure your
 thinking needs. You present ideas in whatever sequence makes the
-argument clearest, and the tooling reorders everything behind the
-scenes.
+argument clearest.
+
+One mechanism does that reordering here, and only one. It is called
+noweb, and it lets a block pull named blocks into itself by
+reference, so a long function can be written as a shell of named
+regions and the regions explained one at a time wherever they fit
+the argument. Everything else concatenates: a target file is its
+blocks in the order you wrote them.
+
+lit is the convention and toolchain that applies the idea, carried
+under lit/. A lit book is one org file that is the whole program.
+Org is Emacs's plain-text outline format. Prose says why, code
+blocks tangle into the sources, and two generated views, a plan
+index and a diff, keep the in-book planning in step with the code.
 
 Books also plan inside themselves. Work in flight lives in a
-temporary Plan chapter as stage entries; badges (marker headlines
-of fifteen or more stars) stand at every site the work touches; a
-planned twin (a rewrite kept beside the block it replaces) waits
-for acceptance; and a generated index, plan-toc, lists every such
-site. This book opens with exactly such a plan.
+temporary Plan chapter as stage entries. Badges, marker headlines
+of fifteen or more stars, stand at every site the work touches. A
+planned twin, a rewrite kept beside the block it replaces, waits
+for acceptance. A generated index, plan-toc, lists every such site.
+This book opens with exactly such a plan.
+
+Batch Emacs does the tangling today: org-babel, org's code-block
+machinery, plus lit/tangle.el, the driver from here on. It works.
+It also costs about a second of wall clock and 116 MB of resident
+memory per tangle, out of a 411 MB install, on every CI run and
+every fresh machine. babble tangles the same book in under ten
+milliseconds and 9 MB, out of a 3 MB binary. Those numbers were
+measured on this book with doc comments switched off, since that
+part of babble is not built yet; the rest is a like-for-like run.
 
 One constraint shapes everything here: the oracle.
 ~babble tangle BOOK.org~ must produce byte-identical results to
@@ -1603,24 +1572,38 @@ they widen the subset.
 :CUSTOM_ID: architecture
 :END:
 
-babble parses first: the whole book becomes a logical tree, and
-the tangler and the dynamic-block writers decide everything
-against that tree, never by re-scanning text. The oracle works the
-same way. org-babel's scan loop uses its block regex only to find
-candidates; every hit must be confirmed by the element parser, and
-everything babel then reads (language, name, switches, headers,
-body, position) comes from the element, not from the regex
-captures. The element grammar is the authority for recognition and
-attributes, and the tree is babble's spelling of the same
+babble parses first. The whole book becomes a logical tree, and
+the tangler decides everything against that tree rather than by
+re-scanning text. The dynamic-block writers are the exception, and
+the next paragraph says why.
+
+The oracle works the same way, which is what makes the design a
+port and not a guess. org-babel's scan loop (~org-babel-map-src-blocks~,
+ob-core.el:1273) does use a regexp to find candidates, but every
+hit must then be confirmed: ~org-babel-active-location-p~
+(ob-core.el:1237) asks ~org-element-context~ whether point is
+really on a src block, and a hit that is not is skipped.
+Everything babel then reads comes from the element.
+~org-babel-get-src-block-info~ takes the language, body, name,
+switches and position through ~org-element-property~, and never
+reads the regexp's captures. The tangler's own collector
+(~org-babel-tangle-collect-blocks~, ob-tangle.el:482) is built on
+that loop. So the element grammar is the authority for recognition
+and attributes, and the tree is babble's spelling of the same
 authority.
 
-The document model is the tree plus the retained source bytes plus
-a line index. Every node carries its line number, which plan-toc
-links point at, and its byte span, which extents and dynamic-block
-splicing slice. The site list that plan-toc renders is defined by the
-lit convention on raw lines, not on structure, so babble runs the
-patterns ported from tangle.el over retained source lines and the
-tree supplies only the splice points.
+That is why the book is kept as bytes as well as a tree. Every node
+carries its line number, which plan-toc links point at, and its
+byte span, which extents and dynamic-block splicing slice.
+
+The dynamic-block writers are the exception because the lit
+convention defines plan markup on raw lines and not on structure. A
+badge is a headline of fifteen stars, a twin is a block whose name
+ends a certain way, and CriticMarkup is a bracket pair that can
+open and close mid-sentence. None of those are element types, so no
+tree can hold them. plan-toc therefore runs the patterns ported
+from tangle.el over the retained source lines, and takes only its
+splice points from the tree.
 
 Org spellings stop at ~internal/org~. The frontend knows org
 syntax, scanning, spans, the balanced header splitter, the value
@@ -1629,7 +1612,8 @@ backend consumes, free of org spellings, which is the seam a future
 markdown frontend would plug into. ~internal/tangle~ owns
 collection, targets, the body pipeline, comments, noweb, banners,
 and assembly; ~internal/dblock~ owns refresh and the two writers.
-The dependency arrows all point one way, and the tree is the waist:
+The dependency arrows all point one way, and everything passes
+through the tree:
 
 #+begin_src mermaid
 graph LR
@@ -1641,9 +1625,12 @@ graph LR
   dblock --> book2[BOOK.org rewritten]
 #+end_src
 
-The scan regex has exactly three observable effects of its own,
-and each has a home here. First, it demands a language token, so a
-languageless block never tangles: babble makes that an error.
+The confirm step makes the scan regexp almost invisible: whatever
+it captures is thrown away. Three effects survive it, found by
+reading the regexp against what the element parser produces for the
+same text, and each has a home here. First, it demands a language
+token, so a languageless block never tangles: babble makes that an
+error.
 Second, the ~:comments org~ extent is anchored on raw match
 positions, so the tree records them: per headline, the offset just
 past the stars and following space; per block, the offset where the
@@ -1653,12 +1640,15 @@ delimiter quoted inside a verbatim body would anchor extents in
 Emacs but never in a tree; the quoted-delimiter lint forbids the
 shape, so the divergence never reaches an accepted book.
 
-Two facts keep the port small. Batch Emacs loads no language packs,
-so org's language-specific expansion hooks never exist and body
-expansion is the generic path, which is the identity when nothing
-injects variables; babble expands nothing. And the driver pins the
-whole comment story to five language modes, so comment wrapping is
-a table, not a port of Emacs's comment machinery.
+Two facts keep the port small. The first is that batch Emacs loads
+no language packs, so org's language-specific expansion hooks never
+exist and body expansion falls to the generic path. That path is
+the identity as long as nothing injects variables into a body, and
+nothing can: ~:var~ is a rejected key, so a book that asks for
+injection is refused rather than expanded. babble expands nothing
+and matches. The second is that the driver pins the whole comment
+story to five language modes, so comment wrapping is a table rather
+than a port of Emacs's comment machinery.
 
 *************** PLANNED stage 12 adds the chapter below ([[#stage-12][plan]]) :stage12:
 The chapter landed before this entry did. Read it as an insertion:
@@ -4455,6 +4445,16 @@ this document cares about. Entries are written once, at acceptance,
 and never reworded; history that needs correcting gets a new entry.
 An entry speaks from its date; the rest of the document speaks from
 no date at all.
+
+** [2026-07-29 Wed] Rewriting the front matter
+
+The Introduction now explains literate programming before it
+explains babble, and names noweb as the one thing that does the
+reordering it promises. The cost of running batch Emacs is measured
+rather than asserted: about a second and 116 MB out of a 411 MB
+install, against ten milliseconds and 9 MB.
+Architecture states its exception where it makes the claim rather
+than fourteen lines later.
 
 ** [2026-07-29 Wed] One word, one meaning
 
