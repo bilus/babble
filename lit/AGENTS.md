@@ -86,6 +86,14 @@ How to write and edit book prose, in working order:
    metaphor that outlives its sentence, no applause lines. When a
    phrase reads like it wants admiration, delete it and state the
    fact it was decorating.
+8. Never justify a design by its history. A chapter argues from the
+   problem, not from the bug that prompted the work or the version
+   that came before. "X, because the old Y drifted" is a journal
+   entry wearing a chapter's clothes: cut the clause, keep the
+   reason that survives without it. The test is whether a reader who
+   has never seen an earlier version notices anything missing; if
+   the sentence only lands for someone who watched the change, it
+   belongs in `* Changes`.
 
 ## Prose
 
@@ -157,7 +165,14 @@ A book under change has three layers, each with a lifetime and a
 voice:
 
 - Steady-state text: the program and its narrative. Permanent, and it
-  speaks from no date, as if the change had always been there.
+  speaks from no date, as if the change had always been there. It
+  also speaks from no history: a chapter explains what the code does
+  and why that is the right shape, never what it replaced, what used
+  to be broken, or which bug prompted it. The reader arrives at a
+  finished program and needs no archaeology to read it. Motivation
+  comes from the problem the code solves, not from the project's
+  past, however good the war story. The war story goes in the
+  journal, where its date makes it true.
 - Transition scaffolding: the Plan chapter, badges, CriticMarkup,
   twin blocks, hole bodies. Acceptance deletes it. This is the only
   place for "now", "no longer", "still", or any other comparison with
@@ -201,7 +216,8 @@ reqsync's stage 4, condensed:
     the defining file always lands before any referencing file.
 
     - [ ] skeleton approved (twin at [[sync-write-back--planned]])
-    - [ ] inserted prose reads steady-state (no "now", "no longer", "still")
+    - [ ] inserted prose reads steady-state: no "now", "no longer",
+      "still", and no account of what the change replaced or fixed
     - [ ] Changes draft below reads right in the journal
     - [ ] HOLE(4) atomicWrite filled, tests in the same commit
     - [ ] twin accepted: :tangle headers swapped, old block DROPPED
@@ -333,36 +349,6 @@ inactive timestamp, file it newest-first in `* Changes`, fold any
 retired Known-issues entry into its narrative, delete the plan entry.
 Journal entries are written once and never reworded; a correction is
 a new entry.
-
-Then sweep, before the acceptance commit. Deleting the plan entry is
-not the end of the transition layer, because the layer leaks into
-prose that no badge marks: a sentence naming a stage number, a
-promise that something "arrives with" a later stage, a doc comment
-that mentions a hole, a paragraph that compares with how the code
-used to be. Those read as ordinary text and survive forever. The
-sweep is one grep and one reading:
-
-    grep -nE '[Ss]tage [0-9]|[-]-planned|HOLE[(]|\{[+][+]|\{[-][-]|\{[~][~]|\{[>][>]' BOOK.org
-
-A hit is allowed in three places: the Plan chapter, the Changes
-journal, and a hole body whose stage still has an entry. Everything
-else is rewritten to steady state, which means it either states what
-the program does today or says nothing at all. "Planning arrives with
-stage 4" becomes "planning lines are not recognized", or becomes a
-Known-issues entry when a reader would trip over the absence, or
-disappears when neither is true. A journal entry may name what
-changed, since it speaks from its date; steady-state text may not,
-since it speaks from none.
-
-Grep alone will not find them all, because prose wraps: "stage" and
-its number land on different lines and the pattern misses. So read as
-well as grep, and read for the tell rather than the token. The tells
-are a future tense about the program itself, a promise that something
-arrives later, a number that only means something to someone holding
-the plan, and any sentence that would puzzle a reader who joined after
-the work was done. That reader is the test: the surviving text should
-be indistinguishable from text written by someone who never saw the
-plan.
 
 The tooling needs none of this rendered: tangle, build, tests,
 census, and sparse trees all work on the plain org. The weave
