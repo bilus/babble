@@ -61,37 +61,36 @@ every dynamic block, and the labels are spelled without the sigils,
 so the census never matches its own index.
 
 #+begin: plan-toc
-- [[file:BOOK.org::98][98]] entry: PLANNED Stage 12: the fixtures chapter
-- [[file:BOOK.org::161][161]] entry: PLANNED Stage 6: the oracle harness
-- [[file:BOOK.org::269][269]] entry: PLANNED Stage 7: org comments
-- [[file:BOOK.org::312][312]] entry: PLANNED Stage 8: noweb
-- [[file:BOOK.org::349][349]] entry: PLANNED Stage 9: dynamic blocks
-- [[file:BOOK.org::396][396]] entry: PLANNED Stage 10: the fence
-- [[file:BOOK.org::425][425]] entry: PLANNED Stage 11: parity and self-hosting
-- [[file:BOOK.org::473][473]] entry: PLANNED Stage 16: rewriting the front matter
-- [[file:BOOK.org::516][516]] entry: PLANNED Stage 17: rewriting the contract
-- [[file:BOOK.org::564][564]] entry: PLANNED Stage 18: rewriting the guide
-- [[file:BOOK.org::609][609]] entry: PLANNED Stage 19: rewriting the internals
-- [[file:BOOK.org::660][660]] entry: PLANNED Stage 20: rewriting the testing chapters
-- [[file:BOOK.org::1134][1134]] badge: PLANNED stage 12 adds the paragraph below (plan)
-- [[file:BOOK.org::1341][1341]] deletion: , and ~#+include~ (org's file-inclusion
-- [[file:BOOK.org::1696][1696]] badge: PLANNED stage 12 adds the chapter below (plan)
-- [[file:BOOK.org::3327][3327]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
-- [[file:BOOK.org::3609][3609]] hole 7: extent between the anchors, then the docstring rule
-- [[file:BOOK.org::3615][3615]] hole 7: line-comment table per language, blank lines as a bare ma...
-- [[file:BOOK.org::3625][3625]] hole 8: named block first, else noweb-ref concatenation; cycles a...
-- [[file:BOOK.org::3726][3726]] hole 9: splice fresh interiors into the retained bytes, report ch...
-- [[file:BOOK.org::3736][3736]] hole 9: a line link per plan site, sites below the block shifted ...
-- [[file:BOOK.org::3742][3742]] hole 9: system diff -u over the two named bodies, temp-file heade...
-- [[file:BOOK.org::3782][3782]] badge: PLANNED stage 12 includes the two files below (plan)
-- [[file:BOOK.org::4259][4259]] badge: PLANNED stage 12 adds the test below (plan)
-- [[file:BOOK.org::4318][4318]] hole 6: ORACLE=1 in the environment
-- [[file:BOOK.org::4322][4322]] hole 6: UPDATE=1 in the environment
-- [[file:BOOK.org::4328][4328]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
-- [[file:BOOK.org::4340][4340]] hole 6: write the txtar's input files into dir, and name the book...
-- [[file:BOOK.org::4346][4346]] hole 6: copy lit/ in, run batch Emacs with the driver, fail loudl...
-- [[file:BOOK.org::4350][4350]] hole 6: every file on both sides, byte for byte, ignoring the inputs
-- [[file:BOOK.org::4354][4354]] hole 6: rewrite the fixture's want/ files from the oracle tree
+- [[file:BOOK.org::97][97]] entry: PLANNED Stage 12: the fixtures chapter
+- [[file:BOOK.org::160][160]] entry: PLANNED Stage 6: the oracle harness
+- [[file:BOOK.org::268][268]] entry: PLANNED Stage 7: org comments
+- [[file:BOOK.org::311][311]] entry: PLANNED Stage 8: noweb
+- [[file:BOOK.org::348][348]] entry: PLANNED Stage 9: dynamic blocks
+- [[file:BOOK.org::395][395]] entry: PLANNED Stage 10: the fence
+- [[file:BOOK.org::424][424]] entry: PLANNED Stage 11: parity and self-hosting
+- [[file:BOOK.org::472][472]] entry: PLANNED Stage 17: rewriting the contract
+- [[file:BOOK.org::520][520]] entry: PLANNED Stage 18: rewriting the guide
+- [[file:BOOK.org::565][565]] entry: PLANNED Stage 19: rewriting the internals
+- [[file:BOOK.org::616][616]] entry: PLANNED Stage 20: rewriting the testing chapters
+- [[file:BOOK.org::1097][1097]] badge: PLANNED stage 12 adds the paragraph below (plan)
+- [[file:BOOK.org::1325][1325]] deletion: , and ~#+include~ (org's file-inclusion
+- [[file:BOOK.org::1681][1681]] badge: PLANNED stage 12 adds the chapter below (plan)
+- [[file:BOOK.org::3312][3312]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
+- [[file:BOOK.org::3594][3594]] hole 7: extent between the anchors, then the docstring rule
+- [[file:BOOK.org::3600][3600]] hole 7: line-comment table per language, blank lines as a bare ma...
+- [[file:BOOK.org::3610][3610]] hole 8: named block first, else noweb-ref concatenation; cycles a...
+- [[file:BOOK.org::3711][3711]] hole 9: splice fresh interiors into the retained bytes, report ch...
+- [[file:BOOK.org::3721][3721]] hole 9: a line link per plan site, sites below the block shifted ...
+- [[file:BOOK.org::3727][3727]] hole 9: system diff -u over the two named bodies, temp-file heade...
+- [[file:BOOK.org::3768][3768]] badge: PLANNED stage 12 includes the two files below (plan)
+- [[file:BOOK.org::4245][4245]] badge: PLANNED stage 12 adds the test below (plan)
+- [[file:BOOK.org::4304][4304]] hole 6: ORACLE=1 in the environment
+- [[file:BOOK.org::4308][4308]] hole 6: UPDATE=1 in the environment
+- [[file:BOOK.org::4314][4314]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
+- [[file:BOOK.org::4326][4326]] hole 6: write the txtar's input files into dir, and name the book...
+- [[file:BOOK.org::4332][4332]] hole 6: copy lit/ in, run batch Emacs with the driver, fail loudl...
+- [[file:BOOK.org::4336][4336]] hole 6: every file on both sides, byte for byte, ignoring the inputs
+- [[file:BOOK.org::4340][4340]] hole 6: rewrite the fixture's want/ files from the oracle tree
 
 #+end:
 
@@ -469,54 +468,6 @@ echo ---
 grep -nE '^\*+ (PLANNED|FILLING|HOLE|LIVE|DROPPED) |^\*{15,} |HOLE[(]|\{[+][+]|\{[-][-]|\{[~][~]|\{[>][>]|[-]-planned|^#\+begin: src-block-diff|:(plan|stage[0-9]+):' BOOK.org \
   || echo no plan markup in the book
 #+end_src
-
-** PLANNED Stage 17: rewriting the contract                        :stage17:
-:PROPERTIES:
-:CUSTOM_ID: stage-17
-:SPEC:     The subset contract; Deviations
-:DEPS:     stage 14; stage 15
-:ACCEPTANCE: every sentence traceable to code or to the oracle by line
-:SIZE:     ~189 lines of prose, 14 paragraphs
-:END:
-
-Claim: after this stage every sentence in the two chapters that
-define babble's behavior is true of the program, and each one can
-be traced to code or to org by line.
-
-These are the chapters where a wrong sentence costs the most,
-because a reader who cannot run Emacs has nothing else to check
-against. Six sentences are currently wrong.
-
-Decided: (1) The opening sentence stops describing a refresh step
-the program does not have. (2) Quote blocks stop being listed as
-text: org parses them as greater elements, and a src block inside
-one tangles, which the oracle confirms. (3) The padline rule stops
-saying exactly one blank line, since the blank line is switchable
-and an empty block contributes its own. (4) The body pipeline is
-described as two branches, because it is two. (5) The merge order
-drops the language-defaults stage the program does not have and
-gains the file-property stage it does. (6) Inheritance is
-described as wholesale in the contract, not just in the code
-chapter and the journal. (7) The word proof leaves the inert bin's
-paragraph unless the enumeration behind it goes in.
-
-- [ ] plan approved (the human ticks this box)
-- [ ] every sentence traced to code or to org by line
-- [ ] the six wrong sentences fixed, each checked against the oracle
-- [ ] the behavior the chapters never mention either added or deliberately left out
-- [ ] census clean for stage 17, suite green
-- [ ] Changes entry dated and filed, plan entry deleted
-
-*** Changes draft
-
-#+begin_quote
-The contract chapters had six sentences that were not true of the
-program: a refresh step that does not run, quote blocks called
-text when a block inside one tangles, one blank line where the
-count varies, one body pipeline where there are two, a merge stage
-the program does not have, and inheritance described as if it
-merged key by key.
-#+end_quote
 
 ** PLANNED Stage 18: rewriting the guide                           :stage18:
 :PROPERTIES:
@@ -1070,11 +1021,15 @@ that would not is refused before any file changes.
 :PROPERTIES:
 :CUSTOM_ID: subset-contract
 :END:
-What ~babble tangle~ does, in order: refresh every dynamic block in
-the book, rewriting the book file only when its bytes changed, then
-tangle every eligible src block into its target file. The
-subsections here state the contract each stage implements; the
-chapters that own the code carry the mechanics.
+What ~babble tangle~ does: tangle every eligible src block into
+its target file. Refreshing the book's dynamic blocks is part of
+the same command once [[#stage-9][stage 9]] lands, and until then the command
+only writes targets and never rewrites the book.
+
+The subsections here state the contract each stage implements; the
+chapters that own the code carry the mechanics. Where a subsection
+describes something a stage has not built yet, it says so and names
+the stage.
 
 ** Recognition
 
@@ -1083,8 +1038,11 @@ follows org's element grammar: delimiter keywords are
 case-insensitive, only whitespace may follow ~#+end_src~ on its
 line, affiliated ~#+name:~ and ~#+header:~ lines belong to the run
 above the block below them, and
-blocks inside example, export, comment, and quote blocks are text,
-not blocks. A src block without a language is an error
+and blocks inside example, export, comment and verse blocks are
+text rather than blocks. A quote block is not in that list: org
+parses it as a greater element, so a src block quoted inside one
+is a real src block and tangles. The oracle does this too, and the
+fixtures pin it. A src block without a language is an error
 (org's scanner cannot even see one, which is worse). A src block
 that never closes is an error (org reads it as a paragraph).
 
@@ -1146,11 +1104,14 @@ implemented (~:tangle~, ~:mkdirp~, ~:comments~, ~:padline~,
 (the [[#deviations][Deviations]] list), and inert, the evaluation-only keys
 (~:results~, ~:exports~, ~:session~, ~:cache~, ~:eval~ and kin)
 that org parses but its tangle path never reads. A key outside the
-table is an error. The bins are exhaustive against the oracle
-because the union of parameter lookups on org's tangle code path
-(collection, block assembly, noweb expansion, the write loop) is
-exactly the implemented set plus the rejected set; a key that path
-never reads cannot change a byte, so the inert bin rests on proof.
+table is an error. The bins claim to be exhaustive against the oracle, and the
+argument is this: the union of parameter lookups on org's tangle
+code path (collection, block assembly, noweb expansion, the write
+loop) is the implemented set plus the rejected set, and a key that
+path never reads cannot change a byte. The argument was made by
+reading that path, not by testing every key, so it is only as good
+as the reading. An inert key that turns out to be read is a parity
+bug, and the oracle is what would catch it.
 The table applies to non-tangling blocks too: a misspelled
 ~:tangle~ leaves the block looking like a deliberate illustration,
 and only the unknown-key error can tell the difference. A
@@ -1163,15 +1124,28 @@ The body is the raw text between the delimiter lines, minus exactly
 one trailing newline. Comma-escaped lines (a comma before ~*~ or
 ~#+~, possibly indented) drop one comma. Common indentation,
 measured in columns with tab width eight, is removed unless the
-block carries the ~-i~ switch. Noweb expansion runs when enabled,
-indentation is removed once more, and a final trim drops leading
-and trailing blank lines, so trailing blanks never reach a target.
+block carries the ~-i~ switch. Noweb expansion runs when enabled. What follows depends on
+that same switch, and this is the one place the pipeline forks.
+
+Without ~-i~, indentation is removed once more and the body is
+trimmed at both ends of every space, tab and newline, so the first
+line starts at column zero whatever it looked like in the book.
+
+With ~-i~, neither dedent runs and the trim keeps the lead: whole
+blank lines come off the front, but the first surviving line keeps
+its indentation. Both branches trim the same way at the end, so
+trailing blanks never reach a target either way.
 
 ** Assembly
 
-Each target file is its blocks in document order, exactly one blank
-line between consecutive blocks (org's padline), a single final
-newline at end of file. The first line is the generated-file
+Each target file is its blocks in document order, with one blank
+line between consecutive blocks and a single final newline at end
+of file. The blank line is org's padline and it is switchable: a
+block carrying ~:padline no~ is joined to the one above it with no
+separator, and the value read is the later block's. The count is
+one blank line between bodies, not one blank line in the file, so
+an empty block still contributes its own newline and two adjacent
+empties show up as a run. The first line is the generated-file
 banner, ~Code generated from BOOK.org by make tangle. DO NOT
 EDIT.~, in the file's own comment syntax: ~//~ for .go, ~;;~ for
 .el, ~--~ for .lua, ~#~ for everything else, followed by one blank
@@ -1266,16 +1240,20 @@ by construction.
 Places where babble departs from what org would do: refusals,
 each a loud error instead of an imitation, plus one byte-neutral
 difference in when files are written. The refusals are the fence.
-No refusal may fire on the reqsync book or the lit example book,
-and a test enforces that. The error message always names the
-construct and the supported alternative.
+No refusal may fire on a real book, and [[#stage-10][stage 10]] adds the test that
+enforces it; today the corpus is only parsed, not judged. The error
+message always names the construct and the supported alternative.
 
+- A block whose target is the book itself is refused, and the
+  refusal fires during collection so nothing is written at all; org
+  would happily overwrite the book with its own code.
 - Lisp-valued header arguments (a value starting with a parenthesis,
   quote, backquote, or bracket) are rejected; org evaluates them.
 - A src block without a language is an error; org's tangle scanner
   silently ignores the block.
-- A src block that never closes is an error; org parses it as a
-  paragraph.
+- A block that never closes is an error, for every kind babble
+  parses and not just src; org parses the opener as a paragraph and
+  reads on.
 - An unresolvable noweb reference is an error; org expands it to
   the empty string for most languages. A noweb cycle is an error;
   org recurses without bound. A noweb call reference,
@@ -1291,17 +1269,19 @@ construct and the supported alternative.
   the table, the rejected keys error by name: ~:comments~ values
   other than ~no~ and ~org~, ~:var~, ~:shebang~, ~:tangle-mode~,
   ~:no-expand~, ~:noweb~ values other than ~yes~ and ~no~,
-  ~:noweb-prefix~, ~:prologue~, ~:epilogue~, ~:dir~ in its attach
-  form (org's attachment-directory feature), the ~-r~ and ~-l~
+  ~:noweb-prefix~, ~:prologue~, ~:epilogue~, ~:dir~ (org's
+  working-directory key, rejected in every form and not only the
+  attachment one), the ~-r~ and ~-l~
   coderef switches (org's code-reference labels), accumulating
   ~header-args+~ properties, inline src blocks (code blocks inside
   a prose line){--, and ~#+include~ (org's file-inclusion
   keyword)--}.
   The inert keys (evaluation-only arguments such as ~:results~ and
   ~:exports~, and the ~-n~ and ~-k~ switches) pass through because
-  the oracle's tangle path never reads them; an oracle fixture
-  holds a tangled block carrying them all and proves the bytes do
-  not move.
+  the oracle's tangle path never reads them. The
+  tangle-inert fixture carries one block with every one of them and
+  one block with none, and requires the two targets to come out
+  identical.
 - ~:comments org~ is limited to languages whose comment syntax the
   batch-Emacs driver actually has: go, python, emacs-lisp, sh,
   makefile. In batch Emacs a missing language mode silently leaves
@@ -3735,6 +3715,7 @@ The suite as it stands, by what each file pins:
 | tangle-guards.txtar | the two refusals a tangle owes its reader |
 | tangle-defects.txtar | five defects a claim audit found |
 | tangle-affiliated.txtar | header lines above a block, and the lead-keeping trim |
+| tangle-inert.txtar | the inert keys, proved to move no bytes |
 
 *************** PLANNED stage 12 includes the two files below ([[#stage-12][plan]]) :stage12:
 The weave expands these; the tangle walks past them. What a reader
@@ -4445,6 +4426,19 @@ this document cares about. Entries are written once, at acceptance,
 and never reworded; history that needs correcting gets a new entry.
 An entry speaks from its date; the rest of the document speaks from
 no date at all.
+
+** [2026-07-29 Wed] Rewriting the contract
+
+The contract chapters had six sentences that were not true of the
+program: a refresh step that does not run, quote blocks called
+text when a block inside one tangles, one blank line where the
+count varies, one body pipeline where there are two, a merge stage
+the program does not have, and inheritance described as if it
+merged key by key. Deviations gained the refusal it was
+missing, the self-tangle one, and lost the claim that a test
+enforces the corpus rule, which no test does yet. The inert bin's
+argument now points at a fixture that runs instead of at a fixture
+that was never written.
 
 ** [2026-07-29 Wed] Rewriting the front matter
 

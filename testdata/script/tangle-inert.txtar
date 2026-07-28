@@ -1,0 +1,21 @@
+# The inert bin, tested rather than argued. One block carries every
+# evaluation-only key the table knows plus the two line-numbering
+# switches; the other carries none. Same body, so the two targets must
+# come out byte for byte the same, and both must match Emacs.
+
+exec babble tangle inert.org
+cmp inert.go want/inert.go
+cmp plain.go want/inert.go
+
+-- inert.org --
+#+begin_src go -n -k :tangle inert.go :results output :exports both :session none :cache yes :eval never
+package inert
+#+end_src
+
+#+begin_src go :tangle plain.go
+package inert
+#+end_src
+-- want/inert.go --
+// Code generated from BOOK.org by make tangle. DO NOT EDIT.
+
+package inert
