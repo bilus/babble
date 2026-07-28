@@ -12,6 +12,7 @@ import (
 
 	"github.com/bilus/babble/internal/book"
 	"github.com/bilus/babble/internal/org"
+	"github.com/bilus/babble/internal/tangle"
 )
 
 const usage = `usage: babble <command> [flags] BOOK.org
@@ -78,5 +79,16 @@ func run(args []string, stdout, stderr io.Writer) int {
 // write the targets. The reparse matters because refresh moves line
 // numbers and the tangle must see the book it just wrote.
 func tangleCmd(bookPath string, stderr io.Writer) int {
-	panic("HOLE(5): parse, refresh, reparse, tangle; errors to stderr")
+	d, err := org.Parse(bookPath)
+	if err == nil {
+		err = org.ResolveAll(d)
+	}
+	if err == nil {
+		err = tangle.Run(d)
+	}
+	if err != nil {
+		fmt.Fprintln(stderr, "babble:", err)
+		return 1
+	}
+	return 0
 }

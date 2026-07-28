@@ -1,6 +1,27 @@
 #+title: babble: a tangler for lit books
 #+author: Marcin Bilski
 #+options: toc:t num:nil
+#+latex_header: \usepackage[margin=2.6cm]{geometry}
+#+latex_header: \usepackage{xcolor}
+#+latex_header: \usepackage[normalem]{ulem}
+#+latex_header: \definecolor{cmdel}{RGB}{176,32,32}
+#+latex_header: \definecolor{cmins}{RGB}{22,122,48}
+#+latex_header: \definecolor{cmnote}{RGB}{28,82,160}
+#+latex_header: \definecolor{badgeplan}{RGB}{176,98,20}
+#+latex_header: \definecolor{badgehole}{RGB}{104,54,160}
+#+latex_header: \newcommand{\cmdel}[1]{\textcolor{cmdel}{\sout{#1}}}
+#+latex_header: \newcommand{\cmins}[1]{\textcolor{cmins}{#1}}
+#+latex_header: \newcommand{\cmnote}[1]{\textcolor{cmnote}{\itshape [#1]}}
+#+latex_header: \usepackage{framed}
+#+latex_header: \usepackage{marginnote}
+#+latex_header: \reversemarginpar
+#+latex_header: \usepackage{bookmark}
+#+latex_header: \newcommand{\planmark}[2]{\marginnote{\textcolor{#1}{\rule{2.5pt}{9pt}\,{\scriptsize #2}}}}
+#+latex_header: \newcommand{\planbadgemark}[3]{\marginnote{\special{pdf:ann width 8pt height 8pt << /Type /Annot /Subtype /Text /Name /Comment /C [0.69 0.38 0.08] /Contents (#3) >>}\hspace{14pt}\textcolor{#1}{\rule{2.5pt}{9pt}\,{\scriptsize #2}}}}
+#+latex_header: \newenvironment{planbox}[1]{\def\FrameCommand{{\color{#1}\vrule width 3pt}\hspace{8pt}}\MakeFramed{\advance\hsize-\width\FrameRestore}\begingroup\color{#1}\itshape}{\endgroup\endMakeFramed}
+#+latex_header: \newcounter{codelisting}
+#+latex_header: \newcommand{\codecaption}[2][]{\par\medskip\noindent{\stepcounter{codelisting}\small\textbf{Listing \thecodelisting:} \texttt{\detokenize{#2}}\if\relax\detokenize{#1}\relax\else\quad\textcolor{gray}{\texttt{\detokenize{<<#1>>}}}\fi}\par\nopagebreak\vspace{2pt}}
+#+latex_header: \newcommand{\NowebRef}[1]{\hyperlink{noweb:\detokenize{#1}}{\detokenize{<<#1>>}}}
 #+todo: PLANNED(p!) HOLE(h!) FILLING(f!) | LIVE(l!) DROPPED(d@)
 
 * Plan                                                                :plan:
@@ -55,26 +76,24 @@ Where to look, as a generated jump list. Tangling refreshes it like
 every dynamic block, and the labels are spelled without the sigils,
 so the census never matches its own index.
 
-#+begin: plan-toc
-- [[file:BOOK.org::79][79]] entry: PLANNED Stage 5: tangle
-- [[file:BOOK.org::132][132]] entry: PLANNED Stage 6: the oracle harness
-- [[file:BOOK.org::166][166]] entry: PLANNED Stage 7: org comments
-- [[file:BOOK.org::209][209]] entry: PLANNED Stage 8: noweb
-- [[file:BOOK.org::246][246]] entry: PLANNED Stage 9: dynamic blocks
-- [[file:BOOK.org::293][293]] entry: PLANNED Stage 10: the fence
-- [[file:BOOK.org::322][322]] entry: PLANNED Stage 11: parity and self-hosting
-- [[file:BOOK.org::2824][2824]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
-- [[file:BOOK.org::3063][3063]] hole 7: extent between the anchors, then the docstring rule
-- [[file:BOOK.org::3069][3069]] hole 7: line-comment table per language, blank lines as a bare ma...
-- [[file:BOOK.org::3079][3079]] hole 8: named block first, else noweb-ref concatenation; cycles a...
-- [[file:BOOK.org::3176][3176]] hole 9: splice fresh interiors into the retained bytes, report ch...
-- [[file:BOOK.org::3186][3186]] hole 9: a line link per plan site, sites below the block shifted ...
-- [[file:BOOK.org::3192][3192]] hole 9: system diff -u over the two named bodies, temp-file heade...
-- [[file:BOOK.org::3589][3589]] hole 6: ORACLE=1 in the environment
-- [[file:BOOK.org::3593][3593]] hole 6: UPDATE=1 in the environment
-- [[file:BOOK.org::3599][3599]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
+- 79 entry: PLANNED Stage 5: tangle
+- 132 entry: PLANNED Stage 6: the oracle harness
+- 166 entry: PLANNED Stage 7: org comments
+- 209 entry: PLANNED Stage 8: noweb
+- 246 entry: PLANNED Stage 9: dynamic blocks
+- 293 entry: PLANNED Stage 10: the fence
+- 322 entry: PLANNED Stage 11: parity and self-hosting
+- 2824 hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
+- 3063 hole 7: extent between the anchors, then the docstring rule
+- 3069 hole 7: line-comment table per language, blank lines as a bare ma...
+- 3079 hole 8: named block first, else noweb-ref concatenation; cycles a...
+- 3176 hole 9: splice fresh interiors into the retained bytes, report ch...
+- 3186 hole 9: a line link per plan site, sites below the block shifted ...
+- 3192 hole 9: system diff -u over the two named bodies, temp-file heade...
+- 3589 hole 6: ORACLE=1 in the environment
+- 3593 hole 6: UPDATE=1 in the environment
+- 3599 hole 6: extract the fixture twice, run Emacs and babble, byte-com...
 
-#+end:
 
 ** PLANNED Stage 5: tangle                                         :stage5:
 :PROPERTIES:
@@ -3793,3 +3812,4 @@ book only consumes them. The Makefile is one hand-written line
 including lit/lit.mk, plus the babble-specific check excludes in
 ~CHECK_EXTRA~; go.mod, .gitignore, and the fixture data under
 testdata stay outside the book the way manifests always do.
+

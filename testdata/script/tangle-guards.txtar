@@ -1,0 +1,17 @@
+# The two refusals a tangle owes its reader: a block with no language,
+# which org would skip in silence, and a target that is the book.
+
+! exec babble tangle no-lang.org
+stderr 'without a language'
+
+! exec babble tangle self.org
+stderr 'refusing to tangle into the book itself'
+
+-- no-lang.org --
+#+begin_src
+nothing names this
+#+end_src
+-- self.org --
+#+begin_src go :tangle self.org
+package self
+#+end_src

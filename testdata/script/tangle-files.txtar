@@ -1,0 +1,55 @@
+# Blocks reach their targets in document order, grouped by file,
+# with the banner, one blank line between blocks, parent directories
+# made on demand, a COMMENT subtree skipped, and a block naming no
+# target left alone.
+
+exec babble tangle b.org
+cmp greet.go want-greet.go
+cmp other.go want-other.go
+cmp sub/deep.go want-deep.go
+! exists wrong.go
+
+-- b.org --
+#+title: tangling
+
+* Two files, interleaved
+
+#+begin_src go :tangle greet.go
+package greet
+#+end_src
+
+#+begin_src go :tangle other.go
+package other
+#+end_src
+
+#+begin_src go :tangle greet.go
+func Greet() string { return "hi" }
+#+end_src
+
+#+begin_src go :tangle sub/deep.go
+package deep
+#+end_src
+
+#+begin_src go
+not tangled
+#+end_src
+
+* COMMENT Draft
+
+#+begin_src go :tangle wrong.go
+package wrong
+#+end_src
+-- want-greet.go --
+// Code generated from BOOK.org by make tangle. DO NOT EDIT.
+
+package greet
+
+func Greet() string { return "hi" }
+-- want-other.go --
+// Code generated from BOOK.org by make tangle. DO NOT EDIT.
+
+package other
+-- want-deep.go --
+// Code generated from BOOK.org by make tangle. DO NOT EDIT.
+
+package deep
