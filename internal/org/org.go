@@ -237,12 +237,7 @@ type affiliated struct {
 // heading and its property drawer, and the drawer is the headline's
 // own data either way, so the parser steps over the one and asks for
 // the other before handing the rest of the range to the loop.
-// Everything after the stars is optional except the title:
-//   ** DONE [#A] COMMENT Ship it            :release:tools:
-//      SCHEDULED: <2026-07-27 Mon>
-//      :PROPERTIES:
-//      :header-args: :comments org
-//      :END:
+// Everything after the stars is optional except the title.
 func (p *parser) headlineParser(text string, next, limit int) (parsed, int, error) {
 	off := p.off
 	stars := starRun(text)
@@ -312,9 +307,7 @@ func firstWord(s string) (word, rest string, ok bool) {
 // Tags are the trailing colon-fenced run; each tag is alphanumerics
 // plus the four org extras. Anything that fails the shape stays in
 // the title, so the first line below has two tags and the second has
-// none:
-//   ** Ship it                              :release:tools:
-//   ** Ship it: a story in two parts
+// none.
 func splitTags(s string) (string, []string) {
 	t := strings.TrimRight(s, " \t")
 	if !strings.HasSuffix(t, ":") {
@@ -348,10 +341,7 @@ func tagWord(s string) bool {
 
 // The property drawer sits directly under its headline. A malformed
 // drawer is not a drawer at all, and its lines fall to prose, which
-// is also what org does. The shape:
-//   :PROPERTIES:
-//   :header-args: :comments org
-//   :END:
+// is also what org does. The shape.
 func (p *parser) propertyDrawerParser(from, limit int) (map[string]string, int, bool) {
 	text, next := p.line(from)
 	key, value, ok := colonLine(text)
@@ -374,6 +364,11 @@ func (p *parser) propertyDrawerParser(from, limit int) (map[string]string, int, 
 	return nil, from, false
 }
 
+// A src block records the two raw anchors beside its parsed
+// attributes: where its own first line starts, and the offset just
+// past the literal end keyword, which is where org's backward search
+// stops. The terminator has to name the same block and carry nothing
+// after it, and the bound keeps the search inside one section.
 func (p *parser) srcBlockParser(rest string, bodyStart, limit int, aff affiliated) (parsed, int, error) {
 	beginAt := p.off
 	endOff, endText, ok := p.findEnd(bodyStart, limit, closesBlock("src"))
@@ -401,10 +396,7 @@ func closesBlock(name string) func(string) bool {
 // Verbatim blocks hold text, so they report no contents range and
 // the loop cannot descend into them, which is what keeps a
 // comma-escaped delimiter inside one from being read as a block. The
-// kinds are example, export, comment and verse:
-//   #+begin_export latex
-//   \emph{raw text, passed through}
-//   #+end_export
+// kinds are example, export, comment and verse.
 func (p *parser) verbatimBlockParser(kind string, bodyStart, limit int, aff affiliated) (parsed, int, error) {
 	beginAt := p.off
 	endOff, endText, ok := p.findEnd(bodyStart, limit, closesBlock(kind))
@@ -420,10 +412,7 @@ func (p *parser) verbatimBlockParser(kind string, bodyStart, limit int, aff affi
 
 // Greater blocks hold elements, so they hand the loop their interior
 // and adopt what comes back. A quote block is the common one, and
-// any name org does not reserve lands here too:
-//   #+begin_quote
-//   Prose, and blocks, parse normally in here.
-//   #+end_quote
+// any name org does not reserve lands here too.
 func (p *parser) greaterBlockParser(kind string, bodyStart, limit int, aff affiliated) (parsed, int, error) {
 	beginAt := p.off
 	endOff, endText, ok := p.findEnd(bodyStart, limit, closesBlock(kind))
@@ -438,7 +427,10 @@ func (p *parser) greaterBlockParser(kind string, bodyStart, limit int, aff affil
 		childMode: modeSection}, next, nil
 }
 
-// #+end:
+// A dynamic block keeps its interior twice over: the span refresh
+// rewrites, and the nodes inside it, because a generated diff holds
+// a real src block that collection has to see. The opener carries
+// the writer's name and its arguments.
 func (p *parser) dynamicBlockParser(args string, bodyStart, limit int, aff affiliated) (parsed, int, error) {
 	beginAt := p.off
 	endOff, endText, ok := p.findEnd(bodyStart, limit, func(text string) bool {
@@ -462,8 +454,6 @@ func (p *parser) dynamicBlockParser(args string, bodyStart, limit int, aff affil
 // A keyword line is one node and one map entry. Prose is everything
 // left over: it runs from its first line to whatever interrupts it,
 // blank lines and stray colon lines included.
-//   #+title: babble
-//   #+property: header-args :comments org
 func (p *parser) keywordParser(key, value, text string, next int) (parsed, int, error) {
 	k := &book.Keyword{Key: key, Value: value, Line: p.lineNum(p.off),
 		Raw: book.Span{Start: p.off, End: p.off + len(text)}}
@@ -485,8 +475,13 @@ func (p *parser) paragraphParser(limit int) (parsed, int, error) {
 		Text: book.Span{Start: start, End: off}}}, off, nil
 }
 
-// #+title: babble
-//   :header-args: :comments org
+// The shape tests below are the only place a line's spelling is
+// examined, and every one of them is a pure function of the line
+// plus a position. They are read at the point of decision, never
+// ahead of time, which is what stops a lexical phase from deciding
+// grammar. Each answers one question about one line, in the order
+// below: how many stars open it, whether it is a block delimiter,
+// whether it is a keyword line, and whether it is a colon line.
 func starRun(text string) int {
 	i := 0
 	for i < len(text) && text[i] == '*' {
@@ -599,8 +594,7 @@ func todoWords(src []byte) []string {
 // optional count, and -l with a quoted format. Whatever follows the
 // run is the header string, which stays raw until it is resolved. In
 // the tail below the language is go, the switch run is "-i", and the
-// header begins at the first colon:
-//   go -i :tangle greet.go :comments org
+// header begins at the first colon.
 func srcHeader(s string) (lang, switches, header string) {
 	rest := strings.TrimLeft(s, " \t")
 	lang, rest = cutWord(rest)
