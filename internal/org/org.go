@@ -1,9 +1,7 @@
 // Code generated from BOOK.org by make tangle. DO NOT EDIT.
 
-// Package org is the frontend: everything that knows the input
-// syntax lives here, and it hands the engine a finished tree. Parse
-// reads a file; ParseBytes does the work, so tests and the refresh
-// reparse can feed bytes directly.
+// Parse reads a file; ParseBytes does the work, so tests and the
+// refresh reparse can feed bytes directly.
 package org
 
 import (
@@ -140,12 +138,14 @@ func (p *parser) parseElements(beg, end int, m mode) ([]book.Node, error) {
 	return out, nil
 }
 
-// currentElement is the dispatcher, and its order is the table in
-// [[#the-dispatch][The dispatch]]: the mode branch, then a star run, then the
-// affiliated name line, then the block delimiters, then the keyword
-// shape, then a paragraph for everything left. The first branch that
-// matches wins, which is why the order is the contract and not a
-// detail.
+// The order differs from org's table in [[#the-dispatch][The dispatch]], which tests
+// node-property before headline. Org can afford that because it has
+// modes babble does not: item, table-row and node-property each
+// narrow what a line is allowed to be. babble carries one such mode,
+// for the property drawer, and a star run is unambiguous against it
+// because a drawer cannot contain a headline. So the two orders agree
+// on every input either can be given, and the difference is in what
+// org must still rule out at that point and babble already has.
 func (p *parser) currentElement(limit int, m mode) (parsed, int, error) {
 	start := p.off
 	text, next := p.line(start)
@@ -224,13 +224,13 @@ func (p *parser) findEnd(from, limit int, closes func(string) bool) (int, string
 
 // An affiliated keyword line belongs to the element below it. The
 // subset uses two, ~#+name:~ and ~#+header:~, and the offsets a run
-// of them produces are load bearing: the element's extent opens at
+// of them produces are load bearing: the element's span opens at
 // the first line of the run, and the tangler's anchor stays on the
 // block's own first line.
 type affiliated struct {
 	name   string // the #+name: value, or ""
 	header string // the #+header: values, in document order
-	begin  int    // where the element's extent starts
+	begin  int    // where the element's span starts
 }
 
 // ,#+header: :tangle greet.go
@@ -871,7 +871,7 @@ func classify(key string) (headerBin, bool) {
 	return bin, ok
 }
 
-// The table is the fence, so it is written out rather than derived.
+// The table is half the fence, so it is written out rather than derived.
 // The inert column is the interesting one: those keys steer
 // evaluation, and the tangle path never reads them, which is why
 // accepting and ignoring them is safe rather than merely convenient.
@@ -971,8 +971,9 @@ func unquote(v string) (string, error) {
 	return b.String(), nil
 }
 
-// Lint is the fence: the refusals that need the whole document
-// rather than one block.
+// Lint is the other half of the fence: the refusals that need the
+// whole document rather than one block. The header table catches what
+// one block can be judged on alone; these need every block first.
 func Lint(d *book.Document) error {
 	panic("HOLE(10): quoted delimiters in verbatim bodies, duplicate names, a name doubling as a noweb-ref")
 }

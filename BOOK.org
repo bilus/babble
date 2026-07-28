@@ -61,38 +61,37 @@ every dynamic block, and the labels are spelled without the sigils,
 so the census never matches its own index.
 
 #+begin: plan-toc
-- [[file:BOOK.org::99][99]] entry: PLANNED Stage 12: the fixtures chapter
-- [[file:BOOK.org::162][162]] entry: PLANNED Stage 6: the oracle harness
-- [[file:BOOK.org::270][270]] entry: PLANNED Stage 7: org comments
-- [[file:BOOK.org::313][313]] entry: PLANNED Stage 8: noweb
-- [[file:BOOK.org::350][350]] entry: PLANNED Stage 9: dynamic blocks
-- [[file:BOOK.org::397][397]] entry: PLANNED Stage 10: the fence
-- [[file:BOOK.org::426][426]] entry: PLANNED Stage 11: parity and self-hosting
-- [[file:BOOK.org::474][474]] entry: PLANNED Stage 15: one word, one meaning
-- [[file:BOOK.org::548][548]] entry: PLANNED Stage 16: rewriting the front matter
-- [[file:BOOK.org::591][591]] entry: PLANNED Stage 17: rewriting the contract
-- [[file:BOOK.org::639][639]] entry: PLANNED Stage 18: rewriting the guide
-- [[file:BOOK.org::684][684]] entry: PLANNED Stage 19: rewriting the internals
-- [[file:BOOK.org::735][735]] entry: PLANNED Stage 20: rewriting the testing chapters
-- [[file:BOOK.org::1184][1184]] badge: PLANNED stage 12 adds the paragraph below (plan)
-- [[file:BOOK.org::1390][1390]] deletion: , and ~#+include~ (org's file-inclusion
-- [[file:BOOK.org::1480][1480]] badge: PLANNED stage 12 adds the chapter below (plan)
-- [[file:BOOK.org::1522][1522]] badge: PLANNED stage 12 includes the two files below (plan)
-- [[file:BOOK.org::3438][3438]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
-- [[file:BOOK.org::3720][3720]] hole 7: extent between the anchors, then the docstring rule
-- [[file:BOOK.org::3726][3726]] hole 7: line-comment table per language, blank lines as a bare ma...
-- [[file:BOOK.org::3736][3736]] hole 8: named block first, else noweb-ref concatenation; cycles a...
-- [[file:BOOK.org::3837][3837]] hole 9: splice fresh interiors into the retained bytes, report ch...
-- [[file:BOOK.org::3847][3847]] hole 9: a line link per plan site, sites below the block shifted ...
-- [[file:BOOK.org::3853][3853]] hole 9: system diff -u over the two named bodies, temp-file heade...
-- [[file:BOOK.org::4252][4252]] badge: PLANNED stage 12 adds the test below (plan)
-- [[file:BOOK.org::4311][4311]] hole 6: ORACLE=1 in the environment
-- [[file:BOOK.org::4315][4315]] hole 6: UPDATE=1 in the environment
-- [[file:BOOK.org::4321][4321]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
-- [[file:BOOK.org::4333][4333]] hole 6: write the txtar's input files into dir, and name the book...
-- [[file:BOOK.org::4339][4339]] hole 6: copy lit/ in, run batch Emacs with the driver, fail loudl...
-- [[file:BOOK.org::4343][4343]] hole 6: every file on both sides, byte for byte, ignoring the inputs
-- [[file:BOOK.org::4347][4347]] hole 6: rewrite the fixture's want/ files from the oracle tree
+- [[file:BOOK.org::98][98]] entry: PLANNED Stage 12: the fixtures chapter
+- [[file:BOOK.org::161][161]] entry: PLANNED Stage 6: the oracle harness
+- [[file:BOOK.org::269][269]] entry: PLANNED Stage 7: org comments
+- [[file:BOOK.org::312][312]] entry: PLANNED Stage 8: noweb
+- [[file:BOOK.org::349][349]] entry: PLANNED Stage 9: dynamic blocks
+- [[file:BOOK.org::396][396]] entry: PLANNED Stage 10: the fence
+- [[file:BOOK.org::425][425]] entry: PLANNED Stage 11: parity and self-hosting
+- [[file:BOOK.org::473][473]] entry: PLANNED Stage 16: rewriting the front matter
+- [[file:BOOK.org::516][516]] entry: PLANNED Stage 17: rewriting the contract
+- [[file:BOOK.org::564][564]] entry: PLANNED Stage 18: rewriting the guide
+- [[file:BOOK.org::609][609]] entry: PLANNED Stage 19: rewriting the internals
+- [[file:BOOK.org::660][660]] entry: PLANNED Stage 20: rewriting the testing chapters
+- [[file:BOOK.org::1122][1122]] badge: PLANNED stage 12 adds the paragraph below (plan)
+- [[file:BOOK.org::1329][1329]] deletion: , and ~#+include~ (org's file-inclusion
+- [[file:BOOK.org::1663][1663]] badge: PLANNED stage 12 adds the chapter below (plan)
+- [[file:BOOK.org::3294][3294]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
+- [[file:BOOK.org::3576][3576]] hole 7: extent between the anchors, then the docstring rule
+- [[file:BOOK.org::3582][3582]] hole 7: line-comment table per language, blank lines as a bare ma...
+- [[file:BOOK.org::3592][3592]] hole 8: named block first, else noweb-ref concatenation; cycles a...
+- [[file:BOOK.org::3693][3693]] hole 9: splice fresh interiors into the retained bytes, report ch...
+- [[file:BOOK.org::3703][3703]] hole 9: a line link per plan site, sites below the block shifted ...
+- [[file:BOOK.org::3709][3709]] hole 9: system diff -u over the two named bodies, temp-file heade...
+- [[file:BOOK.org::3749][3749]] badge: PLANNED stage 12 includes the two files below (plan)
+- [[file:BOOK.org::4226][4226]] badge: PLANNED stage 12 adds the test below (plan)
+- [[file:BOOK.org::4285][4285]] hole 6: ORACLE=1 in the environment
+- [[file:BOOK.org::4289][4289]] hole 6: UPDATE=1 in the environment
+- [[file:BOOK.org::4295][4295]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
+- [[file:BOOK.org::4307][4307]] hole 6: write the txtar's input files into dir, and name the book...
+- [[file:BOOK.org::4313][4313]] hole 6: copy lit/ in, run batch Emacs with the driver, fail loudl...
+- [[file:BOOK.org::4317][4317]] hole 6: every file on both sides, byte for byte, ignoring the inputs
+- [[file:BOOK.org::4321][4321]] hole 6: rewrite the fixture's want/ files from the oracle tree
 
 #+end:
 
@@ -192,7 +191,7 @@ than skipping: a silent pass would retire the only check that
 matters. (6) The sweep over whole real books waits for the stage
 that can tangle them; this stage's books are the fixtures.
 (7) ORACLE=1 adds a layer, it does not replace one: the golden
-suite still runs each script against its expected output, and the
+suite still runs each script against its goldens, and the
 cross-check runs beside it, so babble tangles each fixture twice
 and Emacs once. Keeping both is what separates two failures worth
 telling apart, a golden that has drifted from Emacs, which the
@@ -203,7 +202,7 @@ there is nothing else a golden may be minted from; setting it
 without ORACLE=1 is an error rather than a quiet no-op.
 
 A fixture as this stage leaves it, indented here for quoting. The
-script names what it compares, the inputs and the expected outputs
+script names what it compares, the inputs and the goldens
 share one file, and every expected path sits under ~want/~
 mirroring the file it pins, which is what lets reminting write it
 back:
@@ -470,80 +469,6 @@ echo ---
 grep -nE '^\*+ (PLANNED|FILLING|HOLE|LIVE|DROPPED) |^\*{15,} |HOLE[(]|\{[+][+]|\{[-][-]|\{[~][~]|\{[>][>]|[-]-planned|^#\+begin: src-block-diff|:(plan|stage[0-9]+):' BOOK.org \
   || echo no plan markup in the book
 #+end_src
-
-** PLANNED Stage 15: one word, one meaning                         :stage15:
-:PROPERTIES:
-:CUSTOM_ID: stage-15
-:SPEC:     every chapter
-:DEPS:     none
-:ACCEPTANCE: no book-specific word carries two meanings; no term is used before it is defined
-:SIZE:     ~200 edits, no paragraph rewritten
-:END:
-
-Claim: after this stage every book-specific word means one thing,
-every term is defined before its first use, and a reader meets each
-idea after the idea it rests on.
-
-This stage comes before the rewriting stages and not after,
-because renaming a word after a paragraph is written means writing
-that paragraph twice.
-
-Decided: (1) Twenty words carry two meanings each. Each keeps one
-sense and the other sense gets a different word:
-
-| word    | keeps            | the other sense becomes |
-|---------+------------------+-------------------------|
-| sigil   | the plan marker  | aside marker            |
-| mode    | org's parse mode | language mode           |
-| engine  | a whole tangler  | the backend             |
-| extent  | the comment span | span                    |
-| harness | the oracle rig   | the script runner       |
-| fence   | all refusals     | half the fence          |
-| census  | the grep         | the site list           |
-| switch  | org's block flag | flag                    |
-| section | org's element    | chapter, subsection     |
-| target  | a tangled file   | make rule               |
-| book    | a lit book       | this book, a fixture book |
-
-(2) Twelve concepts answer to more than one name, and each keeps
-the name that carries the most meaning: a *golden* rather than an
-expected output or a want file, because only that word promises
-where the bytes came from; a *unit* rather than a group, because
-group already means a regexp group; a *refusal* rather than a
-rejection, because rejected already names a header bin.
-
-(3) Thirteen terms are used and never defined. Two of them carry
-weight: *stage*, which the whole plan is built from, and
-*steady-state*, which is the acceptance test in seven checklists.
-Both get a definition where the plan convention is introduced.
-
-(4) Two chapters move. [[#how-the-oracle-parses][How the oracle parses]] goes before
-[[#architecture][Architecture]], because that chapter and [[#the-document-tree][The document tree]] both
-use greater, verbatim and mode three hundred lines before those
-words are defined. [[#the-fixtures][The fixtures]] goes beside [[#testing][Testing]], because the
-two define a fixture twice, two thousand lines apart.
-
-(5) [[#reading-org][Reading org]] gains six sections: the loop, the dispatcher, the
-element parsers, the line shapes, the todo words, and header
-resolution. It is the longest chapter in the book, it holds six
-subjects, and it has no subheading and no goal sentence.
-
-- [ ] plan approved (the human ticks this box)
-- [ ] the collision table applied, every word checked by grep
-- [ ] chapters moved, every cross-reference still resolving
-- [ ] sections added, each holding one subject
-- [ ] census clean for stage 15, suite green, anchors still match org
-- [ ] Changes entry dated and filed, plan entry deleted
-
-*** Changes draft
-
-#+begin_quote
-Twenty words in the book carried two meanings each, and mode
-carried three. Each now means one thing, and the second sense has
-its own word. Two chapters moved so that no term is used three
-hundred lines before it is defined, and the longest chapter gained
-the six sections its six subjects had been sharing.
-#+end_quote
 
 ** PLANNED Stage 16: rewriting the front matter                    :stage16:
 :PROPERTIES:
@@ -816,8 +741,8 @@ One constraint shapes everything here: the oracle.
 ~emacs -Q --batch -l lit/tangle.el --eval '(lit-tangle "BOOK.org")'~,
 the same tangled files, the same refreshed book. Why bytes?
 Because a machine can check bytes. The suite carries an oracle
-mode that runs every fixture through both engines and diffs the
-trees, and an update mode that mints expected outputs from the
+run that puts every fixture through both engines and diffs the
+trees, and a reminting run that rewrites goldens from the
 Emacs side only. So committed goldens are Emacs output by
 construction.
 
@@ -840,19 +765,19 @@ line: v1 is done when babble tangles its own book byte-identically.
 This chapter is the tour: the org babble reads, one construct at a
 time, each construct with an example. And the examples are load
 bearing: every one of them is meant to reappear in the test suite
-as a fixture book whose expected output batch Emacs mints, so what
+as a fixture book whose goldens batch Emacs mints, so what
 this chapter promises, the oracle enforces. The precise
 rules behind the tour live in [[#subset-contract][The subset contract]].
 
 Org quoted inside the examples is comma-escaped (a comma before a
 star or a ~#+~), which is org's own convention for quoting itself;
-the section on escaping below explains it.
+escaping is explained below.
 
 ** A minimal book
 
 A book is prose and code under headlines. Every src block that
 names a target file tangles into it; everything else is yours. The
-smallest useful book is one block:
+smallest useful one is a single block:
 
 #+begin_example
 ,#+title: a tiny book
@@ -1004,19 +929,19 @@ Everything after the marker becomes the comment, blank lines
 preserved as bare ~//~ lines.
 
 A paragraph opening with ~Note:~ or ~Apropos:~ is an aside: the
-weave styles it, and the tangle drops the sigil and keeps the
+weave styles it, and the tangle drops the aside marker and keeps the
 text, so the aside lands in the source as an ordinary comment.
 
 Doc comments work for go, python, emacs-lisp, sh, and makefile
 blocks; any other language under ~:comments org~ is an error,
-because without a mode for the language, batch Emacs keeps the
+because without a language mode, batch Emacs keeps the
 previous block's comment syntax.
 
 ** Splitting code with noweb
 
 With ~:noweb yes~, a block can pull named blocks into itself with
 ~<<name>>~ references, which is how a long function becomes a
-skeleton of named regions:
+shell of named regions:
 
 #+begin_example
 ,#+begin_src go :tangle greet.go :comments org :noweb yes
@@ -1088,16 +1013,29 @@ winning:
 
 lit books plan changes inside themselves, and babble has to
 recognize what that leaves in the text. A change in flight lives
-in a temporary Plan chapter at the front of the book, and it marks
-the book three ways. A twin is a planned replacement for a live
-block: a sibling block, named after the original plus a planned
-marker, that sits inert until accepted. A badge is a marker
-headline of fifteen or more stars before a change site, pointing a
-reviewer at it. And each kind of markup carries a sigil (a
-spelling ordinary text never contains), so one grep, the census,
-indexes the whole in-flight layer. babble's own part is small:
-badge lines parse as plain headlines, and the two dynamic blocks
-below render the plan's jump list and a twin's diff.
+in a temporary Plan chapter at the front of the book, one entry per
+stage. A stage is one unit of planned work: it lands in two commits
+with a human review between them, and its entry is deleted when the
+work is accepted, which is why the Plan chapter shrinks to nothing
+as the program finishes.
+
+Text that describes the finished program is steady-state, and it is
+what the book is made of. Prose written for a change in flight is
+not, and the difference is the whole point of the convention: a
+reader should be able to read a book mid-change and see the program
+it is becoming, with the scaffolding marked as scaffolding.
+
+The scaffolding marks the book three ways. A twin is a planned
+replacement for a live block: a sibling block, named after the
+original plus a planned marker, that sits dormant until accepted. A
+badge is a marker headline of fifteen or more stars before a change
+site, pointing a reviewer at it. CriticMarkup brackets an edit to
+prose in place, so a reviewer sees the old words and the new ones
+together. And each kind carries a sigil (a spelling ordinary text
+never contains), so one grep, the census, indexes the whole
+in-flight layer. babble's own part is small: badge lines parse as
+plain headlines, and the two dynamic blocks below render the plan's
+jump list and a twin's diff.
 
 ** Dynamic blocks
 
@@ -1201,8 +1139,9 @@ heading or an ARCHIVE-tagged heading is skipped, with keyword and
 tag inheritance down the subtree, and a badge line is a headline
 like any other, because batch Emacs never loads org-inlinetask,
 which would read it as an inline task instead. A block whose
-~:tangle~ resolves to ~no~ is skipped. Blocks group by resolved target file, groups ordered by
-first appearance, blocks within a group in document order.
+~:tangle~ resolves to ~no~ is skipped. Blocks gather by resolved target file into units, one unit
+per file. Units are ordered by first appearance, and the blocks
+inside a unit stay in document order.
 
 ** Targets
 
@@ -1284,7 +1223,7 @@ or offset zero, down to the start of the block's begin line, so an
 affiliated name line sits inside the extent. The driver's docstring
 rule then applies: everything after the last ~# doc~ marker line if
 one is present, else the last paragraph; ~#+~ keyword lines drop; a
-leading ~Note:~ or ~Apropos:~ sigil drops. The result wraps in the
+leading ~Note:~ or ~Apropos:~ aside marker drops. The result wraps in the
 block language's line-comment syntax, blank lines becoming a bare
 comment marker with no trailing space, and a docstring that is all
 whitespace inserts nothing.
@@ -1396,8 +1335,8 @@ construct and the supported alternative.
   not move.
 - ~:comments org~ is limited to languages whose comment syntax the
   batch-Emacs driver actually has: go, python, emacs-lisp, sh,
-  makefile. In batch Emacs a missing language mode silently leaves the
-  previous block's mode active, so comment syntax would leak from
+  makefile. In batch Emacs a missing language mode silently leaves
+  the previous block's language mode active, so comment syntax leaks from
   an earlier block; that order-dependence stays out of the subset.
 - Block and dynamic-block delimiters quoted verbatim inside
   example, src, export, or comment block bodies are a lint error:
@@ -1414,6 +1353,250 @@ construct and the supported alternative.
   on disk. The book file likewise is written only when its bytes
   changed; the oracle saves it after every dynamic-block refresh.
   Bytes are identical in all four cases; only mtimes differ.
+
+* How the oracle parses
+
+:PROPERTIES:
+:CUSTOM_ID: how-the-oracle-parses
+:END:
+The specification for babble's frontend is not the org manual, it
+is org-element.el. This chapter states the algorithm that file
+implements, because babble replicates it: same shape, same
+decisions, same order, in Go types. Line numbers below are org
+9.7.11, the version the oracle runs, and the syntax those parsers
+implement is written up separately at
+https://orgmode.org/worg/dev/org-syntax.html. Everything here is
+this book's own account of what that code does; none of its text
+is reproduced, since org is GPL and babble is not.
+
+The first thing to know is that org has no tokenizer. There is no
+token stream between the buffer and the parser. The parser looks
+at raw text at the moment it needs to decide something, which is
+why a construct's meaning can depend on where it sits.
+
+** The loop
+
+:PROPERTIES:
+:CUSTOM_ID: the-loop
+:END:
+~org-element--parse-elements~ (org-element.el:5192) walks a byte
+range and does three things per element: ask what starts here,
+jump to where that element says it ends, and, when the element can
+contain other elements, recurse into its interior. The range is
+the parser's bound, and it is the reason a block cannot swallow
+the heading below it: a section's elements are parsed between the
+section's own start and end.
+
+#+begin_src mermaid
+flowchart TD
+  start([parse range beg..end]) --> ask["current-element:<br/>what starts at point?"]
+  ask --> el["element with begin, end,<br/>contents-begin, contents-end"]
+  el --> jump["point = element end"]
+  jump --> greater{"greater<br/>element?"}
+  greater -->|yes| rec["recurse into<br/>contents range"]
+  greater -->|no| more{"point < end?"}
+  rec --> more
+  more -->|yes| ask
+  more -->|no| done([return elements])
+#+end_src
+
+** The dispatch
+
+:PROPERTIES:
+:CUSTOM_ID: the-dispatch
+:END:
+~org-element--current-element~ (org-element.el:4637) decides an
+element's type from the start of one line, in a fixed order.
+Context comes first: when the caller passed a mode saying "we are
+inside a list item" or "inside a property drawer", that mode wins
+before any text is examined. Then a star run means a headline.
+Then one bulk regexp (~org-element--current-element-re~, 4616)
+matches drawers, fixed-width lines, dynamic-block openers,
+~#+begin_X~, ~#+CALL:~, plain keywords, footnote definitions,
+horizontal rules and diary sexps in a single pass, and the code
+dispatches on which numbered group matched. What is left over is a
+table or a paragraph.
+
+The single regexp is an optimization, and the source explains it:
+the parsers follow house rules about never disturbing Emacs's
+global match data, grouping regexps so one call replaces several,
+and precomputing patterns instead of building them per line, all
+because repeated matching dominated the profile on large buffers.
+babble inherits the decision but not the technique. Its dispatcher
+tests line prefixes rather than matching regexps, so there is no
+match state to protect and nothing to gain by fusing the tests;
+the branches stay separate, which is what lets the dispatch table
+read as a table.
+
+For ~#+begin_X~ the block name picks the parser: CENTER, COMMENT,
+EXAMPLE, EXPORT, QUOTE, SRC and VERSE have their own, and any
+other name is a special block. That list is the whole reason
+babble splits verbatim blocks from greater blocks.
+
+The order is the specification, because the first branch that
+matches wins and several of them can match the same line. Here it
+is as the elisp reads it, with the branches babble's subset never
+reaches marked. babble's ~currentElement~ answers these questions
+in this order, which is what makes the two comparable at all.
+
+| # | branch | condition | subset |
+|---|---|---|---|
+| 1 | item | mode is item | no |
+| 2 | table row | mode is table-row | no |
+| 3 | node property | mode is node-property | yes |
+| 4 | headline | stars, then a space | yes |
+| 5 | section | mode is a section mode | implicit |
+| 6 | comment | an org comment line | as prose |
+| 7 | planning | mode is planning | no |
+| 8 | property drawer | mode admits one | yes |
+| 9 | paragraph | point past a line start | no |
+| 10 | clock | a clock line | no |
+| 11 | inlinetask | deep stars, feature loaded | no |
+| 12 | affiliated | a name line, then retry | yes |
+| 13 | bulk regexp | nine shapes in one match | four |
+| 14 | table | a leading pipe | no |
+| 15 | paragraph | everything left | yes |
+
+Branch 13 is the one that carries most of org's syntax. Its nine
+shapes are drawers, fixed-width lines, dynamic-block openers,
+~#+begin_X~, ~#+CALL:~, keywords, footnote definitions,
+horizontal rules and diary sexps, and babble reaches four of them:
+the dynamic-block opener, ~#+begin_X~, keywords, and the drawer
+shape that branch 8 consumes.
+
+Two other entries are worth reading twice. Branch 11 is why a
+fifteen-star badge is an ordinary headline here: batch Emacs never
+loads org-inlinetask, so the condition is false and control falls
+to branch 4, which is what babble does unconditionally. Branch 7 is
+a difference babble carries: org admits a planning line between a
+headline and its property drawer, and babble does not, so a drawer
+below a planning line is prose here and its properties are lost.
+
+** Elements find their own end
+
+Every element parser receives the bound and searches for its own
+terminator inside it. ~org-element-src-block-parser~
+(org-element.el:2990) looks for a line matching ~#+END_SRC~ with
+nothing after it, and when the search fails it does not raise an
+error: it calls the paragraph parser instead, and the opening line
+becomes ordinary text. babble refuses that case instead, which is
+one of the [[#deviations][Deviations]].
+
+Paragraphs are the subtle ones (org-element.el:2854). A paragraph
+ends at the next line that cannot be inside it, but each candidate
+is verified before it counts: a drawer line only ends the
+paragraph if a matching ~:END:~ exists ahead, and a ~#+BEGIN_X~
+only ends it if a matching ~#+END_X~ exists, with X captured from
+the opener and quoted into a fresh search. Deciding where prose
+stops therefore requires proving that a pair matches, somewhere
+below.
+
+** Greater, lesser, and mode
+
+Two properties of an element type steer the loop. Whether it is a
+greater element decides whether the parser recurses into it:
+headlines, sections, quote blocks, centre blocks, special blocks,
+items, tables and footnote definitions hold elements, while src,
+example, export, comment and verse blocks hold text. And the mode
+an element hands to its successor decides how the next line is
+read: after a headline the mode admits a planning line and then a
+property drawer, inside a list the mode makes each line an item,
+inside a property drawer each line is a node property.
+
+Mode is why the same three characters parse differently in two
+places. ~:END:~ closes a drawer in one position and is prose in
+another, and no amount of looking at the line itself will tell you
+which.
+
+One rule about greater elements is worth stating because babble's
+block parsers depend on it: apart from headlines and list items, a
+greater element cannot contain another of its own type. That is
+why searching forward for the first matching terminator is correct
+rather than merely convenient, and why a quote block inside a
+quote block closes the outer one.
+
+** Affiliated keywords
+
+~org-element--collect-affiliated-keywords~ (org-element.el:4843)
+runs before the element parser and attaches ~#+name:~,
+~#+caption:~ and their kin to the element below them. The element
+then carries two positions: ~:begin~, at the first affiliated
+keyword, and ~:post-affiliated~, at the element's own first line.
+The tangler uses the second, which is why babble records the
+begin-line offset separately from the block's full span.
+
+** A document, line by line
+
+Here is a small book, and what the loop makes of it. The commas
+are org's own escape, and they are not part of the text.
+
+#+begin_example
+,#+title: demo
+
+,* Chapter
+Some prose.
+
+,#+name: greet
+,#+begin_src go :tangle greet.go
+package greet
+,#+end_src
+#+end_example
+
+Dispatch colours the lines by the branch that fired, and the
+elements on the right are what the loop returns. Note that the
+name line and both delimiters belong to one element, and that the
+blank lines are not elements at all: they are trailing space
+counted into the preceding element's end.
+
+#+begin_src mermaid
+flowchart TB
+  l1["#+title: demo"]:::kw
+  subgraph h["headline: the loop recurses into its range"]
+    direction TB
+    l2["* Chapter"]:::hl
+    subgraph pg["paragraph"]
+      l3["Some prose."]:::txt
+    end
+    subgraph sb["src-block: the name line, both delimiters, the text between"]
+      direction TB
+      l4["#+name: greet"]:::aff
+      l5["#+begin_src go :tangle greet.go"]:::blk
+      l6["package greet"]:::raw
+      l7["#+end_src"]:::blk
+    end
+  end
+  l1 ~~~ l2
+  l2 ~~~ pg
+  pg ~~~ sb
+  l4 ~~~ l5 ~~~ l6 ~~~ l7
+  classDef kw fill:#dbeafe,stroke:#2563eb,color:#1e3a8a
+  classDef hl fill:#fef3c7,stroke:#d97706,color:#78350f
+  classDef txt fill:#f3f4f6,stroke:#6b7280,color:#111827
+  classDef aff fill:#ede9fe,stroke:#7c3aed,color:#4c1d95
+  classDef blk fill:#dcfce7,stroke:#16a34a,color:#14532d
+  classDef raw fill:#ffffff,stroke:#9ca3af,color:#374151
+#+end_src
+
+** What babble takes, and what it leaves
+
+babble replicates the element layer: the loop, the dispatch, the
+per-element terminator search, greater against lesser, mode, and
+affiliated keywords. It leaves three things behind. The object
+layer, ~org-element--object-lex~ (org-element.el:5261), which
+tokenizes inline markup inside paragraphs, is unnecessary because
+nothing in a tangle looks inside prose. The element cache exists
+for interactive editing. And granularity, which lets a caller stop
+the recursion early, has one setting here: parse everything.
+
+The naming follows the oracle deliberately. Org calls its parsers
+~org-element-TYPE-parser~, so babble calls its own TYPEParser, and
+the two correspond function for function, which is what makes a
+divergence findable rather than merely suspected. Org also
+records what adding an element type costs: write its parser, teach
+the dispatcher to recognize it, and list the type. babble's price
+is the same three, an element parser, a branch in the table, and a
+node type, which is the shape the remaining stages pay each time
+they widen the subset.
 
 * Architecture
 :PROPERTIES:
@@ -1434,7 +1617,7 @@ authority.
 The document model is the tree plus the retained source bytes plus
 a line index. Every node carries its line number, which plan-toc
 links point at, and its byte span, which extents and dynamic-block
-splicing slice. The census that plan-toc renders is defined by the
+splicing slice. The site list that plan-toc renders is defined by the
 lit convention on raw lines, not on structure, so babble runs the
 patterns ported from tangle.el over retained source lines and the
 tree supplies only the splice points.
@@ -1442,7 +1625,7 @@ tree supplies only the splice points.
 Org spellings stop at ~internal/org~. The frontend knows org
 syntax, scanning, spans, the balanced header splitter, the value
 reader, and nothing past it does. ~internal/book~ is the tree the
-engine consumes, free of org spellings, which is the seam a future
+backend consumes, free of org spellings, which is the seam a future
 markdown frontend would plug into. ~internal/tangle~ owns
 collection, targets, the body pipeline, comments, noweb, banners,
 and assembly; ~internal/dblock~ owns refresh and the two writers.
@@ -1482,124 +1665,6 @@ The chapter landed before this entry did. Read it as an insertion:
 nothing above or below it changed, and acceptance deletes this
 badge and nothing else.
 *************** END
-
-* The fixtures
-:PROPERTIES:
-:CUSTOM_ID: the-fixtures
-:END:
-
-The suite's inputs live on disk, not in this book, and this
-chapter says what they are, how to rebuild one, and how to add
-another. They stay outside because a golden is minted by Emacs and
-rewritten by a machine, and a file the machine owns does not
-belong in a document a human owns. The weave shows them anyway.
-~#+include~ pulls a file's text into the PDF and no tangler reads
-it, so the pages below are the files themselves, not a copy of
-them that could drift.
-
-** What is on disk
-
-Every fixture is one txtar file under testdata/script, holding
-three things: a script of commands and assertions, the input files
-those commands run on, and the outputs they are expected to
-produce. testscript extracts the files into a scratch directory,
-runs the script there, and fails on the first assertion that does
-not hold.
-
-The suite as it stands, by what each file pins:
-
-| file | pins |
-|---|---|
-| usage.txtar | dispatch, exit codes, a missing book |
-| parse-headlines.txtar | nesting, todo words, COMMENT, tags, badges |
-| parse-prose.txtar | keywords, prose runs, property drawers |
-| parse-blocks.txtar | every block shape, and resolved headers |
-| tangle-files.txtar | targets, order, banners, padline, mkdirp |
-| tangle-guards.txtar | the two refusals a tangle owes its reader |
-| tangle-defects.txtar | five defects a claim audit found |
-| tangle-affiliated.txtar | header lines above a block, and the lead-keeping trim |
-
-*************** PLANNED stage 12 includes the two files below ([[#stage-12][plan]]) :stage12:
-The weave expands these; the tangle walks past them. What a reader
-sees is the file on disk, so a fixture cannot drift from the book
-that documents it.
-*************** END
-
-The smallest one first. Six lines of script over two books, and it
-pins both refusals a tangle owes its reader:
-
-#+INCLUDE: "testdata/script/tangle-guards.txtar" example
-
-And the one that pins the tangler proper, where the goldens are
-whole source files:
-
-#+INCLUDE: "testdata/script/tangle-files.txtar" example
-
-The parse fixtures are longer, since a dumped tree is verbose, and
-they are worth opening on disk rather than reading here:
-testdata/script/parse-headlines.txtar, parse-prose.txtar and
-parse-blocks.txtar.
-
-The parse fixtures compare against a dumped tree, so their goldens
-are JSON. The tangle fixtures compare against tangled files, so
-their goldens are source. Only the second kind has an oracle: org
-has no counterpart for a dumped tree, and no counterpart for a
-refusal either, which is why tangle-guards carries a line saying
-so.
-
-** Rebuilding a golden
-
-A golden is what Emacs produces, and the way to rebuild one is to
-ask Emacs. By hand, that is four steps, and doing it once is worth
-more than reading about it:
-
-#+begin_example
-  mkdir -p /tmp/fix && cd /tmp/fix
-  cp -R ~/dev/bilus/babble/lit lit
-  # write the fixture's book here as b.org
-  emacs -Q --batch -l lit/tangle.el --eval '(lit-tangle "b.org")'
-#+end_example
-
-What lands beside b.org is the golden, byte for byte, and it is
-the same command lit.mk runs for a real book. The harness does
-this for you: UPDATE=1 with the oracle enabled extracts each
-fixture, runs those steps, and writes the result back into the
-fixture's want entries. It never writes what babble produced,
-which is the whole point. A golden that came from babble would
-agree with babble by construction and prove nothing.
-
-** Adding a fixture
-
-Start from the behavior, not from the file. A fixture earns its
-place by pinning something that could plausibly break, and the
-book's own guide is a good quarry: the worked examples in
-[[#writing-a-book][Writing a book for babble]] are written to be lifted.
-
-Then, in order:
-
-1. Write the fixture book. Keep it to the smallest thing that
-   shows the behavior, and give the blocks targets that say what
-   they are for, greet.go rather than a.go.
-2. Mint the goldens with Emacs, by hand as above or with UPDATE=1
-   once the harness is in. Read what comes out. A golden accepted
-   without reading is a test that pins whatever the code did on
-   the day it was written.
-3. Write the script. Name the command, then compare each expected
-   file, then assert what should not exist. A fixture that only
-   checks what was produced will not notice a file that should not
-   have been.
-4. Add the comment at the top saying what the fixture pins, in one
-   or two sentences. It is the first thing a reader sees when the
-   fixture fails.
-5. If the fixture pins a deviation, say so in an oracle skip line
-   with the reason. Emacs does not refuse what babble refuses, so
-   a cross-check would fail on a difference that is the point.
-6. Add it to the table above, with a few words on what it pins.
-   A test compares that table against the directory, so a fixture
-   added and not listed fails the suite.
-7. Run the suite twice: once plain, once with the oracle. The
-   first proves the goldens match what babble does, the second
-   proves they match what Emacs does. Only the pair is evidence.
 
 * The command line
 
@@ -1716,7 +1781,7 @@ func tangleCmd(bookPath string, stderr io.Writer) int {
 :CUSTOM_ID: the-document-tree
 :END:
 
-Package book is the tree the engine consumes, and nothing in it
+Package book is the tree the backend consumes, and nothing in it
 spells org. That absence is the package's whole job: it is the
 seam a markdown frontend would plug into, and the proof is that no
 identifier below mentions the input syntax.
@@ -1866,8 +1931,8 @@ type VerbatimBlock struct {
 }
 #+end_src
 
-Params is the resolved header set, the engine's side of the closed
-table. The frontend produces it or errors; the engine never sees a
+Params is the resolved header set, the backend's side of the closed
+table. The frontend produces it or errors; the backend never sees a
 raw header string.
 
 #+begin_src go :tangle internal/book/book.go :comments org
@@ -2039,259 +2104,31 @@ func dumpNode(n Node) (json.Marshaler, error) {
 }
 #+end_src
 
-* How the oracle parses
-
-:PROPERTIES:
-:CUSTOM_ID: how-the-oracle-parses
-:END:
-The specification for babble's frontend is not the org manual, it
-is org-element.el. This chapter states the algorithm that file
-implements, because babble replicates it: same shape, same
-decisions, same order, in Go types. Line numbers below are org
-9.7.11, the version the oracle runs, and the syntax those parsers
-implement is written up separately at
-https://orgmode.org/worg/dev/org-syntax.html. Everything here is
-this book's own account of what that code does; none of its text
-is reproduced, since org is GPL and babble is not.
-
-The first thing to know is that org has no tokenizer. There is no
-token stream between the buffer and the parser. The parser looks
-at raw text at the moment it needs to decide something, which is
-why a construct's meaning can depend on where it sits.
-
-** The loop
-
-:PROPERTIES:
-:CUSTOM_ID: the-loop
-:END:
-~org-element--parse-elements~ (org-element.el:5192) walks a byte
-range and does three things per element: ask what starts here,
-jump to where that element says it ends, and, when the element can
-contain other elements, recurse into its interior. The range is
-the parser's bound, and it is the reason a block cannot swallow
-the heading below it: a section's elements are parsed between the
-section's own start and end.
-
-#+begin_src mermaid
-flowchart TD
-  start([parse range beg..end]) --> ask["current-element:<br/>what starts at point?"]
-  ask --> el["element with begin, end,<br/>contents-begin, contents-end"]
-  el --> jump["point = element end"]
-  jump --> greater{"greater<br/>element?"}
-  greater -->|yes| rec["recurse into<br/>contents range"]
-  greater -->|no| more{"point < end?"}
-  rec --> more
-  more -->|yes| ask
-  more -->|no| done([return elements])
-#+end_src
-
-** The dispatch
-
-:PROPERTIES:
-:CUSTOM_ID: the-dispatch
-:END:
-~org-element--current-element~ (org-element.el:4637) decides an
-element's type from the start of one line, in a fixed order.
-Context comes first: when the caller passed a mode saying "we are
-inside a list item" or "inside a property drawer", that mode wins
-before any text is examined. Then a star run means a headline.
-Then one bulk regexp (~org-element--current-element-re~, 4616)
-matches drawers, fixed-width lines, dynamic-block openers,
-~#+begin_X~, ~#+CALL:~, plain keywords, footnote definitions,
-horizontal rules and diary sexps in a single pass, and the code
-dispatches on which numbered group matched. What is left over is a
-table or a paragraph.
-
-The single regexp is an optimization, and the source explains it:
-the parsers follow house rules about never disturbing Emacs's
-global match data, grouping regexps so one call replaces several,
-and precomputing patterns instead of building them per line, all
-because repeated matching dominated the profile on large buffers.
-babble inherits the decision but not the technique. Its dispatcher
-tests line prefixes rather than matching regexps, so there is no
-match state to protect and nothing to gain by fusing the tests;
-the branches stay separate, which is what lets the dispatch table
-read as a table.
-
-For ~#+begin_X~ the block name picks the parser: CENTER, COMMENT,
-EXAMPLE, EXPORT, QUOTE, SRC and VERSE have their own, and any
-other name is a special block. That list is the whole reason
-babble splits verbatim blocks from greater blocks.
-
-The order is the specification, because the first branch that
-matches wins and several of them can match the same line. Here it
-is as the elisp reads it, with the branches babble's subset never
-reaches marked. babble's ~currentElement~ answers these questions
-in this order, which is what makes the two comparable at all.
-
-| # | branch | condition | subset |
-|---|---|---|---|
-| 1 | item | mode is item | no |
-| 2 | table row | mode is table-row | no |
-| 3 | node property | mode is node-property | yes |
-| 4 | headline | stars, then a space | yes |
-| 5 | section | mode is a section mode | implicit |
-| 6 | comment | an org comment line | as prose |
-| 7 | planning | mode is planning | no |
-| 8 | property drawer | mode admits one | yes |
-| 9 | paragraph | point past a line start | no |
-| 10 | clock | a clock line | no |
-| 11 | inlinetask | deep stars, feature loaded | no |
-| 12 | affiliated | a name line, then retry | yes |
-| 13 | bulk regexp | nine shapes in one match | four |
-| 14 | table | a leading pipe | no |
-| 15 | paragraph | everything left | yes |
-
-Branch 13 is the one that carries most of org's syntax. Its nine
-shapes are drawers, fixed-width lines, dynamic-block openers,
-~#+begin_X~, ~#+CALL:~, keywords, footnote definitions,
-horizontal rules and diary sexps, and babble reaches four of them:
-the dynamic-block opener, ~#+begin_X~, keywords, and the drawer
-shape that branch 8 consumes.
-
-Two other entries are worth reading twice. Branch 11 is why a
-fifteen-star badge is an ordinary headline here: batch Emacs never
-loads org-inlinetask, so the condition is false and control falls
-to branch 4, which is what babble does unconditionally. Branch 7 is
-a difference babble carries: org admits a planning line between a
-headline and its property drawer, and babble does not, so a drawer
-below a planning line is prose here and its properties are lost.
-
-** Elements find their own end
-
-Every element parser receives the bound and searches for its own
-terminator inside it. ~org-element-src-block-parser~
-(org-element.el:2990) looks for a line matching ~#+END_SRC~ with
-nothing after it, and when the search fails it does not raise an
-error: it calls the paragraph parser instead, and the opening line
-becomes ordinary text. babble refuses that case instead, which is
-one of the [[#deviations][Deviations]].
-
-Paragraphs are the subtle ones (org-element.el:2854). A paragraph
-ends at the next line that cannot be inside it, but each candidate
-is verified before it counts: a drawer line only ends the
-paragraph if a matching ~:END:~ exists ahead, and a ~#+BEGIN_X~
-only ends it if a matching ~#+END_X~ exists, with X captured from
-the opener and quoted into a fresh search. Deciding where prose
-stops therefore requires proving that a pair matches, somewhere
-below.
-
-** Greater, lesser, and mode
-
-Two properties of an element type steer the loop. Whether it is a
-greater element decides whether the parser recurses into it:
-headlines, sections, quote blocks, centre blocks, special blocks,
-items, tables and footnote definitions hold elements, while src,
-example, export, comment and verse blocks hold text. And the mode
-an element hands to its successor decides how the next line is
-read: after a headline the mode admits a planning line and then a
-property drawer, inside a list the mode makes each line an item,
-inside a property drawer each line is a node property.
-
-Mode is why the same three characters parse differently in two
-places. ~:END:~ closes a drawer in one position and is prose in
-another, and no amount of looking at the line itself will tell you
-which.
-
-One rule about greater elements is worth stating because babble's
-block parsers depend on it: apart from headlines and list items, a
-greater element cannot contain another of its own type. That is
-why searching forward for the first matching terminator is correct
-rather than merely convenient, and why a quote block inside a
-quote block closes the outer one.
-
-** Affiliated keywords
-
-~org-element--collect-affiliated-keywords~ (org-element.el:4843)
-runs before the element parser and attaches ~#+name:~,
-~#+caption:~ and their kin to the element below them. The element
-then carries two positions: ~:begin~, at the first affiliated
-keyword, and ~:post-affiliated~, at the element's own first line.
-The tangler uses the second, which is why babble records the
-begin-line offset separately from the block's full extent.
-
-** A document, line by line
-
-Here is a small book, and what the loop makes of it. The commas
-are org's own escape, and they are not part of the text.
-
-#+begin_example
-,#+title: demo
-
-,* Chapter
-Some prose.
-
-,#+name: greet
-,#+begin_src go :tangle greet.go
-package greet
-,#+end_src
-#+end_example
-
-Dispatch colours the lines by the branch that fired, and the
-elements on the right are what the loop returns. Note that the
-name line and both delimiters belong to one element, and that the
-blank lines are not elements at all: they are trailing space
-counted into the preceding element's end.
-
-#+begin_src mermaid
-flowchart TB
-  l1["#+title: demo"]:::kw
-  subgraph h["headline: the loop recurses into its range"]
-    direction TB
-    l2["* Chapter"]:::hl
-    subgraph pg["paragraph"]
-      l3["Some prose."]:::txt
-    end
-    subgraph sb["src-block: the name line, both delimiters, the text between"]
-      direction TB
-      l4["#+name: greet"]:::aff
-      l5["#+begin_src go :tangle greet.go"]:::blk
-      l6["package greet"]:::raw
-      l7["#+end_src"]:::blk
-    end
-  end
-  l1 ~~~ l2
-  l2 ~~~ pg
-  pg ~~~ sb
-  l4 ~~~ l5 ~~~ l6 ~~~ l7
-  classDef kw fill:#dbeafe,stroke:#2563eb,color:#1e3a8a
-  classDef hl fill:#fef3c7,stroke:#d97706,color:#78350f
-  classDef txt fill:#f3f4f6,stroke:#6b7280,color:#111827
-  classDef aff fill:#ede9fe,stroke:#7c3aed,color:#4c1d95
-  classDef blk fill:#dcfce7,stroke:#16a34a,color:#14532d
-  classDef raw fill:#ffffff,stroke:#9ca3af,color:#374151
-#+end_src
-
-** What babble takes, and what it leaves
-
-babble replicates the element layer: the loop, the dispatch, the
-per-element terminator search, greater against lesser, mode, and
-affiliated keywords. It leaves three things behind. The object
-layer, ~org-element--object-lex~ (org-element.el:5261), which
-tokenizes inline markup inside paragraphs, is unnecessary because
-nothing in a tangle looks inside prose. The element cache exists
-for interactive editing. And granularity, which lets a caller stop
-the recursion early, has one setting here: parse everything.
-
-The naming follows the oracle deliberately. Org calls its parsers
-~org-element-TYPE-parser~, so babble calls its own TYPEParser, and
-the two correspond function for function, which is what makes a
-divergence findable rather than merely suspected. Org also
-records what adding an element type costs: write its parser, teach
-the dispatcher to recognize it, and list the type. babble's price
-is the same three, an element parser, a branch in the table, and a
-node type, which is the shape the remaining stages pay each time
-they widen the subset.
-
 * Reading org
 :PROPERTIES:
 :CUSTOM_ID: reading-org
 :END:
 
-Package org is the frontend: everything that knows the input
-syntax lives here, and it hands the engine a finished tree. Parse
-reads a file; ParseBytes does the work, so tests and the refresh
-reparse can feed bytes directly.
+Package org is the frontend: everything that knows the input syntax
+lives here, and it hands the backend a finished tree. This chapter
+is the port of the algorithm the previous one described, in the
+order that chapter described it.
+
+Six sections, and the order is the pipeline. First the entry points
+and the line index every offset is measured against. Then the loop
+and the dispatcher, which are org's two halves and the reason the
+port is comparable at all. Then the element parsers, one per shape
+the dispatcher can reach. Then the line shapes those parsers ask
+about, which are small predicates over one line each. Then the two
+things read from the whole document rather than one line. And last,
+header resolution, which turns what was parsed into what the
+backend acts on, and which owns the closed table that is half the
+fence.
+
+** Entry points and the line index
+
+Parse reads a file; ParseBytes does the work, so tests and the
+refresh reparse can feed bytes directly.
 
 #+begin_src go :tangle internal/org/org.go :comments org
 package org
@@ -2376,6 +2213,8 @@ func line(src []byte, off int) (string, int) {
 }
 #+end_src
 
+** The loop and the dispatcher
+
 Mode is the context a parent hands its children. Org threads seven
 of them; the three below are the ones this subset can reach, and
 the dispatcher branches on the third. Org's planning mode has no
@@ -2447,12 +2286,20 @@ func (p *parser) parseElements(beg, end int, m mode) ([]book.Node, error) {
 }
 #+end_src
 
-currentElement is the dispatcher, and its order is the table in
-[[#the-dispatch][The dispatch]]: the mode branch, then a star run, then the
-affiliated name line, then the block delimiters, then the keyword
-shape, then a paragraph for everything left. The first branch that
-matches wins, which is why the order is the contract and not a
-detail.
+currentElement is the dispatcher. It asks, in this order: is this a
+star run, are we inside a property drawer, does a run of affiliated
+lines start here, is this a block delimiter, is this a keyword, and
+otherwise a paragraph. The first branch that matches wins, which is
+why the order is the contract and not a detail.
+
+The order differs from org's table in [[#the-dispatch][The dispatch]], which tests
+node-property before headline. Org can afford that because it has
+modes babble does not: item, table-row and node-property each
+narrow what a line is allowed to be. babble carries one such mode,
+for the property drawer, and a star run is unambiguous against it
+because a drawer cannot contain a headline. So the two orders agree
+on every input either can be given, and the difference is in what
+org must still rule out at that point and babble already has.
 
 #+begin_src go :tangle internal/org/org.go :comments org
 func (p *parser) currentElement(limit int, m mode) (parsed, int, error) {
@@ -2534,9 +2381,11 @@ func (p *parser) findEnd(from, limit int, closes func(string) bool) (int, string
 }
 #+end_src
 
+** The element parsers
+
 An affiliated keyword line belongs to the element below it. The
 subset uses two, ~#+name:~ and ~#+header:~, and the offsets a run
-of them produces are load bearing: the element's extent opens at
+of them produces are load bearing: the element's span opens at
 the first line of the run, and the tangler's anchor stays on the
 block's own first line.
 
@@ -2544,7 +2393,7 @@ block's own first line.
 type affiliated struct {
 	name   string // the #+name: value, or ""
 	header string // the #+header: values, in document order
-	begin  int    // where the element's extent starts
+	begin  int    // where the element's span starts
 }
 #+end_src
 
@@ -2915,6 +2764,8 @@ func (p *parser) paragraphParser(limit int) (parsed, int, error) {
   :header-args: :comments org
 #+end_example
 
+** Line shapes
+
 The shape tests below are the only place a line's spelling is
 examined, and every one of them is a pure function of the line
 plus a position. They are read at the point of decision, never
@@ -2988,6 +2839,8 @@ func colonLine(text string) (key, value string, ok bool) {
 	return t[1 : 1+j], strings.TrimSpace(t[2+j:]), true
 }
 #+end_src
+
+** Reading the whole document
 
 The todo words come from the book's own header before any headline
 is read, because org applies a ~#+todo~ line to the whole file
@@ -3111,6 +2964,8 @@ func isNumber(s string) bool {
 	return true
 }
 #+end_src
+
+** Header resolution
 
 ResolveAll fills every src block's Params through the closed
 table: the merge order, then the three bins, an unknown key an
@@ -3320,7 +3175,7 @@ func classify(key string) (headerBin, bool) {
 }
 #+end_src
 
-The table is the fence, so it is written out rather than derived.
+The table is half the fence, so it is written out rather than derived.
 The inert column is the interesting one: those keys steer
 evaluation, and the tangle path never reads them, which is why
 accepting and ignoring them is safe rather than merely convenient.
@@ -3430,8 +3285,9 @@ func unquote(v string) (string, error) {
 }
 #+end_src
 
-Lint is the fence: the refusals that need the whole document
-rather than one block.
+Lint is the other half of the fence: the refusals that need the
+whole document rather than one block. The header table catches what
+one block can be judged on alone; these need every block first.
 
 #+begin_src go :tangle internal/org/org.go :comments org
 func Lint(d *book.Document) error {
@@ -3854,14 +3710,132 @@ func srcBlockDiff(d *book.Document, at *book.DynamicBlock) (string, error) {
 }
 #+end_src
 
+* The fixtures
+:PROPERTIES:
+:CUSTOM_ID: the-fixtures
+:END:
+
+The suite's inputs live on disk, not in this book, and this
+chapter says what they are, how to rebuild one, and how to add
+another. They stay outside because a golden is minted by Emacs and
+rewritten by a machine, and a file the machine owns does not
+belong in a document a human owns. The weave shows them anyway.
+~#+include~ pulls a file's text into the PDF and no tangler reads
+it, so the pages below are the files themselves, not a copy of
+them that could drift.
+
+** What is on disk
+
+Every fixture is one txtar file under testdata/script, holding
+three things: a script of commands and assertions, the input files
+those commands run on, and the outputs they are expected to
+produce. testscript extracts the files into a scratch directory,
+runs the script there, and fails on the first assertion that does
+not hold.
+
+The suite as it stands, by what each file pins:
+
+| file | pins |
+|---|---|
+| usage.txtar | dispatch, exit codes, a missing book |
+| parse-headlines.txtar | nesting, todo words, COMMENT, tags, badges |
+| parse-prose.txtar | keywords, prose runs, property drawers |
+| parse-blocks.txtar | every block shape, and resolved headers |
+| tangle-files.txtar | targets, order, banners, padline, mkdirp |
+| tangle-guards.txtar | the two refusals a tangle owes its reader |
+| tangle-defects.txtar | five defects a claim audit found |
+| tangle-affiliated.txtar | header lines above a block, and the lead-keeping trim |
+
+*************** PLANNED stage 12 includes the two files below ([[#stage-12][plan]]) :stage12:
+The weave expands these; the tangle walks past them. What a reader
+sees is the file on disk, so a fixture cannot drift from the book
+that documents it.
+*************** END
+
+The smallest one first. Six lines of script over two books, and it
+pins both refusals a tangle owes its reader:
+
+#+INCLUDE: "testdata/script/tangle-guards.txtar" example
+
+And the one that pins the tangler proper, where the goldens are
+whole source files:
+
+#+INCLUDE: "testdata/script/tangle-files.txtar" example
+
+The parse fixtures are longer, since a dumped tree is verbose, and
+they are worth opening on disk rather than reading here:
+testdata/script/parse-headlines.txtar, parse-prose.txtar and
+parse-blocks.txtar.
+
+The parse fixtures compare against a dumped tree, so their goldens
+are JSON. The tangle fixtures compare against tangled files, so
+their goldens are source. Only the second kind has an oracle: org
+has no counterpart for a dumped tree, and no counterpart for a
+refusal either, which is why tangle-guards carries a line saying
+so.
+
+** Rebuilding a golden
+
+A golden is what Emacs produces, and the way to rebuild one is to
+ask Emacs. By hand, that is four steps, and doing it once is worth
+more than reading about it:
+
+#+begin_example
+  mkdir -p /tmp/fix && cd /tmp/fix
+  cp -R ~/dev/bilus/babble/lit lit
+  # write the fixture's book here as b.org
+  emacs -Q --batch -l lit/tangle.el --eval '(lit-tangle "b.org")'
+#+end_example
+
+What lands beside b.org is the golden, byte for byte, and it is
+the same command lit.mk runs for a real book. The harness does
+this for you: UPDATE=1 with the oracle enabled extracts each
+fixture, runs those steps, and writes the result back into the
+fixture's want entries. It never writes what babble produced,
+which is the whole point. A golden that came from babble would
+agree with babble by construction and prove nothing.
+
+** Adding a fixture
+
+Start from the behavior, not from the file. A fixture earns its
+place by pinning something that could plausibly break, and the
+book's own guide is a good quarry: the worked examples in
+[[#writing-a-book][Writing a book for babble]] are written to be lifted.
+
+Then, in order:
+
+1. Write the fixture book. Keep it to the smallest thing that
+   shows the behavior, and give the blocks targets that say what
+   they are for, greet.go rather than a.go.
+2. Mint the goldens with Emacs, by hand as above or with UPDATE=1
+   once the harness is in. Read what comes out. A golden accepted
+   without reading is a test that pins whatever the code did on
+   the day it was written.
+3. Write the script. Name the command, then compare each expected
+   file, then assert what should not exist. A fixture that only
+   checks what was produced will not notice a file that should not
+   have been.
+4. Add the comment at the top saying what the fixture pins, in one
+   or two sentences. It is the first thing a reader sees when the
+   fixture fails.
+5. If the fixture pins a deviation, say so in an oracle skip line
+   with the reason. Emacs does not refuse what babble refuses, so
+   a cross-check would fail on a difference that is the point.
+6. Add it to the table above, with a few words on what it pins.
+   A test compares that table against the directory, so a fixture
+   added and not listed fails the suite.
+7. Run the suite twice: once plain, once with the oracle. The
+   first proves the goldens match what babble does, the second
+   proves they match what Emacs does. Only the pair is evidence.
+
 * Testing
 :PROPERTIES:
 :CUSTOM_ID: testing
 :END:
 
 Two layers hold babble to the oracle. The golden suite checks
-every fixture against its committed expected output and needs no
-Emacs, so it is what an ordinary run does; the oracle mode replays
+every fixture against its committed goldens and needs no
+Emacs, so it is what an ordinary run does; the oracle run replays
 each fixture through batch Emacs as well and diffs the bytes the
 two engines produce. The suite is testscript,
 the script-driven test runner from go-internal, running txtar
@@ -3885,7 +3859,7 @@ The oracle harness ties every fixture to Emacs's own output.
 Under ORACLE=1, each fixture's inputs are extracted twice; batch Emacs
 with lit/tangle.el runs in one tree and babble in the other, and
 any byte difference between the trees fails the test. Under
-UPDATE=1, the harness rewrites each fixture's expected outputs from
+UPDATE=1, the harness rewrites each fixture's goldens from
 the Emacs tree, never from babble's, so a committed golden cannot
 encode babble's own misunderstanding. Fixtures that pin babble's
 deliberate deviations (error paths, the mtime-preserving skip) are
@@ -3919,14 +3893,14 @@ fixtures and the sweep.
 
 * The test suite
 
-Tests ride in this back-matter part, one section per chapter once
+Tests ride in this back-matter part, one subsection per chapter once
 the fills begin. The harness below is the only executable code the
 skeleton ships: it registers the babble command with testscript
 and runs every fixture under testdata/script.
 
-** The harness
+** The script runner
 
-The harness file lives in package main rather than an external
+The script runner lives in package main rather than an external
 test package, the one exception to the external-package rule: a
 main package cannot be imported, and testscript must reach run to
 register the command. The scripts themselves drive the built CLI,
@@ -4299,7 +4273,7 @@ func TestFixtureTable(t *testing.T) {
 
 ** The oracle harness
 
-Package oracletest carries the two mode switches and the
+Package oracletest carries the two environment flags and the
 cross-check that runs a fixture through both engines.
 
 #+begin_src go :tangle internal/oracletest/oracletest.go :comments org
@@ -4482,6 +4456,14 @@ and never reworded; history that needs correcting gets a new entry.
 An entry speaks from its date; the rest of the document speaks from
 no date at all.
 
+** [2026-07-29 Wed] One word, one meaning
+
+Twenty words in the book carried two meanings each, and mode
+carried three. Each now means one thing, and the second sense has
+its own word. Two chapters moved so that no term is used three
+hundred lines before it is defined, and the longest chapter gained
+the six sections its six subjects had been sharing.
+
 ** [2026-07-29 Wed] Two defects the oracle found
 
 A ~#+header:~ line now reaches the block below it. Org reads one
@@ -4556,7 +4538,7 @@ from PROMPT.md as the session brief.
 
 * Reproducing this document
 
-Four make targets reproduce everything here. ~make tangle~
+Four make rules reproduce everything here. ~make tangle~
 regenerates the sources through batch Emacs and lit/tangle.el;
 ~make check~ tangles into a scratch directory and diffs;
 ~make weave~ renders this book to PDF, mermaid diagrams drawn

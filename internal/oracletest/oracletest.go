@@ -1,6 +1,6 @@
 // Code generated from BOOK.org by make tangle. DO NOT EDIT.
 
-// Package oracletest carries the two mode switches and the
+// Package oracletest carries the two environment flags and the
 // cross-check that runs a fixture through both engines.
 package oracletest
 

@@ -116,8 +116,8 @@ type VerbatimBlock struct {
 	Full Span   `json:"full"`
 }
 
-// Params is the resolved header set, the engine's side of the closed
-// table. The frontend produces it or errors; the engine never sees a
+// Params is the resolved header set, the backend's side of the closed
+// table. The frontend produces it or errors; the backend never sees a
 // raw header string.
 type Params struct {
 	Tangle         string `json:"tangle"` // "no", "yes", or a target path
