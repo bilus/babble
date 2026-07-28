@@ -61,36 +61,35 @@ every dynamic block, and the labels are spelled without the sigils,
 so the census never matches its own index.
 
 #+begin: plan-toc
-- [[file:BOOK.org::97][97]] entry: PLANNED Stage 12: the fixtures chapter
-- [[file:BOOK.org::160][160]] entry: PLANNED Stage 6: the oracle harness
-- [[file:BOOK.org::268][268]] entry: PLANNED Stage 7: org comments
-- [[file:BOOK.org::311][311]] entry: PLANNED Stage 8: noweb
-- [[file:BOOK.org::348][348]] entry: PLANNED Stage 9: dynamic blocks
-- [[file:BOOK.org::395][395]] entry: PLANNED Stage 10: the fence
-- [[file:BOOK.org::424][424]] entry: PLANNED Stage 11: parity and self-hosting
-- [[file:BOOK.org::472][472]] entry: PLANNED Stage 17: rewriting the contract
-- [[file:BOOK.org::520][520]] entry: PLANNED Stage 18: rewriting the guide
-- [[file:BOOK.org::565][565]] entry: PLANNED Stage 19: rewriting the internals
-- [[file:BOOK.org::616][616]] entry: PLANNED Stage 20: rewriting the testing chapters
-- [[file:BOOK.org::1097][1097]] badge: PLANNED stage 12 adds the paragraph below (plan)
-- [[file:BOOK.org::1325][1325]] deletion: , and ~#+include~ (org's file-inclusion
-- [[file:BOOK.org::1681][1681]] badge: PLANNED stage 12 adds the chapter below (plan)
-- [[file:BOOK.org::3312][3312]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
-- [[file:BOOK.org::3594][3594]] hole 7: extent between the anchors, then the docstring rule
-- [[file:BOOK.org::3600][3600]] hole 7: line-comment table per language, blank lines as a bare ma...
-- [[file:BOOK.org::3610][3610]] hole 8: named block first, else noweb-ref concatenation; cycles a...
-- [[file:BOOK.org::3711][3711]] hole 9: splice fresh interiors into the retained bytes, report ch...
-- [[file:BOOK.org::3721][3721]] hole 9: a line link per plan site, sites below the block shifted ...
-- [[file:BOOK.org::3727][3727]] hole 9: system diff -u over the two named bodies, temp-file heade...
-- [[file:BOOK.org::3768][3768]] badge: PLANNED stage 12 includes the two files below (plan)
-- [[file:BOOK.org::4245][4245]] badge: PLANNED stage 12 adds the test below (plan)
-- [[file:BOOK.org::4304][4304]] hole 6: ORACLE=1 in the environment
-- [[file:BOOK.org::4308][4308]] hole 6: UPDATE=1 in the environment
-- [[file:BOOK.org::4314][4314]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
-- [[file:BOOK.org::4326][4326]] hole 6: write the txtar's input files into dir, and name the book...
-- [[file:BOOK.org::4332][4332]] hole 6: copy lit/ in, run batch Emacs with the driver, fail loudl...
-- [[file:BOOK.org::4336][4336]] hole 6: every file on both sides, byte for byte, ignoring the inputs
-- [[file:BOOK.org::4340][4340]] hole 6: rewrite the fixture's want/ files from the oracle tree
+- [[file:BOOK.org::96][96]] entry: PLANNED Stage 12: the fixtures chapter
+- [[file:BOOK.org::159][159]] entry: PLANNED Stage 6: the oracle harness
+- [[file:BOOK.org::267][267]] entry: PLANNED Stage 7: org comments
+- [[file:BOOK.org::310][310]] entry: PLANNED Stage 8: noweb
+- [[file:BOOK.org::347][347]] entry: PLANNED Stage 9: dynamic blocks
+- [[file:BOOK.org::394][394]] entry: PLANNED Stage 10: the fence
+- [[file:BOOK.org::423][423]] entry: PLANNED Stage 11: parity and self-hosting
+- [[file:BOOK.org::471][471]] entry: PLANNED Stage 18: rewriting the guide
+- [[file:BOOK.org::516][516]] entry: PLANNED Stage 19: rewriting the internals
+- [[file:BOOK.org::567][567]] entry: PLANNED Stage 20: rewriting the testing chapters
+- [[file:BOOK.org::1069][1069]] badge: PLANNED stage 12 adds the paragraph below (plan)
+- [[file:BOOK.org::1297][1297]] deletion: , and ~#+include~ (org's file-inclusion
+- [[file:BOOK.org::1653][1653]] badge: PLANNED stage 12 adds the chapter below (plan)
+- [[file:BOOK.org::3284][3284]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
+- [[file:BOOK.org::3566][3566]] hole 7: extent between the anchors, then the docstring rule
+- [[file:BOOK.org::3572][3572]] hole 7: line-comment table per language, blank lines as a bare ma...
+- [[file:BOOK.org::3582][3582]] hole 8: named block first, else noweb-ref concatenation; cycles a...
+- [[file:BOOK.org::3683][3683]] hole 9: splice fresh interiors into the retained bytes, report ch...
+- [[file:BOOK.org::3693][3693]] hole 9: a line link per plan site, sites below the block shifted ...
+- [[file:BOOK.org::3699][3699]] hole 9: system diff -u over the two named bodies, temp-file heade...
+- [[file:BOOK.org::3740][3740]] badge: PLANNED stage 12 includes the two files below (plan)
+- [[file:BOOK.org::4225][4225]] badge: PLANNED stage 12 adds the test below (plan)
+- [[file:BOOK.org::4284][4284]] hole 6: ORACLE=1 in the environment
+- [[file:BOOK.org::4288][4288]] hole 6: UPDATE=1 in the environment
+- [[file:BOOK.org::4294][4294]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
+- [[file:BOOK.org::4306][4306]] hole 6: write the txtar's input files into dir, and name the book...
+- [[file:BOOK.org::4312][4312]] hole 6: copy lit/ in, run batch Emacs with the driver, fail loudl...
+- [[file:BOOK.org::4316][4316]] hole 6: every file on both sides, byte for byte, ignoring the inputs
+- [[file:BOOK.org::4320][4320]] hole 6: rewrite the fixture's want/ files from the oracle tree
 
 #+end:
 
@@ -469,51 +468,6 @@ grep -nE '^\*+ (PLANNED|FILLING|HOLE|LIVE|DROPPED) |^\*{15,} |HOLE[(]|\{[+][+]|\
   || echo no plan markup in the book
 #+end_src
 
-** PLANNED Stage 18: rewriting the guide                           :stage18:
-:PROPERTIES:
-:CUSTOM_ID: stage-18
-:SPEC:     Writing a book for babble; The fixtures
-:DEPS:     stage 15; stage 17
-:ACCEPTANCE: a reader can write a book and add a fixture without opening any other chapter
-:SIZE:     ~204 lines of prose, 43 paragraphs
-:END:
-
-Claim: after this stage a reader can write a book babble tangles,
-and add a fixture that pins it, by following these two chapters
-and nothing else.
-
-Decided: (1) The inheritance rule gains the word wholesale. As
-written it teaches a per-key merge, and a writer who follows it
-nests a drawer, omits a key, and loses a setting. (2) The
-doc-comment rule stops being the paragraph directly above, which
-does not predict what a second commented block under one heading
-gets, which is nothing. (3) The escaping question gets its answer:
-a comma makes a delimiter acceptable, and the chapter says so
-where it currently says unescaped in one place and quoted verbatim
-in another. (4) The banner's fixed name is stated at the first
-banner rather than four hundred lines later. (5) The fixtures
-chapter states where a golden's file goes, since reminting depends
-on the answer and the chapter that teaches fixture-writing does
-not give it.
-
-- [ ] plan approved (the human ticks this box)
-- [ ] every example run against the program, output pasted from the run
-- [ ] the inheritance and doc-comment rules predict what the program does
-- [ ] the fixture recipe followed end to end by someone who has not seen it
-- [ ] census clean for stage 18, suite green
-- [ ] Changes entry dated and filed, plan entry deleted
-
-*** Changes draft
-
-#+begin_quote
-The guide taught two rules that did not predict the program's
-behavior: header inheritance, which replaces wholesale rather than
-merging key by key, and doc comments, which come from an extent
-and not from the paragraph directly above. Both now say what
-happens. The fixtures chapter says where a golden goes, which
-reminting depends on.
-#+end_quote
-
 ** PLANNED Stage 19: rewriting the internals                       :stage19:
 :PROPERTIES:
 :CUSTOM_ID: stage-19
@@ -711,7 +665,8 @@ package greet
 ,#+end_src
 #+end_example
 
-Running ~babble tangle BOOK.org~ writes greet.go:
+Call that book greet.org and run ~babble tangle greet.org~. It
+writes greet.go:
 
 #+begin_example
 // Code generated from BOOK.org by make tangle. DO NOT EDIT.
@@ -719,12 +674,17 @@ Running ~babble tangle BOOK.org~ writes greet.go:
 package greet
 #+end_example
 
+The banner says BOOK.org even though the book is greet.org. That is
+not a bug being reproduced: the driver hardcodes the string, babble
+hardcodes the same string, and matching the oracle means keeping
+it. Every book gets the same banner whatever it is called.
+
 Every tangled file opens with that banner in the file's own comment
 syntax (~//~ for .go, ~;;~ for .el, ~--~ for .lua, ~#~ for
-everything else), then one blank line, then the code. A file ends
-with exactly one newline. Tangling again without changing the book
-rewrites nothing: the target's bytes already match, so its
-timestamp survives and nothing downstream rebuilds.
+everything else), then one blank line, then the code. Tangling
+again without changing the book rewrites nothing: the target's
+bytes already match, so its timestamp survives and nothing
+downstream rebuilds.
 
 ** Choosing targets
 
@@ -796,9 +756,18 @@ text.
 
 ** Doc comments
 
-~:comments org~ turns the paragraph directly above a block into its
-comment in the tangled file. Only the last paragraph is taken,
-which keeps narrative and doc comment from repeating each other.
+~:comments org~ turns prose above a block into its comment in the
+tangled file. The rule is not quite "the paragraph above", and the
+difference shows up the first time you comment two blocks in a row.
+
+What the driver takes is the last paragraph of an extent, and the
+extent begins at whichever comes last: the heading above the block,
+the end of the previous block, or the start of the file. So the
+first commented block under a heading gets the prose between the
+heading and itself. A second commented block right after it gets
+the prose between the end of the first block and itself, and if
+there is none, it gets no comment at all. Put a paragraph between
+them or expect silence.
 
 #+begin_example
 ,* Greeting
@@ -919,8 +888,11 @@ block silently stops tangling. babble refuses the book until the
 key is spelled right.
 
 Headers can be set once and inherited. A property drawer under a
-heading applies to every block in its subtree, nearest setting
-winning:
+heading applies to every block in its subtree, and a nearer drawer
+replaces a farther one wholesale rather than merging with it. That
+word matters: a key the nearer drawer leaves out is not inherited
+from further up, it is simply unset. Nesting a drawer to change one
+header silently drops every other header the outer drawer set.
 
 #+begin_example
 ,* Engine
@@ -1000,10 +972,13 @@ in, no matter how deeply quoted it looks.
 ,#+end_src
 #+end_example
 
-One comma per nesting level. An unescaped block delimiter inside
-an example, src, export, or comment body is refused outright: the
-Emacs driver's raw text searches would anchor doc-comment extents
-on it, and a parser working from the tree cannot reproduce that.
+One comma per nesting level, and the comma is what makes the shape
+legal. An escaped delimiter is text to both engines and causes no
+trouble. An unescaped one inside an example, src, export, or
+comment body is refused outright: the Emacs driver's raw text
+searches would anchor doc-comment extents on it, and a parser
+working from the tree cannot reproduce that. So the rule is not
+"no delimiters in bodies", it is "escape the ones you show".
 
 ** When babble says no
 
@@ -3723,8 +3698,9 @@ sees is the file on disk, so a fixture cannot drift from the book
 that documents it.
 *************** END
 
-The smallest one first. Six lines of script over two books, and it
-pins both refusals a tangle owes its reader:
+The smallest one first. Four commands over two books, pinning the
+two refusals a tangle owes its reader: a block with no language,
+and a target that is the book itself.
 
 #+INCLUDE: "testdata/script/tangle-guards.txtar" example
 
@@ -3740,10 +3716,13 @@ parse-blocks.txtar.
 
 The parse fixtures compare against a dumped tree, so their goldens
 are JSON. The tangle fixtures compare against tangled files, so
-their goldens are source. Only the second kind has an oracle: org
-has no counterpart for a dumped tree, and no counterpart for a
-refusal either, which is why tangle-guards carries a line saying
-so.
+their goldens are source. Only the second kind can have an oracle, and not
+always. Org has no counterpart for a dumped tree, so no parse
+fixture is cross-checked. It has no counterpart for a refusal
+either, so a tangle fixture that pins one says so with an oracle
+skip line and its reason; tangle-defects carries one, and
+tangle-affiliated does not need one because every book in it
+tangles in both engines.
 
 ** Rebuilding a golden
 
@@ -3753,7 +3732,7 @@ more than reading about it:
 
 #+begin_example
   mkdir -p /tmp/fix && cd /tmp/fix
-  cp -R ~/dev/bilus/babble/lit lit
+  cp -R "$BABBLE/lit" lit          # $BABBLE is your checkout
   # write the fixture's book here as b.org
   emacs -Q --batch -l lit/tangle.el --eval '(lit-tangle "b.org")'
 #+end_example
@@ -3782,6 +3761,10 @@ Then, in order:
    once the harness is in. Read what comes out. A golden accepted
    without reading is a test that pins whatever the code did on
    the day it was written.
+   Each golden goes in the txtar under ~want/~, at the path it
+   pins: the golden for ~sub/late.go~ is ~want/sub/late.go~.
+   Reminting depends on that, since it has to write each file back
+   without guessing which golden belongs to which target.
 3. Write the script. Name the command, then compare each expected
    file, then assert what should not exist. A fixture that only
    checks what was produced will not notice a file that should not
@@ -4426,6 +4409,19 @@ this document cares about. Entries are written once, at acceptance,
 and never reworded; history that needs correcting gets a new entry.
 An entry speaks from its date; the rest of the document speaks from
 no date at all.
+
+** [2026-07-29 Wed] Rewriting the guide
+
+The guide taught two rules that did not predict the program's
+behavior: header inheritance, which replaces wholesale rather than
+merging key by key, and doc comments, which come from an extent
+and not from the paragraph directly above. Both now say what
+happens. The fixtures chapter says where a golden goes, which
+reminting depends on. The escaping section answers the
+question it raised, which is whether a comma makes a delimiter
+legal; it does. The first banner in the book carries the fact that
+the banner always names BOOK.org, instead of leaving a reader to
+meet it four hundred lines later.
 
 ** [2026-07-29 Wed] Rewriting the contract
 
