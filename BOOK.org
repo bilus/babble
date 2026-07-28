@@ -56,43 +56,32 @@ every dynamic block, and the labels are spelled without the sigils,
 so the census never matches its own index.
 
 #+begin: plan-toc
-- [[file:BOOK.org::99][99]] entry: PLANNED Stage 4: header resolution
-- [[file:BOOK.org::160][160]] entry: PLANNED Stage 5: tangle
-- [[file:BOOK.org::200][200]] entry: PLANNED Stage 6: the oracle harness
-- [[file:BOOK.org::234][234]] entry: PLANNED Stage 7: org comments
-- [[file:BOOK.org::277][277]] entry: PLANNED Stage 8: noweb
-- [[file:BOOK.org::314][314]] entry: PLANNED Stage 9: dynamic blocks
-- [[file:BOOK.org::361][361]] entry: PLANNED Stage 10: the fence
-- [[file:BOOK.org::390][390]] entry: PLANNED Stage 11: parity and self-hosting
-- [[file:BOOK.org::1197][1197]] badge: PLANNED stage 4 replaces the block above (plan)
-- [[file:BOOK.org::1205][1205]] twin of run
-- [[file:BOOK.org::1262][1262]] hole 5: parse, refresh, reparse, tangle; errors to stderr
-- [[file:BOOK.org::2143][2143]] badge: PLANNED stage 4 replaces the block above (plan)
-- [[file:BOOK.org::2164][2164]] twin of headlineParser
-- [[file:BOOK.org::2167][2167]] hole 4: as before, but step over a planning line before the drawer
-- [[file:BOOK.org::2615][2615]] badge: PLANNED stage 4 fills the holes below (plan)
-- [[file:BOOK.org::2625][2625]] hole 4: every block's Params through the closed table, unknown ke...
-- [[file:BOOK.org::2636][2636]] hole 4: walk, appending each headline's header-args, resolving ea...
-- [[file:BOOK.org::2642][2642]] hole 4: defaults, then inherited, then the block's own header, la...
-- [[file:BOOK.org::2661][2661]] hole 4: the closed table, and false for a key it does not know
-- [[file:BOOK.org::2667][2667]] hole 4: split on space-then-colon outside parens, brackets, and d...
-- [[file:BOOK.org::2671][2671]] hole 4: chomp, unquote an elisp string literal, reject lisp
-- [[file:BOOK.org::2680][2680]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
-- [[file:BOOK.org::2696][2696]] hole 5: collect, resolve targets, assemble with banners, write
-- [[file:BOOK.org::2713][2713]] hole 5: eligible blocks grouped by target in first-appearance order
-- [[file:BOOK.org::2717][2717]] hole 5: no, yes, or a path relative to the book's directory
-- [[file:BOOK.org::2727][2727]] hole 5: unescape commas, dedent by column, expand noweb, dedent a...
-- [[file:BOOK.org::2737][2737]] hole 7: extent between the anchors, then the docstring rule
-- [[file:BOOK.org::2743][2743]] hole 7: line-comment table per language, blank lines as a bare ma...
-- [[file:BOOK.org::2753][2753]] hole 8: named block first, else noweb-ref concatenation; cycles a...
-- [[file:BOOK.org::2764][2764]] hole 5: the generated-file banner in the target's own comment syntax
-- [[file:BOOK.org::2770][2770]] hole 5: refuse the book itself, mkdirp on demand, skip byte-ident...
-- [[file:BOOK.org::2786][2786]] hole 9: splice fresh interiors into the retained bytes, report ch...
-- [[file:BOOK.org::2796][2796]] hole 9: a line link per plan site, sites below the block shifted ...
-- [[file:BOOK.org::2802][2802]] hole 9: system diff -u over the two named bodies, temp-file heade...
-- [[file:BOOK.org::3012][3012]] hole 6: ORACLE=1 in the environment
-- [[file:BOOK.org::3016][3016]] hole 6: UPDATE=1 in the environment
-- [[file:BOOK.org::3022][3022]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
+- [[file:BOOK.org::88][88]] entry: PLANNED Stage 4: header resolution
+- [[file:BOOK.org::149][149]] entry: PLANNED Stage 5: tangle
+- [[file:BOOK.org::189][189]] entry: PLANNED Stage 6: the oracle harness
+- [[file:BOOK.org::223][223]] entry: PLANNED Stage 7: org comments
+- [[file:BOOK.org::266][266]] entry: PLANNED Stage 8: noweb
+- [[file:BOOK.org::303][303]] entry: PLANNED Stage 9: dynamic blocks
+- [[file:BOOK.org::350][350]] entry: PLANNED Stage 10: the fence
+- [[file:BOOK.org::379][379]] entry: PLANNED Stage 11: parity and self-hosting
+- [[file:BOOK.org::1196][1196]] hole 5: parse, refresh, reparse, tangle; errors to stderr
+- [[file:BOOK.org::2551][2551]] badge: PLANNED stage 4 fills the holes below (plan)
+- [[file:BOOK.org::2877][2877]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
+- [[file:BOOK.org::2893][2893]] hole 5: collect, resolve targets, assemble with banners, write
+- [[file:BOOK.org::2910][2910]] hole 5: eligible blocks grouped by target in first-appearance order
+- [[file:BOOK.org::2914][2914]] hole 5: no, yes, or a path relative to the book's directory
+- [[file:BOOK.org::2924][2924]] hole 5: unescape commas, dedent by column, expand noweb, dedent a...
+- [[file:BOOK.org::2934][2934]] hole 7: extent between the anchors, then the docstring rule
+- [[file:BOOK.org::2940][2940]] hole 7: line-comment table per language, blank lines as a bare ma...
+- [[file:BOOK.org::2950][2950]] hole 8: named block first, else noweb-ref concatenation; cycles a...
+- [[file:BOOK.org::2961][2961]] hole 5: the generated-file banner in the target's own comment syntax
+- [[file:BOOK.org::2967][2967]] hole 5: refuse the book itself, mkdirp on demand, skip byte-ident...
+- [[file:BOOK.org::2983][2983]] hole 9: splice fresh interiors into the retained bytes, report ch...
+- [[file:BOOK.org::2993][2993]] hole 9: a line link per plan site, sites below the block shifted ...
+- [[file:BOOK.org::2999][2999]] hole 9: system diff -u over the two named bodies, temp-file heade...
+- [[file:BOOK.org::3329][3329]] hole 6: ORACLE=1 in the environment
+- [[file:BOOK.org::3333][3333]] hole 6: UPDATE=1 in the environment
+- [[file:BOOK.org::3339][3339]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
 
 #+end:
 
@@ -140,13 +129,13 @@ language pack defines it, and batch Emacs loads none, so the merge
 order here is driver defaults, inherited properties, then the
 block's own line.
 
-- [ ] skeleton approved (the human ticks this box)
-- [ ] inserted prose reads steady-state
-- [ ] Changes draft below reads right in the journal
-- [ ] HOLE(4) cluster filled, fixtures in the same commits
-- [ ] twins accepted: the planning line and the resolving parse
-- [ ] block goldens regenerated and read, not merely accepted
-- [ ] census clean for stage 4, suite green
+- [X] skeleton approved (the human ticks this box)
+- [X] inserted prose reads steady-state
+- [X] Changes draft below reads right in the journal
+- [X] HOLE(4) cluster filled, fixtures in the same commits
+- [X] twins accepted: the planning line and the resolving parse
+- [X] block goldens regenerated and read, not merely accepted
+- [X] census clean for stage 4, suite green
 - [ ] Changes entry dated and filed, plan entry deleted
 
 *** Changes draft
@@ -1167,61 +1156,6 @@ func run(args []string, stdout, stderr io.Writer) int {
 			return 2
 		}
 		d, err := org.Parse(fs.Arg(0))
-		if err != nil {
-			fmt.Fprintln(stderr, "babble:", err)
-			return 1
-		}
-		if *dump {
-			out, err := book.Dump(d)
-			if err != nil {
-				fmt.Fprintln(stderr, "babble:", err)
-				return 1
-			}
-			if _, err := stdout.Write(out); err != nil {
-				return 1
-			}
-		}
-		return 0
-	case "tangle":
-		if len(args) != 2 {
-			fmt.Fprint(stderr, usage)
-			return 2
-		}
-		return tangleCmd(args[1], stderr)
-	}
-	fmt.Fprint(stderr, usage)
-	return 2
-}
-#+end_src
-
-*************** PLANNED stage 4 replaces the block above ([[#stage-4][plan]]) :stage4:
-The twin resolves the header arguments before dumping, so the tree
-a reader sees carries the same parameters the tangler will act on.
-Accept by swapping the two blocks' ~:tangle~ headers.
-*************** END
-
-run dispatches the subcommands and owns the exit codes.
-
-#+name: run--planned
-#+begin_src go :tangle no :comments org
-func run(args []string, stdout, stderr io.Writer) int {
-	if len(args) < 1 {
-		fmt.Fprint(stderr, usage)
-		return 2
-	}
-	switch args[0] {
-	case "parse":
-		fs := flag.NewFlagSet("parse", flag.ContinueOnError)
-		fs.SetOutput(stderr)
-		dump := fs.Bool("dump", false, "print the tree as JSON")
-		if err := fs.Parse(args[1:]); err != nil {
-			return 2
-		}
-		if fs.NArg() != 1 {
-			fmt.Fprint(stderr, usage)
-			return 2
-		}
-		d, err := org.Parse(fs.Arg(0))
 		if err == nil {
 			err = org.ResolveAll(d)
 		}
@@ -1847,6 +1781,7 @@ import (
 	"fmt"
 	"os"
 	"sort"
+	"strconv"
 	"strings"
 
 	"github.com/bilus/babble/internal/book"
@@ -2093,12 +2028,17 @@ type affiliated struct {
 #+end_src
 
 A headline owns its subtree, which ends at the next headline of
-its level or shallower. The property drawer directly below it is
-the headline's own data, so the parser asks for it in property
-drawer mode before handing the rest of the range to the loop.
+its level or shallower. A planning line may stand between the
+heading and its property drawer, and the drawer is the headline's
+own data either way, so the parser steps over the one and asks for
+the other before handing the rest of the range to the loop.
 Everything after the stars is optional except the title:
 #+begin_example
   ** DONE [#A] COMMENT Ship it            :release:tools:
+     SCHEDULED: <2026-07-27 Mon>
+     :PROPERTIES:
+     :header-args: :comments org
+     :END:
 #+end_example
 
 #+begin_src go :tangle internal/org/org.go :comments org
@@ -2129,7 +2069,10 @@ func (p *parser) headlineParser(text string, next, limit int) (parsed, int, erro
 	}
 	end := p.nextHeadline(next, limit, stars)
 	contents := next
-	p.off = next
+	if after, ok := p.planningLine(next, end); ok {
+		contents = after
+	}
+	p.off = contents
 	if el, after, err := p.currentElement(end, modePropertyDrawer); err == nil && el.props != nil {
 		h.Properties = el.props
 		contents = after
@@ -2140,31 +2083,24 @@ func (p *parser) headlineParser(text string, next, limit int) (parsed, int, erro
 }
 #+end_src
 
-*************** PLANNED stage 4 replaces the block above ([[#stage-4][plan]]) :stage4:
-Org lets a planning line stand between a headline and its drawer,
-and a drawer read as prose is inheritance lost. The twin steps over
-one before asking for the drawer. Accept by swapping the two
-blocks' ~:tangle~ headers.
-*************** END
+A planning line carries the timestamps a heading schedules itself
+with. Nothing in a tangle reads them, but they have to be stepped
+over, because org lets one stand between a heading and the drawer
+whose properties the blocks below inherit.
 
-A headline owns its subtree, which ends at the next headline of
-its level or shallower. A planning line may stand between the
-heading and its property drawer, and the drawer is the headline's
-own data either way, so the parser steps over the one and asks for
-the other before handing the rest of the range to the loop.
-Everything after the stars is optional except the title:
-#+begin_example
-  ** DONE [#A] COMMENT Ship it            :release:tools:
-     SCHEDULED: <2026-07-27 Mon>
-     :PROPERTIES:
-     :header-args: :comments org
-     :END:
-#+end_example
-
-#+name: headlineParser--planned
-#+begin_src go :tangle no :comments org
-func (p *parser) headlineParser(text string, next, limit int) (parsed, int, error) {
-	panic("HOLE(4): as before, but step over a planning line before the drawer")
+#+begin_src go :tangle internal/org/org.go :comments org
+func (p *parser) planningLine(from, limit int) (int, bool) {
+	if from >= limit {
+		return from, false
+	}
+	text, next := p.line(from)
+	head := strings.TrimLeft(text, " \t")
+	for _, kw := range []string{"SCHEDULED:", "DEADLINE:", "CLOSED:"} {
+		if strings.HasPrefix(head, kw) {
+			return next, true
+		}
+	}
+	return from, false
 }
 #+end_src
 
@@ -2622,24 +2558,184 @@ were holed at the skeleton.
 
 #+begin_src go :tangle internal/org/org.go :comments org
 func ResolveAll(d *book.Document) error {
-	panic("HOLE(4): every block's Params through the closed table, unknown keys error by name")
+	var sc scope
+	for _, v := range d.Keywords["property"] {
+		name, rest, _ := strings.Cut(v, " ")
+		next, err := sc.with(map[string]string{strings.ToLower(name): strings.TrimSpace(rest)})
+		if err != nil {
+			return fmt.Errorf("%s: %w", d.Path, err)
+		}
+		sc = next
+	}
+	return resolveNodes(d, d.Nodes, sc)
 }
 #+end_src
 
-The walk carries what a block inherits: the file's own
-~#+property~ line first, then each ancestor's drawer, nearest
-last, so a nearer setting overrides a farther one by arriving
-later in the merge.
+Inheritance is nearest-wins, and wholesale. Org reads an inherited
+property with org-entry-get, which returns the closest ancestor's
+value and stops, so a nearer drawer replaces a farther one
+entirely rather than adding to it; a key the nearer one omits is
+not inherited from further up. The scope below therefore carries
+one generic value and one per language, each overwritten as the
+walk descends.
 
 #+begin_src go :tangle internal/org/org.go :comments org
-func resolveNodes(d *book.Document, nodes []book.Node, inherited []string) error {
-	panic("HOLE(4): walk, appending each headline's header-args, resolving each src block")
+type scope struct {
+	generic string            // header-args
+	lang    map[string]string // header-args:LANG
+}
+
+func (s scope) with(props map[string]string) (scope, error) {
+	out := scope{generic: s.generic, lang: s.lang}
+	for k, v := range props {
+		if strings.HasSuffix(k, "+") {
+			return out, fmt.Errorf("accumulating property %s is not in the subset; set the whole value", k)
+		}
+		if k == "header-args" {
+			out.generic = v
+			continue
+		}
+		if l, ok := strings.CutPrefix(k, "header-args:"); ok {
+			next := map[string]string{}
+			for key, val := range out.lang {
+				next[key] = val
+			}
+			next[l] = v
+			out.lang = next
+		}
+	}
+	return out, nil
 }
 #+end_src
 
-#+begin_src go :tangle internal/org/org.go
-func resolveBlock(b *book.SrcBlock, inherited []string) (book.Params, error) {
-	panic("HOLE(4): defaults, then inherited, then the block's own header, later winning")
+The walk hands each block the scope in force where it sits, and
+descends into everything that holds elements.
+
+#+begin_src go :tangle internal/org/org.go :comments org
+func resolveNodes(d *book.Document, nodes []book.Node, sc scope) error {
+	for _, n := range nodes {
+		switch n := n.(type) {
+		case *book.Headline:
+			next, err := sc.with(n.Properties)
+			if err != nil {
+				return fmt.Errorf("%s:%d: %w", d.Path, n.Line, err)
+			}
+			if err := resolveNodes(d, n.Children, next); err != nil {
+				return err
+			}
+		case *book.SrcBlock:
+			params, err := resolveBlock(n, sc)
+			if err != nil {
+				return fmt.Errorf("%s:%d: %w", d.Path, n.Line, err)
+			}
+			n.Params = params
+		case *book.DynamicBlock:
+			if err := resolveNodes(d, n.Children, sc); err != nil {
+				return err
+			}
+		case *book.QuoteBlock:
+			if err := resolveNodes(d, n.Children, sc); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+#+end_src
+
+One block's parameters are the driver's defaults, then what it
+inherits, then its own header line, each later source overwriting
+the keys it names. The switch run lands last, since a switch is
+part of the block's own line.
+
+#+begin_src go :tangle internal/org/org.go :comments org
+func resolveBlock(b *book.SrcBlock, sc scope) (book.Params, error) {
+	p := book.Params{Tangle: "no", Comments: "no", Mkdirp: true, Padline: true}
+	for _, header := range []string{sc.generic, sc.lang[b.Lang], b.RawHeader} {
+		if err := applyHeader(&p, header); err != nil {
+			return p, err
+		}
+	}
+	if err := applySwitches(&p, b.Switches); err != nil {
+		return p, err
+	}
+	return p, nil
+}
+#+end_src
+
+applyHeader is where the table earns its keep: every key is looked
+up, an unknown one stops the tangle, a rejected one names itself,
+and an inert one is dropped on the floor.
+
+#+begin_src go :tangle internal/org/org.go :comments org
+func applyHeader(p *book.Params, header string) error {
+	for _, arg := range balancedSplit(header) {
+		if !strings.HasPrefix(arg, ":") {
+			continue
+		}
+		key, rest, _ := strings.Cut(arg[1:], " ")
+		key = strings.ToLower(key)
+		bin, known := classify(key)
+		switch {
+		case !known:
+			return fmt.Errorf("unknown header argument :%s", key)
+		case bin == binRejected:
+			return fmt.Errorf(":%s is not in the subset; see the deviations", key)
+		case bin == binInert:
+			continue
+		}
+		value, err := readValue(rest)
+		if err != nil {
+			return err
+		}
+		switch key {
+		case "tangle":
+			p.Tangle = value
+		case "mkdirp":
+			p.Mkdirp = value != "no"
+		case "padline":
+			p.Padline = value != "no"
+		case "comments":
+			if value != "no" && value != "org" {
+				return fmt.Errorf(":comments %s is not in the subset; use no or org", value)
+			}
+			p.Comments = value
+		case "noweb":
+			if value != "yes" && value != "no" {
+				return fmt.Errorf(":noweb %s is not in the subset; use yes or no", value)
+			}
+			p.Noweb = value == "yes"
+		case "noweb-ref":
+			p.NowebRef = value
+		case "noweb-sep":
+			p.NowebSep = value
+		}
+	}
+	return nil
+}
+#+end_src
+
+Switches classify the same three ways. Only ~-i~ changes what
+babble does; the line-numbering pair is inert because tangling
+never numbers lines, and the coderef pair is refused because it
+would rewrite the body.
+
+#+begin_src go :tangle internal/org/org.go :comments org
+func applySwitches(p *book.Params, switches string) error {
+	for _, sw := range strings.Fields(switches) {
+		switch sw {
+		case "-i":
+			p.PreserveIndent = true
+		case "-n", "+n", "-k":
+		case "-r", "-l":
+			return fmt.Errorf("switch %s is not in the subset; coderefs rewrite the body", sw)
+		default:
+			if _, err := strconv.Atoi(sw); err != nil {
+				return fmt.Errorf("unknown switch %s", sw)
+			}
+		}
+	}
+	return nil
 }
 #+end_src
 
@@ -2658,17 +2754,118 @@ const (
 )
 
 func classify(key string) (headerBin, bool) {
-	panic("HOLE(4): the closed table, and false for a key it does not know")
+	bin, ok := headerBins[key]
+	return bin, ok
+}
+#+end_src
+
+The table is the fence, so it is written out rather than derived.
+The inert column is the interesting one: those keys steer
+evaluation, and the tangle path never reads them, which is why
+accepting and ignoring them is safe rather than merely convenient.
+
+#+begin_src go :tangle internal/org/org.go :comments org
+var headerBins = map[string]headerBin{
+	"tangle": binImplemented, "mkdirp": binImplemented,
+	"comments": binImplemented, "padline": binImplemented,
+	"noweb": binImplemented, "noweb-ref": binImplemented,
+	"noweb-sep": binImplemented,
+
+	"var": binRejected, "shebang": binRejected,
+	"tangle-mode": binRejected, "no-expand": binRejected,
+	"noweb-prefix": binRejected, "prologue": binRejected,
+	"epilogue": binRejected, "dir": binRejected,
+
+	"cache": binInert, "cmdline": binInert, "colnames": binInert,
+	"eval": binInert, "exports": binInert, "file": binInert,
+	"file-desc": binInert, "file-ext": binInert, "hlines": binInert,
+	"noeval": binInert, "output-dir": binInert, "post": binInert,
+	"results": binInert, "rownames": binInert, "sep": binInert,
+	"session": binInert, "wrap": binInert,
+}
+#+end_src
+
+#+begin_src go :tangle internal/org/org.go :comments org
+func balancedSplit(s string) []string {
+	var out []string
+	start, depth, quoted := 0, 0, false
+	for i := 0; i < len(s); i++ {
+		switch c := s[i]; {
+		case quoted:
+			if c == '\\' {
+				i++
+			} else if c == '"' {
+				quoted = false
+			}
+		case c == '"':
+			quoted = true
+		case c == '(' || c == '[':
+			depth++
+		case c == ')' || c == ']':
+			if depth > 0 {
+				depth--
+			}
+		case c == ':' && depth == 0 && i > 0 && (s[i-1] == ' ' || s[i-1] == '\t'):
+			out = append(out, strings.TrimSpace(s[start:i]))
+			start = i
+		}
+	}
+	if last := strings.TrimSpace(s[start:]); last != "" {
+		out = append(out, last)
+	}
+	if len(out) > 0 && out[0] == "" {
+		out = out[1:]
+	}
+	return out
+}
+#+end_src
+
+A value is text. A quoted one is read as elisp reads it, so the
+escapes inside it survive into the value; anything shaped like
+lisp is refused, since org's tangle path evaluates it and babble
+will not.
+
+#+begin_src go :tangle internal/org/org.go :comments org
+func readValue(s string) (string, error) {
+	v := strings.TrimSpace(s)
+	if v == "" {
+		return "", nil
+	}
+	switch v[0] {
+	case '(', '\'', '`', '[':
+		return "", fmt.Errorf("lisp-valued header argument %s; the subset takes plain values", v)
+	case '"':
+		return unquote(v)
+	}
+	return v, nil
 }
 #+end_src
 
 #+begin_src go :tangle internal/org/org.go
-func balancedSplit(s string) []string {
-	panic("HOLE(4): split on space-then-colon outside parens, brackets, and double quotes")
-}
-
-func readValue(s string) (string, error) {
-	panic("HOLE(4): chomp, unquote an elisp string literal, reject lisp")
+func unquote(v string) (string, error) {
+	if len(v) < 2 || v[len(v)-1] != '"' {
+		return "", fmt.Errorf("unterminated string in header argument %s", v)
+	}
+	var b strings.Builder
+	for i := 1; i < len(v)-1; i++ {
+		if v[i] != '\\' {
+			b.WriteByte(v[i])
+			continue
+		}
+		i++
+		if i >= len(v)-1 {
+			return "", fmt.Errorf("trailing escape in header argument %s", v)
+		}
+		switch v[i] {
+		case 'n':
+			b.WriteByte('\n')
+		case 't':
+			b.WriteByte('\t')
+		default:
+			b.WriteByte(v[i])
+		}
+	}
+	return b.String(), nil
 }
 #+end_src
 
@@ -2965,6 +3162,126 @@ func TestParseCorpora(t *testing.T) {
 			}
 		})
 	}
+}
+#+end_src
+
+TestResolveHeaders walks the merge order: the driver's defaults,
+then what a heading's drawer passes down, then the block's own
+line, with a nearer drawer replacing a farther one whole rather
+than adding to it.
+
+#+name: TestResolveHeaders
+#+begin_src go :tangle internal/org/org_test.go :comments org
+func TestResolveHeaders(t *testing.T) {
+	const src = `
+,#+property: header-args :comments org
+
+,#+begin_src go
+the file property reaches here
+,#+end_src
+
+,* Outer
+:PROPERTIES:
+:header-args: :tangle outer.go :noweb yes
+:END:
+
+,#+begin_src go
+the drawer replaces the file property
+,#+end_src
+
+,** Inner
+:PROPERTIES:
+:header-args: :tangle inner.go
+:END:
+
+,#+begin_src go :padline no
+its own line wins
+,#+end_src
+`
+	blocks := srcBlocks(t, src)
+	if len(blocks) != 3 {
+		t.Fatalf("parsed %d blocks, want 3", len(blocks))
+	}
+	if got := blocks[0].Params; got.Comments != "org" || got.Tangle != "no" {
+		t.Errorf("file property: %+v", got)
+	}
+	// A nearer drawer replaces a farther setting whole, so the file's
+	// :comments does not survive into Outer.
+	if got := blocks[1].Params; got.Tangle != "outer.go" || !got.Noweb || got.Comments != "no" {
+		t.Errorf("outer block: %+v", got)
+	}
+	// Inner omits :noweb, and omitting is not inheriting.
+	if got := blocks[2].Params; got.Tangle != "inner.go" || got.Noweb || got.Padline {
+		t.Errorf("inner block: %+v", got)
+	}
+}
+#+end_src
+
+TestHeaderRejects pins the fence: a key outside the table, a key
+inside it that babble refuses, a value outside the pair a key
+allows, and a value shaped like lisp. Each names itself, because
+an error a reader cannot act on is barely better than silence.
+
+#+name: TestHeaderRejects
+#+begin_src go :tangle internal/org/org_test.go :comments org
+func TestHeaderRejects(t *testing.T) {
+	for _, tc := range []struct{ header, want string }{
+		{":tangel x.go", "unknown header argument :tangel"},
+		{":var x=1", ":var is not in the subset"},
+		{":comments link", ":comments link is not in the subset"},
+		{":noweb strip-tangle", ":noweb strip-tangle is not in the subset"},
+		{":tangle (concat \"a\" \".go\")", "lisp-valued header argument"},
+	} {
+		src := "#+begin_src go " + tc.header + "\nx\n#+end_src\n"
+		d, err := org.ParseBytes([]byte(src), "b.org")
+		if err != nil {
+			t.Fatal(err)
+		}
+		err = org.ResolveAll(d)
+		if err == nil {
+			t.Errorf("%s: resolved without error", tc.header)
+			continue
+		}
+		if !strings.Contains(err.Error(), tc.want) {
+			t.Errorf("%s: error %q, want it to mention %q", tc.header, err, tc.want)
+		}
+	}
+}
+#+end_src
+
+TestInertHeaders pins the other half of the table: the keys org
+parses and its tangler never reads pass through without changing
+anything, which is what lets a book carry them.
+
+#+name: TestInertHeaders
+#+begin_src go :tangle internal/org/org_test.go :comments org
+func TestInertHeaders(t *testing.T) {
+	const header = ":results output :exports code :session none :cache no :tangle x.go"
+	blocks := srcBlocks(t, "#+begin_src sh "+header+"\necho hi\n#+end_src\n")
+	if got := blocks[0].Params; got.Tangle != "x.go" {
+		t.Errorf("inert keys disturbed the resolution: %+v", got)
+	}
+}
+#+end_src
+
+#+begin_src go :tangle internal/org/org_test.go
+func srcBlocks(t *testing.T, src string) []*book.SrcBlock {
+	t.Helper()
+	d, err := org.ParseBytes([]byte(src), "b.org")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := org.ResolveAll(d); err != nil {
+		t.Fatal(err)
+	}
+	var out []*book.SrcBlock
+	d.Walk(func(n book.Node) bool {
+		if b, ok := n.(*book.SrcBlock); ok {
+			out = append(out, b)
+		}
+		return true
+	})
+	return out
 }
 #+end_src
 

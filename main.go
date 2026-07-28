@@ -44,6 +44,9 @@ func run(args []string, stdout, stderr io.Writer) int {
 			return 2
 		}
 		d, err := org.Parse(fs.Arg(0))
+		if err == nil {
+			err = org.ResolveAll(d)
+		}
 		if err != nil {
 			fmt.Fprintln(stderr, "babble:", err)
 			return 1

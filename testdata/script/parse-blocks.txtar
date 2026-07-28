@@ -89,6 +89,13 @@ upper case delimiters
      "name": "greet",
      "switches": "-i",
      "rawHeader": ":tangle greet.go :comments org",
+     "params": {
+      "tangle": "greet.go",
+      "mkdirp": true,
+      "comments": "org",
+      "padline": true,
+      "preserveIndent": true
+     },
      "body": "90:104",
      "beginAt": 41,
      "afterEnd": 113,
@@ -103,6 +110,12 @@ upper case delimiters
     {
      "type": "src",
      "lang": "go",
+     "params": {
+      "tangle": "no",
+      "mkdirp": true,
+      "comments": "no",
+      "padline": true
+     },
      "body": "130:136",
      "beginAt": 115,
      "afterEnd": 145,
@@ -144,6 +157,12 @@ upper case delimiters
       {
        "type": "src",
        "lang": "diff",
+       "params": {
+        "tangle": "no",
+        "mkdirp": true,
+        "comments": "no",
+        "padline": true
+       },
        "body": "273:283",
        "beginAt": 256,
        "afterEnd": 292,
@@ -191,6 +210,12 @@ upper case delimiters
      "type": "src",
      "lang": "go",
      "rawHeader": ":tangle up.go",
+     "params": {
+      "tangle": "up.go",
+      "mkdirp": true,
+      "comments": "no",
+      "padline": true
+     },
      "body": "441:463",
      "beginAt": 412,
      "afterEnd": 472,

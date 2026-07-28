@@ -11,6 +11,7 @@ import (
 	"fmt"
 	"os"
 	"sort"
+	"strconv"
 	"strings"
 
 	"github.com/bilus/babble/internal/book"
@@ -232,11 +233,16 @@ type affiliated struct {
 }
 
 // A headline owns its subtree, which ends at the next headline of
-// its level or shallower. The property drawer directly below it is
-// the headline's own data, so the parser asks for it in property
-// drawer mode before handing the rest of the range to the loop.
+// its level or shallower. A planning line may stand between the
+// heading and its property drawer, and the drawer is the headline's
+// own data either way, so the parser steps over the one and asks for
+// the other before handing the rest of the range to the loop.
 // Everything after the stars is optional except the title:
 //   ** DONE [#A] COMMENT Ship it            :release:tools:
+//      SCHEDULED: <2026-07-27 Mon>
+//      :PROPERTIES:
+//      :header-args: :comments org
+//      :END:
 func (p *parser) headlineParser(text string, next, limit int) (parsed, int, error) {
 	off := p.off
 	stars := starRun(text)
@@ -264,7 +270,10 @@ func (p *parser) headlineParser(text string, next, limit int) (parsed, int, erro
 	}
 	end := p.nextHeadline(next, limit, stars)
 	contents := next
-	p.off = next
+	if after, ok := p.planningLine(next, end); ok {
+		contents = after
+	}
+	p.off = contents
 	if el, after, err := p.currentElement(end, modePropertyDrawer); err == nil && el.props != nil {
 		h.Properties = el.props
 		contents = after
@@ -272,6 +281,24 @@ func (p *parser) headlineParser(text string, next, limit int) (parsed, int, erro
 	return parsed{node: h, contents: book.Span{Start: contents, End: end},
 		adopt:     func(kids []book.Node) { h.Children = kids },
 		childMode: modeSection}, end, nil
+}
+
+// A planning line carries the timestamps a heading schedules itself
+// with. Nothing in a tangle reads them, but they have to be stepped
+// over, because org lets one stand between a heading and the drawer
+// whose properties the blocks below inherit.
+func (p *parser) planningLine(from, limit int) (int, bool) {
+	if from >= limit {
+		return from, false
+	}
+	text, next := p.line(from)
+	head := strings.TrimLeft(text, " \t")
+	for _, kw := range []string{"SCHEDULED:", "DEADLINE:", "CLOSED:"} {
+		if strings.HasPrefix(head, kw) {
+			return next, true
+		}
+	}
+	return from, false
 }
 
 func firstWord(s string) (word, rest string, ok bool) {
@@ -637,19 +664,169 @@ func isNumber(s string) bool {
 
 // END
 func ResolveAll(d *book.Document) error {
-	panic("HOLE(4): every block's Params through the closed table, unknown keys error by name")
+	var sc scope
+	for _, v := range d.Keywords["property"] {
+		name, rest, _ := strings.Cut(v, " ")
+		next, err := sc.with(map[string]string{strings.ToLower(name): strings.TrimSpace(rest)})
+		if err != nil {
+			return fmt.Errorf("%s: %w", d.Path, err)
+		}
+		sc = next
+	}
+	return resolveNodes(d, d.Nodes, sc)
 }
 
-// The walk carries what a block inherits: the file's own
-// ~#+property~ line first, then each ancestor's drawer, nearest
-// last, so a nearer setting overrides a farther one by arriving
-// later in the merge.
-func resolveNodes(d *book.Document, nodes []book.Node, inherited []string) error {
-	panic("HOLE(4): walk, appending each headline's header-args, resolving each src block")
+// Inheritance is nearest-wins, and wholesale. Org reads an inherited
+// property with org-entry-get, which returns the closest ancestor's
+// value and stops, so a nearer drawer replaces a farther one
+// entirely rather than adding to it; a key the nearer one omits is
+// not inherited from further up. The scope below therefore carries
+// one generic value and one per language, each overwritten as the
+// walk descends.
+type scope struct {
+	generic string            // header-args
+	lang    map[string]string // header-args:LANG
 }
 
-func resolveBlock(b *book.SrcBlock, inherited []string) (book.Params, error) {
-	panic("HOLE(4): defaults, then inherited, then the block's own header, later winning")
+func (s scope) with(props map[string]string) (scope, error) {
+	out := scope{generic: s.generic, lang: s.lang}
+	for k, v := range props {
+		if strings.HasSuffix(k, "+") {
+			return out, fmt.Errorf("accumulating property %s is not in the subset; set the whole value", k)
+		}
+		if k == "header-args" {
+			out.generic = v
+			continue
+		}
+		if l, ok := strings.CutPrefix(k, "header-args:"); ok {
+			next := map[string]string{}
+			for key, val := range out.lang {
+				next[key] = val
+			}
+			next[l] = v
+			out.lang = next
+		}
+	}
+	return out, nil
+}
+
+// The walk hands each block the scope in force where it sits, and
+// descends into everything that holds elements.
+func resolveNodes(d *book.Document, nodes []book.Node, sc scope) error {
+	for _, n := range nodes {
+		switch n := n.(type) {
+		case *book.Headline:
+			next, err := sc.with(n.Properties)
+			if err != nil {
+				return fmt.Errorf("%s:%d: %w", d.Path, n.Line, err)
+			}
+			if err := resolveNodes(d, n.Children, next); err != nil {
+				return err
+			}
+		case *book.SrcBlock:
+			params, err := resolveBlock(n, sc)
+			if err != nil {
+				return fmt.Errorf("%s:%d: %w", d.Path, n.Line, err)
+			}
+			n.Params = params
+		case *book.DynamicBlock:
+			if err := resolveNodes(d, n.Children, sc); err != nil {
+				return err
+			}
+		case *book.QuoteBlock:
+			if err := resolveNodes(d, n.Children, sc); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
+// One block's parameters are the driver's defaults, then what it
+// inherits, then its own header line, each later source overwriting
+// the keys it names. The switch run lands last, since a switch is
+// part of the block's own line.
+func resolveBlock(b *book.SrcBlock, sc scope) (book.Params, error) {
+	p := book.Params{Tangle: "no", Comments: "no", Mkdirp: true, Padline: true}
+	for _, header := range []string{sc.generic, sc.lang[b.Lang], b.RawHeader} {
+		if err := applyHeader(&p, header); err != nil {
+			return p, err
+		}
+	}
+	if err := applySwitches(&p, b.Switches); err != nil {
+		return p, err
+	}
+	return p, nil
+}
+
+// applyHeader is where the table earns its keep: every key is looked
+// up, an unknown one stops the tangle, a rejected one names itself,
+// and an inert one is dropped on the floor.
+func applyHeader(p *book.Params, header string) error {
+	for _, arg := range balancedSplit(header) {
+		if !strings.HasPrefix(arg, ":") {
+			continue
+		}
+		key, rest, _ := strings.Cut(arg[1:], " ")
+		key = strings.ToLower(key)
+		bin, known := classify(key)
+		switch {
+		case !known:
+			return fmt.Errorf("unknown header argument :%s", key)
+		case bin == binRejected:
+			return fmt.Errorf(":%s is not in the subset; see the deviations", key)
+		case bin == binInert:
+			continue
+		}
+		value, err := readValue(rest)
+		if err != nil {
+			return err
+		}
+		switch key {
+		case "tangle":
+			p.Tangle = value
+		case "mkdirp":
+			p.Mkdirp = value != "no"
+		case "padline":
+			p.Padline = value != "no"
+		case "comments":
+			if value != "no" && value != "org" {
+				return fmt.Errorf(":comments %s is not in the subset; use no or org", value)
+			}
+			p.Comments = value
+		case "noweb":
+			if value != "yes" && value != "no" {
+				return fmt.Errorf(":noweb %s is not in the subset; use yes or no", value)
+			}
+			p.Noweb = value == "yes"
+		case "noweb-ref":
+			p.NowebRef = value
+		case "noweb-sep":
+			p.NowebSep = value
+		}
+	}
+	return nil
+}
+
+// Switches classify the same three ways. Only ~-i~ changes what
+// babble does; the line-numbering pair is inert because tangling
+// never numbers lines, and the coderef pair is refused because it
+// would rewrite the body.
+func applySwitches(p *book.Params, switches string) error {
+	for _, sw := range strings.Fields(switches) {
+		switch sw {
+		case "-i":
+			p.PreserveIndent = true
+		case "-n", "+n", "-k":
+		case "-r", "-l":
+			return fmt.Errorf("switch %s is not in the subset; coderefs rewrite the body", sw)
+		default:
+			if _, err := strconv.Atoi(sw); err != nil {
+				return fmt.Errorf("unknown switch %s", sw)
+			}
+		}
+	}
+	return nil
 }
 
 // Every key on every src block lands in one of three bins, and a key
@@ -665,15 +842,108 @@ const (
 )
 
 func classify(key string) (headerBin, bool) {
-	panic("HOLE(4): the closed table, and false for a key it does not know")
+	bin, ok := headerBins[key]
+	return bin, ok
+}
+
+// The table is the fence, so it is written out rather than derived.
+// The inert column is the interesting one: those keys steer
+// evaluation, and the tangle path never reads them, which is why
+// accepting and ignoring them is safe rather than merely convenient.
+var headerBins = map[string]headerBin{
+	"tangle": binImplemented, "mkdirp": binImplemented,
+	"comments": binImplemented, "padline": binImplemented,
+	"noweb": binImplemented, "noweb-ref": binImplemented,
+	"noweb-sep": binImplemented,
+
+	"var": binRejected, "shebang": binRejected,
+	"tangle-mode": binRejected, "no-expand": binRejected,
+	"noweb-prefix": binRejected, "prologue": binRejected,
+	"epilogue": binRejected, "dir": binRejected,
+
+	"cache": binInert, "cmdline": binInert, "colnames": binInert,
+	"eval": binInert, "exports": binInert, "file": binInert,
+	"file-desc": binInert, "file-ext": binInert, "hlines": binInert,
+	"noeval": binInert, "output-dir": binInert, "post": binInert,
+	"results": binInert, "rownames": binInert, "sep": binInert,
+	"session": binInert, "wrap": binInert,
 }
 
 func balancedSplit(s string) []string {
-	panic("HOLE(4): split on space-then-colon outside parens, brackets, and double quotes")
+	var out []string
+	start, depth, quoted := 0, 0, false
+	for i := 0; i < len(s); i++ {
+		switch c := s[i]; {
+		case quoted:
+			if c == '\\' {
+				i++
+			} else if c == '"' {
+				quoted = false
+			}
+		case c == '"':
+			quoted = true
+		case c == '(' || c == '[':
+			depth++
+		case c == ')' || c == ']':
+			if depth > 0 {
+				depth--
+			}
+		case c == ':' && depth == 0 && i > 0 && (s[i-1] == ' ' || s[i-1] == '\t'):
+			out = append(out, strings.TrimSpace(s[start:i]))
+			start = i
+		}
+	}
+	if last := strings.TrimSpace(s[start:]); last != "" {
+		out = append(out, last)
+	}
+	if len(out) > 0 && out[0] == "" {
+		out = out[1:]
+	}
+	return out
 }
 
+// A value is text. A quoted one is read as elisp reads it, so the
+// escapes inside it survive into the value; anything shaped like
+// lisp is refused, since org's tangle path evaluates it and babble
+// will not.
 func readValue(s string) (string, error) {
-	panic("HOLE(4): chomp, unquote an elisp string literal, reject lisp")
+	v := strings.TrimSpace(s)
+	if v == "" {
+		return "", nil
+	}
+	switch v[0] {
+	case '(', '\'', '`', '[':
+		return "", fmt.Errorf("lisp-valued header argument %s; the subset takes plain values", v)
+	case '"':
+		return unquote(v)
+	}
+	return v, nil
+}
+
+func unquote(v string) (string, error) {
+	if len(v) < 2 || v[len(v)-1] != '"' {
+		return "", fmt.Errorf("unterminated string in header argument %s", v)
+	}
+	var b strings.Builder
+	for i := 1; i < len(v)-1; i++ {
+		if v[i] != '\\' {
+			b.WriteByte(v[i])
+			continue
+		}
+		i++
+		if i >= len(v)-1 {
+			return "", fmt.Errorf("trailing escape in header argument %s", v)
+		}
+		switch v[i] {
+		case 'n':
+			b.WriteByte('\n')
+		case 't':
+			b.WriteByte('\t')
+		default:
+			b.WriteByte(v[i])
+		}
+	}
+	return b.String(), nil
 }
 
 // Lint is the fence: the refusals that need the whole document
