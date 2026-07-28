@@ -56,28 +56,82 @@ every dynamic block, and the labels are spelled without the sigils,
 so the census never matches its own index.
 
 #+begin: plan-toc
-- [[file:BOOK.org::82][82]] entry: PLANNED Stage 6: the oracle harness
-- [[file:BOOK.org::190][190]] entry: PLANNED Stage 7: org comments
-- [[file:BOOK.org::233][233]] entry: PLANNED Stage 8: noweb
-- [[file:BOOK.org::270][270]] entry: PLANNED Stage 9: dynamic blocks
-- [[file:BOOK.org::317][317]] entry: PLANNED Stage 10: the fence
-- [[file:BOOK.org::346][346]] entry: PLANNED Stage 11: parity and self-hosting
-- [[file:BOOK.org::2947][2947]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
-- [[file:BOOK.org::3186][3186]] hole 7: extent between the anchors, then the docstring rule
-- [[file:BOOK.org::3192][3192]] hole 7: line-comment table per language, blank lines as a bare ma...
-- [[file:BOOK.org::3202][3202]] hole 8: named block first, else noweb-ref concatenation; cycles a...
-- [[file:BOOK.org::3299][3299]] hole 9: splice fresh interiors into the retained bytes, report ch...
-- [[file:BOOK.org::3309][3309]] hole 9: a line link per plan site, sites below the block shifted ...
-- [[file:BOOK.org::3315][3315]] hole 9: system diff -u over the two named bodies, temp-file heade...
-- [[file:BOOK.org::3721][3721]] hole 6: ORACLE=1 in the environment
-- [[file:BOOK.org::3725][3725]] hole 6: UPDATE=1 in the environment
-- [[file:BOOK.org::3731][3731]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
-- [[file:BOOK.org::3743][3743]] hole 6: write the txtar's input files into dir, and name the book...
-- [[file:BOOK.org::3749][3749]] hole 6: copy lit/ in, run batch Emacs with the driver, fail loudl...
-- [[file:BOOK.org::3753][3753]] hole 6: every file on both sides, byte for byte, ignoring the inputs
-- [[file:BOOK.org::3757][3757]] hole 6: rewrite the fixture's want/ files from the oracle tree
+- [[file:BOOK.org::87][87]] entry: PLANNED Stage 12: the fixtures chapter
+- [[file:BOOK.org::136][136]] entry: PLANNED Stage 6: the oracle harness
+- [[file:BOOK.org::244][244]] entry: PLANNED Stage 7: org comments
+- [[file:BOOK.org::287][287]] entry: PLANNED Stage 8: noweb
+- [[file:BOOK.org::324][324]] entry: PLANNED Stage 9: dynamic blocks
+- [[file:BOOK.org::371][371]] entry: PLANNED Stage 10: the fence
+- [[file:BOOK.org::400][400]] entry: PLANNED Stage 11: parity and self-hosting
+- [[file:BOOK.org::1037][1037]] deletion: , and ~#+include~ (org's file-inclusion
+- [[file:BOOK.org::1044][1044]] badge: PLANNED stage 12 gives the entry below its reason (plan)
+- [[file:BOOK.org::1050][1050]] insertion: ~#+include~ is refused, and the reason is what org does w...
+- [[file:BOOK.org::1139][1139]] badge: PLANNED stage 12 adds the chapter below (plan)
+- [[file:BOOK.org::3014][3014]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
+- [[file:BOOK.org::3253][3253]] hole 7: extent between the anchors, then the docstring rule
+- [[file:BOOK.org::3259][3259]] hole 7: line-comment table per language, blank lines as a bare ma...
+- [[file:BOOK.org::3269][3269]] hole 8: named block first, else noweb-ref concatenation; cycles a...
+- [[file:BOOK.org::3366][3366]] hole 9: splice fresh interiors into the retained bytes, report ch...
+- [[file:BOOK.org::3376][3376]] hole 9: a line link per plan site, sites below the block shifted ...
+- [[file:BOOK.org::3382][3382]] hole 9: system diff -u over the two named bodies, temp-file heade...
+- [[file:BOOK.org::3788][3788]] hole 6: ORACLE=1 in the environment
+- [[file:BOOK.org::3792][3792]] hole 6: UPDATE=1 in the environment
+- [[file:BOOK.org::3798][3798]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
+- [[file:BOOK.org::3810][3810]] hole 6: write the txtar's input files into dir, and name the book...
+- [[file:BOOK.org::3816][3816]] hole 6: copy lit/ in, run batch Emacs with the driver, fail loudl...
+- [[file:BOOK.org::3820][3820]] hole 6: every file on both sides, byte for byte, ignoring the inputs
+- [[file:BOOK.org::3824][3824]] hole 6: rewrite the fixture's want/ files from the oracle tree
 
 #+end:
+
+** PLANNED Stage 12: the fixtures chapter                          :stage12:
+:PROPERTIES:
+:CUSTOM_ID: stage-12
+:SPEC:     Testing; Deviations
+:DEPS:     none
+:ACCEPTANCE: the chapter reads without the plan open; make check; go test ./...
+:SIZE:     ~110 lines of prose
+:END:
+
+Claim: after this stage the book says where the suite's inputs
+live, how a golden is rebuilt by asking Emacs, and what order to
+follow when adding a fixture, and the refusal of ~#+include~
+carries the reason it is a refusal at all.
+
+Decided: (1) The fixtures stay on disk and the chapter references
+them by path. Pulling their text into the weave would want
+~#+include~, which this same stage explains why the subset
+refuses, and a chapter that broke its own rule would be a poor
+place to state it. (2) The refusal's reason is org's silence: the
+tangler walks past the keyword, the included blocks reach no
+target, and nothing says so. That is the shape of every other
+entry in the chapter, and it was missing. (3) The manual Emacs
+recipe goes in the book beside the harness switch, because a
+reader who has run it once understands what a golden is; a reader
+who has only seen UPDATE=1 knows a flag.
+
+This entry is a repair. The chapter and the deviation landed
+before the plan did, which is the wrong order, and the badges
+below mark what a reviewer should read as if it had not.
+
+- [ ] plan approved (the human ticks this box)
+- [ ] the chapter reads steady-state, with no stage named in it
+- [ ] Changes draft below reads right in the journal
+- [ ] badges and CriticMarkup removed at acceptance
+- [ ] census clean for stage 12, suite green
+- [ ] Changes entry dated and filed, plan entry deleted
+
+*** Changes draft
+
+#+begin_quote
+The book gained a chapter on the fixtures: what sits on disk, how
+to rebuild a golden by running the driver the way lit.mk runs it,
+and the order to follow when adding one, starting from the
+behavior rather than the file. The refusal of a file-inclusion
+keyword gained its reason, which is that org's tangler ignores the
+keyword and the blocks it names reach no target without a word
+about it.
+#+end_quote
 
 ** PLANNED Stage 6: the oracle harness                             :stage6:
 :PROPERTIES:
@@ -980,13 +1034,20 @@ construct and the supported alternative.
   form (org's attachment-directory feature), the ~-r~ and ~-l~
   coderef switches (org's code-reference labels), accumulating
   ~header-args+~ properties, inline src blocks (code blocks inside
-  a prose line).
+  a prose line){--, and ~#+include~ (org's file-inclusion
+  keyword)--}.
   The inert keys (evaluation-only arguments such as ~:results~ and
   ~:exports~, and the ~-n~ and ~-k~ switches) pass through because
   the oracle's tangle path never reads them; an oracle fixture
   holds a tangled block carrying them all and proves the bytes do
   not move.
-- ~#+include~ is refused, and the reason is what org does with it:
+*************** PLANNED stage 12 gives the entry below its reason ([[#stage-12][plan]]) :stage12:
+The keyword was one name in a list of rejected header arguments,
+which said what babble does and never why. The entry below states
+the mechanism; the deletion above is the name leaving that list.
+*************** END
+
+- {++~#+include~ is refused, and the reason is what org does with it:
   nothing. Inclusion happens during export, so the tangler walks
   past the keyword and the included file's blocks reach no target,
   silently. A book that expects them to tangle gets an empty
@@ -994,7 +1055,7 @@ construct and the supported alternative.
   turn into a sentence. Refusing costs the book one convenience,
   since a chapter cannot pull a file's text in for the weave, and
   buys the guarantee that what a book appears to tangle is what it
-  tangles.
+  tangles.++}
 - ~:comments org~ is limited to languages whose comment syntax the
   batch-Emacs driver actually has: go, python, emacs-lisp, sh,
   makefile. In batch Emacs a missing language mode silently leaves the
@@ -1074,6 +1135,12 @@ expansion is the generic path, which is the identity when nothing
 injects variables; babble expands nothing. And the driver pins the
 whole comment story to five language modes, so comment wrapping is
 a table, not a port of Emacs's comment machinery.
+
+*************** PLANNED stage 12 adds the chapter below ([[#stage-12][plan]]) :stage12:
+The chapter landed before this entry did. Read it as an insertion:
+nothing above or below it changed, and acceptance deletes this
+badge and nothing else.
+*************** END
 
 * The fixtures
 
