@@ -70,7 +70,11 @@ enforces it in two layers:
   failing on any byte difference.
 - `UPDATE=1 ORACLE=1 go test ./...` remints each fixture's
   expected outputs from the Emacs tree, never from babble's, so
-  committed goldens are Emacs output by construction.
+  committed goldens are Emacs output by construction. UPDATE
+  without ORACLE is an error: there is nothing else to mint from.
+- The oracle mode adds to the pure suite rather than replacing it,
+  so with ORACLE=1 babble runs each fixture twice, once against
+  its goldens and once against Emacs.
 - The harness arrives at stage 6 of the plan; before that these
   switches are seams in internal/oracletest, not features.
 
