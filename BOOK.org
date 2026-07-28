@@ -56,95 +56,32 @@ every dynamic block, and the labels are spelled without the sigils,
 so the census never matches its own index.
 
 #+begin: plan-toc
-- [[file:BOOK.org::88][88]] entry: PLANNED Stage 4: header resolution
-- [[file:BOOK.org::149][149]] entry: PLANNED Stage 5: tangle
-- [[file:BOOK.org::189][189]] entry: PLANNED Stage 6: the oracle harness
-- [[file:BOOK.org::223][223]] entry: PLANNED Stage 7: org comments
-- [[file:BOOK.org::266][266]] entry: PLANNED Stage 8: noweb
-- [[file:BOOK.org::303][303]] entry: PLANNED Stage 9: dynamic blocks
-- [[file:BOOK.org::350][350]] entry: PLANNED Stage 10: the fence
-- [[file:BOOK.org::379][379]] entry: PLANNED Stage 11: parity and self-hosting
-- [[file:BOOK.org::1196][1196]] hole 5: parse, refresh, reparse, tangle; errors to stderr
-- [[file:BOOK.org::2551][2551]] badge: PLANNED stage 4 fills the holes below (plan)
-- [[file:BOOK.org::2877][2877]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
-- [[file:BOOK.org::2893][2893]] hole 5: collect, resolve targets, assemble with banners, write
-- [[file:BOOK.org::2910][2910]] hole 5: eligible blocks grouped by target in first-appearance order
-- [[file:BOOK.org::2914][2914]] hole 5: no, yes, or a path relative to the book's directory
-- [[file:BOOK.org::2924][2924]] hole 5: unescape commas, dedent by column, expand noweb, dedent a...
-- [[file:BOOK.org::2934][2934]] hole 7: extent between the anchors, then the docstring rule
-- [[file:BOOK.org::2940][2940]] hole 7: line-comment table per language, blank lines as a bare ma...
-- [[file:BOOK.org::2950][2950]] hole 8: named block first, else noweb-ref concatenation; cycles a...
-- [[file:BOOK.org::2961][2961]] hole 5: the generated-file banner in the target's own comment syntax
-- [[file:BOOK.org::2967][2967]] hole 5: refuse the book itself, mkdirp on demand, skip byte-ident...
-- [[file:BOOK.org::2983][2983]] hole 9: splice fresh interiors into the retained bytes, report ch...
-- [[file:BOOK.org::2993][2993]] hole 9: a line link per plan site, sites below the block shifted ...
-- [[file:BOOK.org::2999][2999]] hole 9: system diff -u over the two named bodies, temp-file heade...
-- [[file:BOOK.org::3329][3329]] hole 6: ORACLE=1 in the environment
-- [[file:BOOK.org::3333][3333]] hole 6: UPDATE=1 in the environment
-- [[file:BOOK.org::3339][3339]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
+- [[file:BOOK.org::86][86]] entry: PLANNED Stage 5: tangle
+- [[file:BOOK.org::139][139]] entry: PLANNED Stage 6: the oracle harness
+- [[file:BOOK.org::173][173]] entry: PLANNED Stage 7: org comments
+- [[file:BOOK.org::216][216]] entry: PLANNED Stage 8: noweb
+- [[file:BOOK.org::253][253]] entry: PLANNED Stage 9: dynamic blocks
+- [[file:BOOK.org::300][300]] entry: PLANNED Stage 10: the fence
+- [[file:BOOK.org::329][329]] entry: PLANNED Stage 11: parity and self-hosting
+- [[file:BOOK.org::1146][1146]] hole 5: parse, refresh, reparse, tangle; errors to stderr
+- [[file:BOOK.org::2819][2819]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
+- [[file:BOOK.org::2835][2835]] hole 5: collect, resolve targets, assemble with banners, write
+- [[file:BOOK.org::2852][2852]] hole 5: eligible blocks grouped by target in first-appearance order
+- [[file:BOOK.org::2856][2856]] hole 5: no, yes, or a path relative to the book's directory
+- [[file:BOOK.org::2866][2866]] hole 5: unescape commas, dedent by column, expand noweb, dedent a...
+- [[file:BOOK.org::2876][2876]] hole 7: extent between the anchors, then the docstring rule
+- [[file:BOOK.org::2882][2882]] hole 7: line-comment table per language, blank lines as a bare ma...
+- [[file:BOOK.org::2892][2892]] hole 8: named block first, else noweb-ref concatenation; cycles a...
+- [[file:BOOK.org::2903][2903]] hole 5: the generated-file banner in the target's own comment syntax
+- [[file:BOOK.org::2909][2909]] hole 5: refuse the book itself, mkdirp on demand, skip byte-ident...
+- [[file:BOOK.org::2925][2925]] hole 9: splice fresh interiors into the retained bytes, report ch...
+- [[file:BOOK.org::2935][2935]] hole 9: a line link per plan site, sites below the block shifted ...
+- [[file:BOOK.org::2941][2941]] hole 9: system diff -u over the two named bodies, temp-file heade...
+- [[file:BOOK.org::3271][3271]] hole 6: ORACLE=1 in the environment
+- [[file:BOOK.org::3275][3275]] hole 6: UPDATE=1 in the environment
+- [[file:BOOK.org::3281][3281]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
 
 #+end:
-
-** PLANNED Stage 4: header resolution                              :stage4:
-:PROPERTIES:
-:CUSTOM_ID: stage-4
-:SPEC:     The subset contract, "Header arguments"
-:DEPS:     none
-:ACCEPTANCE: TestResolveHeaders, TestHeaderRejects, TestInertHeaders; go test ./...
-:SIZE:     ~220 lines
-:END:
-
-Claim: after this stage, every block's effective header arguments
-(the :key value pairs on a block's header line, some inherited)
-resolve through org's merge order (driver defaults with mkdirp on,
-inherited header-args properties, then the block's own line, later
-entries winning) using the balanced splitter and quoted-value
-reader the contract defines, ~parse --dump~ shows the resolved
-set, and every header key on every src block classifies as
-implemented, rejected, or inert against a closed table, an unknown
-key being an error.
-
-Decided: (1) Property inheritance is nearest-wins across ancestor
-property drawers (org's per-heading key-value blocks) and the
-file-level ~#+property~ keyword, for ~header-args~
-and ~header-args:LANG~; the accumulating ~header-args+~ forms are
-rejected. (2) Values are strings: the reader unquotes an elisp
-string literal with the common escapes and rejects anything that
-would make org's reader evaluate lisp. (3) The table's three bins
-are proven exhaustive by enumeration of the parameter lookups on
-org's tangle code path, done during the source reading that shaped
-this plan; the inert bin is every key that path never touches, and
-an ORACLE fixture pins that a block carrying the inert keys tangles
-to the same bytes in both engines. (4) The planning line closes
-with this stage: org admits a ~SCHEDULED:~ or ~DEADLINE:~ line
-between a headline and its property drawer, babble reads the
-drawer only when it comes first, and a drawer missed is inheritance
-lost, which starts mattering the moment inheritance exists.
-(5) Resolution runs where the tree is built for a command that
-needs it, so ~parse --dump~ resolves before dumping and the block
-fixtures gain a resolved header set; their goldens are regenerated
-in the same commit and read by hand. (6) Language defaults have no
-counterpart: org merges ~org-babel-default-header-args:LANG~ if a
-language pack defines it, and batch Emacs loads none, so the merge
-order here is driver defaults, inherited properties, then the
-block's own line.
-
-- [X] skeleton approved (the human ticks this box)
-- [X] inserted prose reads steady-state
-- [X] Changes draft below reads right in the journal
-- [X] HOLE(4) cluster filled, fixtures in the same commits
-- [X] twins accepted: the planning line and the resolving parse
-- [X] block goldens regenerated and read, not merely accepted
-- [X] census clean for stage 4, suite green
-- [ ] Changes entry dated and filed, plan entry deleted
-
-*** Changes draft
-
-#+begin_quote
-Header arguments resolve exactly as the oracle merges them, and
-every header the subset excludes fails loudly by name instead of
-silently evaluating lisp, which is what org would do.
-#+end_quote
 
 ** PLANNED Stage 5: tangle                                         :stage5:
 :PROPERTIES:
@@ -162,18 +99,31 @@ banner, one blank line between blocks, parent directories on
 demand, a refusal to tangle into the book itself, and no write at
 all when the target already holds the exact bytes.
 
-Decided: babble compares the final bytes, banner included, and
+Decided: (1) babble compares the final bytes, banner included, and
 skips the write when they match, so an unchanged target keeps its
 mtime. The oracle never skips: its identity check compares a
 bannerless buffer against a bannered file, so it rewrites every
 target on every run (checked during bootstrap: the mtimes bump). The
 brief asks for the skip; bytes agree either way, so the oracle
 harness, which compares bytes, is untouched. Listed under
-[[#deviations][Deviations]].
+[[#deviations][Deviations]]. (2) The body pipeline lands here in
+the contract's order: drop one trailing newline, drop one comma
+from each escaped line, remove the common indentation measured in
+columns with tabs at eight, then trim. Noweb expansion slots into
+the middle of it later, which is why the second dedent and the
+final trim are written now rather than discovered then. (3) The
+tangle command parses, resolves, and writes. Refreshing the
+dynamic blocks belongs at the front of that sequence and arrives
+with the stage that can refresh them, as a twin. (4) A block
+asking for something a later stage owns, a doc comment or a noweb
+reference, reaches that stage's hole and the panic names it; this
+stage's fixtures stay inside what it claims.
 
+- [ ] plan approved (the human ticks this box)
 - [ ] inserted prose reads steady-state
 - [ ] Changes draft below reads right in the journal
 - [ ] HOLE(5) cluster filled, fixtures in the same commits
+- [ ] a second tangle writes nothing, proven by mtime
 - [ ] census clean for stage 5, suite green
 - [ ] Changes entry dated and filed, plan entry deleted
 
@@ -2548,14 +2498,6 @@ table: the merge order, then the three bins, an unknown key an
 error. The splitter and reader below are its tools, ported from
 org's balanced splitter and value reader.
 
-*************** PLANNED stage 4 fills the holes below ([[#stage-4][plan]]) :stage4:
-Resolution is four seams: the walk that carries inherited headers
-down the tree, the merge that produces one block's parameters, the
-table that says which bin a key falls in, and the two readers the
-contract already describes. Only the walk is new work; the rest
-were holed at the skeleton.
-*************** END
-
 #+begin_src go :tangle internal/org/org.go :comments org
 func ResolveAll(d *book.Document) error {
 	var sc scope
@@ -3473,6 +3415,21 @@ this document cares about. Entries are written once, at acceptance,
 and never reworded; history that needs correcting gets a new entry.
 An entry speaks from its date; the rest of the document speaks from
 no date at all.
+
+** [2026-07-27 Mon] Header arguments, resolved through a closed table
+
+Header arguments resolve the way the oracle merges them: the
+driver's defaults, then the nearest inherited property, then the
+block's own line. Inheritance is wholesale, since org reads an
+inherited property by taking the closest ancestor's value and
+stopping, so a nearer drawer replaces a farther one entirely
+rather than adding to it. Every key is looked up in a closed
+table: the ones babble acts on land in the block's parameters, the
+evaluation-only ones are accepted and dropped because the tangle
+path never reads them, the excluded ones refuse by name, and a key
+the table does not know stops the tangle rather than being
+guessed at. A planning line no longer hides the drawer beneath it,
+which had cost a heading its inherited headers.
 
 ** [2026-07-27 Mon] Blocks, parsed the way the oracle parses
 

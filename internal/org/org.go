@@ -662,7 +662,10 @@ func isNumber(s string) bool {
 	return true
 }
 
-// END
+// ResolveAll fills every src block's Params through the closed
+// table: the merge order, then the three bins, an unknown key an
+// error. The splitter and reader below are its tools, ported from
+// org's balanced splitter and value reader.
 func ResolveAll(d *book.Document) error {
 	var sc scope
 	for _, v := range d.Keywords["property"] {
