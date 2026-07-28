@@ -56,78 +56,28 @@ every dynamic block, and the labels are spelled without the sigils,
 so the census never matches its own index.
 
 #+begin: plan-toc
-- [[file:BOOK.org::79][79]] entry: PLANNED Stage 5: tangle
-- [[file:BOOK.org::132][132]] entry: PLANNED Stage 6: the oracle harness
-- [[file:BOOK.org::166][166]] entry: PLANNED Stage 7: org comments
-- [[file:BOOK.org::209][209]] entry: PLANNED Stage 8: noweb
-- [[file:BOOK.org::246][246]] entry: PLANNED Stage 9: dynamic blocks
-- [[file:BOOK.org::293][293]] entry: PLANNED Stage 10: the fence
-- [[file:BOOK.org::322][322]] entry: PLANNED Stage 11: parity and self-hosting
-- [[file:BOOK.org::2824][2824]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
-- [[file:BOOK.org::3063][3063]] hole 7: extent between the anchors, then the docstring rule
-- [[file:BOOK.org::3069][3069]] hole 7: line-comment table per language, blank lines as a bare ma...
-- [[file:BOOK.org::3079][3079]] hole 8: named block first, else noweb-ref concatenation; cycles a...
-- [[file:BOOK.org::3176][3176]] hole 9: splice fresh interiors into the retained bytes, report ch...
-- [[file:BOOK.org::3186][3186]] hole 9: a line link per plan site, sites below the block shifted ...
-- [[file:BOOK.org::3192][3192]] hole 9: system diff -u over the two named bodies, temp-file heade...
-- [[file:BOOK.org::3589][3589]] hole 6: ORACLE=1 in the environment
-- [[file:BOOK.org::3593][3593]] hole 6: UPDATE=1 in the environment
-- [[file:BOOK.org::3599][3599]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
+- [[file:BOOK.org::82][82]] entry: PLANNED Stage 6: the oracle harness
+- [[file:BOOK.org::133][133]] entry: PLANNED Stage 7: org comments
+- [[file:BOOK.org::176][176]] entry: PLANNED Stage 8: noweb
+- [[file:BOOK.org::213][213]] entry: PLANNED Stage 9: dynamic blocks
+- [[file:BOOK.org::260][260]] entry: PLANNED Stage 10: the fence
+- [[file:BOOK.org::289][289]] entry: PLANNED Stage 11: parity and self-hosting
+- [[file:BOOK.org::2791][2791]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
+- [[file:BOOK.org::3030][3030]] hole 7: extent between the anchors, then the docstring rule
+- [[file:BOOK.org::3036][3036]] hole 7: line-comment table per language, blank lines as a bare ma...
+- [[file:BOOK.org::3046][3046]] hole 8: named block first, else noweb-ref concatenation; cycles a...
+- [[file:BOOK.org::3143][3143]] hole 9: splice fresh interiors into the retained bytes, report ch...
+- [[file:BOOK.org::3153][3153]] hole 9: a line link per plan site, sites below the block shifted ...
+- [[file:BOOK.org::3159][3159]] hole 9: system diff -u over the two named bodies, temp-file heade...
+- [[file:BOOK.org::3556][3556]] hole 6: ORACLE=1 in the environment
+- [[file:BOOK.org::3560][3560]] hole 6: UPDATE=1 in the environment
+- [[file:BOOK.org::3566][3566]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
+- [[file:BOOK.org::3578][3578]] hole 6: write the txtar's input files into dir, and name the book...
+- [[file:BOOK.org::3584][3584]] hole 6: copy lit/ in, run batch Emacs with the driver, fail loudl...
+- [[file:BOOK.org::3588][3588]] hole 6: every file on both sides, byte for byte, ignoring the inputs
+- [[file:BOOK.org::3592][3592]] hole 6: rewrite the fixture's want/ files from the oracle tree
 
 #+end:
-
-** PLANNED Stage 5: tangle                                         :stage5:
-:PROPERTIES:
-:CUSTOM_ID: stage-5
-:SPEC:     The subset contract, "Collection", "Targets", "Assembly"
-:DEPS:     stage 4
-:ACCEPTANCE: testscript fixtures ordering, targets, padline, banners, mkdirp, guards; go test ./...
-:SIZE:     ~300 lines
-:END:
-
-Claim: after this stage, ~babble tangle BOOK.org~ writes every
-eligible block of a book without comments, noweb, or dynamic blocks
-to its resolved target in document order, with the generated-file
-banner, one blank line between blocks, parent directories on
-demand, a refusal to tangle into the book itself, and no write at
-all when the target already holds the exact bytes.
-
-Decided: (1) babble compares the final bytes, banner included, and
-skips the write when they match, so an unchanged target keeps its
-mtime. The oracle never skips: its identity check compares a
-bannerless buffer against a bannered file, so it rewrites every
-target on every run (checked during bootstrap: the mtimes bump). The
-brief asks for the skip; bytes agree either way, so the oracle
-harness, which compares bytes, is untouched. Listed under
-[[#deviations][Deviations]]. (2) The body pipeline lands here in
-the contract's order: drop one trailing newline, drop one comma
-from each escaped line, remove the common indentation measured in
-columns with tabs at eight, then trim. Noweb expansion slots into
-the middle of it later, which is why the second dedent and the
-final trim are written now rather than discovered then. (3) The
-tangle command parses, resolves, and writes. Refreshing the
-dynamic blocks belongs at the front of that sequence and arrives
-with the stage that can refresh them, as a twin. (4) A block
-asking for something a later stage owns, a doc comment or a noweb
-reference, reaches that stage's hole and the panic names it; this
-stage's fixtures stay inside what it claims.
-
-- [X] plan approved (the human ticks this box)
-- [X] inserted prose reads steady-state
-- [X] Changes draft below reads right in the journal
-- [X] HOLE(5) cluster filled, fixtures in the same commits
-- [X] a second tangle writes nothing, proven by mtime
-- [X] census clean for stage 5, suite green
-- [ ] Changes entry dated and filed, plan entry deleted
-
-*** Changes draft
-
-#+begin_quote
-babble tangle produced its first byte-exact trees: plain books
-tangle with banners, padlines, and target resolution matching the
-oracle, and unchanged targets keep their mtime, which the oracle's
-own banner hook makes impossible.
-#+end_quote
 
 ** PLANNED Stage 6: the oracle harness                             :stage6:
 :PROPERTIES:
@@ -144,13 +94,30 @@ fails on any byte difference, UPDATE=1 rewrites every committed
 golden from the Emacs tree and never from babble's, and CI runs the pure suite
 without Emacs in one job and the oracle suite in another.
 
-Decided: the harness lives in test code tangled from this book;
-the GitHub workflow files are hand-managed plumbing outside it,
-like the Makefile and the manifests.
+Decided: (1) The harness lives in test code tangled from this
+book; the GitHub workflow files are hand-managed plumbing outside
+it, like the Makefile and the manifests. (2) A fixture is
+cross-checked whole rather than file by file: its inputs are
+extracted into two trees, Emacs with lit/ runs in one and babble
+in the other, and the trees are compared. A tree comparison
+catches a file one engine writes and the other does not, which a
+list of expected files cannot. (3) Expected outputs move under
+~want/~, mirroring the paths they pin, so reminting can write them
+back without guessing which golden belongs to which file. (4) A
+fixture that pins a deliberate deviation says so in a
+~# oracle: skip~ line naming the reason, and a fixture that never
+tangles is skipped because there is nothing to compare. (5) With
+ORACLE=1 set and no Emacs on the machine, the harness fails rather
+than skipping: a silent pass would retire the only check that
+matters. (6) The sweep over whole real books waits for the stage
+that can tangle them; this stage's books are the fixtures.
 
+- [ ] plan approved (the human ticks this box)
 - [ ] inserted prose reads steady-state
 - [ ] Changes draft below reads right in the journal
 - [ ] HOLE(6) cluster filled, harness proves existing goldens Emacs-shaped
+- [ ] goldens moved under want/ and reminted from the Emacs tree
+- [ ] CI runs the pure suite without Emacs and the oracle suite with it
 - [ ] census clean for stage 6, suite green with and without ORACLE=1
 - [ ] Changes entry dated and filed, plan entry deleted
 
@@ -3600,6 +3567,32 @@ func CrossCheck(t *testing.T, fixture string) {
 }
 #+end_src
 
+The pieces CrossCheck stands on. Extraction writes a fixture's
+input files into a directory; the Emacs side copies lit/ in beside
+them and runs the driver exactly as lit.mk does; the comparison
+walks both trees and reports the first byte that differs, or the
+first file one side has and the other lacks.
+
+#+begin_src go :tangle internal/oracletest/oracletest.go :comments org
+func extract(t *testing.T, fixture, dir string) (book string) {
+	panic("HOLE(6): write the txtar's input files into dir, and name the book among them")
+}
+#+end_src
+
+#+begin_src go :tangle internal/oracletest/oracletest.go
+func runOracle(t *testing.T, dir, book string) {
+	panic("HOLE(6): copy lit/ in, run batch Emacs with the driver, fail loudly when it is absent")
+}
+
+func compareTrees(t *testing.T, oracle, babble string) {
+	panic("HOLE(6): every file on both sides, byte for byte, ignoring the inputs")
+}
+
+func remint(t *testing.T, fixture, oracle string) {
+	panic("HOLE(6): rewrite the fixture's want/ files from the oracle tree")
+}
+#+end_src
+
 ** The document tree tests
 
 #+begin_src go :tangle internal/book/book_test.go
@@ -3733,6 +3726,13 @@ this document cares about. Entries are written once, at acceptance,
 and never reworded; history that needs correcting gets a new entry.
 An entry speaks from its date; the rest of the document speaks from
 no date at all.
+
+** [2026-07-28 Tue] Tangling
+
+babble tangle produced its first byte-exact trees: plain books
+tangle with banners, padlines, and target resolution matching the
+oracle, and unchanged targets keep their mtime, which the oracle's
+own banner hook makes impossible.
 
 ** [2026-07-27 Mon] Header arguments, resolved through a closed table
 
