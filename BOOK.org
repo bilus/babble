@@ -29,7 +29,12 @@ and the skeleton gate is where work stops for human review.
 
 This plan builds the whole program, so the ladder is long: eleven
 stages, of which the first is the skeleton gate and the last is the
-parity sweep. Every stage after the skeleton lands with its tests in
+parity sweep. Two other kinds of entry hang off that ladder without
+being rungs on it. A repair fixes something the ladder already
+built, and takes the next free number rather than a place in the
+diagram. An editorial stage changes only prose. Both are numbered
+above eleven, so a number above eleven never means late; it means
+appended. Every stage after the skeleton lands with its tests in
 the same commits and leaves the suite green. The oracle harness
 arrives in stage 6, early enough that every later stage's fixtures
 are cross-checked against Emacs from the day they are written; the
@@ -56,32 +61,39 @@ every dynamic block, and the labels are spelled without the sigils,
 so the census never matches its own index.
 
 #+begin: plan-toc
-- [[file:BOOK.org::88][88]] entry: PLANNED Stage 12: the fixtures chapter
-- [[file:BOOK.org::151][151]] entry: PLANNED Stage 6: the oracle harness
-- [[file:BOOK.org::259][259]] entry: PLANNED Stage 7: org comments
-- [[file:BOOK.org::302][302]] entry: PLANNED Stage 8: noweb
-- [[file:BOOK.org::339][339]] entry: PLANNED Stage 9: dynamic blocks
-- [[file:BOOK.org::386][386]] entry: PLANNED Stage 10: the fence
-- [[file:BOOK.org::415][415]] entry: PLANNED Stage 11: parity and self-hosting
-- [[file:BOOK.org::869][869]] badge: PLANNED stage 12 adds the paragraph below (plan)
-- [[file:BOOK.org::1070][1070]] deletion: , and ~#+include~ (org's file-inclusion
-- [[file:BOOK.org::1157][1157]] badge: PLANNED stage 12 adds the chapter below (plan)
-- [[file:BOOK.org::1195][1195]] badge: PLANNED stage 12 includes the two files below (plan)
-- [[file:BOOK.org::3066][3066]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
-- [[file:BOOK.org::3315][3315]] hole 7: extent between the anchors, then the docstring rule
-- [[file:BOOK.org::3321][3321]] hole 7: line-comment table per language, blank lines as a bare ma...
-- [[file:BOOK.org::3331][3331]] hole 8: named block first, else noweb-ref concatenation; cycles a...
-- [[file:BOOK.org::3432][3432]] hole 9: splice fresh interiors into the retained bytes, report ch...
-- [[file:BOOK.org::3442][3442]] hole 9: a line link per plan site, sites below the block shifted ...
-- [[file:BOOK.org::3448][3448]] hole 9: system diff -u over the two named bodies, temp-file heade...
-- [[file:BOOK.org::3844][3844]] badge: PLANNED stage 12 adds the test below (plan)
-- [[file:BOOK.org::3903][3903]] hole 6: ORACLE=1 in the environment
-- [[file:BOOK.org::3907][3907]] hole 6: UPDATE=1 in the environment
-- [[file:BOOK.org::3913][3913]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
-- [[file:BOOK.org::3925][3925]] hole 6: write the txtar's input files into dir, and name the book...
-- [[file:BOOK.org::3931][3931]] hole 6: copy lit/ in, run batch Emacs with the driver, fail loudl...
-- [[file:BOOK.org::3935][3935]] hole 6: every file on both sides, byte for byte, ignoring the inputs
-- [[file:BOOK.org::3939][3939]] hole 6: rewrite the fixture's want/ files from the oracle tree
+- [[file:BOOK.org::100][100]] entry: PLANNED Stage 12: the fixtures chapter
+- [[file:BOOK.org::163][163]] entry: PLANNED Stage 6: the oracle harness
+- [[file:BOOK.org::271][271]] entry: PLANNED Stage 7: org comments
+- [[file:BOOK.org::314][314]] entry: PLANNED Stage 8: noweb
+- [[file:BOOK.org::351][351]] entry: PLANNED Stage 9: dynamic blocks
+- [[file:BOOK.org::398][398]] entry: PLANNED Stage 10: the fence
+- [[file:BOOK.org::427][427]] entry: PLANNED Stage 11: parity and self-hosting
+- [[file:BOOK.org::475][475]] entry: PLANNED Stage 14: two defects the oracle found
+- [[file:BOOK.org::529][529]] entry: PLANNED Stage 15: one word, one meaning
+- [[file:BOOK.org::603][603]] entry: PLANNED Stage 16: rewriting the front matter
+- [[file:BOOK.org::646][646]] entry: PLANNED Stage 17: rewriting the contract
+- [[file:BOOK.org::694][694]] entry: PLANNED Stage 18: rewriting the guide
+- [[file:BOOK.org::739][739]] entry: PLANNED Stage 19: rewriting the internals
+- [[file:BOOK.org::790][790]] entry: PLANNED Stage 20: rewriting the testing chapters
+- [[file:BOOK.org::1238][1238]] badge: PLANNED stage 12 adds the paragraph below (plan)
+- [[file:BOOK.org::1439][1439]] deletion: , and ~#+include~ (org's file-inclusion
+- [[file:BOOK.org::1529][1529]] badge: PLANNED stage 12 adds the chapter below (plan)
+- [[file:BOOK.org::1570][1570]] badge: PLANNED stage 12 includes the two files below (plan)
+- [[file:BOOK.org::3447][3447]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
+- [[file:BOOK.org::3696][3696]] hole 7: extent between the anchors, then the docstring rule
+- [[file:BOOK.org::3702][3702]] hole 7: line-comment table per language, blank lines as a bare ma...
+- [[file:BOOK.org::3712][3712]] hole 8: named block first, else noweb-ref concatenation; cycles a...
+- [[file:BOOK.org::3813][3813]] hole 9: splice fresh interiors into the retained bytes, report ch...
+- [[file:BOOK.org::3823][3823]] hole 9: a line link per plan site, sites below the block shifted ...
+- [[file:BOOK.org::3829][3829]] hole 9: system diff -u over the two named bodies, temp-file heade...
+- [[file:BOOK.org::4228][4228]] badge: PLANNED stage 12 adds the test below (plan)
+- [[file:BOOK.org::4287][4287]] hole 6: ORACLE=1 in the environment
+- [[file:BOOK.org::4291][4291]] hole 6: UPDATE=1 in the environment
+- [[file:BOOK.org::4297][4297]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
+- [[file:BOOK.org::4309][4309]] hole 6: write the txtar's input files into dir, and name the book...
+- [[file:BOOK.org::4315][4315]] hole 6: copy lit/ in, run batch Emacs with the driver, fail loudl...
+- [[file:BOOK.org::4319][4319]] hole 6: every file on both sides, byte for byte, ignoring the inputs
+- [[file:BOOK.org::4323][4323]] hole 6: rewrite the fixture's want/ files from the oracle tree
 
 #+end:
 
@@ -459,6 +471,363 @@ echo ---
 grep -nE '^\*+ (PLANNED|FILLING|HOLE|LIVE|DROPPED) |^\*{15,} |HOLE[(]|\{[+][+]|\{[-][-]|\{[~][~]|\{[>][>]|[-]-planned|^#\+begin: src-block-diff|:(plan|stage[0-9]+):' BOOK.org \
   || echo no plan markup in the book
 #+end_src
+
+** PLANNED Stage 14: two defects the oracle found                  :stage14:
+:PROPERTIES:
+:CUSTOM_ID: stage-14
+:SPEC:     The subset contract; Deviations
+:DEPS:     none
+:ACCEPTANCE: a fixture per defect, each compared against Emacs rather than against expectation
+:SIZE:     ~30 lines of Go, ~20 of prose
+:END:
+
+Claim: after this stage a ~#+header:~ line reaches the block below
+it, and a block that preserves its indentation loses its leading
+blank lines the way org loses them.
+
+Both defects were found by running the two engines over the same
+book and diffing, which is what the harness in stage 6 will do for
+every fixture. Neither was visible from reading the code, and
+neither fixture existed to catch it.
+
+Decided: (1) ~#+header:~ is implemented rather than refused. The
+Deviations chapter promised a refusal, but org reads the line and
+tangles the block, and babble reads nothing and skips it in
+silence. That silence is the failure the closed header table exists
+to prevent, and refusing a construct org handles plainly would be a
+deviation invented rather than found. (2) The final trim follows
+org's own, both branches. The oracle chooses between ~(org-trim
+body t)~ and ~(org-trim (org-remove-indentation body))~, and the
+flag means leading blank lines go while the first content line keeps
+its indentation. babble trims only the right-hand side when a block
+preserves indentation, so a blank line survives there that Emacs
+drops. (3) The trim's character set loses the carriage return. Org
+trims space, tab and newline; babble trims those and a carriage
+return, so a book saved with CRLF endings would part company. No
+book in the corpus has one, which is why the difference went unseen
+and why it is worth writing down rather than leaving to luck.
+
+- [ ] plan approved (the human ticks this box)
+- [ ] a fixture per defect, each seen to fail first
+- [ ] twins accepted, live blocks deleted
+- [ ] both fixes confirmed against Emacs, not against expectation
+- [ ] census clean for stage 14, suite green
+- [ ] Changes entry dated and filed, plan entry deleted
+
+*** Changes draft
+
+#+begin_quote
+A ~#+header:~ line now reaches the block below it. Org reads one
+and tangles the block; babble read nothing and skipped the block,
+so a block configured that way vanished without a word. The body
+pipeline's final trim now follows org's own, which drops leading
+blank lines from a block that preserves its indentation while
+leaving that block's first line indented, and which leaves a
+carriage return alone.
+#+end_quote
+
+** PLANNED Stage 15: one word, one meaning                         :stage15:
+:PROPERTIES:
+:CUSTOM_ID: stage-15
+:SPEC:     every chapter
+:DEPS:     none
+:ACCEPTANCE: no book-specific word carries two meanings; no term is used before it is defined
+:SIZE:     ~200 edits, no paragraph rewritten
+:END:
+
+Claim: after this stage every book-specific word means one thing,
+every term is defined before its first use, and a reader meets each
+idea after the idea it rests on.
+
+This stage comes before the rewriting stages and not after,
+because renaming a word after a paragraph is written means writing
+that paragraph twice.
+
+Decided: (1) Twenty words carry two meanings each. Each keeps one
+sense and the other sense gets a different word:
+
+| word    | keeps            | the other sense becomes |
+|---------+------------------+-------------------------|
+| sigil   | the plan marker  | aside marker            |
+| mode    | org's parse mode | language mode           |
+| engine  | a whole tangler  | the backend             |
+| extent  | the comment span | span                    |
+| harness | the oracle rig   | the script runner       |
+| fence   | all refusals     | half the fence          |
+| census  | the grep         | the site list           |
+| switch  | org's block flag | flag                    |
+| section | org's element    | chapter, subsection     |
+| target  | a tangled file   | make rule               |
+| book    | a lit book       | this book, a fixture book |
+
+(2) Twelve concepts answer to more than one name, and each keeps
+the name that carries the most meaning: a *golden* rather than an
+expected output or a want file, because only that word promises
+where the bytes came from; a *unit* rather than a group, because
+group already means a regexp group; a *refusal* rather than a
+rejection, because rejected already names a header bin.
+
+(3) Thirteen terms are used and never defined. Two of them carry
+weight: *stage*, which the whole plan is built from, and
+*steady-state*, which is the acceptance test in seven checklists.
+Both get a definition where the plan convention is introduced.
+
+(4) Two chapters move. [[#how-the-oracle-parses][How the oracle parses]] goes before
+[[#architecture][Architecture]], because that chapter and [[#the-document-tree][The document tree]] both
+use greater, verbatim and mode three hundred lines before those
+words are defined. [[#the-fixtures][The fixtures]] goes beside [[#testing][Testing]], because the
+two define a fixture twice, two thousand lines apart.
+
+(5) [[#reading-org][Reading org]] gains six sections: the loop, the dispatcher, the
+element parsers, the line shapes, the todo words, and header
+resolution. It is the longest chapter in the book, it holds six
+subjects, and it has no subheading and no goal sentence.
+
+- [ ] plan approved (the human ticks this box)
+- [ ] the collision table applied, every word checked by grep
+- [ ] chapters moved, every cross-reference still resolving
+- [ ] sections added, each holding one subject
+- [ ] census clean for stage 15, suite green, anchors still match org
+- [ ] Changes entry dated and filed, plan entry deleted
+
+*** Changes draft
+
+#+begin_quote
+Twenty words in the book carried two meanings each, and mode
+carried three. Each now means one thing, and the second sense has
+its own word. Two chapters moved so that no term is used three
+hundred lines before it is defined, and the longest chapter gained
+the six sections its six subjects had been sharing.
+#+end_quote
+
+** PLANNED Stage 16: rewriting the front matter                    :stage16:
+:PROPERTIES:
+:CUSTOM_ID: stage-16
+:SPEC:     Introduction; Architecture
+:DEPS:     stage 15
+:ACCEPTANCE: a developer who does not know org can read both chapters in order
+:SIZE:     ~94 lines of prose, 12 paragraphs
+:END:
+
+Claim: after this stage the two chapters that frame the book state
+what babble is and how it is shaped, in that order, with nothing
+used before it is introduced.
+
+Decided: (1) The literate-programming explanation opens the
+Introduction, and the babble paragraph follows it. The chapter
+currently uses tangling four times before defining it. (2) The
+promise that the tooling reorders code gains its one missing
+clause: in this subset noweb does the reordering and nothing else
+does. As written the reader expects a mechanism the program does
+not have. (3) The four hundred megabytes and the one second get a
+measurement or they go. They are the only reason the book gives
+for babble existing, and the only claim in the book with no
+mechanism behind it. (4) Architecture stops claiming the tree
+decides everything, since one of the two dynamic-block writers
+decides by re-scanning text; the exception attaches to the claim
+instead of following it fourteen lines later.
+
+- [ ] plan approved (the human ticks this box)
+- [ ] every claim in both chapters traced to code or to a citation
+- [ ] the four-hundred-megabyte claim measured or removed
+- [ ] no term used before its definition
+- [ ] census clean for stage 16, suite green
+- [ ] Changes entry dated and filed, plan entry deleted
+
+*** Changes draft
+
+#+begin_quote
+The Introduction now explains literate programming before it
+explains babble, and says what does the reordering it promises.
+Architecture states its exception where it makes the claim rather
+than fourteen lines later.
+#+end_quote
+
+** PLANNED Stage 17: rewriting the contract                        :stage17:
+:PROPERTIES:
+:CUSTOM_ID: stage-17
+:SPEC:     The subset contract; Deviations
+:DEPS:     stage 14; stage 15
+:ACCEPTANCE: every sentence traceable to code or to the oracle by line
+:SIZE:     ~189 lines of prose, 14 paragraphs
+:END:
+
+Claim: after this stage every sentence in the two chapters that
+define babble's behavior is true of the program, and each one can
+be traced to code or to org by line.
+
+These are the chapters where a wrong sentence costs the most,
+because a reader who cannot run Emacs has nothing else to check
+against. Six sentences are currently wrong.
+
+Decided: (1) The opening sentence stops describing a refresh step
+the program does not have. (2) Quote blocks stop being listed as
+text: org parses them as greater elements, and a src block inside
+one tangles, which the oracle confirms. (3) The padline rule stops
+saying exactly one blank line, since the blank line is switchable
+and an empty block contributes its own. (4) The body pipeline is
+described as two branches, because it is two. (5) The merge order
+drops the language-defaults stage the program does not have and
+gains the file-property stage it does. (6) Inheritance is
+described as wholesale in the contract, not just in the code
+chapter and the journal. (7) The word proof leaves the inert bin's
+paragraph unless the enumeration behind it goes in.
+
+- [ ] plan approved (the human ticks this box)
+- [ ] every sentence traced to code or to org by line
+- [ ] the six wrong sentences fixed, each checked against the oracle
+- [ ] the behavior the chapters never mention either added or deliberately left out
+- [ ] census clean for stage 17, suite green
+- [ ] Changes entry dated and filed, plan entry deleted
+
+*** Changes draft
+
+#+begin_quote
+The contract chapters had six sentences that were not true of the
+program: a refresh step that does not run, quote blocks called
+text when a block inside one tangles, one blank line where the
+count varies, one body pipeline where there are two, a merge stage
+the program does not have, and inheritance described as if it
+merged key by key.
+#+end_quote
+
+** PLANNED Stage 18: rewriting the guide                           :stage18:
+:PROPERTIES:
+:CUSTOM_ID: stage-18
+:SPEC:     Writing a book for babble; The fixtures
+:DEPS:     stage 15; stage 17
+:ACCEPTANCE: a reader can write a book and add a fixture without opening any other chapter
+:SIZE:     ~204 lines of prose, 43 paragraphs
+:END:
+
+Claim: after this stage a reader can write a book babble tangles,
+and add a fixture that pins it, by following these two chapters
+and nothing else.
+
+Decided: (1) The inheritance rule gains the word wholesale. As
+written it teaches a per-key merge, and a writer who follows it
+nests a drawer, omits a key, and loses a setting. (2) The
+doc-comment rule stops being the paragraph directly above, which
+does not predict what a second commented block under one heading
+gets, which is nothing. (3) The escaping question gets its answer:
+a comma makes a delimiter acceptable, and the chapter says so
+where it currently says unescaped in one place and quoted verbatim
+in another. (4) The banner's fixed name is stated at the first
+banner rather than four hundred lines later. (5) The fixtures
+chapter states where a golden's file goes, since reminting depends
+on the answer and the chapter that teaches fixture-writing does
+not give it.
+
+- [ ] plan approved (the human ticks this box)
+- [ ] every example run against the program, output pasted from the run
+- [ ] the inheritance and doc-comment rules predict what the program does
+- [ ] the fixture recipe followed end to end by someone who has not seen it
+- [ ] census clean for stage 18, suite green
+- [ ] Changes entry dated and filed, plan entry deleted
+
+*** Changes draft
+
+#+begin_quote
+The guide taught two rules that did not predict the program's
+behavior: header inheritance, which replaces wholesale rather than
+merging key by key, and doc comments, which come from an extent
+and not from the paragraph directly above. Both now say what
+happens. The fixtures chapter says where a golden goes, which
+reminting depends on.
+#+end_quote
+
+** PLANNED Stage 19: rewriting the internals                       :stage19:
+:PROPERTIES:
+:CUSTOM_ID: stage-19
+:SPEC:     How the oracle parses; Reading org; The document tree; The tangle engine; Dynamic-block refresh; The command line
+:DEPS:     stage 15
+:ACCEPTANCE: every paragraph agrees with the code printed beneath it
+:SIZE:     ~379 lines of prose, 76 paragraphs
+:END:
+
+Claim: after this stage every paragraph in the six code chapters
+agrees with the block printed below it, and a paragraph that
+describes unbuilt behavior says so.
+
+The book writes steady-state prose, which is what makes it
+readable while it is half built. The rule breaks where a paragraph
+describes a flow and the function below it does not have that
+flow. Six paragraphs currently do this, and the reader has no way
+to tell them from the ones that are true.
+
+Decided: (1) A paragraph above a block describes that block. Where
+the finished behavior is worth stating and does not exist yet, it
+is stated as what the stage will add, with the stage named. (2)
+The dispatcher's order is printed in the order the code tests, not
+reversed. It is the one fact that chapter exists to convey. (3)
+The planning-line deviation goes, because it was fixed and the
+journal says so. (4) The claim that no identifier spells org
+narrows to what is true, which is that no org syntax is parsed
+here. (5) The tangle chapter stops crediting the write step with a
+refusal that runs during collection, which is where a defect was
+fixed to. (6) Three behaviors get the mechanism they lack: the
+mkdirp rule across a unit, the tab that becomes spaces, and why
+collection keeps walking after it records an error.
+
+- [ ] plan approved (the human ticks this box)
+- [ ] every paragraph checked against the block below it
+- [ ] unbuilt behavior named as unbuilt, with its stage
+- [ ] the dispatcher order matches the code, verified by reading both
+- [ ] census clean for stage 19, suite green, anchors still match org
+- [ ] Changes entry dated and filed, plan entry deleted
+
+*** Changes draft
+
+#+begin_quote
+Six paragraphs in the code chapters described functions that do
+something else, including the tangle flow, which was said to
+refresh dynamic blocks and reparse, and the dispatcher's order,
+which was printed backwards in the chapter whose subject is the
+order. Each paragraph now describes the block below it, and prose
+about behavior that is not built yet says which stage builds it.
+#+end_quote
+
+** PLANNED Stage 20: rewriting the testing chapters                :stage20:
+:PROPERTIES:
+:CUSTOM_ID: stage-20
+:SPEC:     Testing; The test suite; Reproducing this document
+:DEPS:     stage 15; stage 19
+:ACCEPTANCE: no test or fixture is named that does not exist
+:SIZE:     ~116 lines of prose, 23 paragraphs
+:END:
+
+Claim: after this stage the testing chapters describe the suite
+that exists, and every test and fixture they name can be opened.
+
+Decided: (1) Three named tests and two named fixtures do not
+exist, and each is either written or unnamed. Two of them are
+offered as the evidence for a contract claim, which makes them
+worse than absent. (2) The skeleton-era sentences go: the harness
+is not the only executable code, the fixture skip is not waiting
+to be retired, and the suite is not empty. (3) The three lists of
+real books become one list, since the book currently gives three
+different sets and calls two of them the three real books. (4) The
+CI paragraph describes CI or waits for it. (5) The last chapter
+says that reproducing the book still goes through Emacs until
+self-hosting lands, which the first chapter's promise otherwise
+appears to retract.
+
+- [ ] plan approved (the human ticks this box)
+- [ ] every named test and fixture opened and confirmed to exist
+- [ ] the real-book list stated once and referenced elsewhere
+- [ ] no sentence describing the skeleton's suite survives
+- [ ] census clean for stage 20, suite green
+- [ ] Changes entry dated and filed, plan entry deleted
+
+*** Changes draft
+
+#+begin_quote
+The testing chapters named three tests and two fixtures that do
+not exist, two of them offered as the evidence for a contract
+claim. They also still described the skeleton's suite, which was
+empty, and gave three different answers to which books the parity
+claim covers. The chapters now describe the suite on disk.
+#+end_quote
 
 * Introduction
 
@@ -1096,6 +1465,9 @@ construct and the supported alternative.
   Bytes are identical in all four cases; only mtimes differ.
 
 * Architecture
+:PROPERTIES:
+:CUSTOM_ID: architecture
+:END:
 
 babble parses first: the whole book becomes a logical tree, and
 the tangler and the dynamic-block writers decide everything
@@ -1161,6 +1533,9 @@ badge and nothing else.
 *************** END
 
 * The fixtures
+:PROPERTIES:
+:CUSTOM_ID: the-fixtures
+:END:
 
 The suite's inputs live on disk, not in this book, and this
 chapter says what they are, how to rebuild one, and how to add
@@ -1385,6 +1760,9 @@ func tangleCmd(bookPath string, stderr io.Writer) int {
 #+end_src
 
 * The document tree
+:PROPERTIES:
+:CUSTOM_ID: the-document-tree
+:END:
 
 Package book is the tree the engine consumes, and nothing in it
 spells org. That absence is the package's whole job: it is the
@@ -1954,6 +2332,9 @@ node type, which is the shape the remaining stages pay each time
 they widen the subset.
 
 * Reading org
+:PROPERTIES:
+:CUSTOM_ID: reading-org
+:END:
 
 Package org is the frontend: everything that knows the input
 syntax lives here, and it hands the engine a finished tree. Parse
@@ -3450,6 +3831,9 @@ func srcBlockDiff(d *book.Document, at *book.DynamicBlock) (string, error) {
 #+end_src
 
 * Testing
+:PROPERTIES:
+:CUSTOM_ID: testing
+:END:
 
 Two layers hold babble to the oracle. The golden suite checks
 every fixture against its committed expected output and needs no
