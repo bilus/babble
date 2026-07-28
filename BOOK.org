@@ -56,31 +56,32 @@ every dynamic block, and the labels are spelled without the sigils,
 so the census never matches its own index.
 
 #+begin: plan-toc
-- [[file:BOOK.org::87][87]] entry: PLANNED Stage 12: the fixtures chapter
-- [[file:BOOK.org::146][146]] entry: PLANNED Stage 6: the oracle harness
-- [[file:BOOK.org::254][254]] entry: PLANNED Stage 7: org comments
-- [[file:BOOK.org::297][297]] entry: PLANNED Stage 8: noweb
-- [[file:BOOK.org::334][334]] entry: PLANNED Stage 9: dynamic blocks
-- [[file:BOOK.org::381][381]] entry: PLANNED Stage 10: the fence
-- [[file:BOOK.org::410][410]] entry: PLANNED Stage 11: parity and self-hosting
-- [[file:BOOK.org::864][864]] badge: PLANNED stage 12 adds the paragraph below (plan)
-- [[file:BOOK.org::1060][1060]] deletion: , and ~#+include~ (org's file-inclusion
-- [[file:BOOK.org::1147][1147]] badge: PLANNED stage 12 adds the chapter below (plan)
-- [[file:BOOK.org::1184][1184]] badge: PLANNED stage 12 includes the two files below (plan)
-- [[file:BOOK.org::3042][3042]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
-- [[file:BOOK.org::3281][3281]] hole 7: extent between the anchors, then the docstring rule
-- [[file:BOOK.org::3287][3287]] hole 7: line-comment table per language, blank lines as a bare ma...
-- [[file:BOOK.org::3297][3297]] hole 8: named block first, else noweb-ref concatenation; cycles a...
-- [[file:BOOK.org::3394][3394]] hole 9: splice fresh interiors into the retained bytes, report ch...
-- [[file:BOOK.org::3404][3404]] hole 9: a line link per plan site, sites below the block shifted ...
-- [[file:BOOK.org::3410][3410]] hole 9: system diff -u over the two named bodies, temp-file heade...
-- [[file:BOOK.org::3816][3816]] hole 6: ORACLE=1 in the environment
-- [[file:BOOK.org::3820][3820]] hole 6: UPDATE=1 in the environment
-- [[file:BOOK.org::3826][3826]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
-- [[file:BOOK.org::3838][3838]] hole 6: write the txtar's input files into dir, and name the book...
-- [[file:BOOK.org::3844][3844]] hole 6: copy lit/ in, run batch Emacs with the driver, fail loudl...
-- [[file:BOOK.org::3848][3848]] hole 6: every file on both sides, byte for byte, ignoring the inputs
-- [[file:BOOK.org::3852][3852]] hole 6: rewrite the fixture's want/ files from the oracle tree
+- [[file:BOOK.org::88][88]] entry: PLANNED Stage 12: the fixtures chapter
+- [[file:BOOK.org::151][151]] entry: PLANNED Stage 6: the oracle harness
+- [[file:BOOK.org::259][259]] entry: PLANNED Stage 7: org comments
+- [[file:BOOK.org::302][302]] entry: PLANNED Stage 8: noweb
+- [[file:BOOK.org::339][339]] entry: PLANNED Stage 9: dynamic blocks
+- [[file:BOOK.org::386][386]] entry: PLANNED Stage 10: the fence
+- [[file:BOOK.org::415][415]] entry: PLANNED Stage 11: parity and self-hosting
+- [[file:BOOK.org::869][869]] badge: PLANNED stage 12 adds the paragraph below (plan)
+- [[file:BOOK.org::1065][1065]] deletion: , and ~#+include~ (org's file-inclusion
+- [[file:BOOK.org::1152][1152]] badge: PLANNED stage 12 adds the chapter below (plan)
+- [[file:BOOK.org::1189][1189]] badge: PLANNED stage 12 includes the two files below (plan)
+- [[file:BOOK.org::3050][3050]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
+- [[file:BOOK.org::3289][3289]] hole 7: extent between the anchors, then the docstring rule
+- [[file:BOOK.org::3295][3295]] hole 7: line-comment table per language, blank lines as a bare ma...
+- [[file:BOOK.org::3305][3305]] hole 8: named block first, else noweb-ref concatenation; cycles a...
+- [[file:BOOK.org::3402][3402]] hole 9: splice fresh interiors into the retained bytes, report ch...
+- [[file:BOOK.org::3412][3412]] hole 9: a line link per plan site, sites below the block shifted ...
+- [[file:BOOK.org::3418][3418]] hole 9: system diff -u over the two named bodies, temp-file heade...
+- [[file:BOOK.org::3814][3814]] badge: PLANNED stage 12 adds the test below (plan)
+- [[file:BOOK.org::3873][3873]] hole 6: ORACLE=1 in the environment
+- [[file:BOOK.org::3877][3877]] hole 6: UPDATE=1 in the environment
+- [[file:BOOK.org::3883][3883]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
+- [[file:BOOK.org::3895][3895]] hole 6: write the txtar's input files into dir, and name the book...
+- [[file:BOOK.org::3901][3901]] hole 6: copy lit/ in, run batch Emacs with the driver, fail loudl...
+- [[file:BOOK.org::3905][3905]] hole 6: every file on both sides, byte for byte, ignoring the inputs
+- [[file:BOOK.org::3909][3909]] hole 6: rewrite the fixture's want/ files from the oracle tree
 
 #+end:
 
@@ -111,7 +112,11 @@ reader sees a whole one without leaving the page, and names the
 long ones by path. (3) The manual Emacs recipe goes in the book
 beside the harness switch, because a reader who has run it once
 understands what a golden is; a reader who has only seen UPDATE=1
-knows a flag.
+knows a flag. (4) The chapter's table is hand-written, and a test
+keeps it honest: it fails when the table and the directory
+disagree. A generator would keep it fresh too, but only a dynamic
+block keeps it fresh inside Emacs, and that costs a writer in the
+shared driver for one table.
 
 Decided again, mid-review: the first draft of this entry argued
 that ~#+include~ should be refused because org's silence is a
@@ -1256,7 +1261,10 @@ Then, in order:
 5. If the fixture pins a deviation, say so in an oracle skip line
    with the reason. Emacs does not refuse what babble refuses, so
    a cross-check would fail on a difference that is the point.
-6. Run the suite twice: once plain, once with the oracle. The
+6. Add it to the table above, with a few words on what it pins.
+   A test compares that table against the directory, so a fixture
+   added and not listed fails the suite.
+7. Run the suite twice: once plain, once with the oracle. The
    first proves the goldens match what babble does, the second
    proves they match what Emacs does. Only the pair is evidence.
 
@@ -3492,6 +3500,7 @@ package main
 import (
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/rogpeppe/go-internal/testscript"
@@ -3798,6 +3807,54 @@ func TestSkipsIdenticalWrites(t *testing.T) {
 		t.Fatal(err)
 	} else if st.ModTime().Equal(old) {
 		t.Errorf("did not write a target whose bytes changed")
+	}
+}
+#+end_src
+
+*************** PLANNED stage 12 adds the test below ([[#stage-12][plan]]) :stage12:
+The table is prose, so nothing stops it drifting from the
+directory it describes. This is what stops it.
+*************** END
+
+TestFixtureTable keeps the fixtures chapter honest. The table
+there is written by hand, which is worth it for a column that says
+what a fixture is for, and worthless if it quietly stops matching
+the directory.
+
+#+name: TestFixtureTable
+#+begin_src go :tangle main_test.go :comments org
+func TestFixtureTable(t *testing.T) {
+	book, err := os.ReadFile("BOOK.org")
+	if err != nil {
+		t.Fatal(err)
+	}
+	listed := map[string]bool{}
+	for _, line := range strings.Split(string(book), "\n") {
+		cells := strings.Split(line, "|")
+		if len(cells) < 3 {
+			continue
+		}
+		if name := strings.TrimSpace(cells[1]); strings.HasSuffix(name, ".txtar") {
+			listed[name] = true
+		}
+	}
+	found, err := filepath.Glob(filepath.Join("testdata", "script", "*.txtar"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	onDisk := map[string]bool{}
+	for _, path := range found {
+		onDisk[filepath.Base(path)] = true
+	}
+	for name := range onDisk {
+		if !listed[name] {
+			t.Errorf("%s is on disk and missing from the chapter's table", name)
+		}
+	}
+	for name := range listed {
+		if !onDisk[name] {
+			t.Errorf("%s is in the chapter's table and not on disk", name)
+		}
 	}
 }
 #+end_src
