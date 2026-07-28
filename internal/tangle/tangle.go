@@ -58,12 +58,16 @@ func collect(d *book.Document) ([]unit, error) {
 				fail("%s:%d: src block without a language", d.Path, n.Line)
 				return true
 			}
-			if n.Params.Tangle == "no" {
+			if n.Params.Tangle == "no" || n.Params.Tangle == "" {
 				return true
 			}
 			target, err := targetFor(d, n)
 			if err != nil {
 				fail("%s", err)
+				return true
+			}
+			if sameFile(d.Path, target) {
+				fail("%s:%d: refusing to tangle into the book itself: %s", d.Path, n.Line, target)
 				return true
 			}
 			i, seen := at[target]
@@ -113,16 +117,18 @@ func langExt(lang string) string {
 func bodyText(d *book.Document, b *book.SrcBlock) (string, error) {
 	body := unescapeCommas(string(d.Source[b.Body.Start:b.Body.End]))
 	body = strings.TrimSuffix(body, "\n")
-	if b.Params.PreserveIndent {
-		return strings.TrimRight(body, " \t\n\r"), nil
+	if !b.Params.PreserveIndent {
+		body = dedent(body)
 	}
-	body = dedent(body)
 	if b.Params.Noweb {
 		expanded, err := expandNoweb(d, b, body)
 		if err != nil {
 			return "", err
 		}
 		body = expanded
+	}
+	if b.Params.PreserveIndent {
+		return strings.TrimRight(body, " \t\n\r"), nil
 	}
 	return strings.Trim(dedent(body), " \t\n\r"), nil
 }
@@ -204,7 +210,10 @@ func cutColumns(line string, n int) string {
 		}
 		i++
 	}
-	return strings.Repeat(" ", col-n) + line[i:]
+	if col > n {
+		return strings.Repeat(" ", col-n) + line[i:]
+	}
+	return line[i:]
 }
 
 // commentFor and wrapComment split the doc-comment story where the
@@ -272,10 +281,14 @@ func assemble(d *book.Document, u unit) ([]byte, error) {
 }
 
 func writeTarget(bookPath string, u unit, content []byte) error {
-	if sameFile(bookPath, u.target) {
-		return fmt.Errorf("refusing to tangle into the book itself: %s", u.target)
+	mkdirp := false
+	for _, b := range u.blocks {
+		if b.Params.Mkdirp {
+			mkdirp = true
+			break
+		}
 	}
-	if u.blocks[0].Params.Mkdirp {
+	if mkdirp {
 		if err := os.MkdirAll(filepath.Dir(u.target), 0o755); err != nil {
 			return err
 		}

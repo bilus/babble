@@ -56,41 +56,33 @@ every dynamic block, and the labels are spelled without the sigils,
 so the census never matches its own index.
 
 #+begin: plan-toc
-- [[file:BOOK.org::97][97]] entry: PLANNED Stage 12: the fixtures chapter
-- [[file:BOOK.org::160][160]] entry: PLANNED Stage 13: the defects the claim audit found
-- [[file:BOOK.org::221][221]] entry: PLANNED Stage 6: the oracle harness
-- [[file:BOOK.org::329][329]] entry: PLANNED Stage 7: org comments
-- [[file:BOOK.org::372][372]] entry: PLANNED Stage 8: noweb
-- [[file:BOOK.org::409][409]] entry: PLANNED Stage 9: dynamic blocks
-- [[file:BOOK.org::456][456]] entry: PLANNED Stage 10: the fence
-- [[file:BOOK.org::485][485]] entry: PLANNED Stage 11: parity and self-hosting
-- [[file:BOOK.org::939][939]] badge: PLANNED stage 12 adds the paragraph below (plan)
-- [[file:BOOK.org::1135][1135]] deletion: , and ~#+include~ (org's file-inclusion
-- [[file:BOOK.org::1222][1222]] badge: PLANNED stage 12 adds the chapter below (plan)
-- [[file:BOOK.org::1259][1259]] badge: PLANNED stage 12 includes the two files below (plan)
-- [[file:BOOK.org::3130][3130]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
-- [[file:BOOK.org::3223][3223]] badge: PLANNED stage 13 replaces the block above (plan)
-- [[file:BOOK.org::3230][3230]] twin of collect
-- [[file:BOOK.org::3330][3330]] badge: PLANNED stage 13 replaces the block above (plan)
-- [[file:BOOK.org::3337][3337]] twin of bodyText
-- [[file:BOOK.org::3445][3445]] badge: PLANNED stage 13 replaces the block above (plan)
-- [[file:BOOK.org::3451][3451]] twin of cutColumns
-- [[file:BOOK.org::3479][3479]] hole 7: extent between the anchors, then the docstring rule
-- [[file:BOOK.org::3485][3485]] hole 7: line-comment table per language, blank lines as a bare ma...
-- [[file:BOOK.org::3495][3495]] hole 8: named block first, else noweb-ref concatenation; cycles a...
-- [[file:BOOK.org::3580][3580]] badge: PLANNED stage 13 replaces the block above (plan)
-- [[file:BOOK.org::3587][3587]] twin of writeTarget
-- [[file:BOOK.org::3633][3633]] hole 9: splice fresh interiors into the retained bytes, report ch...
-- [[file:BOOK.org::3643][3643]] hole 9: a line link per plan site, sites below the block shifted ...
-- [[file:BOOK.org::3649][3649]] hole 9: system diff -u over the two named bodies, temp-file heade...
-- [[file:BOOK.org::4045][4045]] badge: PLANNED stage 12 adds the test below (plan)
-- [[file:BOOK.org::4104][4104]] hole 6: ORACLE=1 in the environment
-- [[file:BOOK.org::4108][4108]] hole 6: UPDATE=1 in the environment
-- [[file:BOOK.org::4114][4114]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
-- [[file:BOOK.org::4126][4126]] hole 6: write the txtar's input files into dir, and name the book...
-- [[file:BOOK.org::4132][4132]] hole 6: copy lit/ in, run batch Emacs with the driver, fail loudl...
-- [[file:BOOK.org::4136][4136]] hole 6: every file on both sides, byte for byte, ignoring the inputs
-- [[file:BOOK.org::4140][4140]] hole 6: rewrite the fixture's want/ files from the oracle tree
+- [[file:BOOK.org::89][89]] entry: PLANNED Stage 12: the fixtures chapter
+- [[file:BOOK.org::152][152]] entry: PLANNED Stage 13: the defects the claim audit found
+- [[file:BOOK.org::213][213]] entry: PLANNED Stage 6: the oracle harness
+- [[file:BOOK.org::321][321]] entry: PLANNED Stage 7: org comments
+- [[file:BOOK.org::364][364]] entry: PLANNED Stage 8: noweb
+- [[file:BOOK.org::401][401]] entry: PLANNED Stage 9: dynamic blocks
+- [[file:BOOK.org::448][448]] entry: PLANNED Stage 10: the fence
+- [[file:BOOK.org::477][477]] entry: PLANNED Stage 11: parity and self-hosting
+- [[file:BOOK.org::931][931]] badge: PLANNED stage 12 adds the paragraph below (plan)
+- [[file:BOOK.org::1132][1132]] deletion: , and ~#+include~ (org's file-inclusion
+- [[file:BOOK.org::1219][1219]] badge: PLANNED stage 12 adds the chapter below (plan)
+- [[file:BOOK.org::1257][1257]] badge: PLANNED stage 12 includes the two files below (plan)
+- [[file:BOOK.org::3128][3128]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
+- [[file:BOOK.org::3377][3377]] hole 7: extent between the anchors, then the docstring rule
+- [[file:BOOK.org::3383][3383]] hole 7: line-comment table per language, blank lines as a bare ma...
+- [[file:BOOK.org::3393][3393]] hole 8: named block first, else noweb-ref concatenation; cycles a...
+- [[file:BOOK.org::3494][3494]] hole 9: splice fresh interiors into the retained bytes, report ch...
+- [[file:BOOK.org::3504][3504]] hole 9: a line link per plan site, sites below the block shifted ...
+- [[file:BOOK.org::3510][3510]] hole 9: system diff -u over the two named bodies, temp-file heade...
+- [[file:BOOK.org::3906][3906]] badge: PLANNED stage 12 adds the test below (plan)
+- [[file:BOOK.org::3965][3965]] hole 6: ORACLE=1 in the environment
+- [[file:BOOK.org::3969][3969]] hole 6: UPDATE=1 in the environment
+- [[file:BOOK.org::3975][3975]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
+- [[file:BOOK.org::3987][3987]] hole 6: write the txtar's input files into dir, and name the book...
+- [[file:BOOK.org::3993][3993]] hole 6: copy lit/ in, run batch Emacs with the driver, fail loudl...
+- [[file:BOOK.org::3997][3997]] hole 6: every file on both sides, byte for byte, ignoring the inputs
+- [[file:BOOK.org::4001][4001]] hole 6: rewrite the fixture's want/ files from the oracle tree
 
 #+end:
 
@@ -198,11 +190,11 @@ BOOK.org whatever the book is called. Both engines hardcode the
 same string, so matching the oracle means keeping it. The contract
 gains a line saying so.
 
-- [ ] plan approved (the human ticks this box)
-- [ ] a fixture per defect, each seen to fail first
-- [ ] five twins accepted, live blocks deleted
-- [ ] the banner's fixed name stated in the contract
-- [ ] census clean, suite green, anchors still match org
+- [X] plan approved (the human ticks this box)
+- [X] a fixture per defect, each seen to fail first
+- [X] five twins accepted, live blocks deleted
+- [X] the banner's fixed name stated in the contract
+- [X] census clean, suite green, anchors still match org
 - [ ] Changes entry dated and filed, plan entry deleted
 
 *** Changes draft
@@ -1017,6 +1009,11 @@ EDIT.~, in the file's own comment syntax: ~//~ for .go, ~;;~ for
 .el, ~--~ for .lua, ~#~ for everything else, followed by one blank
 line.
 
+The banner names BOOK.org whatever the book is actually called.
+Both engines hardcode the same string, so a book named b.org still
+gets a banner pointing at BOOK.org. Matching the oracle means
+keeping it.
+
 ** Org comments
 
 Under ~:comments org~, the text between a block and the structure
@@ -1255,6 +1252,7 @@ The suite as it stands, by what each file pins:
 | parse-blocks.txtar | every block shape, and resolved headers |
 | tangle-files.txtar | targets, order, banners, padline, mkdirp |
 | tangle-guards.txtar | the two refusals a tangle owes its reader |
+| tangle-defects.txtar | five defects a claim audit found |
 
 *************** PLANNED stage 12 includes the two files below ([[#stage-12][plan]]) :stage12:
 The weave expands these; the tangle walks past them. What a reader
@@ -3198,55 +3196,6 @@ func collect(d *book.Document) ([]unit, error) {
 				fail("%s:%d: src block without a language", d.Path, n.Line)
 				return true
 			}
-			if n.Params.Tangle == "no" {
-				return true
-			}
-			target, err := targetFor(d, n)
-			if err != nil {
-				fail("%s", err)
-				return true
-			}
-			i, seen := at[target]
-			if !seen {
-				i = len(units)
-				at[target] = i
-				units = append(units, unit{target: target})
-			}
-			units[i].blocks = append(units[i].blocks, n)
-		}
-		return true
-	})
-	return units, firstErr
-}
-#+end_src
-
-*************** PLANNED stage 13 replaces the block above ([[#stage-13][plan]]) :stage13:
-A block whose :tangle is empty resolves to the book's own
-directory, and the book-itself refusal fires too late to stop the
-writes before it.
-Accept by swapping the two blocks' ~:tangle~ headers.
-*************** END
-
-#+name: collect--planned
-#+begin_src go :tangle no :comments org
-func collect(d *book.Document) ([]unit, error) {
-	var units []unit
-	var firstErr error
-	at := map[string]int{}
-	fail := func(format string, args ...any) {
-		if firstErr == nil {
-			firstErr = fmt.Errorf(format, args...)
-		}
-	}
-	d.Walk(func(n book.Node) bool {
-		switch n := n.(type) {
-		case *book.Headline:
-			return !n.Commented && !n.Archived
-		case *book.SrcBlock:
-			if n.Lang == "" {
-				fail("%s:%d: src block without a language", d.Path, n.Line)
-				return true
-			}
 			if n.Params.Tangle == "no" || n.Params.Tangle == "" {
 				return true
 			}
@@ -3309,33 +3258,6 @@ dedent and the final trim run after noweb expansion, exactly as
 the oracle orders them.
 
 #+begin_src go :tangle internal/tangle/tangle.go :comments org
-func bodyText(d *book.Document, b *book.SrcBlock) (string, error) {
-	body := unescapeCommas(string(d.Source[b.Body.Start:b.Body.End]))
-	body = strings.TrimSuffix(body, "\n")
-	if b.Params.PreserveIndent {
-		return strings.TrimRight(body, " \t\n\r"), nil
-	}
-	body = dedent(body)
-	if b.Params.Noweb {
-		expanded, err := expandNoweb(d, b, body)
-		if err != nil {
-			return "", err
-		}
-		body = expanded
-	}
-	return strings.Trim(dedent(body), " \t\n\r"), nil
-}
-#+end_src
-
-*************** PLANNED stage 13 replaces the block above ([[#stage-13][plan]]) :stage13:
-A block carrying -i returns before expandNoweb, so a block with
-both never expands. Org expands first and preserves indentation
-after.
-Accept by swapping the two blocks' ~:tangle~ headers.
-*************** END
-
-#+name: bodyText--planned
-#+begin_src go :tangle no :comments org
 func bodyText(d *book.Document, b *book.SrcBlock) (string, error) {
 	body := unescapeCommas(string(d.Source[b.Body.Start:b.Body.End]))
 	body = strings.TrimSuffix(body, "\n")
@@ -3438,37 +3360,13 @@ func cutColumns(line string, n int) string {
 		}
 		i++
 	}
-	return strings.Repeat(" ", col-n) + line[i:]
-}
-#+end_src
-
-*************** PLANNED stage 13 replaces the block above ([[#stage-13][plan]]) :stage13:
-A whitespace-only line shorter than the measure leaves col
-below n, and the pad count goes negative.
-Accept by swapping the two blocks' ~:tangle~ headers.
-*************** END
-
-#+name: cutColumns--planned
-#+begin_src go :tangle no :comments org
-func cutColumns(line string, n int) string {
-	col, i := 0, 0
-	for i < len(line) && col < n {
-		switch line[i] {
-		case ' ':
-			col++
-		case '\t':
-			col += 8 - col%8
-		default:
-			return line[i:]
-		}
-		i++
-	}
 	if col > n {
 		return strings.Repeat(" ", col-n) + line[i:]
 	}
 	return line[i:]
 }
 #+end_src
+
 
 commentFor and wrapComment split the doc-comment story where the
 driver splits it: what text the extent and docstring rule choose,
@@ -3549,43 +3447,6 @@ func assemble(d *book.Document, u unit) ([]byte, error) {
 #+end_src
 
 #+begin_src go :tangle internal/tangle/tangle.go :comments org
-func writeTarget(bookPath string, u unit, content []byte) error {
-	if sameFile(bookPath, u.target) {
-		return fmt.Errorf("refusing to tangle into the book itself: %s", u.target)
-	}
-	if u.blocks[0].Params.Mkdirp {
-		if err := os.MkdirAll(filepath.Dir(u.target), 0o755); err != nil {
-			return err
-		}
-	}
-	if old, err := os.ReadFile(u.target); err == nil && bytes.Equal(old, content) {
-		return nil
-	}
-	return os.WriteFile(u.target, content, 0o644)
-}
-
-func sameFile(a, b string) bool {
-	pa, err := filepath.Abs(a)
-	if err != nil {
-		return a == b
-	}
-	pb, err := filepath.Abs(b)
-	if err != nil {
-		return a == b
-	}
-	return pa == pb
-}
-#+end_src
-
-*************** PLANNED stage 13 replaces the block above ([[#stage-13][plan]]) :stage13:
-The directory comes from the first block alone, so a later block
-asking for one is ignored. The book-itself refusal moves to
-collection, where the other refusals live.
-Accept by swapping the two blocks' ~:tangle~ headers.
-*************** END
-
-#+name: writeTarget--planned
-#+begin_src go :tangle no :comments org
 func writeTarget(bookPath string, u unit, content []byte) error {
 	mkdirp := false
 	for _, b := range u.blocks {

@@ -1,0 +1,65 @@
+# The five defects a claim audit found, each pinned so it cannot come
+# back: a short blank line inside an indented body, an empty :tangle,
+# preserving indentation without losing noweb, a directory asked for
+# by a later block, and a refused book leaving no files behind.
+
+# oracle: skip three of these are refusals, and the panic case is a
+# crash Emacs never had.
+
+exec babble tangle indent.org
+cmp out.go want/out.go
+
+exec babble tangle empty.org
+! exists empty.go
+
+! exec babble tangle noweb.org
+stderr 'HOLE\(8\)'
+
+exec babble tangle mkdirp.org
+exists sub/late.go
+
+! exec babble tangle self.org
+stderr 'refusing to tangle into the book itself'
+! exists bystander.go
+
+-- indent.org --
+#+begin_src go :tangle out.go
+    one
+  
+    two
+#+end_src
+-- empty.org --
+#+begin_src go :tangle
+nothing names a target
+#+end_src
+-- noweb.org --
+#+begin_src go -i :tangle noweb.go :noweb yes
+	<<part>>
+#+end_src
+
+#+name: part
+#+begin_src go
+x := 1
+#+end_src
+-- mkdirp.org --
+#+begin_src go :tangle sub/late.go :mkdirp no
+package late
+#+end_src
+
+#+begin_src go :tangle sub/late.go
+// second block asks for the directory
+#+end_src
+-- self.org --
+#+begin_src go :tangle bystander.go
+package bystander
+#+end_src
+
+#+begin_src go :tangle self.org
+package self
+#+end_src
+-- want/out.go --
+// Code generated from BOOK.org by make tangle. DO NOT EDIT.
+
+one
+
+two
