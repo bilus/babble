@@ -61,34 +61,32 @@ every dynamic block, and the labels are spelled without the sigils,
 so the census never matches its own index.
 
 #+begin: plan-toc
-- [[file:BOOK.org::95][95]] entry: PLANNED Stage 12: the fixtures chapter
-- [[file:BOOK.org::158][158]] entry: PLANNED Stage 6: the oracle harness
-- [[file:BOOK.org::266][266]] entry: PLANNED Stage 7: org comments
-- [[file:BOOK.org::309][309]] entry: PLANNED Stage 8: noweb
-- [[file:BOOK.org::346][346]] entry: PLANNED Stage 9: dynamic blocks
-- [[file:BOOK.org::393][393]] entry: PLANNED Stage 10: the fence
-- [[file:BOOK.org::422][422]] entry: PLANNED Stage 11: parity and self-hosting
-- [[file:BOOK.org::470][470]] entry: PLANNED Stage 19: rewriting the internals
-- [[file:BOOK.org::521][521]] entry: PLANNED Stage 20: rewriting the testing chapters
-- [[file:BOOK.org::1023][1023]] badge: PLANNED stage 12 adds the paragraph below (plan)
-- [[file:BOOK.org::1251][1251]] deletion: , and ~#+include~ (org's file-inclusion
-- [[file:BOOK.org::1607][1607]] badge: PLANNED stage 12 adds the chapter below (plan)
-- [[file:BOOK.org::3256][3256]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
-- [[file:BOOK.org::3559][3559]] hole 7: extent between the anchors, then the docstring rule
-- [[file:BOOK.org::3565][3565]] hole 7: line-comment table per language, blank lines as a bare ma...
-- [[file:BOOK.org::3575][3575]] hole 8: named block first, else noweb-ref concatenation; cycles a...
-- [[file:BOOK.org::3684][3684]] hole 9: splice fresh interiors into the retained bytes, report ch...
-- [[file:BOOK.org::3694][3694]] hole 9: a line link per plan site, sites below the block shifted ...
-- [[file:BOOK.org::3700][3700]] hole 9: system diff -u over the two named bodies, temp-file heade...
-- [[file:BOOK.org::3742][3742]] badge: PLANNED stage 12 includes the two files below (plan)
-- [[file:BOOK.org::4227][4227]] badge: PLANNED stage 12 adds the test below (plan)
-- [[file:BOOK.org::4286][4286]] hole 6: ORACLE=1 in the environment
-- [[file:BOOK.org::4290][4290]] hole 6: UPDATE=1 in the environment
-- [[file:BOOK.org::4296][4296]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
-- [[file:BOOK.org::4308][4308]] hole 6: write the txtar's input files into dir, and name the book...
-- [[file:BOOK.org::4314][4314]] hole 6: copy lit/ in, run batch Emacs with the driver, fail loudl...
-- [[file:BOOK.org::4318][4318]] hole 6: every file on both sides, byte for byte, ignoring the inputs
-- [[file:BOOK.org::4322][4322]] hole 6: rewrite the fixture's want/ files from the oracle tree
+- [[file:BOOK.org::93][93]] entry: PLANNED Stage 12: the fixtures chapter
+- [[file:BOOK.org::156][156]] entry: PLANNED Stage 6: the oracle harness
+- [[file:BOOK.org::264][264]] entry: PLANNED Stage 7: org comments
+- [[file:BOOK.org::307][307]] entry: PLANNED Stage 8: noweb
+- [[file:BOOK.org::344][344]] entry: PLANNED Stage 9: dynamic blocks
+- [[file:BOOK.org::391][391]] entry: PLANNED Stage 10: the fence
+- [[file:BOOK.org::420][420]] entry: PLANNED Stage 11: parity and self-hosting
+- [[file:BOOK.org::927][927]] badge: PLANNED stage 12 adds the paragraph below (plan)
+- [[file:BOOK.org::1155][1155]] deletion: , and ~#+include~ (org's file-inclusion
+- [[file:BOOK.org::1511][1511]] badge: PLANNED stage 12 adds the chapter below (plan)
+- [[file:BOOK.org::3160][3160]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
+- [[file:BOOK.org::3463][3463]] hole 7: extent between the anchors, then the docstring rule
+- [[file:BOOK.org::3469][3469]] hole 7: line-comment table per language, blank lines as a bare ma...
+- [[file:BOOK.org::3479][3479]] hole 8: named block first, else noweb-ref concatenation; cycles a...
+- [[file:BOOK.org::3588][3588]] hole 9: splice fresh interiors into the retained bytes, report ch...
+- [[file:BOOK.org::3598][3598]] hole 9: a line link per plan site, sites below the block shifted ...
+- [[file:BOOK.org::3604][3604]] hole 9: system diff -u over the two named bodies, temp-file heade...
+- [[file:BOOK.org::3646][3646]] badge: PLANNED stage 12 includes the two files below (plan)
+- [[file:BOOK.org::4133][4133]] badge: PLANNED stage 12 adds the test below (plan)
+- [[file:BOOK.org::4195][4195]] hole 6: ORACLE=1 in the environment
+- [[file:BOOK.org::4199][4199]] hole 6: UPDATE=1 in the environment
+- [[file:BOOK.org::4205][4205]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
+- [[file:BOOK.org::4217][4217]] hole 6: write the txtar's input files into dir, and name the book...
+- [[file:BOOK.org::4223][4223]] hole 6: copy lit/ in, run batch Emacs with the driver, fail loudl...
+- [[file:BOOK.org::4227][4227]] hole 6: every file on both sides, byte for byte, ignoring the inputs
+- [[file:BOOK.org::4231][4231]] hole 6: rewrite the fixture's want/ files from the oracle tree
 
 #+end:
 
@@ -466,49 +464,6 @@ echo ---
 grep -nE '^\*+ (PLANNED|FILLING|HOLE|LIVE|DROPPED) |^\*{15,} |HOLE[(]|\{[+][+]|\{[-][-]|\{[~][~]|\{[>][>]|[-]-planned|^#\+begin: src-block-diff|:(plan|stage[0-9]+):' BOOK.org \
   || echo no plan markup in the book
 #+end_src
-
-** PLANNED Stage 20: rewriting the testing chapters                :stage20:
-:PROPERTIES:
-:CUSTOM_ID: stage-20
-:SPEC:     Testing; The test suite; Reproducing this document
-:DEPS:     stage 15; stage 19
-:ACCEPTANCE: no test or fixture is named that does not exist
-:SIZE:     ~116 lines of prose, 23 paragraphs
-:END:
-
-Claim: after this stage the testing chapters describe the suite
-that exists, and every test and fixture they name can be opened.
-
-Decided: (1) Three named tests and two named fixtures do not
-exist, and each is either written or unnamed. Two of them are
-offered as the evidence for a contract claim, which makes them
-worse than absent. (2) The skeleton-era sentences go: the harness
-is not the only executable code, the fixture skip is not waiting
-to be retired, and the suite is not empty. (3) The three lists of
-real books become one list, since the book currently gives three
-different sets and calls two of them the three real books. (4) The
-CI paragraph describes CI or waits for it. (5) The last chapter
-says that reproducing the book still goes through Emacs until
-self-hosting lands, which the first chapter's promise otherwise
-appears to retract.
-
-- [ ] plan approved (the human ticks this box)
-- [ ] every named test and fixture opened and confirmed to exist
-- [ ] the real-book list stated once and referenced elsewhere
-- [ ] no sentence describing the skeleton's suite survives
-- [ ] census clean for stage 20, suite green
-- [ ] Changes entry dated and filed, plan entry deleted
-
-*** Changes draft
-
-#+begin_quote
-The testing chapters named three tests and two fixtures that do
-not exist, two of them offered as the evidence for a contract
-claim. They also still described the skeleton's suite, which was
-empty, and gave three different answers to which books the parity
-claim covers. The chapters now describe the suite on disk.
-#+end_quote
-
 * Introduction
 
 babble tangles lit books without Emacs. Three words in that
@@ -3787,25 +3742,18 @@ Two layers hold babble to the oracle. The golden suite checks
 every fixture against its committed goldens and needs no
 Emacs, so it is what an ordinary run does; the oracle run replays
 each fixture through batch Emacs as well and diffs the bytes the
-two engines produce. The suite is testscript,
-the script-driven test runner from go-internal, running txtar
-fixtures in testdata/script; the script runs ~babble tangle~ or
-~babble parse --dump~ and compares every expected file, the book
-itself included when dynamic blocks are in play.
+two engines produce. Both layers run the fixtures the previous chapter described, through
+testscript, the script-driven test runner from go-internal.
 
-Three words carry the weight here. A fixture is one file, holding
-a script, the inputs it runs on, and what it expects. The fixture
-book is the input book inside it, usually a few blocks written to
-exercise one behavior. A golden is one expected output, and the
-name is a promise about where it came from: goldens are minted
-from Emacs and never typed by hand, which is what makes a passing
-suite evidence rather than agreement with myself. The fixtures are
-data files outside this book, hand-started and machine-reminted,
-like the dependency manifests. Their books start from the worked
-examples in [[#writing-a-book][Writing a book for babble]], so what the guide shows
-is what the suite pins.
+One word from that chapter carries the weight here, and it is
+golden. The name is a promise about where the bytes came from:
+goldens are minted from Emacs and never typed by hand. That is what
+makes a passing suite evidence rather than agreement with myself,
+and it is the reason reminting reads the Emacs tree and refuses to
+read babble's.
 
-The oracle harness ties every fixture to Emacs's own output.
+The oracle harness ties every fixture to Emacs's own output, and
+arrives with [[#stage-6][stage 6]]; the paragraph below is what it will do.
 Under ORACLE=1, each fixture's inputs are extracted twice; batch Emacs
 with lit/tangle.el runs in one tree and babble in the other, and
 any byte difference between the trees fails the test. Under
@@ -3832,21 +3780,28 @@ graph TD
   et -->|UPDATE=1| g[committed goldens]
 #+end_src
 
-The real-book sweep copies the reqsync book, the lit example book,
-and this book into temp trees and cross-checks both engines over
-them whole. reqsync stays read-only upstream: nothing in this
-repository ever writes there.
+The real-book sweep copies each real book into a temp tree and
+cross-checks both engines over it whole. The real books are the
+three this repository carries: this one, the lit toolchain's own
+book, and the lit example. reqsync's book is a fourth, parsed by
+hand during development and never by the suite, because it lives
+outside this repository and stays read-only: nothing here ever
+writes there. The sweep arrives with [[#stage-11][stage 11]]; today the three are
+parsed and compared against a second scanner, and not tangled.
 
-CI runs two jobs: the golden suite, with no Emacs anywhere, and a
-second job that provisions Emacs and runs ORACLE=1 over the
-fixtures and the sweep.
+CI will run two jobs: the golden suite, with no Emacs anywhere, and
+a second job that provisions Emacs and runs ORACLE=1 over the
+fixtures and the sweep. Neither exists yet. They land with the
+harness in [[#stage-6][stage 6]], since there is nothing for the second job to
+run until then.
 
 * The test suite
 
 Tests ride in this back-matter part, one subsection per chapter once
-the fills begin. The harness below is the only executable code the
-skeleton ships: it registers the babble command with testscript
-and runs every fixture under testdata/script.
+the fills begin. The script runner below came first and is still
+the spine: it registers the babble command with testscript and runs
+every fixture under testdata/script. The Go tests that follow it
+have accumulated one stage at a time.
 
 ** The script runner
 
@@ -3875,9 +3830,11 @@ func TestMain(m *testing.M) {
 }
 #+end_src
 
-TestScripts skips while no fixture exists, so the skeleton's suite
-stays green with every body a hole; the first stage-2 fixture
-retires the skip on its own.
+TestScripts skips when no fixture exists. That mattered when the
+suite was empty and every body was a hole; the directory has been
+full since the first fixtures landed, so the skip has not fired in
+a long time. It stays because a checkout with an empty testdata
+directory should say so rather than pass silently.
 
 #+begin_src go :tangle main_test.go :comments org
 func TestScripts(t *testing.T) {
@@ -4178,6 +4135,9 @@ The table is prose, so nothing stops it drifting from the
 directory it describes. This is what stops it.
 *************** END
 
+
+** The fixtures table
+
 TestFixtureTable keeps the fixtures chapter honest. The table
 there is written by hand, which is worth it for a column that says
 what a fixture is for, and worthless if it quietly stops matching
@@ -4406,6 +4366,14 @@ and never reworded; history that needs correcting gets a new entry.
 An entry speaks from its date; the rest of the document speaks from
 no date at all.
 
+** [2026-07-29 Wed] Rewriting the testing chapters
+
+The testing chapters named three tests and two fixtures that do
+not exist, two of them offered as the evidence for a contract
+claim. They also still described the skeleton's suite, which was
+empty, and gave three different answers to which books the parity
+claim covers. The chapters now describe the suite on disk.
+
 ** [2026-07-29 Wed] Rewriting the internals
 
 Six paragraphs in the code chapters described functions that do
@@ -4542,7 +4510,9 @@ from PROMPT.md as the session brief.
 * Reproducing this document
 
 Four make rules reproduce everything here. ~make tangle~
-regenerates the sources through batch Emacs and lit/tangle.el;
+regenerates the sources through batch Emacs and lit/tangle.el,
+which is what babble is replacing and will keep doing until
+self-hosting lands;
 ~make check~ tangles into a scratch directory and diffs;
 ~make weave~ renders this book to PDF, mermaid diagrams drawn
 through mmdc (the mermaid CLI) and any in-flight plan styled; and

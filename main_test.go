@@ -17,9 +17,11 @@ func TestMain(m *testing.M) {
 	})
 }
 
-// TestScripts skips while no fixture exists, so the skeleton's suite
-// stays green with every body a hole; the first stage-2 fixture
-// retires the skip on its own.
+// TestScripts skips when no fixture exists. That mattered when the
+// suite was empty and every body was a hole; the directory has been
+// full since the first fixtures landed, so the skip has not fired in
+// a long time. It stays because a checkout with an empty testdata
+// directory should say so rather than pass silently.
 func TestScripts(t *testing.T) {
 	dir := filepath.Join("testdata", "script")
 	// Glob's only error is a malformed pattern, and this one is fixed.
