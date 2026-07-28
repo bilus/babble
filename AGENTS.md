@@ -63,8 +63,8 @@ twin costs one commit, an unreviewed change costs the gate.
 babble must match batch Emacs byte for byte, and the test suite
 enforces it in two layers:
 
-- `go test ./...` runs the pure suite against committed goldens;
-  no Emacs needed.
+- `go test ./...` runs the golden suite: every fixture against its
+  committed expected output, no Emacs needed.
 - `ORACLE=1 go test ./...` also runs every fixture through batch
   Emacs (lit/tangle.el) and through babble in two parallel trees,
   failing on any byte difference.
@@ -72,7 +72,7 @@ enforces it in two layers:
   expected outputs from the Emacs tree, never from babble's, so
   committed goldens are Emacs output by construction. UPDATE
   without ORACLE is an error: there is nothing else to mint from.
-- The oracle mode adds to the pure suite rather than replacing it,
+- The oracle mode adds to the golden suite rather than replacing it,
   so with ORACLE=1 babble runs each fixture twice, once against
   its goldens and once against Emacs.
 - The harness arrives at stage 6 of the plan; before that these

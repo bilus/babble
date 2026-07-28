@@ -69,13 +69,13 @@ so the census never matches its own index.
 - [[file:BOOK.org::3200][3200]] hole 9: splice fresh interiors into the retained bytes, report ch...
 - [[file:BOOK.org::3210][3210]] hole 9: a line link per plan site, sites below the block shifted ...
 - [[file:BOOK.org::3216][3216]] hole 9: system diff -u over the two named bodies, temp-file heade...
-- [[file:BOOK.org::3613][3613]] hole 6: ORACLE=1 in the environment
-- [[file:BOOK.org::3617][3617]] hole 6: UPDATE=1 in the environment
-- [[file:BOOK.org::3623][3623]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
-- [[file:BOOK.org::3635][3635]] hole 6: write the txtar's input files into dir, and name the book...
-- [[file:BOOK.org::3641][3641]] hole 6: copy lit/ in, run batch Emacs with the driver, fail loudl...
-- [[file:BOOK.org::3645][3645]] hole 6: every file on both sides, byte for byte, ignoring the inputs
-- [[file:BOOK.org::3649][3649]] hole 6: rewrite the fixture's want/ files from the oracle tree
+- [[file:BOOK.org::3615][3615]] hole 6: ORACLE=1 in the environment
+- [[file:BOOK.org::3619][3619]] hole 6: UPDATE=1 in the environment
+- [[file:BOOK.org::3625][3625]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
+- [[file:BOOK.org::3637][3637]] hole 6: write the txtar's input files into dir, and name the book...
+- [[file:BOOK.org::3643][3643]] hole 6: copy lit/ in, run batch Emacs with the driver, fail loudl...
+- [[file:BOOK.org::3647][3647]] hole 6: every file on both sides, byte for byte, ignoring the inputs
+- [[file:BOOK.org::3651][3651]] hole 6: rewrite the fixture's want/ files from the oracle tree
 
 #+end:
 
@@ -91,8 +91,8 @@ so the census never matches its own index.
 Claim: after this stage, ORACLE=1 runs every fixture's inputs
 through batch Emacs and through babble in two parallel trees and
 fails on any byte difference, UPDATE=1 rewrites every committed
-golden from the Emacs tree and never from babble's, and CI runs the pure suite
-without Emacs in one job and the oracle suite in another.
+golden from the Emacs tree and never from babble's, and CI runs the golden
+suite without Emacs in one job and the oracle suite in another.
 
 Decided: (1) The harness lives in test code tangled from this
 book; the GitHub workflow files are hand-managed plumbing outside
@@ -111,12 +111,12 @@ ORACLE=1 set and no Emacs on the machine, the harness fails rather
 than skipping: a silent pass would retire the only check that
 matters. (6) The sweep over whole real books waits for the stage
 that can tangle them; this stage's books are the fixtures.
-(7) ORACLE=1 adds a layer, it does not replace one: the pure suite
-still runs each script against its committed goldens, and the
+(7) ORACLE=1 adds a layer, it does not replace one: the golden
+suite still runs each script against its expected output, and the
 cross-check runs beside it, so babble tangles each fixture twice
 and Emacs once. Keeping both is what separates two failures worth
 telling apart, a golden that has drifted from Emacs, which the
-pure suite passes and the cross-check fails, and a script
+golden suite passes and the cross-check fails, and a script
 assertion about a refusal or a file that should not exist, which
 only the script makes. (8) UPDATE=1 implies the oracle, since
 there is nothing else a golden may be minted from; setting it
@@ -174,7 +174,7 @@ Emacs does not refuse, and says so in its first line:
 - [ ] Changes draft below reads right in the journal
 - [ ] HOLE(6) cluster filled, harness proves existing goldens Emacs-shaped
 - [ ] goldens moved under want/ and reminted from the Emacs tree
-- [ ] CI runs the pure suite without Emacs and the oracle suite with it
+- [ ] CI runs the golden suite without Emacs and the oracle suite with it
 - [ ] census clean for stage 6, suite green with and without ORACLE=1
 - [ ] Changes entry dated and filed, plan entry deleted
 
@@ -3219,9 +3219,11 @@ func srcBlockDiff(d *book.Document, at *book.DynamicBlock) (string, error) {
 
 * Testing
 
-Two layers hold babble to the oracle: a pure fixture suite that
-runs anywhere, and an oracle mode that replays every fixture
-through batch Emacs and diffs the bytes. The suite is testscript,
+Two layers hold babble to the oracle. The golden suite checks
+every fixture against its committed expected output and needs no
+Emacs, so it is what an ordinary run does; the oracle mode replays
+each fixture through batch Emacs as well and diffs the bytes the
+two engines produce. The suite is testscript,
 the script-driven test runner from go-internal, running txtar
 fixtures (one text file bundling a book plus its expected outputs)
 in testdata/script; the script runs ~babble tangle~ or
@@ -3264,9 +3266,9 @@ and this book into temp trees and cross-checks both engines over
 them whole. reqsync stays read-only upstream: nothing in this
 repository ever writes there.
 
-CI runs two jobs: the pure Go suite with committed goldens and no
-Emacs anywhere, and a second job that provisions Emacs and runs
-ORACLE=1 over the fixtures and the sweep.
+CI runs two jobs: the golden suite, with no Emacs anywhere, and a
+second job that provisions Emacs and runs ORACLE=1 over the
+fixtures and the sweep.
 
 * The test suite
 
