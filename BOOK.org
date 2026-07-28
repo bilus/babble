@@ -57,25 +57,25 @@ so the census never matches its own index.
 
 #+begin: plan-toc
 - [[file:BOOK.org::82][82]] entry: PLANNED Stage 6: the oracle harness
-- [[file:BOOK.org::133][133]] entry: PLANNED Stage 7: org comments
-- [[file:BOOK.org::176][176]] entry: PLANNED Stage 8: noweb
-- [[file:BOOK.org::213][213]] entry: PLANNED Stage 9: dynamic blocks
-- [[file:BOOK.org::260][260]] entry: PLANNED Stage 10: the fence
-- [[file:BOOK.org::289][289]] entry: PLANNED Stage 11: parity and self-hosting
-- [[file:BOOK.org::2791][2791]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
-- [[file:BOOK.org::3030][3030]] hole 7: extent between the anchors, then the docstring rule
-- [[file:BOOK.org::3036][3036]] hole 7: line-comment table per language, blank lines as a bare ma...
-- [[file:BOOK.org::3046][3046]] hole 8: named block first, else noweb-ref concatenation; cycles a...
-- [[file:BOOK.org::3143][3143]] hole 9: splice fresh interiors into the retained bytes, report ch...
-- [[file:BOOK.org::3153][3153]] hole 9: a line link per plan site, sites below the block shifted ...
-- [[file:BOOK.org::3159][3159]] hole 9: system diff -u over the two named bodies, temp-file heade...
-- [[file:BOOK.org::3556][3556]] hole 6: ORACLE=1 in the environment
-- [[file:BOOK.org::3560][3560]] hole 6: UPDATE=1 in the environment
-- [[file:BOOK.org::3566][3566]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
-- [[file:BOOK.org::3578][3578]] hole 6: write the txtar's input files into dir, and name the book...
-- [[file:BOOK.org::3584][3584]] hole 6: copy lit/ in, run batch Emacs with the driver, fail loudl...
-- [[file:BOOK.org::3588][3588]] hole 6: every file on both sides, byte for byte, ignoring the inputs
-- [[file:BOOK.org::3592][3592]] hole 6: rewrite the fixture's want/ files from the oracle tree
+- [[file:BOOK.org::180][180]] entry: PLANNED Stage 7: org comments
+- [[file:BOOK.org::223][223]] entry: PLANNED Stage 8: noweb
+- [[file:BOOK.org::260][260]] entry: PLANNED Stage 9: dynamic blocks
+- [[file:BOOK.org::307][307]] entry: PLANNED Stage 10: the fence
+- [[file:BOOK.org::336][336]] entry: PLANNED Stage 11: parity and self-hosting
+- [[file:BOOK.org::2838][2838]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
+- [[file:BOOK.org::3077][3077]] hole 7: extent between the anchors, then the docstring rule
+- [[file:BOOK.org::3083][3083]] hole 7: line-comment table per language, blank lines as a bare ma...
+- [[file:BOOK.org::3093][3093]] hole 8: named block first, else noweb-ref concatenation; cycles a...
+- [[file:BOOK.org::3190][3190]] hole 9: splice fresh interiors into the retained bytes, report ch...
+- [[file:BOOK.org::3200][3200]] hole 9: a line link per plan site, sites below the block shifted ...
+- [[file:BOOK.org::3206][3206]] hole 9: system diff -u over the two named bodies, temp-file heade...
+- [[file:BOOK.org::3603][3603]] hole 6: ORACLE=1 in the environment
+- [[file:BOOK.org::3607][3607]] hole 6: UPDATE=1 in the environment
+- [[file:BOOK.org::3613][3613]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
+- [[file:BOOK.org::3625][3625]] hole 6: write the txtar's input files into dir, and name the book...
+- [[file:BOOK.org::3631][3631]] hole 6: copy lit/ in, run batch Emacs with the driver, fail loudl...
+- [[file:BOOK.org::3635][3635]] hole 6: every file on both sides, byte for byte, ignoring the inputs
+- [[file:BOOK.org::3639][3639]] hole 6: rewrite the fixture's want/ files from the oracle tree
 
 #+end:
 
@@ -111,6 +111,53 @@ ORACLE=1 set and no Emacs on the machine, the harness fails rather
 than skipping: a silent pass would retire the only check that
 matters. (6) The sweep over whole real books waits for the stage
 that can tangle them; this stage's books are the fixtures.
+
+A fixture as this stage leaves it, indented here for quoting. The
+script names what it compares, the inputs and the expected outputs
+share one file, and every expected path sits under ~want/~
+mirroring the file it pins, which is what lets reminting write it
+back:
+
+#+begin_example
+  # Blocks reach their targets in document order, with the banner
+  # and one blank line between them.
+
+  exec babble tangle b.org
+  cmp greet.go want/greet.go
+  cmp sub/deep.go want/sub/deep.go
+
+  -- b.org --
+  #+begin_src go :tangle greet.go
+  package greet
+  #+end_src
+
+  #+begin_src go :tangle sub/deep.go
+  package deep
+  #+end_src
+  -- want/greet.go --
+  // Code generated from BOOK.org by make tangle. DO NOT EDIT.
+
+  package greet
+  -- want/sub/deep.go --
+  // Code generated from BOOK.org by make tangle. DO NOT EDIT.
+
+  package deep
+#+end_example
+
+Under ORACLE=1 the harness ignores the script and the want tree:
+it extracts b.org, runs both engines over it, and compares what
+they produced. Under UPDATE=1 it writes the oracle's output back
+into the want entries, so a golden can only ever be Emacs output.
+A fixture that pins a refusal has no oracle counterpart, since
+Emacs does not refuse, and says so in its first line:
+
+#+begin_example
+  # oracle: skip Emacs skips a languageless block instead of
+  # refusing it, so there is nothing to compare here.
+
+  ! exec babble tangle no-lang.org
+  stderr 'without a language'
+#+end_example
 
 - [ ] plan approved (the human ticks this box)
 - [ ] inserted prose reads steady-state
