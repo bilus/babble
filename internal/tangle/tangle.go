@@ -32,9 +32,13 @@ func Run(d *book.Document) error {
 	return nil
 }
 
-// A unit is one target file's worth of blocks, in document order;
-// collect builds them in first-appearance order, skipping COMMENT
-// and ARCHIVE subtrees, erroring on a languageless block.
+// It keeps the first error and walks the whole tree anyway. That
+// looks like a bug and is the opposite: collect writes nothing, so
+// finishing the walk costs nothing, and returning the error at the
+// end means Run stops before its write loop starts. Every refusal
+// raised here therefore precedes every write. The refusals raised
+// later, while a body is being assembled, do not have that property,
+// and a failure on the third target leaves the first two on disk.
 type unit struct {
 	target string
 	blocks []*book.SrcBlock
@@ -180,10 +184,12 @@ func unescapeCommas(body string) string {
 	return strings.Join(lines, "\n")
 }
 
-// Indentation is measured in columns, with a tab worth eight, and
-// the common measure comes off every line. A blank line has no
-// indentation to speak of and does not hold the measure down; a line
-// flush with the margin does, and then nothing moves.
+// That is org's behaviour, and it is worth knowing why, because the
+// obvious guess is wrong. Org cuts with ~move-to-column n t~, and the
+// forcing flag does not split a tab: it pads with spaces in front of
+// the tab until point sits at column n. The delete that follows takes
+// exactly the padding it just added, so the line comes out as it went
+// in. A tab is only removed when the measure lands on its far edge.
 func dedent(body string) string {
 	lines := strings.Split(body, "\n")
 	measure := -1
@@ -233,7 +239,7 @@ func cutColumns(line string, n int) string {
 		i++
 	}
 	if col > n {
-		return strings.Repeat(" ", col-n) + line[i:]
+		return line
 	}
 	return line[i:]
 }
@@ -256,10 +262,10 @@ func expandNoweb(d *book.Document, b *book.SrcBlock, body string) (string, error
 	panic("HOLE(8): named block first, else noweb-ref concatenation; cycles and misses error")
 }
 
-// banner and writeTarget close the pass: the generated-file banner
-// in the target's own comment syntax, parent directories on demand,
-// a refusal to write the book itself, and no write at all when the
-// bytes already match.
+// A directory is created when any block in the unit asks for it, not
+// when the first one does. Blocks sharing a target can disagree about
+// ~:mkdirp~, and taking the first block's answer meant the file's
+// directory depended on which block happened to come first.
 func banner(target string) string {
 	prefix := "# "
 	switch filepath.Ext(target) {

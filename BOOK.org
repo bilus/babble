@@ -61,35 +61,34 @@ every dynamic block, and the labels are spelled without the sigils,
 so the census never matches its own index.
 
 #+begin: plan-toc
-- [[file:BOOK.org::96][96]] entry: PLANNED Stage 12: the fixtures chapter
-- [[file:BOOK.org::159][159]] entry: PLANNED Stage 6: the oracle harness
-- [[file:BOOK.org::267][267]] entry: PLANNED Stage 7: org comments
-- [[file:BOOK.org::310][310]] entry: PLANNED Stage 8: noweb
-- [[file:BOOK.org::347][347]] entry: PLANNED Stage 9: dynamic blocks
-- [[file:BOOK.org::394][394]] entry: PLANNED Stage 10: the fence
-- [[file:BOOK.org::423][423]] entry: PLANNED Stage 11: parity and self-hosting
-- [[file:BOOK.org::471][471]] entry: PLANNED Stage 18: rewriting the guide
-- [[file:BOOK.org::516][516]] entry: PLANNED Stage 19: rewriting the internals
-- [[file:BOOK.org::567][567]] entry: PLANNED Stage 20: rewriting the testing chapters
-- [[file:BOOK.org::1069][1069]] badge: PLANNED stage 12 adds the paragraph below (plan)
-- [[file:BOOK.org::1297][1297]] deletion: , and ~#+include~ (org's file-inclusion
-- [[file:BOOK.org::1653][1653]] badge: PLANNED stage 12 adds the chapter below (plan)
-- [[file:BOOK.org::3284][3284]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
-- [[file:BOOK.org::3566][3566]] hole 7: extent between the anchors, then the docstring rule
-- [[file:BOOK.org::3572][3572]] hole 7: line-comment table per language, blank lines as a bare ma...
-- [[file:BOOK.org::3582][3582]] hole 8: named block first, else noweb-ref concatenation; cycles a...
-- [[file:BOOK.org::3683][3683]] hole 9: splice fresh interiors into the retained bytes, report ch...
-- [[file:BOOK.org::3693][3693]] hole 9: a line link per plan site, sites below the block shifted ...
-- [[file:BOOK.org::3699][3699]] hole 9: system diff -u over the two named bodies, temp-file heade...
-- [[file:BOOK.org::3740][3740]] badge: PLANNED stage 12 includes the two files below (plan)
-- [[file:BOOK.org::4225][4225]] badge: PLANNED stage 12 adds the test below (plan)
-- [[file:BOOK.org::4284][4284]] hole 6: ORACLE=1 in the environment
-- [[file:BOOK.org::4288][4288]] hole 6: UPDATE=1 in the environment
-- [[file:BOOK.org::4294][4294]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
-- [[file:BOOK.org::4306][4306]] hole 6: write the txtar's input files into dir, and name the book...
-- [[file:BOOK.org::4312][4312]] hole 6: copy lit/ in, run batch Emacs with the driver, fail loudl...
-- [[file:BOOK.org::4316][4316]] hole 6: every file on both sides, byte for byte, ignoring the inputs
-- [[file:BOOK.org::4320][4320]] hole 6: rewrite the fixture's want/ files from the oracle tree
+- [[file:BOOK.org::95][95]] entry: PLANNED Stage 12: the fixtures chapter
+- [[file:BOOK.org::158][158]] entry: PLANNED Stage 6: the oracle harness
+- [[file:BOOK.org::266][266]] entry: PLANNED Stage 7: org comments
+- [[file:BOOK.org::309][309]] entry: PLANNED Stage 8: noweb
+- [[file:BOOK.org::346][346]] entry: PLANNED Stage 9: dynamic blocks
+- [[file:BOOK.org::393][393]] entry: PLANNED Stage 10: the fence
+- [[file:BOOK.org::422][422]] entry: PLANNED Stage 11: parity and self-hosting
+- [[file:BOOK.org::470][470]] entry: PLANNED Stage 19: rewriting the internals
+- [[file:BOOK.org::521][521]] entry: PLANNED Stage 20: rewriting the testing chapters
+- [[file:BOOK.org::1023][1023]] badge: PLANNED stage 12 adds the paragraph below (plan)
+- [[file:BOOK.org::1251][1251]] deletion: , and ~#+include~ (org's file-inclusion
+- [[file:BOOK.org::1607][1607]] badge: PLANNED stage 12 adds the chapter below (plan)
+- [[file:BOOK.org::3256][3256]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
+- [[file:BOOK.org::3559][3559]] hole 7: extent between the anchors, then the docstring rule
+- [[file:BOOK.org::3565][3565]] hole 7: line-comment table per language, blank lines as a bare ma...
+- [[file:BOOK.org::3575][3575]] hole 8: named block first, else noweb-ref concatenation; cycles a...
+- [[file:BOOK.org::3684][3684]] hole 9: splice fresh interiors into the retained bytes, report ch...
+- [[file:BOOK.org::3694][3694]] hole 9: a line link per plan site, sites below the block shifted ...
+- [[file:BOOK.org::3700][3700]] hole 9: system diff -u over the two named bodies, temp-file heade...
+- [[file:BOOK.org::3742][3742]] badge: PLANNED stage 12 includes the two files below (plan)
+- [[file:BOOK.org::4227][4227]] badge: PLANNED stage 12 adds the test below (plan)
+- [[file:BOOK.org::4286][4286]] hole 6: ORACLE=1 in the environment
+- [[file:BOOK.org::4290][4290]] hole 6: UPDATE=1 in the environment
+- [[file:BOOK.org::4296][4296]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
+- [[file:BOOK.org::4308][4308]] hole 6: write the txtar's input files into dir, and name the book...
+- [[file:BOOK.org::4314][4314]] hole 6: copy lit/ in, run batch Emacs with the driver, fail loudl...
+- [[file:BOOK.org::4318][4318]] hole 6: every file on both sides, byte for byte, ignoring the inputs
+- [[file:BOOK.org::4322][4322]] hole 6: rewrite the fixture's want/ files from the oracle tree
 
 #+end:
 
@@ -467,57 +466,6 @@ echo ---
 grep -nE '^\*+ (PLANNED|FILLING|HOLE|LIVE|DROPPED) |^\*{15,} |HOLE[(]|\{[+][+]|\{[-][-]|\{[~][~]|\{[>][>]|[-]-planned|^#\+begin: src-block-diff|:(plan|stage[0-9]+):' BOOK.org \
   || echo no plan markup in the book
 #+end_src
-
-** PLANNED Stage 19: rewriting the internals                       :stage19:
-:PROPERTIES:
-:CUSTOM_ID: stage-19
-:SPEC:     How the oracle parses; Reading org; The document tree; The tangle engine; Dynamic-block refresh; The command line
-:DEPS:     stage 15
-:ACCEPTANCE: every paragraph agrees with the code printed beneath it
-:SIZE:     ~379 lines of prose, 76 paragraphs
-:END:
-
-Claim: after this stage every paragraph in the six code chapters
-agrees with the block printed below it, and a paragraph that
-describes unbuilt behavior says so.
-
-The book writes steady-state prose, which is what makes it
-readable while it is half built. The rule breaks where a paragraph
-describes a flow and the function below it does not have that
-flow. Six paragraphs currently do this, and the reader has no way
-to tell them from the ones that are true.
-
-Decided: (1) A paragraph above a block describes that block. Where
-the finished behavior is worth stating and does not exist yet, it
-is stated as what the stage will add, with the stage named. (2)
-The dispatcher's order is printed in the order the code tests, not
-reversed. It is the one fact that chapter exists to convey. (3)
-The planning-line deviation goes, because it was fixed and the
-journal says so. (4) The claim that no identifier spells org
-narrows to what is true, which is that no org syntax is parsed
-here. (5) The tangle chapter stops crediting the write step with a
-refusal that runs during collection, which is where a defect was
-fixed to. (6) Three behaviors get the mechanism they lack: the
-mkdirp rule across a unit, the tab that becomes spaces, and why
-collection keeps walking after it records an error.
-
-- [ ] plan approved (the human ticks this box)
-- [ ] every paragraph checked against the block below it
-- [ ] unbuilt behavior named as unbuilt, with its stage
-- [ ] the dispatcher order matches the code, verified by reading both
-- [ ] census clean for stage 19, suite green, anchors still match org
-- [ ] Changes entry dated and filed, plan entry deleted
-
-*** Changes draft
-
-#+begin_quote
-Six paragraphs in the code chapters described functions that do
-something else, including the tangle flow, which was said to
-refresh dynamic blocks and reparse, and the dispatcher's order,
-which was printed backwards in the chapter whose subject is the
-order. Each paragraph now describes the block below it, and prose
-about behavior that is not built yet says which stage builds it.
-#+end_quote
 
 ** PLANNED Stage 20: rewriting the testing chapters                :stage20:
 :PROPERTIES:
@@ -1614,7 +1562,8 @@ badge and nothing else.
 * The command line
 
 babble is two subcommands over one book: ~tangle~ writes the
-sources, ~parse~ shows the tree. main is only the wiring, streams
+sources, ~parse~ reads the book and reports whether it parses,
+printing the tree only when asked with ~--dump~. main is only the wiring, streams
 in and exit code out, so the tests can drive run the way a shell
 drives main. Exit codes follow convention: 2 for usage errors, 1
 for failures.
@@ -1699,10 +1648,16 @@ func run(args []string, stdout, stderr io.Writer) int {
 }
 #+end_src
 
-tangleCmd is the whole tangle flow in one place: parse the book,
-refresh its dynamic blocks, reparse the refreshed bytes, then
-write the targets. The reparse matters because refresh moves line
-numbers and the tangle must see the book it just wrote.
+tangleCmd is the tangle flow in one place: parse the book, resolve
+every block's headers, then write the targets.
+
+Two more steps belong here and are not here yet. [[#stage-9][Stage 9]] adds a
+refresh of the book's dynamic blocks before the tangle, and a
+reparse after it, because refreshing rewrites the book and moves
+every line number the tangle depends on. [[#stage-10][Stage 10]] adds the lint
+pass, which is the half of the fence that needs the whole document.
+Until both land this function is three calls, and the code below is
+what runs.
 
 #+begin_src go :tangle main.go :comments org
 func tangleCmd(bookPath string, stderr io.Writer) int {
@@ -1726,10 +1681,17 @@ func tangleCmd(bookPath string, stderr io.Writer) int {
 :CUSTOM_ID: the-document-tree
 :END:
 
-Package book is the tree the backend consumes, and nothing in it
-spells org. That absence is the package's whole job: it is the
-seam a markdown frontend would plug into, and the proof is that no
-identifier below mentions the input syntax.
+Package book is the tree the backend consumes, and it parses
+nothing. That is the package's whole job: it is the seam a markdown
+frontend would plug into, and a frontend plugs in by building these
+types, never by handing over text.
+
+The names still borrow org's vocabulary, and deliberately. SrcBlock,
+Padline, NowebRef and AfterStars all say what org calls the thing,
+because inventing a second vocabulary for concepts a markdown
+frontend would have to reproduce anyway buys nothing. What is
+absent is the syntax: no code here knows what a star or a ~#+~ line
+looks like, and none of it can read a byte of a book.
 
 Document is one parsed book: the node tree plus the retained
 source bytes that every Span indexes.
@@ -2163,8 +2125,12 @@ func line(src []byte, off int) (string, int) {
 Mode is the context a parent hands its children. Org threads seven
 of them; the three below are the ones this subset can reach, and
 the dispatcher branches on the third. Org's planning mode has no
-counterpart here, because a planning line between a heading and
-its drawer is not recognized.
+counterpart here, and not because the line is unrecognized: it is,
+and the drawer below it is read. The difference is where. Org
+threads a mode to make the next line's parse depend on the last
+one; babble handles the planning line inside the headline parser,
+which steps over it and then asks for the drawer. Same result,
+one fewer mode.
 
 #+begin_src go :tangle internal/org/org.go :comments org
 type mode int
@@ -3281,6 +3247,14 @@ A unit is one target file's worth of blocks, in document order;
 collect builds them in first-appearance order, skipping COMMENT
 and ARCHIVE subtrees, erroring on a languageless block.
 
+It keeps the first error and walks the whole tree anyway. That
+looks like a bug and is the opposite: collect writes nothing, so
+finishing the walk costs nothing, and returning the error at the
+end means Run stops before its write loop starts. Every refusal
+raised here therefore precedes every write. The refusals raised
+later, while a body is being assembled, do not have that property,
+and a failure on the third target leaves the first two on disk.
+
 #+begin_src go :tangle internal/tangle/tangle.go :comments org
 type unit struct {
 	target string
@@ -3455,6 +3429,19 @@ the common measure comes off every line. A blank line has no
 indentation to speak of and does not hold the measure down; a line
 flush with the margin does, and then nothing moves.
 
+Cutting by column rather than by character means a tab can straddle
+the cut. A tab advances to the next multiple of eight, so a measure
+of four lands halfway through one, and there is no half tab to
+delete. Such a line keeps its indentation whole and is not dedented
+at all.
+
+That is org's behaviour, and it is worth knowing why, because the
+obvious guess is wrong. Org cuts with ~move-to-column n t~, and the
+forcing flag does not split a tab: it pads with spaces in front of
+the tab until point sits at column n. The delete that follows takes
+exactly the padding it just added, so the line comes out as it went
+in. A tab is only removed when the measure lands on its far edge.
+
 #+begin_src go :tangle internal/tangle/tangle.go :comments org
 func dedent(body string) string {
 	lines := strings.Split(body, "\n")
@@ -3505,7 +3492,7 @@ func cutColumns(line string, n int) string {
 		i++
 	}
 	if col > n {
-		return strings.Repeat(" ", col-n) + line[i:]
+		return line
 	}
 	return line[i:]
 }
@@ -3540,8 +3527,16 @@ func expandNoweb(d *book.Document, b *book.SrcBlock, body string) (string, error
 
 banner and writeTarget close the pass: the generated-file banner
 in the target's own comment syntax, parent directories on demand,
-a refusal to write the book itself, and no write at all when the
-bytes already match.
+and no write at all when the bytes already match. The refusal to
+write the book itself is not here. It runs during collection, so
+that a book which would overwrite itself leaves nothing on disk at
+all; having it here once meant the refusal fired after other
+targets were already written.
+
+A directory is created when any block in the unit asks for it, not
+when the first one does. Blocks sharing a target can disagree about
+~:mkdirp~, and taking the first block's answer meant the file's
+directory depended on which block happened to come first.
 
 #+begin_src go :tangle internal/tangle/tangle.go :comments org
 func banner(target string) string {
@@ -3691,6 +3686,7 @@ The suite as it stands, by what each file pins:
 | tangle-defects.txtar | five defects a claim audit found |
 | tangle-affiliated.txtar | header lines above a block, and the lead-keeping trim |
 | tangle-inert.txtar | the inert keys, proved to move no bytes |
+| tangle-tabs.txtar | dedenting when a tab straddles the cut |
 
 *************** PLANNED stage 12 includes the two files below ([[#stage-12][plan]]) :stage12:
 The weave expands these; the tangle walks past them. What a reader
@@ -4409,6 +4405,23 @@ this document cares about. Entries are written once, at acceptance,
 and never reworded; history that needs correcting gets a new entry.
 An entry speaks from its date; the rest of the document speaks from
 no date at all.
+
+** [2026-07-29 Wed] Rewriting the internals
+
+Six paragraphs in the code chapters described functions that do
+something else, including the tangle flow, which was said to
+refresh dynamic blocks and reparse, and the dispatcher's order,
+which was printed backwards in the chapter whose subject is the
+order. Each paragraph now describes the block below it, and prose
+about behavior that is not built yet says which stage builds it.
+
+Writing down how the dedent handles a straddling tab turned up a
+third parity defect. The prose was going to say the tab becomes
+spaces, which is the obvious guess; checking it against Emacs showed
+the opposite. Org cuts with a forcing move-to-column, and forcing
+pads in front of a tab rather than splitting it, so the delete takes
+back its own padding and the line survives whole. babble was
+converting the tab. Eight cases now pin it.
 
 ** [2026-07-29 Wed] Rewriting the guide
 

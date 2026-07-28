@@ -1,0 +1,97 @@
+# Dedenting when a tab straddles the cut. Org cuts by column with
+# move-to-column and its forcing flag pads in front of a tab instead of
+# splitting it, so the delete that follows takes back exactly the
+# padding and the line is left whole. A tab only goes when the measure
+# lands on its far edge. Every golden here is Emacs output.
+
+exec babble tangle tabs.org
+cmp a.go want/a.go
+cmp b.go want/b.go
+cmp c.go want/c.go
+cmp d.go want/d.go
+cmp e.go want/e.go
+cmp f.go want/f.go
+cmp g.go want/g.go
+cmp h.go want/h.go
+
+-- tabs.org --
+#+begin_src go :tangle a.go
+    four spaces
+	one tab
+#+end_src
+
+#+begin_src go :tangle b.go
+  ab
+	cd
+#+end_src
+
+#+begin_src go :tangle c.go
+      six
+	cd
+#+end_src
+
+#+begin_src go :tangle d.go
+        eight
+	cd
+#+end_src
+
+#+begin_src go :tangle e.go
+  	cd
+  ab
+#+end_src
+
+#+begin_src go :tangle f.go
+	  x
+    yy
+#+end_src
+
+#+begin_src go :tangle g.go
+	one
+		two
+#+end_src
+
+#+begin_src go :tangle h.go
+     five
+	  tabsp
+#+end_src
+
+-- want/a.go --
+// Code generated from BOOK.org by make tangle. DO NOT EDIT.
+
+four spaces
+	one tab
+-- want/b.go --
+// Code generated from BOOK.org by make tangle. DO NOT EDIT.
+
+ab
+	cd
+-- want/c.go --
+// Code generated from BOOK.org by make tangle. DO NOT EDIT.
+
+six
+	cd
+-- want/d.go --
+// Code generated from BOOK.org by make tangle. DO NOT EDIT.
+
+eight
+cd
+-- want/e.go --
+// Code generated from BOOK.org by make tangle. DO NOT EDIT.
+
+cd
+ab
+-- want/f.go --
+// Code generated from BOOK.org by make tangle. DO NOT EDIT.
+
+x
+yy
+-- want/g.go --
+// Code generated from BOOK.org by make tangle. DO NOT EDIT.
+
+one
+	two
+-- want/h.go --
+// Code generated from BOOK.org by make tangle. DO NOT EDIT.
+
+five
+	  tabsp

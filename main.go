@@ -74,10 +74,13 @@ func run(args []string, stdout, stderr io.Writer) int {
 	return 2
 }
 
-// tangleCmd is the whole tangle flow in one place: parse the book,
-// refresh its dynamic blocks, reparse the refreshed bytes, then
-// write the targets. The reparse matters because refresh moves line
-// numbers and the tangle must see the book it just wrote.
+// Two more steps belong here and are not here yet. [[#stage-9][Stage 9]] adds a
+// refresh of the book's dynamic blocks before the tangle, and a
+// reparse after it, because refreshing rewrites the book and moves
+// every line number the tangle depends on. [[#stage-10][Stage 10]] adds the lint
+// pass, which is the half of the fence that needs the whole document.
+// Until both land this function is three calls, and the code below is
+// what runs.
 func tangleCmd(bookPath string, stderr io.Writer) int {
 	d, err := org.Parse(bookPath)
 	if err == nil {

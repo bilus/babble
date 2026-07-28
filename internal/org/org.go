@@ -79,8 +79,12 @@ func line(src []byte, off int) (string, int) {
 // Mode is the context a parent hands its children. Org threads seven
 // of them; the three below are the ones this subset can reach, and
 // the dispatcher branches on the third. Org's planning mode has no
-// counterpart here, because a planning line between a heading and
-// its drawer is not recognized.
+// counterpart here, and not because the line is unrecognized: it is,
+// and the drawer below it is read. The difference is where. Org
+// threads a mode to make the next line's parse depend on the last
+// one; babble handles the planning line inside the headline parser,
+// which steps over it and then asks for the drawer. Same result,
+// one fewer mode.
 type mode int
 
 const (
