@@ -3,6 +3,7 @@
 package main
 
 import (
+	"io"
 	"os"
 	"path/filepath"
 	"strings"
@@ -68,5 +69,68 @@ func TestFixtureTable(t *testing.T) {
 		if !onDisk[name] {
 			t.Errorf("%s is in the chapter's table and not on disk", name)
 		}
+	}
+}
+
+// The lit.mk comparison is the only check that the embedded filesystem
+// carries real bytes. An embed that matched nothing would still
+// compile, still walk, and still write no error, so without this the
+// first sign of trouble would be a new project with an empty lit/.
+func TestInitWrites(t *testing.T) {
+	dir := filepath.Join(t.TempDir(), "fresh")
+	p, err := newProject(dir, "example.com/fresh", io.Discard)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, step := range []func(*project) error{
+		(*project).writeDevbox, (*project).copyLit, (*project).writeMakefile,
+	} {
+		if err := step(p); err != nil {
+			t.Fatal(err)
+		}
+	}
+	for _, want := range []string{
+		"devbox.json", "Makefile", ".gitignore", "lit/lit.mk",
+		"lit/tangle.el", "lit/preprocess.py", "lit/templates/go/BOOK.org",
+	} {
+		if _, err := os.Stat(filepath.Join(dir, want)); err != nil {
+			t.Errorf("%s: %v", want, err)
+		}
+	}
+	got, err := os.ReadFile(filepath.Join(dir, "lit/lit.mk"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	want, err := os.ReadFile("lit/lit.mk")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if string(got) != string(want) {
+		t.Error("the embedded lit.mk is not the one in lit/")
+	}
+	if _, err := os.Stat(filepath.Join(dir, "lit/BOOK.org")); err == nil {
+		t.Error("lit/BOOK.org was embedded; a consumer never tangles it")
+	}
+}
+
+// A module nobody names is named after the directory, which is the one
+// guess that is never wrong about where the code sits. And every write
+// refuses to overwrite, even though newProject has already cleared the
+// three files that matter, because a writer that trusts its caller is
+// a writer that truncates somebody's file the first time it is reused.
+func TestInitDefaults(t *testing.T) {
+	dir := filepath.Join(t.TempDir(), "mybook")
+	p, err := newProject(dir, "", io.Discard)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if p.module != "mybook" {
+		t.Errorf("module = %q, want mybook", p.module)
+	}
+	if err := p.writeDevbox(); err != nil {
+		t.Fatal(err)
+	}
+	if err := p.writeDevbox(); err == nil {
+		t.Error("writing devbox.json twice succeeded; it must never clobber")
 	}
 }

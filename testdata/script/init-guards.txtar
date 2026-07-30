@@ -1,0 +1,34 @@
+# What init refuses. It sets up an empty directory, so it will not
+# touch one that already holds a book, a toolchain or a module, and it
+# says which of the three it found. The steps that shell out to make
+# and emacs are not exercised here; they need the tool stack, and the
+# golden suite runs without it.
+
+# oracle: skip init has no counterpart in org, which starts nothing.
+
+! exec babble init --help
+stderr 'module'
+stderr 'dir'
+
+! exec babble init extra-argument
+stderr 'usage: babble'
+
+mkdir hasbook
+cp book.org hasbook/BOOK.org
+! exec babble init --dir hasbook
+stderr 'hasbook already has BOOK.org'
+! exists hasbook/devbox.json
+
+mkdir haslit/lit
+! exec babble init --dir haslit
+stderr 'haslit already has lit'
+
+mkdir hasmod
+cp mod.txt hasmod/go.mod
+! exec babble init --dir hasmod
+stderr 'hasmod already has go.mod'
+
+-- book.org --
+#+title: already here
+-- mod.txt --
+module example.com/already

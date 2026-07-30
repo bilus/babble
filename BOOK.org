@@ -71,22 +71,22 @@ so the census never matches its own index.
 - [[file:BOOK.org::927][927]] badge: PLANNED stage 12 adds the paragraph below (plan)
 - [[file:BOOK.org::1155][1155]] deletion: , and ~#+include~ (org's file-inclusion
 - [[file:BOOK.org::1511][1511]] badge: PLANNED stage 12 adds the chapter below (plan)
-- [[file:BOOK.org::3160][3160]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
-- [[file:BOOK.org::3463][3463]] hole 7: extent between the anchors, then the docstring rule
-- [[file:BOOK.org::3469][3469]] hole 7: line-comment table per language, blank lines as a bare ma...
-- [[file:BOOK.org::3479][3479]] hole 8: named block first, else noweb-ref concatenation; cycles a...
-- [[file:BOOK.org::3588][3588]] hole 9: splice fresh interiors into the retained bytes, report ch...
-- [[file:BOOK.org::3598][3598]] hole 9: a line link per plan site, sites below the block shifted ...
-- [[file:BOOK.org::3604][3604]] hole 9: system diff -u over the two named bodies, temp-file heade...
-- [[file:BOOK.org::3646][3646]] badge: PLANNED stage 12 includes the two files below (plan)
-- [[file:BOOK.org::4133][4133]] badge: PLANNED stage 12 adds the test below (plan)
-- [[file:BOOK.org::4195][4195]] hole 6: ORACLE=1 in the environment
-- [[file:BOOK.org::4199][4199]] hole 6: UPDATE=1 in the environment
-- [[file:BOOK.org::4205][4205]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
-- [[file:BOOK.org::4217][4217]] hole 6: write the txtar's input files into dir, and name the book...
-- [[file:BOOK.org::4223][4223]] hole 6: copy lit/ in, run batch Emacs with the driver, fail loudl...
-- [[file:BOOK.org::4227][4227]] hole 6: every file on both sides, byte for byte, ignoring the inputs
-- [[file:BOOK.org::4231][4231]] hole 6: rewrite the fixture's want/ files from the oracle tree
+- [[file:BOOK.org::3440][3440]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
+- [[file:BOOK.org::3743][3743]] hole 7: extent between the anchors, then the docstring rule
+- [[file:BOOK.org::3749][3749]] hole 7: line-comment table per language, blank lines as a bare ma...
+- [[file:BOOK.org::3759][3759]] hole 8: named block first, else noweb-ref concatenation; cycles a...
+- [[file:BOOK.org::3868][3868]] hole 9: splice fresh interiors into the retained bytes, report ch...
+- [[file:BOOK.org::3878][3878]] hole 9: a line link per plan site, sites below the block shifted ...
+- [[file:BOOK.org::3884][3884]] hole 9: system diff -u over the two named bodies, temp-file heade...
+- [[file:BOOK.org::3927][3927]] badge: PLANNED stage 12 includes the two files below (plan)
+- [[file:BOOK.org::4415][4415]] badge: PLANNED stage 12 adds the test below (plan)
+- [[file:BOOK.org::4556][4556]] hole 6: ORACLE=1 in the environment
+- [[file:BOOK.org::4560][4560]] hole 6: UPDATE=1 in the environment
+- [[file:BOOK.org::4566][4566]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
+- [[file:BOOK.org::4578][4578]] hole 6: write the txtar's input files into dir, and name the book...
+- [[file:BOOK.org::4584][4584]] hole 6: copy lit/ in, run batch Emacs with the driver, fail loudl...
+- [[file:BOOK.org::4588][4588]] hole 6: every file on both sides, byte for byte, ignoring the inputs
+- [[file:BOOK.org::4592][4592]] hole 6: rewrite the fixture's want/ files from the oracle tree
 
 #+end:
 
@@ -1530,21 +1530,28 @@ BOOK.org.
 package main
 
 import (
+	"embed"
+	"encoding/json"
 	"flag"
 	"fmt"
 	"io"
+	"io/fs"
 	"os"
+	"os/exec"
+	"path/filepath"
+	"strings"
 
 	"github.com/bilus/babble/internal/book"
 	"github.com/bilus/babble/internal/org"
 	"github.com/bilus/babble/internal/tangle"
 )
 
-const usage = `usage: babble <command> [flags] BOOK.org
+const usage = `usage: babble <command> [flags] [BOOK.org]
 
 commands:
-  tangle  refresh dynamic blocks and write every eligible code block
-  parse   print the book's logical tree (--dump for JSON)
+  tangle  write every eligible code block to its target file
+  parse   read the book and report whether it parses (--dump for JSON)
+  init    start a lit book in an empty directory (--module, --dir)
 `
 
 func main() {
@@ -1597,6 +1604,19 @@ func run(args []string, stdout, stderr io.Writer) int {
 			return 2
 		}
 		return tangleCmd(args[1], stderr)
+	case "init":
+		fs := flag.NewFlagSet("init", flag.ContinueOnError)
+		fs.SetOutput(stderr)
+		module := fs.String("module", "", "go module path (default: the directory name)")
+		dir := fs.String("dir", ".", "directory to set up")
+		if err := fs.Parse(args[1:]); err != nil {
+			return 2
+		}
+		if fs.NArg() != 0 {
+			fmt.Fprint(stderr, usage)
+			return 2
+		}
+		return initCmd(*dir, *module, stdout, stderr)
 	}
 	fmt.Fprint(stderr, usage)
 	return 2
@@ -1629,6 +1649,266 @@ func tangleCmd(bookPath string, stderr io.Writer) int {
 	}
 	return 0
 }
+#+end_src
+
+** Starting a book
+
+~babble init~ turns an empty directory into a lit repository. It
+exists so that starting one takes a single command with no checkout
+and no copying by hand:
+
+#+begin_example
+  go run github.com/bilus/babble@latest init
+#+end_example
+
+The toolchain has to travel with the binary for that to work, since
+~go run~ compiles from the module cache and leaves the program no
+way back to its own source tree. So lit's files are compiled in.
+The book's own copy under lit/ is the only copy: this embed reads
+the same bytes the rest of the repository uses, so a new project
+gets whatever lit was current when the binary was built, and there
+is nothing to keep in step.
+
+Two files are left out on purpose. lit/BOOK.org is lit's own
+literate source and a consumer never tangles it, and lit/example
+holds a symbolic link, which embedding cannot carry.
+
+#+begin_src go :tangle main.go :comments org
+//go:embed lit/lit.mk lit/tangle.el lit/preprocess.py lit/texlinks.py
+//go:embed lit/mermaid.lua lit/notes.lua lit/plan.lua
+//go:embed lit/README.md lit/AGENTS.md lit/templates
+var litFS embed.FS
+#+end_src
+
+The tool stack is pinned in devbox.json rather than assumed. Every
+one of these is reached by lit.mk or by a filter it runs: emacs
+tangles, python3 runs the preprocessor and the link fixer, pandoc
+and tectonic make the PDF, and mmdc draws the mermaid diagrams.
+
+#+begin_src go :tangle main.go :comments org
+const devboxJSON = `{
+  "packages": [
+    "go@latest",
+    "gnumake@latest",
+    "git@latest",
+    "emacs-nox@latest",
+    "python@latest",
+    "pandoc@latest",
+    "tectonic@latest",
+    "mermaid-cli@latest"
+  ]
+}
+`
+
+const gitignore = `book-weave.*
+.devbox/
+.venv/
+`
+#+end_src
+
+initCmd is the whole setup in the order the steps depend on each
+other. The environment comes first, because make setup runs emacs
+and emacs is one of the packages. Then the toolchain, the Makefile
+and go.mod, because make setup reads all three: it picks its
+template from go.mod, and it refuses to run at all if a BOOK.org is
+already there. Then the book is written and tangled, and last it is
+woven, which is the step that proves the PDF path works on this
+machine.
+
+#+begin_src go :tangle main.go :comments org
+func initCmd(dir, module string, stdout, stderr io.Writer) int {
+	steps := []struct {
+		what string
+		run  func(*project) error
+	}{
+		{"writing devbox.json", (*project).writeDevbox},
+		{"generating .envrc", (*project).writeEnvrc},
+		{"allowing direnv", (*project).allowDirenv},
+		{"copying lit", (*project).copyLit},
+		{"writing Makefile and .gitignore", (*project).writeMakefile},
+		{"running go mod init", (*project).goModInit},
+		{"running make setup", (*project).makeSetup},
+		{"running make weave", (*project).makeWeave},
+	}
+	p, err := newProject(dir, module, stdout)
+	if err != nil {
+		fmt.Fprintln(stderr, "babble:", err)
+		return 1
+	}
+	for i, step := range steps {
+		fmt.Fprintf(stdout, "[%d/%d] %s\n", i+1, len(steps), step.what)
+		if err := step.run(p); err != nil {
+			fmt.Fprintln(stderr, "babble:", err)
+			return 1
+		}
+	}
+	fmt.Fprintf(stdout, "\ndone. %s holds a book, its sources, and book.pdf.\n", p.dir)
+	fmt.Fprintln(stdout, "edit BOOK.org, then run make tangle.")
+	return 0
+}
+#+end_src
+
+A project is the directory being set up plus the two facts every
+step needs: what to call the Go module, and where progress goes.
+newProject is where the refusals live, so no step has to check
+whether it is safe to write.
+
+#+begin_src go :tangle main.go :comments org
+type project struct {
+	dir    string
+	module string
+	out    io.Writer
+	devbox bool // devbox is on PATH, so commands run inside it
+}
+
+func newProject(dir, module string, out io.Writer) (*project, error) {
+	if err := os.MkdirAll(dir, 0o755); err != nil {
+		return nil, err
+	}
+	abs, err := filepath.Abs(dir)
+	if err != nil {
+		return nil, err
+	}
+	for _, taken := range []string{"BOOK.org", "lit", "go.mod"} {
+		if _, err := os.Stat(filepath.Join(dir, taken)); err == nil {
+			return nil, fmt.Errorf("%s already has %s; init needs an empty directory", dir, taken)
+		}
+	}
+	if module == "" {
+		module = filepath.Base(abs)
+	}
+	_, hasDevbox := exec.LookPath("devbox")
+	return &project{dir: dir, module: module, out: out, devbox: hasDevbox == nil}, nil
+}
+#+end_src
+
+The two writers are plain, and both refuse to overwrite. Nothing
+here should ever clobber a file a person wrote, and newProject has
+already checked the three that matter, so a collision this deep is
+a bug rather than a user error.
+
+#+begin_src go :tangle main.go :comments org
+func (p *project) write(name, content string) error {
+	path := filepath.Join(p.dir, name)
+	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
+		return err
+	}
+	f, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0o644)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+	_, err = io.WriteString(f, content)
+	return err
+}
+
+func (p *project) writeDevbox() error { return p.write("devbox.json", devboxJSON) }
+
+func (p *project) writeMakefile() error {
+	if err := p.write("Makefile", "include lit/lit.mk\n"); err != nil {
+		return err
+	}
+	return p.write(".gitignore", gitignore)
+}
+#+end_src
+
+copyLit walks the embedded files and writes them out under lit/,
+stripping nothing: the paths inside the archive already start with
+lit/, because that is where they sit in this repository.
+
+#+begin_src go :tangle main.go :comments org
+func (p *project) copyLit() error {
+	return fs.WalkDir(litFS, "lit", func(path string, d fs.DirEntry, err error) error {
+		if err != nil || d.IsDir() {
+			return err
+		}
+		body, err := litFS.ReadFile(path)
+		if err != nil {
+			return err
+		}
+		return p.write(path, string(body))
+	})
+}
+#+end_src
+
+Without devbox there is no .envrc and nothing fetches the tools, so
+the least useful thing to print is that a step was skipped. What a
+reader needs is the list, and devbox.json already is the list.
+Parsing it back out is what keeps the message from drifting away
+from the manifest: adding a package to the stack updates both.
+
+#+begin_src go :tangle main.go :comments org
+func (p *project) reportStack() error {
+	var cfg struct{ Packages []string }
+	if err := json.Unmarshal([]byte(devboxJSON), &cfg); err != nil {
+		return err
+	}
+	fmt.Fprintln(p.out, "  devbox is not installed, so no .envrc was written and")
+	fmt.Fprintln(p.out, "  nothing will fetch the tool stack. devbox.json lists it:")
+	for _, pkg := range cfg.Packages {
+		name, _, _ := strings.Cut(pkg, "@")
+		fmt.Fprintln(p.out, "    -", name)
+	}
+	fmt.Fprintln(p.out, "  install those, or install devbox and run:")
+	fmt.Fprintln(p.out, "    devbox generate direnv && direnv allow")
+	return nil
+}
+#+end_src
+
+The rest of the steps are commands, and the only interesting thing
+about them is which environment they run in. A command that needs
+the tool stack runs inside devbox, because ~direnv allow~ arranges
+the environment for the next shell and not for this process. Where
+devbox is missing the command runs bare, which works if the tools
+are already on PATH and fails with the tool's own message if they
+are not.
+
+Two of the steps can find nothing to do. Allowing direnv needs an
+.envrc, which only exists if devbox wrote one, and it needs direnv
+itself; either way the step says what is missing and the setup goes
+on. A step that skips is not a step that failed.
+
+#+begin_src go :tangle main.go :comments org
+func (p *project) run(name string, args ...string) error {
+	cmd := exec.Command(name, args...)
+	cmd.Dir = p.dir
+	cmd.Stdout, cmd.Stderr = p.out, p.out
+	if err := cmd.Run(); err != nil {
+		return fmt.Errorf("%s %s: %w", name, strings.Join(args, " "), err)
+	}
+	return nil
+}
+
+func (p *project) runInStack(name string, args ...string) error {
+	if p.devbox {
+		return p.run("devbox", append([]string{"run", "--", name}, args...)...)
+	}
+	return p.run(name, args...)
+}
+
+func (p *project) writeEnvrc() error {
+	if !p.devbox {
+		p.reportStack()
+		return nil
+	}
+	return p.run("devbox", "generate", "direnv", "--force")
+}
+
+func (p *project) allowDirenv() error {
+	if _, err := os.Stat(filepath.Join(p.dir, ".envrc")); err != nil {
+		fmt.Fprintln(p.out, "  no .envrc to allow")
+		return nil
+	}
+	if _, err := exec.LookPath("direnv"); err != nil {
+		fmt.Fprintln(p.out, "  direnv is not installed; the .envrc will do nothing until it is")
+		return nil
+	}
+	return p.run("direnv", "allow")
+}
+
+func (p *project) goModInit() error { return p.run("go", "mod", "init", p.module) }
+func (p *project) makeSetup() error { return p.runInStack("make", "setup") }
+func (p *project) makeWeave() error { return p.runInStack("make", "weave") }
 #+end_src
 
 * The document tree
@@ -3642,6 +3922,7 @@ The suite as it stands, by what each file pins:
 | tangle-affiliated.txtar | header lines above a block, and the lead-keeping trim |
 | tangle-inert.txtar | the inert keys, proved to move no bytes |
 | tangle-tabs.txtar | dedenting when a tab straddles the cut |
+| init-guards.txtar | what init refuses to overwrite |
 
 *************** PLANNED stage 12 includes the two files below ([[#stage-12][plan]]) :stage12:
 The weave expands these; the tangle walks past them. What a reader
@@ -3815,6 +4096,7 @@ which is as external as testing gets.
 package main
 
 import (
+	"io"
 	"os"
 	"path/filepath"
 	"strings"
@@ -4181,6 +4463,85 @@ func TestFixtureTable(t *testing.T) {
 }
 #+end_src
 
+** The init writers
+
+The steps that only write files can be tested without the tool
+stack, and the steps that shell out to make and emacs cannot, so the
+split runs along that line: the init-guards fixture drives the
+refusals through the command line, and these two call the writers on
+a temp directory.
+
+The lit.mk comparison is the only check that the embedded filesystem
+carries real bytes. An embed that matched nothing would still
+compile, still walk, and still write no error, so without this the
+first sign of trouble would be a new project with an empty lit/.
+
+#+name: TestInitWrites
+#+begin_src go :tangle main_test.go :comments org
+func TestInitWrites(t *testing.T) {
+	dir := filepath.Join(t.TempDir(), "fresh")
+	p, err := newProject(dir, "example.com/fresh", io.Discard)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, step := range []func(*project) error{
+		(*project).writeDevbox, (*project).copyLit, (*project).writeMakefile,
+	} {
+		if err := step(p); err != nil {
+			t.Fatal(err)
+		}
+	}
+	for _, want := range []string{
+		"devbox.json", "Makefile", ".gitignore", "lit/lit.mk",
+		"lit/tangle.el", "lit/preprocess.py", "lit/templates/go/BOOK.org",
+	} {
+		if _, err := os.Stat(filepath.Join(dir, want)); err != nil {
+			t.Errorf("%s: %v", want, err)
+		}
+	}
+	got, err := os.ReadFile(filepath.Join(dir, "lit/lit.mk"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	want, err := os.ReadFile("lit/lit.mk")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if string(got) != string(want) {
+		t.Error("the embedded lit.mk is not the one in lit/")
+	}
+	if _, err := os.Stat(filepath.Join(dir, "lit/BOOK.org")); err == nil {
+		t.Error("lit/BOOK.org was embedded; a consumer never tangles it")
+	}
+}
+#+end_src
+
+A module nobody names is named after the directory, which is the one
+guess that is never wrong about where the code sits. And every write
+refuses to overwrite, even though newProject has already cleared the
+three files that matter, because a writer that trusts its caller is
+a writer that truncates somebody's file the first time it is reused.
+
+#+name: TestInitDefaults
+#+begin_src go :tangle main_test.go :comments org
+func TestInitDefaults(t *testing.T) {
+	dir := filepath.Join(t.TempDir(), "mybook")
+	p, err := newProject(dir, "", io.Discard)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if p.module != "mybook" {
+		t.Errorf("module = %q, want mybook", p.module)
+	}
+	if err := p.writeDevbox(); err != nil {
+		t.Fatal(err)
+	}
+	if err := p.writeDevbox(); err == nil {
+		t.Error("writing devbox.json twice succeeded; it must never clobber")
+	}
+}
+#+end_src
+
 ** The oracle harness
 
 Package oracletest carries the two environment flags and the
@@ -4365,6 +4726,28 @@ this document cares about. Entries are written once, at acceptance,
 and never reworded; history that needs correcting gets a new entry.
 An entry speaks from its date; the rest of the document speaks from
 no date at all.
+
+** [2026-07-29 Wed] Starting a book in one command
+
+babble gained a third subcommand. ~go run github.com/bilus/babble@latest init~
+turns an empty directory into a lit repository: it writes devbox.json
+and lets devbox generate the .envrc, allows direnv, copies lit out of
+the binary, writes the Makefile, .gitignore and go.mod, and then runs
+make setup and make weave so the first thing a reader sees is a PDF
+built on their own machine.
+
+The toolchain travels inside the binary because ~go run~ compiles
+from the module cache and leaves a program no way back to its own
+source. The embed reads lit/ where it already sits, so there is one
+copy and nothing to keep in step. lit/BOOK.org stays out, since a
+consumer never tangles lit's own source, and lit/example stays out
+because it holds a symbolic link and embedding cannot carry one.
+
+Steps that need the tool stack run through devbox, because direnv
+prepares the next shell and not the running process. Without devbox
+the setup still runs, and instead of reporting a skipped step it
+prints the stack, read back out of the devbox.json it just wrote, so
+the list a reader is told to install cannot drift from the manifest.
 
 ** [2026-07-29 Wed] Rewriting the testing chapters
 
