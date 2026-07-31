@@ -1,0 +1,25 @@
+{
+  "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.17.5/.schema/devbox.schema.json",
+  "packages": [
+    "go@1.26.4",
+    "emacs-nox@30.2",
+    "gnumake@4.4.1",
+    "diffutils@3.12"
+  ],
+  "shell": {
+    "init_hook": [
+      "echo 'babble: go, emacs, make, diff' > /dev/null"
+    ],
+    "scripts": {
+      "tangle": [
+        "make tangle"
+      ],
+      "check": [
+        "make check"
+      ],
+      "test": [
+        "go build ./... && go test ./..."
+      ]
+    }
+  }
+}

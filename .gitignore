@@ -1,4 +1,5 @@
 /babble
 /book.pdf
 book-weave.*
+.devbox/
 .DS_Store
