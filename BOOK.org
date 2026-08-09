@@ -61,34 +61,85 @@ every dynamic block, and the labels are spelled without the sigils,
 so the census never matches its own index.
 
 #+begin: plan-toc
-- [[file:BOOK.org::93][93]] entry: PLANNED Stage 12: the fixtures chapter
-- [[file:BOOK.org::156][156]] entry: PLANNED Stage 6: the oracle harness
-- [[file:BOOK.org::264][264]] entry: PLANNED Stage 7: org comments
-- [[file:BOOK.org::307][307]] entry: PLANNED Stage 8: noweb
-- [[file:BOOK.org::344][344]] entry: PLANNED Stage 9: dynamic blocks
-- [[file:BOOK.org::391][391]] entry: PLANNED Stage 10: the fence
-- [[file:BOOK.org::420][420]] entry: PLANNED Stage 11: parity and self-hosting
-- [[file:BOOK.org::927][927]] badge: PLANNED stage 12 adds the paragraph below (plan)
-- [[file:BOOK.org::1155][1155]] deletion: , and ~#+include~ (org's file-inclusion
-- [[file:BOOK.org::1511][1511]] badge: PLANNED stage 12 adds the chapter below (plan)
-- [[file:BOOK.org::3440][3440]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
-- [[file:BOOK.org::3743][3743]] hole 7: extent between the anchors, then the docstring rule
-- [[file:BOOK.org::3749][3749]] hole 7: line-comment table per language, blank lines as a bare ma...
-- [[file:BOOK.org::3759][3759]] hole 8: named block first, else noweb-ref concatenation; cycles a...
-- [[file:BOOK.org::3868][3868]] hole 9: splice fresh interiors into the retained bytes, report ch...
-- [[file:BOOK.org::3878][3878]] hole 9: a line link per plan site, sites below the block shifted ...
-- [[file:BOOK.org::3884][3884]] hole 9: system diff -u over the two named bodies, temp-file heade...
-- [[file:BOOK.org::3927][3927]] badge: PLANNED stage 12 includes the two files below (plan)
-- [[file:BOOK.org::4415][4415]] badge: PLANNED stage 12 adds the test below (plan)
-- [[file:BOOK.org::4556][4556]] hole 6: ORACLE=1 in the environment
-- [[file:BOOK.org::4560][4560]] hole 6: UPDATE=1 in the environment
-- [[file:BOOK.org::4566][4566]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
-- [[file:BOOK.org::4578][4578]] hole 6: write the txtar's input files into dir, and name the book...
-- [[file:BOOK.org::4584][4584]] hole 6: copy lit/ in, run batch Emacs with the driver, fail loudl...
-- [[file:BOOK.org::4588][4588]] hole 6: every file on both sides, byte for byte, ignoring the inputs
-- [[file:BOOK.org::4592][4592]] hole 6: rewrite the fixture's want/ files from the oracle tree
+- [[file:BOOK.org::96][96]] entry: PLANNED Stage 21: the environment
+- [[file:BOOK.org::144][144]] entry: PLANNED Stage 12: the fixtures chapter
+- [[file:BOOK.org::207][207]] entry: PLANNED Stage 6: the oracle harness
+- [[file:BOOK.org::315][315]] entry: PLANNED Stage 7: org comments
+- [[file:BOOK.org::358][358]] entry: PLANNED Stage 8: noweb
+- [[file:BOOK.org::395][395]] entry: PLANNED Stage 9: dynamic blocks
+- [[file:BOOK.org::442][442]] entry: PLANNED Stage 10: the fence
+- [[file:BOOK.org::471][471]] entry: PLANNED Stage 11: parity and self-hosting
+- [[file:BOOK.org::978][978]] badge: PLANNED stage 12 adds the paragraph below (plan)
+- [[file:BOOK.org::1206][1206]] deletion: , and ~#+include~ (org's file-inclusion
+- [[file:BOOK.org::1562][1562]] badge: PLANNED stage 12 adds the chapter below (plan)
+- [[file:BOOK.org::3491][3491]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
+- [[file:BOOK.org::3794][3794]] hole 7: extent between the anchors, then the docstring rule
+- [[file:BOOK.org::3800][3800]] hole 7: line-comment table per language, blank lines as a bare ma...
+- [[file:BOOK.org::3810][3810]] hole 8: named block first, else noweb-ref concatenation; cycles a...
+- [[file:BOOK.org::3919][3919]] hole 9: splice fresh interiors into the retained bytes, report ch...
+- [[file:BOOK.org::3929][3929]] hole 9: a line link per plan site, sites below the block shifted ...
+- [[file:BOOK.org::3935][3935]] hole 9: system diff -u over the two named bodies, temp-file heade...
+- [[file:BOOK.org::3978][3978]] badge: PLANNED stage 12 includes the two files below (plan)
+- [[file:BOOK.org::4466][4466]] badge: PLANNED stage 12 adds the test below (plan)
+- [[file:BOOK.org::4607][4607]] hole 6: ORACLE=1 in the environment
+- [[file:BOOK.org::4611][4611]] hole 6: UPDATE=1 in the environment
+- [[file:BOOK.org::4617][4617]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
+- [[file:BOOK.org::4629][4629]] hole 6: write the txtar's input files into dir, and name the book...
+- [[file:BOOK.org::4635][4635]] hole 6: copy lit/ in, run batch Emacs with the driver, fail loudl...
+- [[file:BOOK.org::4639][4639]] hole 6: every file on both sides, byte for byte, ignoring the inputs
+- [[file:BOOK.org::4643][4643]] hole 6: rewrite the fixture's want/ files from the oracle tree
+- [[file:BOOK.org::4955][4955]] badge: PLANNED stage 21 adds the two paragraphs below (plan)
+- [[file:BOOK.org::4978][4978]] insertion: devbox.json and its lockfile,
 
 #+end:
+
+** PLANNED Stage 21: the environment                               :stage21:
+:PROPERTIES:
+:CUSTOM_ID: stage-21
+:SPEC:     Reproducing this document
+:DEPS:     none
+:ACCEPTANCE: the chapter reads without the plan open; make check; go test ./...
+:SIZE:     ~20 lines of prose
+:END:
+
+Claim: after this stage the book says which programs its four make
+rules need, where their versions are pinned, and that a container
+image carries them, so a reader can run every gate here without
+assembling a toolchain by hand.
+
+Decided: (1) The versions are pinned in a file and named in the
+prose, not listed in it. A list of versions in a book rots between
+readings; a lockfile does not, and the book that quotes one is
+lying by the second release. (2) The image is generated from that
+same file rather than written, so the environment is described
+once. That makes the Dockerfile hand-managed the way go.mod is,
+and it means nothing hand-written may go in it, since regenerating
+overwrites. (3) The image carries the weave stack as well as the
+tangle stack. It costs size, and it buys a reader with only Docker
+the whole book, PDF included. (4) The sandbox note earns its place
+in the prose. A configuration file that turns a browser sandbox
+off should carry its reason in writing, and the failure it
+prevents is the interesting kind: the weave completes, every
+diagram silently becomes a source listing, and the exit code says
+nothing happened.
+
+- [ ] plan approved (the human ticks this box)
+- [ ] the chapter reads steady-state, with no stage named in it
+- [ ] Changes draft below reads right in the journal
+- [ ] badges and CriticMarkup removed at acceptance
+- [ ] census clean for stage 21, suite green
+- [ ] Changes entry dated and filed, plan entry deleted
+
+*** Changes draft
+
+#+begin_quote
+The book gained the environment its make rules run in: the file
+that pins the programs and their versions, the container image
+generated from that same file, and the reason a browser sandbox is
+turned off inside it. Emacs is the pin that carries weight, since
+the oracle is Emacs and a parity check run against another one
+proves less than it looks like it proves.
+#+end_quote
 
 ** PLANNED Stage 12: the fixtures chapter                          :stage12:
 :PROPERTIES:
@@ -4901,9 +4952,30 @@ self-hosting lands;
 through mmdc (the mermaid CLI) and any in-flight plan styled; and
 ~make review~ is the same weave, named for the review gate.
 
+*************** PLANNED stage 21 adds the two paragraphs below ([[#stage-21][plan]]) :stage21:
+The programs those rules need are pinned in ~devbox.json~: Go
+matching go.mod, Emacs matching the oracle, make and diff for the
+check, and pandoc, tectonic, mmdc and rsvg-convert for the weave. A
+lockfile beside it fixes the exact build of each. Emacs is the pin
+that carries weight, because the oracle is Emacs, and a check run
+against a different one proves less than it looks like it proves.
+
+~devbox generate dockerfile~ turns that same file into a container
+image, so a reader with Docker and nothing else can run every gate
+this book claims. One thing inside the image needs saying out loud.
+The browser mmdc drives refuses to start unless its sandbox helper
+is owned by root, which a package store cannot arrange, so
+~puppeteer.json~ turns the sandbox off and ~devbox.json~ points the
+filter at it. Without that file the weave still finishes and every
+diagram quietly becomes a source listing, which is the kind of
+success worth distrusting.
+*************** END
+
 The toolchain under lit/ is its own literate program, shared with
 reqsync: lit/BOOK.org tangles lit/lit.mk and the scripts, and this
 book only consumes them. The Makefile is one hand-written line
 including lit/lit.mk, plus the babble-specific check excludes in
-~CHECK_EXTRA~; go.mod, .gitignore, and the fixture data under
-testdata stay outside the book the way manifests always do.
+~CHECK_EXTRA~; go.mod, .gitignore,{++ devbox.json and its lockfile,
+the Dockerfile generated from it, puppeteer.json,++} and the fixture
+data under testdata stay outside the book the way manifests always
+do.
