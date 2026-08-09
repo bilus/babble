@@ -143,11 +143,26 @@ How to write and edit book prose, in working order:
   `make review`. After committing a skeleton, weave it (`make review`
   renders the book with the plan styled: badges boxed, twins beside
   their originals, generated diffs, CriticMarkup in color), put
-  book.pdf in front of the human, and stop; acceptance work starts
+  book.pdf in front of the human, and stop. Before committing, check
+  that every twin has a src-block-diff under it: a skeleton whose
+  twins show only before-and-after blocks is not reviewable and is
+  not ready for the gate; acceptance work starts
   only after the human ticks "skeleton approved". An agent never
   ticks that box for a plan it wrote. The one exception: a skeleton
   the human authored and committed themselves is pre-approved, and
   being told to execute it is the tick.
+- A test that has never failed proves nothing. When the code a test
+  guards already works, do the "seen to fail" step by breaking the
+  guard on purpose: make the production block violate the guarantee,
+  watch the test that names it fail, then revert. One break at a time,
+  every test the stage adds or widens, and the stage entry says it was
+  done. Expect some tests not to survive. A test written against
+  working code passes on the day it is written whether it guards
+  anything or not, and the two usual causes are a fixture that trips
+  an earlier check, so the assertion reads an error the test did not
+  cause, and a guarantee the code cannot report on, such as a
+  swallowed error. The second is a bug in the code, not a reason to
+  skip the check.
 - Commit bodies are one or two sentences, first person or third
   person. ("I added X so that Y." / "This commit fixes Z.")
 
@@ -262,10 +277,20 @@ census already carry the mechanics:
     atomicWrite's panic would turn the suite red.
     *************** END
 
-An optional generated view sits under the twin: a dynamic block,
+Every twin carries a generated view directly under it, without
+exception: a dynamic block naming the pair,
 
     #+begin: src-block-diff :old sync-write-back :new sync-write-back--planned
     #+end:
+
+This is not decoration and not optional. A twin without one asks the
+reviewer to diff two blocks by eye, which is the one job a machine
+does perfectly and a human does badly; on a stage with a dozen twins
+it makes the change unreviewable, and a one-word edit buried in forty
+identical lines is exactly what slips through. The reviewer should be
+able to read the stage by reading its diffs alone. When a twin's
+delta is genuinely the whole block (a new function, a rewritten
+region), the diff says so and costs nothing.
 
 Org dispatches on the name alone: a refresh deletes the interior
 wholesale, then calls `org-dblock-write:src-block-diff`

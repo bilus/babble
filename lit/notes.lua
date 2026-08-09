@@ -21,6 +21,51 @@ function Span(el)
   end
 end
 
+-- A link whose target names a figure (#+name: fig:...) becomes a
+-- numbered cross-reference. Pandoc's org reader turns [[fig:x]] into
+-- an autolink, which the LaTeX writer would set as a \url; the label
+-- comes from the #+name: on the figure itself.
+function Link(el)
+  if el.target:match('^fig:') then
+    return pandoc.RawInline('latex', 'Figure~\\ref{' .. el.target .. '}')
+  end
+end
+
+-- Pandoc's org reader wraps a captioned block in a captioned-content
+-- division rather than a figure, so a mermaid diagram with a
+-- #+caption: would typeset as a bare image with its caption above.
+-- Promote the division to a figure, which floats and takes a number.
+-- The label comes from the #+name:, which mermaid.lua leaves on the
+-- image it returns.
+function Div(el)
+  if not el.classes:includes('captioned-content') then
+    return nil
+  end
+  local caption, content = nil, pandoc.List({})
+  for _, b in ipairs(el.content) do
+    if b.t == 'Div' and b.classes:includes('caption') then
+      caption = b.content
+    else
+      content:insert(b)
+    end
+  end
+  if not caption or #content ~= 1 then
+    return nil
+  end
+  local body = content[1]
+  if body.t ~= 'Para' and body.t ~= 'Plain' then
+    return nil
+  end
+  if #body.content ~= 1 or body.content[1].t ~= 'Image' then
+    return nil
+  end
+  local img = body.content[1]
+  local id = img.identifier ~= '' and img.identifier or el.identifier
+  img.identifier = ''
+  return pandoc.Figure({ pandoc.Plain({ img }) },
+                       pandoc.Caption(caption), pandoc.Attr(id))
+end
+
 -- Pandoc's org reader keeps :tangle and :noweb as block attributes;
 -- blocks that land in a file get a paper-style numbered caption
 -- naming it, plus the block's <<name>> when it has one. A named

@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 640" width="880" height="640" font-family="&#39;Latin Modern Roman&#39;,&#39;CMU Serif&#39;,Georgia,serif">
+  <rect x="0" y="0" width="880" height="640" fill="#ffffff"></rect>
+
+  
+  <text x="40" y="34" font-size="13" fill="#475569" letter-spacing="1.4">A RANGE, AND THE RANGE INSIDE IT</text>
+  <text x="360" y="34" font-size="13" fill="#475569" letter-spacing="1.4">THE LOOP THAT PARSES ONE RANGE</text>
+  <line x1="40" y1="44" x2="840" y2="44" stroke="#a1a1aa" stroke-width="1"></line>
+
+  
+  <g font-family="&#39;Latin Modern Mono&#39;,&#39;CMU Typewriter Text&#39;,Consolas,monospace" font-size="14">
+    <rect x="40" y="62" width="152" height="26" fill="#fef3c7" stroke="#d97706" stroke-width="1"></rect>
+    <text x="50" y="80" fill="#78350f">* Chapter</text>
+    <rect x="40" y="92" width="152" height="26" fill="#f3f4f6" stroke="#6b7280" stroke-width="1"></rect>
+    <text x="50" y="110" fill="#111827">Some prose.</text>
+    <rect x="40" y="122" width="152" height="26" fill="#dcfce7" stroke="#16a34a" stroke-width="1"></rect>
+    <text x="50" y="140" fill="#14532d">#+begin_src go</text>
+    <rect x="40" y="152" width="152" height="26" fill="#ffffff" stroke="#9ca3af" stroke-width="1"></rect>
+    <text x="50" y="170" fill="#374151">package greet</text>
+    <rect x="40" y="182" width="152" height="26" fill="#dcfce7" stroke="#16a34a" stroke-width="1"></rect>
+    <text x="50" y="200" fill="#14532d">#+end_src</text>
+    <rect x="40" y="212" width="152" height="26" fill="#fef3c7" stroke="#d97706" stroke-width="1"></rect>
+    <text x="50" y="230" fill="#78350f">* Next heading</text>
+  </g>
+
+  <g fill="none" stroke="#a1a1aa" stroke-width="1.4">
+    <path d="M 194 62 H 204 V 238 H 194"></path>
+    <path d="M 214 92 H 224 V 208 H 214"></path>
+  </g>
+  <g font-family="&#39;Latin Modern Mono&#39;,&#39;CMU Typewriter Text&#39;,Consolas,monospace" font-size="13" fill="#475569">
+    <text x="240" y="74">beg</text>
+    <text x="240" y="234">end</text>
+    <text x="240" y="104">contents-begin</text>
+    <text x="240" y="122" fill="#94a3b8">of * Chapter,</text>
+    <text x="240" y="138" fill="#94a3b8">not the block</text>
+    <text x="240" y="204">contents-end</text>
+  </g>
+
+
+  
+  <rect x="360" y="56" width="480" height="470" fill="#fcfcfd" stroke="#a1a1aa" stroke-width="1"></rect>
+  <text x="380" y="84" font-family="&#39;Latin Modern Mono&#39;,&#39;CMU Typewriter Text&#39;,Consolas,monospace" font-size="16" fill="#111827">parse(beg, end, mode)</text>
+  <text x="380" y="102" font-size="13" fill="#475569">point starts at beg</text>
+
+  <text x="380" y="136" font-size="18" fill="#111827">1. ask what starts at point</text>
+  <text x="398" y="154" font-size="13" fill="#475569">a dispatcher answers; this drawing does not open it up</text>
+
+  <text x="380" y="188" font-size="18" fill="#111827">2. read the element it returns</text>
+  <text x="398" y="206" font-size="13" fill="#475569">begin and end, plus contents-begin and contents-end</text>
+  <text x="398" y="224" font-size="13" fill="#475569">when it can contain elements</text>
+
+  <text x="380" y="258" font-size="18" fill="#111827">3. if it can contain elements, run this same loop</text>
+  <text x="398" y="276" font-size="13" fill="#475569">on its contents range:</text>
+
+  <rect x="398" y="288" width="426" height="124" fill="#ffffff" stroke="#a1a1aa" stroke-width="1"></rect>
+  <text x="414" y="314" font-family="&#39;Latin Modern Mono&#39;,&#39;CMU Typewriter Text&#39;,Consolas,monospace" font-size="13" fill="#111827">parse(contents-begin, contents-end, child mode)</text>
+  <text x="414" y="332" font-size="13" fill="#475569">the same five steps, on a strictly shorter range</text>
+  <rect x="430" y="344" width="380" height="54" fill="#fcfcfd" stroke="#a1a1aa" stroke-width="1"></rect>
+  <text x="444" y="368" font-family="&#39;Latin Modern Mono&#39;,&#39;CMU Typewriter Text&#39;,Consolas,monospace" font-size="12" fill="#111827">parse(contents-begin, contents-end, child mode)</text>
+  <text x="444" y="386" font-size="13" fill="#475569">and again, while elements contain elements</text>
+
+  <text x="380" y="446" font-size="18" fill="#111827">4. point = the element&#39;s end</text>
+  <text x="398" y="464" font-size="13" fill="#475569">the element is finished; nothing before point is revisited</text>
+
+  <text x="380" y="490" font-size="18" fill="#111827">5. repeat while point &lt; end</text>
+  <text x="398" y="508" font-size="13" fill="#475569">otherwise return the elements collected, in file order</text>
+
+  
+  <line x1="40" y1="550" x2="840" y2="550" stroke="#a1a1aa" stroke-width="2"></line>
+  <g font-size="14" fill="#475569">
+    <text x="40" y="576">The inner frame is not another procedure: it is this same loop, entered again with a shorter range.</text>
+    <text x="40" y="598">Nesting in the drawing is nesting in the tree. Each frame parses the contents of one element in the frame outside it.</text>
+    <text x="40" y="620">A call may look only inside the bar it was given, so a block cannot find its terminator past the end of its range.</text>
+  </g>
+</svg>

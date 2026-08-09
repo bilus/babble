@@ -189,9 +189,10 @@ flowchart LR
 
 make weave is a pipeline of five steps. preprocess.py rewrites plan
 markup into org pandoc understands and injects the LaTeX preamble.
-Pandoc converts that org to LaTeX, running the three filters in
-order: mermaid.lua renders diagrams, notes.lua handles captions,
-references, and asides, plan.lua styles the plan. texlinks.py then
+Pandoc converts that org to LaTeX, running the four filters in
+order: mermaid.lua renders diagrams, svg.lua converts hand-drawn
+figures, notes.lua handles captions, references, and asides,
+plan.lua styles the plan. texlinks.py then
 rewrites reference placeholders in the LaTeX into hyperlinks, and
 tectonic compiles the result. The intermediate files are removed
 whether the weave succeeds or fails.
@@ -223,10 +224,11 @@ tangle:
 
 weave: book.pdf
 
-book.pdf: BOOK.org $(LIT)/preprocess.py $(LIT)/plan.lua $(LIT)/notes.lua $(LIT)/mermaid.lua $(LIT)/texlinks.py
+book.pdf: BOOK.org $(LIT)/preprocess.py $(LIT)/plan.lua $(LIT)/notes.lua $(LIT)/mermaid.lua $(LIT)/svg.lua $(LIT)/texlinks.py
 	python3 $(LIT)/preprocess.py BOOK.org book-weave.org
 	t=$$(mktemp -d) && MERMAID_TMP=$$t pandoc book-weave.org -s --toc \
-	  --lua-filter=$(LIT)/mermaid.lua --lua-filter=$(LIT)/notes.lua \
+	  --lua-filter=$(LIT)/mermaid.lua --lua-filter=$(LIT)/svg.lua \
+	  --lua-filter=$(LIT)/notes.lua \
 	  --lua-filter=$(LIT)/plan.lua -V colorlinks -V linkcolor=NavyBlue \
 	  -o book-weave.tex && \
 	  python3 $(LIT)/texlinks.py book-weave.tex && \
@@ -803,7 +805,7 @@ if __name__ == "__main__":
 
 * The pandoc filters
 
-Three Lua filters run inside pandoc, in the order the weave recipe
+Four Lua filters run inside pandoc, in the order the weave recipe
 lists them.
 
 ** Diagrams
@@ -814,14 +816,28 @@ diagram fails to render, the block stays as source and the weave
 completes anyway; a broken diagram should cost a picture, not the
 whole book.
 
+mmdc drives a headless browser, and a browser inside a container
+usually refuses to start: it wants a sandbox helper owned by root,
+which a package store cannot provide. ~MERMAID_PUPPETEER_CONFIG~
+names a config file the filter passes on, so the book that runs in a
+container can say so without every other book paying for it. Left
+unset, mmdc runs exactly as before.
+
+Both converters are called directly rather than through a shell, so a
+scratch directory or a figure path containing a space converts like any
+other, and nothing in a path is read as shell syntax.
+
 #+name: mermaid-filter
 #+begin_src lua :tangle mermaid.lua
 -- Render mermaid src blocks to PDF images at weave time via mmdc.
 -- MERMAID_TMP names the scratch directory for generated files; the
--- weave recipe creates and removes it. When mmdc is missing or a
--- render fails, the block stays as fontified source and the weave
--- still completes.
+-- weave recipe creates and removes it. MERMAID_PUPPETEER_CONFIG, when
+-- set, names a puppeteer config file passed on to the browser mmdc
+-- drives; a container needs one to turn the sandbox off. When mmdc is
+-- missing or a render fails, the block stays as fontified source and
+-- the weave still completes.
 local dir = os.getenv("MERMAID_TMP") or "."
+local puppeteer = os.getenv("MERMAID_PUPPETEER_CONFIG")
 local n = 0
 
 function CodeBlock(el)
@@ -831,14 +847,60 @@ function CodeBlock(el)
   local f = assert(io.open(base .. ".mmd", "w"))
   f:write(el.text)
   f:close()
-  local ok = os.execute(string.format(
-    "mmdc -q -i %s.mmd -o %s.pdf -f -b transparent >/dev/null 2>&1",
-    base, base))
+  local args = { "-q", "-i", base .. ".mmd", "-o", base .. ".pdf",
+                 "-f", "-b", "transparent" }
+  if puppeteer and puppeteer ~= "" then
+    table.insert(args, "-p")
+    table.insert(args, puppeteer)
+  end
+  local ok = pcall(pandoc.pipe, "mmdc", args, "")
   if not ok then
     io.stderr:write("mermaid.lua: mmdc failed; keeping source block\n")
     return nil
   end
-  return pandoc.Para({ pandoc.Image({}, base .. ".pdf") })
+  return pandoc.Para({ pandoc.Image({}, base .. ".pdf", "",
+                                    pandoc.Attr(el.identifier)) })
+end
+#+end_src
+
+A mermaid block carrying a ~#+name:~ and a ~#+caption:~ becomes a
+numbered figure, so the identifier rides along on the image the
+filter returns and notes.lua promotes the pair.
+
+** Hand-drawn figures
+
+A diagram too particular for mermaid is drawn by hand and kept as
+SVG, which is the format worth editing. LaTeX cannot include SVG:
+the svg package shells out to inkscape, tectonic refuses piped
+input, and one such figure fails the whole build. So svg.lua
+converts each one to PDF at weave time with rsvg-convert, leaving
+the drawing vector and the repository free of a generated binary
+beside every source.
+
+A figure that cannot be converted becomes a visible note rather
+than a missing picture, because a diagram that silently vanishes
+from a PDF is worse than one that says why it is not there.
+
+#+name: svg-filter
+#+begin_src lua :tangle svg.lua
+-- Convert SVG figures to PDF at weave time, since LaTeX cannot
+-- include SVG. MERMAID_TMP names the scratch directory the weave
+-- recipe creates and removes.
+local dir = os.getenv("MERMAID_TMP") or "."
+local n = 0
+
+function Image(el)
+  if not el.src:match("%.svg$") then return nil end
+  n = n + 1
+  local out = string.format("%s/svg-%d.pdf", dir, n)
+  local ok = pcall(pandoc.pipe, "rsvg-convert",
+    { "-f", "pdf", "-o", out, el.src }, "")
+  if not ok then
+    io.stderr:write("svg.lua: rsvg-convert failed on " .. el.src .. "\n")
+    return pandoc.Emph({ pandoc.Str("[figure " .. el.src .. " could not be converted]") })
+  end
+  el.src = out
+  return el
 end
 #+end_src
 
@@ -873,6 +935,74 @@ function Span(el)
     local name = pandoc.utils.stringify(el.content)
     return pandoc.Link({ pandoc.Code(name) }, '#' .. el.attributes['target'])
   end
+end
+#+end_src
+
+A figure carries a ~#+name:~ starting ~fig:~ and a ~#+caption:~, which
+pandoc turns into a float with a numbered caption and a label. Prose
+refers to it with an ordinary org link to that name, and the filter
+below turns the link into a LaTeX cross-reference, so the number in
+the sentence is the number under the figure. The point of the float
+is that the figure need not sit where the sentence does: a full-page
+drawing lands on its own page and the prose around it stays
+continuous.
+
+#+name: notes-figrefs
+#+begin_src lua :tangle notes.lua
+-- A link whose target names a figure (#+name: fig:...) becomes a
+-- numbered cross-reference. Pandoc's org reader turns [[fig:x]] into
+-- an autolink, which the LaTeX writer would set as a \url; the label
+-- comes from the #+name: on the figure itself.
+function Link(el)
+  if el.target:match('^fig:') then
+    return pandoc.RawInline('latex', 'Figure~\\ref{' .. el.target .. '}')
+  end
+end
+#+end_src
+
+An image written as a link is a figure already, because pandoc's org
+reader promotes a captioned paragraph on its own. A captioned block
+is not: the reader wraps it in a division and leaves the caption as
+a paragraph above, which typesets as a stranded picture that cannot
+float. The filter below promotes such a division into a figure when
+what it wraps is a single image, which is the shape mermaid.lua and
+svg.lua leave behind.
+
+#+name: notes-figures
+#+begin_src lua :tangle notes.lua
+-- Pandoc's org reader wraps a captioned block in a captioned-content
+-- division rather than a figure, so a mermaid diagram with a
+-- #+caption: would typeset as a bare image with its caption above.
+-- Promote the division to a figure, which floats and takes a number.
+-- The label comes from the #+name:, which mermaid.lua leaves on the
+-- image it returns.
+function Div(el)
+  if not el.classes:includes('captioned-content') then
+    return nil
+  end
+  local caption, content = nil, pandoc.List({})
+  for _, b in ipairs(el.content) do
+    if b.t == 'Div' and b.classes:includes('caption') then
+      caption = b.content
+    else
+      content:insert(b)
+    end
+  end
+  if not caption or #content ~= 1 then
+    return nil
+  end
+  local body = content[1]
+  if body.t ~= 'Para' and body.t ~= 'Plain' then
+    return nil
+  end
+  if #body.content ~= 1 or body.content[1].t ~= 'Image' then
+    return nil
+  end
+  local img = body.content[1]
+  local id = img.identifier ~= '' and img.identifier or el.identifier
+  img.identifier = ''
+  return pandoc.Figure({ pandoc.Plain({ img }) },
+                       pandoc.Caption(caption), pandoc.Attr(id))
 end
 #+end_src
 

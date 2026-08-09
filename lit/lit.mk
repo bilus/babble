@@ -9,10 +9,11 @@ tangle:
 
 weave: book.pdf
 
-book.pdf: BOOK.org $(LIT)/preprocess.py $(LIT)/plan.lua $(LIT)/notes.lua $(LIT)/mermaid.lua $(LIT)/texlinks.py
+book.pdf: BOOK.org $(LIT)/preprocess.py $(LIT)/plan.lua $(LIT)/notes.lua $(LIT)/mermaid.lua $(LIT)/svg.lua $(LIT)/texlinks.py
 	python3 $(LIT)/preprocess.py BOOK.org book-weave.org
 	t=$$(mktemp -d) && MERMAID_TMP=$$t pandoc book-weave.org -s --toc \
-	  --lua-filter=$(LIT)/mermaid.lua --lua-filter=$(LIT)/notes.lua \
+	  --lua-filter=$(LIT)/mermaid.lua --lua-filter=$(LIT)/svg.lua \
+	  --lua-filter=$(LIT)/notes.lua \
 	  --lua-filter=$(LIT)/plan.lua -V colorlinks -V linkcolor=NavyBlue \
 	  -o book-weave.tex && \
 	  python3 $(LIT)/texlinks.py book-weave.tex && \

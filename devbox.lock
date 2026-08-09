@@ -272,6 +272,259 @@
           "store_path": "/nix/store/1xklj6dmgcpgz60c9w2ynaq7ynzfsrrq-go-1.26.4"
         }
       }
+    },
+    "librsvg@2.62.3": {
+      "last_modified": "2026-08-03T09:05:39Z",
+      "resolved": "github:NixOS/nixpkgs/104240a772428cc2e20d8fd86c9ddbb886bbaff2#librsvg",
+      "source": "devbox-search",
+      "version": "2.62.3",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/2jpdakbavxsvmbwv8lbvgsh0g0n0pv6g-librsvg-2.62.3",
+              "default": true
+            },
+            {
+              "name": "dev",
+              "path": "/nix/store/n839hacdvqr0nnx5r2yb609v37yqwkw8-librsvg-2.62.3-dev"
+            },
+            {
+              "name": "devdoc",
+              "path": "/nix/store/9shs04wjs6xrwwciaapxgl8vlv0j6d9g-librsvg-2.62.3-devdoc"
+            }
+          ],
+          "store_path": "/nix/store/2jpdakbavxsvmbwv8lbvgsh0g0n0pv6g-librsvg-2.62.3"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/309jkrqkiadbnzmdk9rx90sgh0298k5g-librsvg-2.62.3",
+              "default": true
+            },
+            {
+              "name": "dev",
+              "path": "/nix/store/v40il9cfjks3hqz7b31d6nns78dpsxl5-librsvg-2.62.3-dev"
+            },
+            {
+              "name": "devdoc",
+              "path": "/nix/store/qsffz0k5bsbs1jccdr4y5yknbyg8qp9r-librsvg-2.62.3-devdoc"
+            }
+          ],
+          "store_path": "/nix/store/309jkrqkiadbnzmdk9rx90sgh0298k5g-librsvg-2.62.3"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/j9i3jwf0i2b237yszbmhl6zvr5m0ad8a-librsvg-2.62.3",
+              "default": true
+            },
+            {
+              "name": "dev",
+              "path": "/nix/store/n6i6c1cz5vgdhydnhfvx38x31jgca3p8-librsvg-2.62.3-dev"
+            },
+            {
+              "name": "devdoc",
+              "path": "/nix/store/dpmgdp0pmrdif463rdjssw65p4ds1ysh-librsvg-2.62.3-devdoc"
+            }
+          ],
+          "store_path": "/nix/store/j9i3jwf0i2b237yszbmhl6zvr5m0ad8a-librsvg-2.62.3"
+        }
+      }
+    },
+    "mermaid-cli@11.16.0": {
+      "last_modified": "2026-08-01T16:34:20Z",
+      "resolved": "github:NixOS/nixpkgs/a5cbcfe954791221bfffe2307f7d1a1bf61a871e#mermaid-cli",
+      "source": "devbox-search",
+      "version": "11.16.0",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/q30k9n6w94n6amhs6bxqarw3waj2zl15-mermaid-cli-11.16.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/q30k9n6w94n6amhs6bxqarw3waj2zl15-mermaid-cli-11.16.0"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/jin4zd0ba1wivr0ap5lgdr32d8df7i2q-mermaid-cli-11.16.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/jin4zd0ba1wivr0ap5lgdr32d8df7i2q-mermaid-cli-11.16.0"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/cjmdw37z5lxhsz8m4k083352m9h8gydg-mermaid-cli-11.16.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/cjmdw37z5lxhsz8m4k083352m9h8gydg-mermaid-cli-11.16.0"
+        }
+      }
+    },
+    "pandoc@3.7.0.2": {
+      "last_modified": "2026-08-01T16:34:20Z",
+      "resolved": "github:NixOS/nixpkgs/a5cbcfe954791221bfffe2307f7d1a1bf61a871e#pandoc",
+      "source": "devbox-search",
+      "version": "3.7.0.2",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/rshq8bsy3qy6kr3lh1i0qlixa12i5058-pandoc-cli-3.7.0.2",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/rshq8bsy3qy6kr3lh1i0qlixa12i5058-pandoc-cli-3.7.0.2"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/zw7gfz252rpnx8ay65rlscaz4nsgjiqd-pandoc-cli-3.7.0.2",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/zw7gfz252rpnx8ay65rlscaz4nsgjiqd-pandoc-cli-3.7.0.2"
+        },
+        "x86_64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/qsvyw58wk9494w5xsv3zhn1hx8s3gqrv-pandoc-cli-3.7.0.2",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/qsvyw58wk9494w5xsv3zhn1hx8s3gqrv-pandoc-cli-3.7.0.2"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/6mwqmnwzbvbdjh2bijrj8fxkfvpm9fbr-pandoc-cli-3.7.0.2",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/6mwqmnwzbvbdjh2bijrj8fxkfvpm9fbr-pandoc-cli-3.7.0.2"
+        }
+      }
+    },
+    "python@3.11.15": {
+      "last_modified": "2026-08-01T16:34:20Z",
+      "plugin_version": "0.0.5",
+      "resolved": "github:NixOS/nixpkgs/a5cbcfe954791221bfffe2307f7d1a1bf61a871e#python311",
+      "source": "devbox-search",
+      "version": "3.11.15",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/266hir9772884z0a0lcijswblgpvqwja-python3-3.11.15",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/266hir9772884z0a0lcijswblgpvqwja-python3-3.11.15"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/ar0z8cl7vbyh0nbi0p31zll9r58hhlcr-python3-3.11.15",
+              "default": true
+            },
+            {
+              "name": "debug",
+              "path": "/nix/store/2xaxys7whd0xb4i0khgppjk0ricfabd5-python3-3.11.15-debug"
+            }
+          ],
+          "store_path": "/nix/store/ar0z8cl7vbyh0nbi0p31zll9r58hhlcr-python3-3.11.15"
+        },
+        "x86_64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/4w7i02q2kvwbhi4xmw14rkwbmv5s1h8n-python3-3.11.15",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/4w7i02q2kvwbhi4xmw14rkwbmv5s1h8n-python3-3.11.15"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/7iz3yb7ism5wi4gnf2cnkg6fspraqxw4-python3-3.11.15",
+              "default": true
+            },
+            {
+              "name": "debug",
+              "path": "/nix/store/lsrf6784n5d1lhr6yvrlxb4x71vh6m19-python3-3.11.15-debug"
+            }
+          ],
+          "store_path": "/nix/store/7iz3yb7ism5wi4gnf2cnkg6fspraqxw4-python3-3.11.15"
+        }
+      }
+    },
+    "tectonic@0.16.9": {
+      "last_modified": "2026-07-23T05:10:05Z",
+      "resolved": "github:NixOS/nixpkgs/7525d999cd850b9a488817abc89c75dc733acf17#tectonic",
+      "source": "devbox-search",
+      "version": "0.16.9",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/kg8ax0v0i8v4z86l6f65v9fr0b2gixj0-tectonic-wrapped-0.16.9",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/kg8ax0v0i8v4z86l6f65v9fr0b2gixj0-tectonic-wrapped-0.16.9"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/c3r89k2kcjwfyz781wb4fndwwadr4lmz-tectonic-wrapped-0.16.9",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/c3r89k2kcjwfyz781wb4fndwwadr4lmz-tectonic-wrapped-0.16.9"
+        },
+        "x86_64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/h9vww0vxy99dpblsws9rvw6vgi9xv6vc-tectonic-wrapped-0.16.9",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/h9vww0vxy99dpblsws9rvw6vgi9xv6vc-tectonic-wrapped-0.16.9"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/qjihq492i9dsb9g90zz40vqndgws9szn-tectonic-wrapped-0.16.9",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/qjihq492i9dsb9g90zz40vqndgws9szn-tectonic-wrapped-0.16.9"
+        }
+      }
     }
   }
 }

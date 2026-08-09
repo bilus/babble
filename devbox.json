@@ -4,11 +4,19 @@
     "go@1.26.4",
     "emacs-nox@30.2",
     "gnumake@4.4.1",
-    "diffutils@3.12"
+    "diffutils@3.12",
+    "pandoc@3.7.0.2",
+    "tectonic@0.16.9",
+    "mermaid-cli@11.16.0",
+    "librsvg@2.62.3",
+    "python@3.11.15"
   ],
+  "env": {
+    "MERMAID_PUPPETEER_CONFIG": "puppeteer.json"
+  },
   "shell": {
     "init_hook": [
-      "echo 'babble: go, emacs, make, diff' > /dev/null"
+      "echo 'babble: tangle and test with go, emacs, make, diff; weave with pandoc, tectonic, mmdc, rsvg-convert, python' > /dev/null"
     ],
     "scripts": {
       "tangle": [
@@ -16,6 +24,9 @@
       ],
       "check": [
         "make check"
+      ],
+      "weave": [
+        "make weave"
       ],
       "test": [
         "go build ./... && go test ./..."
