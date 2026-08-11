@@ -84,20 +84,20 @@ so the census never matches its own index.
 - [[file:BOOK.org::3903][3903]] badge: PLANNED stage 22 replaces the block below (plan)
 - [[file:BOOK.org::3935][3935]] twin of tangle-banner
 - [[file:BOOK.org::3951][3951]] generated diff
-- [[file:BOOK.org::4031][4031]] hole 9: splice fresh interiors into the retained bytes, report ch...
-- [[file:BOOK.org::4041][4041]] hole 9: a line link per plan site, sites below the block shifted ...
-- [[file:BOOK.org::4047][4047]] hole 9: system diff -u over the two named bodies, temp-file heade...
-- [[file:BOOK.org::4090][4090]] badge: PLANNED stage 12 includes the two files below (plan)
-- [[file:BOOK.org::4578][4578]] badge: PLANNED stage 12 adds the test below (plan)
-- [[file:BOOK.org::4719][4719]] hole 6: ORACLE=1 in the environment
-- [[file:BOOK.org::4723][4723]] hole 6: UPDATE=1 in the environment
-- [[file:BOOK.org::4729][4729]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
-- [[file:BOOK.org::4741][4741]] hole 6: write the txtar's input files into dir, and name the book...
-- [[file:BOOK.org::4747][4747]] hole 6: copy lit/ in, run batch Emacs with the driver, fail loudl...
-- [[file:BOOK.org::4751][4751]] hole 6: every file on both sides, byte for byte, ignoring the inputs
-- [[file:BOOK.org::4755][4755]] hole 6: rewrite the fixture's want/ files from the oracle tree
-- [[file:BOOK.org::5067][5067]] badge: PLANNED stage 21 adds the two paragraphs below (plan)
-- [[file:BOOK.org::5090][5090]] insertion: devbox.json and its lockfile,
+- [[file:BOOK.org::4042][4042]] hole 9: splice fresh interiors into the retained bytes, report ch...
+- [[file:BOOK.org::4052][4052]] hole 9: a line link per plan site, sites below the block shifted ...
+- [[file:BOOK.org::4058][4058]] hole 9: system diff -u over the two named bodies, temp-file heade...
+- [[file:BOOK.org::4101][4101]] badge: PLANNED stage 12 includes the two files below (plan)
+- [[file:BOOK.org::4589][4589]] badge: PLANNED stage 12 adds the test below (plan)
+- [[file:BOOK.org::4730][4730]] hole 6: ORACLE=1 in the environment
+- [[file:BOOK.org::4734][4734]] hole 6: UPDATE=1 in the environment
+- [[file:BOOK.org::4740][4740]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
+- [[file:BOOK.org::4752][4752]] hole 6: write the txtar's input files into dir, and name the book...
+- [[file:BOOK.org::4758][4758]] hole 6: copy lit/ in, run batch Emacs with the driver, fail loudl...
+- [[file:BOOK.org::4762][4762]] hole 6: every file on both sides, byte for byte, ignoring the inputs
+- [[file:BOOK.org::4766][4766]] hole 6: rewrite the fixture's want/ files from the oracle tree
+- [[file:BOOK.org::5078][5078]] badge: PLANNED stage 21 adds the two paragraphs below (plan)
+- [[file:BOOK.org::5101][5101]] insertion: devbox.json and its lockfile,
 
 #+end:
 
@@ -143,7 +143,7 @@ the twin's table in place, drop ~.js~ from the case list and watch
 tangle-javascript fail on the banner line before restoring it.
 
 - [ ] plan approved (the human ticks this box)
-- [ ] lit stage 1 accepted first, so the oracle moves first
+- [X] lit stage 1 accepted first, so the oracle moves first
 - [ ] twin accepted: :tangle headers swapped, old block DROPPED
 - [ ] tangle-javascript.txtar added, seen to fail, table row added
 - [ ] inserted prose reads steady-state

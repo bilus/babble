@@ -57,13 +57,18 @@
 ;; Every tangled file opens with a generated-file banner in its own
 ;; comment syntax, after a shebang when one is present. The Go
 ;; spelling is canonical ("Code generated ... DO NOT EDIT.") so Go
-;; tooling recognizes it too.
+;; tooling recognizes it too. The hash is the fallback because it
+;; comments shells, Python, Ruby and make; the languages that would
+;; read it as code name themselves.
 (defconst lit-banner
   "Code generated from BOOK.org by make tangle. DO NOT EDIT.")
 
 (defun lit-banner-prefix ()
   (let ((name (file-name-nondirectory (buffer-file-name))))
     (cond ((string-suffix-p ".go" name) "// ")
+          ((string-suffix-p ".js" name) "// ")
+          ((string-suffix-p ".mjs" name) "// ")
+          ((string-suffix-p ".cjs" name) "// ")
           ((string-suffix-p ".el" name) ";; ")
           ((string-suffix-p ".lua" name) "-- ")
           (t "# "))))

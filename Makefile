@@ -1,3 +1,3 @@
 CHECK_EXTRA := -x PROMPT.md -x babble -x testdata -x .github \
-  -x devbox.json -x devbox.lock -x .devbox -x Dockerfile -x .dockerignore -x puppeteer.json -x 'book-babble-*.pdf'
+  -x devbox.json -x devbox.lock -x .devbox -x Dockerfile -x .dockerignore -x puppeteer.json -x 'book-*.pdf'
 include lit/lit.mk

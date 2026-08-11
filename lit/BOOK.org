@@ -1,53 +1,6 @@
 #+title: lit, a toolchain for literate programs
 #+todo: PLANNED(p!) HOLE(h!) FILLING(f!) | LIVE(l!) DROPPED(d@)
 
-* Plan                                                                :plan:
-
-** PLANNED Stage 1: JavaScript banners                             :stage1:
-:PROPERTIES:
-:CUSTOM_ID: stage-1
-:SPEC:     The tangling driver, the banner prefix table
-:ACCEPTANCE: a .js target opens with //; make check here and in a consumer book
-:END:
-
-Claim: after this stage a JavaScript file the driver writes opens
-with a comment JavaScript accepts, so a book can tangle JavaScript
-instead of keeping it by hand.
-
-The prefix table names three extensions and falls back to a hash.
-A hash opens a comment in shells, Python, Ruby and make, and opens
-nothing in JavaScript: it is a syntax error, and it lands on line
-one of every ~.js~ file the driver writes. A book that wants
-JavaScript keeps the file by hand and a comment beside the block
-explaining why, which is the toolchain asking its reader to work
-around it.
-
-Decided: (1) The table gains ~.js~, ~.mjs~ and ~.cjs~, all taking
-the prefix Go takes. They are one language wearing three
-extensions, and admitting only the first leaves the same trap for
-module files. (2) TypeScript stays out. It is a different language
-with its own toolchain and nothing here needs it. (3) The fallback
-stays a hash, which is right for shells, Python, Ruby and make. A
-table that guessed for everything else would be worse than one that
-is explicit about what it knows.
-
-- [ ] skeleton approved (twin at [[tangle-banner--planned]])
-- [ ] inserted prose reads steady-state
-- [ ] Changes draft below reads right in the journal
-- [ ] twin accepted: :tangle headers swapped, old block DROPPED
-- [ ] census clean, suite green
-- [ ] Changes entry dated and filed, plan entry deleted
-
-*** Changes draft
-
-#+begin_quote
-The banner prefix table gained the JavaScript extensions, so a
-tangled ~.js~, ~.mjs~ or ~.cjs~ file opens with a comment its
-parser accepts instead of a hash, which is a syntax error there. A
-book that kept a JavaScript file by hand for that reason can tangle
-it.
-#+end_quote
-
 * Introduction
 
 A program and its explanation drift apart because they live in
@@ -418,50 +371,6 @@ generated files.
 ;; Every tangled file opens with a generated-file banner in its own
 ;; comment syntax, after a shebang when one is present. The Go
 ;; spelling is canonical ("Code generated ... DO NOT EDIT.") so Go
-;; tooling recognizes it too.
-(defconst lit-banner
-  "Code generated from BOOK.org by make tangle. DO NOT EDIT.")
-
-(defun lit-banner-prefix ()
-  (let ((name (file-name-nondirectory (buffer-file-name))))
-    (cond ((string-suffix-p ".go" name) "// ")
-          ((string-suffix-p ".el" name) ";; ")
-          ((string-suffix-p ".lua" name) "-- ")
-          (t "# "))))
-
-(defun lit-insert-banner ()
-  (goto-char (point-min))
-  (let ((banner (concat (lit-banner-prefix) lit-banner "\n")))
-    (when (looking-at "#!.*\n")
-      (goto-char (match-end 0)))
-    (unless (looking-at-p (regexp-quote banner))
-      (insert banner "\n"))
-    (save-buffer)))
-
-(add-hook 'org-babel-post-tangle-hook #'lit-insert-banner t)
-#+end_src
-
-*************** PLANNED stage 1 replaces the block above ([[#stage-1][plan]]) :stage1:
-The twin below adds the JavaScript extensions to the prefix table.
-It must not tangle yet: it rewrites the driver that every book in
-this repository tangles through, so the swap belongs on the far
-side of the gate.
-*************** END
-
-#+name: tangle-banner--planned
-#+begin_src emacs-lisp :tangle no
-;; comment-region writes a blank comment line as "// "; Go writes "//".
-(defun lit-trim-empty-comment-lines ()
-  (goto-char (point-min))
-  (while (re-search-forward "^// $" nil t)
-    (replace-match "//"))
-  (save-buffer))
-
-(add-hook 'org-babel-post-tangle-hook #'lit-trim-empty-comment-lines)
-
-;; Every tangled file opens with a generated-file banner in its own
-;; comment syntax, after a shebang when one is present. The Go
-;; spelling is canonical ("Code generated ... DO NOT EDIT.") so Go
 ;; tooling recognizes it too. The hash is the fallback because it
 ;; comments shells, Python, Ruby and make; the languages that would
 ;; read it as code name themselves.
@@ -490,30 +399,6 @@ side of the gate.
 (add-hook 'org-babel-post-tangle-hook #'lit-insert-banner t)
 #+end_src
 
-#+begin: src-block-diff :old tangle-banner :new tangle-banner--planned
-#+begin_src diff
-@@ -10,13 +10,18 @@
- ;; Every tangled file opens with a generated-file banner in its own
- ;; comment syntax, after a shebang when one is present. The Go
- ;; spelling is canonical ("Code generated ... DO NOT EDIT.") so Go
--;; tooling recognizes it too.
-+;; tooling recognizes it too. The hash is the fallback because it
-+;; comments shells, Python, Ruby and make; the languages that would
-+;; read it as code name themselves.
- (defconst lit-banner
-   "Code generated from BOOK.org by make tangle. DO NOT EDIT.")
- 
- (defun lit-banner-prefix ()
-   (let ((name (file-name-nondirectory (buffer-file-name))))
-     (cond ((string-suffix-p ".go" name) "// ")
-+          ((string-suffix-p ".js" name) "// ")
-+          ((string-suffix-p ".mjs" name) "// ")
-+          ((string-suffix-p ".cjs" name) "// ")
-           ((string-suffix-p ".el" name) ";; ")
-           ((string-suffix-p ".lua" name) "-- ")
-           (t "# "))))
-#+end_src
-#+end:
 
 The first generated view: a diff between two named blocks, used to
 show a planned replacement beside the code it replaces. The writer
@@ -1425,6 +1310,15 @@ outside the book, exactly as the contract prescribes for every
 project.
 
 * Changes
+
+- [2026-08-11] The banner prefix table gained the JavaScript
+  extensions, so a tangled ~.js~, ~.mjs~ or ~.cjs~ file opens with a
+  comment its parser accepts instead of a hash, which is a syntax
+  error there rather than a comment. Doc comments already worked:
+  Emacs carries ~js-mode~ in core and autoloads it in batch, so
+  ~:comments org~ on a JavaScript block has always come out in
+  ~//~. A book that kept a JavaScript file by hand for the banner
+  can tangle it.
 
 - [2026-07-27] The toolchain became its own book. lit.mk, formerly
   tangled from a consuming project's book, moved here along with
