@@ -1,75 +1,6 @@
 #+title: lit, a toolchain for literate programs
 #+todo: PLANNED(p!) HOLE(h!) FILLING(f!) | LIVE(l!) DROPPED(d@)
 
-* Plan                                                                :plan:
-
-** PLANNED Stage 2: comment syntax by language                     :stage2:
-:PROPERTIES:
-:CUSTOM_ID: stage-2
-:SPEC:     The contract, Tangling; The tangling driver
-:ACCEPTANCE: a go block writing .templ opens with //; make check here and in a consumer book
-:END:
-
-Claim: after this stage the comment syntax of a tangled file comes
-from the language that wrote it, and a project can teach the
-toolchain a language it does not know without editing the toolchain.
-
-Two tables decide comment syntax today and they are keyed
-differently. The banner reads the file extension. The doc comment
-reads a major mode, which batch Emacs may never have loaded, and a
-language with no mode silently reuses the previous block's syntax.
-A file is one language's file, so one key answers both, and the key
-is the language.
-
-Decided: (1) One table, keyed by language. A ~go~ block writing
-~.templ~ then opens with ~//~ without the toolchain ever hearing of
-~.templ~, and the same holds for every extension a language wears.
-The extension table goes away. (2) The table answers the doc comment
-too, through an override of the mode lookup, which ends the
-order-dependence: what a language's comments look like stops being a
-question about what Emacs happened to load. (3) A project extends the
-table through ~.lit/comments.json~ beside its book, and its entries
-win. JSON because both engines parse it with a parser neither of them
-wrote; a hand-written reader is where two implementations drift
-apart, and byte-identical output is the whole claim. (4) A file fed
-by blocks of two languages is an error naming the file and both
-languages. One file takes one comment syntax, and guessing which
-would be a silent wrong answer. (5) A language absent from the table
-takes the hash, which is right for shells, Python, Ruby and make.
-Erroring instead would break every book that tangles one of them.
-
-Known cost: a language whose Emacs mode comments in blocks rather
-than lines, CSS being the example, drops from ~/*~ to the hash unless
-its project configures it. No book here tangles one.
-
-- [ ] skeleton approved (twins at [[tangle-setup--planned]],
-  [[tangle-banner--planned]], [[tangle-entry--planned]])
-- [ ] inserted prose reads steady-state
-- [ ] Changes draft below reads right in the journal
-- [ ] .templ and a configured language both seen to fail first
-- [ ] twins accepted: :tangle headers swapped, old blocks DROPPED
-- [ ] census clean, suite green
-- [ ] Changes entry dated and filed, plan entry deleted
-
-Follow-on, not this stage: babble carries the same two tables and
-must carry the same one. Its banner is planned already; its doc
-comments arrive with the stage that fills wrapComment, which now
-inherits a table instead of inventing one. The deviation recording
-that ~:comments org~ works only for the languages batch Emacs has a
-mode for is retired by this change and should go with it.
-
-*** Changes draft
-
-#+begin_quote
-Comment syntax became a property of the language that wrote a file
-rather than of the file's extension and of whatever major mode Emacs
-had loaded. One table answers both the banner and the doc comment, so
-a ~go~ block writing a ~.templ~ file opens with ~//~ and a language
-with no mode no longer inherits the previous block's syntax. A
-project extends the table through ~.lit/comments.json~ beside its
-book. A file fed by blocks of two languages is an error.
-#+end_quote
-
 * Introduction
 
 A program and its explanation drift apart because they live in
@@ -127,7 +58,6 @@ paragraphs, an invisible marker line in the book separates
 narrative from docstring; the rules live in AGENTS.md next to this
 file.
 
-*************** PLANNED stage 2 adds the paragraph below ([[#stage-2][plan]]) :stage2:
 Comment syntax follows the language a block is written in, not the
 extension of the file it lands in, so one table answers both the
 banner and the doc comment. A project adds a language the toolchain
@@ -136,7 +66,6 @@ does not know, or overrides one it does, through
 line-comment prefix, whose entries win over the built-in table. A
 file fed by blocks of two languages is an error, since one file
 takes one comment syntax.
-*************** END
 
 Books may also hold generated views: blocks whose content is
 derived from the rest of the book, such as a diff between a block
@@ -364,50 +293,16 @@ check:
 * The tangling driver
 
 tangle.el is everything batch Emacs needs to tangle a lit book. It
-*************** PLANNED stage 2 replaces the block below ([[#stage-2][plan]]) :stage2:
-The twin carries the comment table, the config reader, and the
-override that makes the table answer where a major mode used to.
-*************** END
-
 loads org-babel, then patches the gaps a blank batch session has.
-{~~Go files need comment syntax and batch Emacs has no go-mode, so a
-stub supplies one; the guard keeps it from shadowing a real go-mode
-in an interactive session.~>Comment syntax comes from a table keyed
+Comment syntax comes from a table keyed
 by language, which a project extends beside its book, and the mode
-lookup org would use is answered from that table.~~} Backup files are suppressed because the
+lookup org would use is answered from that table. Backup files are suppressed because the
 post-tangle hooks save every written file, and each save would
 otherwise strew a backup through the tree. Directory creation is on
 by default so a block can target a path that does not exist yet.
 
 #+name: tangle-setup
 #+begin_src emacs-lisp :tangle tangle.el
-;; Batch tangler for the org literate experiment.
-;; Provides Go comment syntax (no go-mode in batch) and turns the last
-;; prose paragraph before a :comments org block into its comment.
-
-(require 'org)
-(require 'ob-tangle)
-
-;; batch has no go-mode; never shadow a real one loaded interactively
-(unless (fboundp 'go-mode)
-  (define-derived-mode go-mode prog-mode "Go"
-    (setq-local comment-start "//")
-    (setq-local comment-end "")
-    (setq-local comment-padding 1)))
-
-(setq comment-empty-lines t)
-
-;; the post-tangle hooks modify and save every tangled file; without
-;; this, batch Emacs strews foo~ backups through the tree
-(when noninteractive
-  (setq make-backup-files nil))
-
-(setq org-babel-default-header-args
-      (cons '(:mkdirp . "yes") org-babel-default-header-args))
-#+end_src
-
-#+name: tangle-setup--planned
-#+begin_src emacs-lisp :tangle no
 ;; Batch tangler for the org literate experiment. Supplies line-comment
 ;; syntax per language and turns the last prose paragraph before a
 ;; :comments org block into its comment.
@@ -438,8 +333,7 @@ by default so a block can target a path that does not exist yet.
     (when (file-readable-p file)
       (dolist (pair (with-temp-buffer
                       (insert-file-contents file)
-                      (json-parse-buffer :object-type 'alist
-                                         :string-type 'string)))
+                      (json-parse-buffer :object-type 'alist)))
         (let ((lang (symbol-name (car pair)))
               (prefix (cdr pair)))
           (unless (stringp prefix)
@@ -478,83 +372,6 @@ by default so a block can target a path that does not exist yet.
       (cons '(:mkdirp . "yes") org-babel-default-header-args))
 #+end_src
 
-#+begin: src-block-diff :old tangle-setup :new tangle-setup--planned
-#+begin_src diff
-@@ -1,17 +1,62 @@
--;; Batch tangler for the org literate experiment.
--;; Provides Go comment syntax (no go-mode in batch) and turns the last
--;; prose paragraph before a :comments org block into its comment.
-+;; Batch tangler for the org literate experiment. Supplies line-comment
-+;; syntax per language and turns the last prose paragraph before a
-+;; :comments org block into its comment.
- 
- (require 'org)
- (require 'ob-tangle)
-+(require 'json)
- 
--;; batch has no go-mode; never shadow a real one loaded interactively
--(unless (fboundp 'go-mode)
--  (define-derived-mode go-mode prog-mode "Go"
--    (setq-local comment-start "//")
--    (setq-local comment-end "")
--    (setq-local comment-padding 1)))
-+;; Line-comment syntax, keyed by the language a block is written in. A
-+;; language absent here takes the hash, which comments shells, Python,
-+;; Ruby and make.
-+(defconst lit-comment-syntax
-+  '(("go" . "//") ("js" . "//")
-+    ("emacs-lisp" . ";;") ("elisp" . ";;")
-+    ("lua" . "--")))
- 
-+(defvar lit-comment-table lit-comment-syntax)
-+
-+;; A project extends the table through .lit/comments.json beside its
-+;; book, an object of language to prefix, whose entries win. The format
-+;; is JSON because both engines parse it with a reader neither of them
-+;; wrote, and a hand-written reader is where two implementations drift.
-+(defun lit-load-comment-table (book)
-+  (let ((file (expand-file-name
-+               ".lit/comments.json"
-+               (file-name-directory (expand-file-name book))))
-+        (table (copy-alist lit-comment-syntax)))
-+    (when (file-readable-p file)
-+      (dolist (pair (with-temp-buffer
-+                      (insert-file-contents file)
-+                      (json-parse-buffer :object-type 'alist
-+                                         :string-type 'string)))
-+        (let ((lang (symbol-name (car pair)))
-+              (prefix (cdr pair)))
-+          (unless (stringp prefix)
-+            (error "%s: comment prefix for %s is not a string" file lang))
-+          (setf (alist-get lang table nil nil #'equal) prefix))))
-+    (setq lit-comment-table table)))
-+
-+(defun lit-comment-prefix (lang)
-+  (or (cdr (assoc lang lit-comment-table)) "#"))
-+
-+;; org takes comment syntax from a major mode, so a language whose mode
-+;; batch Emacs never loaded silently reuses the previous block's
-+;; syntax. Answering from the table instead makes comment syntax a
-+;; property of the language rather than of what Emacs happens to have
-+;; loaded.
-+(defun lit-lang-mode (lang)
-+  (let ((mode (intern (format "lit-comment-%s-mode" lang)))
-+        (prefix (lit-comment-prefix lang)))
-+    (unless (fboundp mode)
-+      (eval `(define-derived-mode ,mode prog-mode "lit"
-+               (setq-local comment-start ,prefix)
-+               (setq-local comment-end "")
-+               (setq-local comment-padding 1))))
-+    mode))
-+
-+(advice-add 'org-src-get-lang-mode :override #'lit-lang-mode)
-+
- (setq comment-empty-lines t)
- 
- ;; the post-tangle hooks modify and save every tangled file; without
-#+end_src
-#+end:
-
 The docstring rule from the contract lives in one function. Org
 hands it the raw text between the previous block or heading and the
 block being tangled; it picks the docstring out of that text: the
@@ -586,64 +403,16 @@ stripped.
 (setq org-babel-process-comment-text #'lit-docstring)
 #+end_src
 
-*************** PLANNED stage 2 replaces the block below ([[#stage-2][plan]]) :stage2:
-The twin reads both hooks' comment syntax from the language that
-wrote the file, which means building the map of target to language
-while the book is still open.
-*************** END
-
 Two hooks run after every file is written. The first exists because
-Emacs pads an empty comment line{~~ to "// " and Go spells it "//".~>,
-and a file wants the bare marker.~~}
+Emacs pads an empty comment line,
+and a file wants the bare marker.
 The second stamps the banner, choosing the comment prefix from the
-{~~file extension~>language that wrote the file~~} and skipping past a shebang when one is present. The
+language that wrote the file and skipping past a shebang when one is present. The
 Go spelling of the banner is canonical so Go tooling recognizes
 generated files.
 
 #+name: tangle-banner
 #+begin_src emacs-lisp :tangle tangle.el
-;; comment-region writes a blank comment line as "// "; Go writes "//".
-(defun lit-trim-empty-comment-lines ()
-  (goto-char (point-min))
-  (while (re-search-forward "^// $" nil t)
-    (replace-match "//"))
-  (save-buffer))
-
-(add-hook 'org-babel-post-tangle-hook #'lit-trim-empty-comment-lines)
-
-;; Every tangled file opens with a generated-file banner in its own
-;; comment syntax, after a shebang when one is present. The Go
-;; spelling is canonical ("Code generated ... DO NOT EDIT.") so Go
-;; tooling recognizes it too. The hash is the fallback because it
-;; comments shells, Python, Ruby and make; the languages that would
-;; read it as code name themselves.
-(defconst lit-banner
-  "Code generated from BOOK.org by make tangle. DO NOT EDIT.")
-
-(defun lit-banner-prefix ()
-  (let ((name (file-name-nondirectory (buffer-file-name))))
-    (cond ((string-suffix-p ".go" name) "// ")
-          ((string-suffix-p ".js" name) "// ")
-          ((string-suffix-p ".mjs" name) "// ")
-          ((string-suffix-p ".cjs" name) "// ")
-          ((string-suffix-p ".el" name) ";; ")
-          ((string-suffix-p ".lua" name) "-- ")
-          (t "# "))))
-
-(defun lit-insert-banner ()
-  (goto-char (point-min))
-  (let ((banner (concat (lit-banner-prefix) lit-banner "\n")))
-    (when (looking-at "#!.*\n")
-      (goto-char (match-end 0)))
-    (unless (looking-at-p (regexp-quote banner))
-      (insert banner "\n"))
-    (save-buffer)))
-
-(add-hook 'org-babel-post-tangle-hook #'lit-insert-banner t)
-#+end_src
-
-#+name: tangle-banner--planned
-#+begin_src emacs-lisp :tangle no
 ;; Which language wrote each target. org stamps the banner in a hook
 ;; that sees a filename and not a language, so the map is built while
 ;; the book is still open and read back by name. One file takes one
@@ -694,79 +463,6 @@ generated files.
 
 (add-hook 'org-babel-post-tangle-hook #'lit-insert-banner t)
 #+end_src
-
-#+begin: src-block-diff :old tangle-banner :new tangle-banner--planned
-#+begin_src diff
-@@ -1,34 +1,45 @@
--;; comment-region writes a blank comment line as "// "; Go writes "//".
-+;; Which language wrote each target. org stamps the banner in a hook
-+;; that sees a filename and not a language, so the map is built while
-+;; the book is still open and read back by name. One file takes one
-+;; comment syntax, so two languages in a file is an error rather than
-+;; a guess.
-+(defvar lit-file-languages nil)
-+
-+(defun lit-collect-file-languages ()
-+  (setq lit-file-languages nil)
-+  (dolist (group (org-babel-tangle-collect-blocks))
-+    (let ((file (expand-file-name (car group)))
-+          (langs (delete-dups (mapcar (lambda (b) (nth 0 b)) (cdr group)))))
-+      (when (cdr langs)
-+        (error "%s: blocks in %s; one file takes one comment syntax"
-+               file (mapconcat #'identity langs " and ")))
-+      (push (cons file (car langs)) lit-file-languages))))
-+
-+(defun lit-file-comment-prefix ()
-+  (lit-comment-prefix
-+   (cdr (assoc (expand-file-name (buffer-file-name)) lit-file-languages))))
-+
-+;; comment-region pads an empty comment line; the file wants the bare
-+;; marker.
- (defun lit-trim-empty-comment-lines ()
--  (goto-char (point-min))
--  (while (re-search-forward "^// $" nil t)
--    (replace-match "//"))
--  (save-buffer))
-+  (let ((marker (lit-file-comment-prefix)))
-+    (goto-char (point-min))
-+    (while (re-search-forward (concat "^" (regexp-quote marker) " $") nil t)
-+      (replace-match marker))
-+    (save-buffer)))
- 
- (add-hook 'org-babel-post-tangle-hook #'lit-trim-empty-comment-lines)
- 
--;; Every tangled file opens with a generated-file banner in its own
--;; comment syntax, after a shebang when one is present. The Go
--;; spelling is canonical ("Code generated ... DO NOT EDIT.") so Go
--;; tooling recognizes it too. The hash is the fallback because it
--;; comments shells, Python, Ruby and make; the languages that would
--;; read it as code name themselves.
-+;; Every tangled file opens with a generated-file banner in the comment
-+;; syntax of the language that wrote it, after a shebang when one is
-+;; present. The Go spelling is canonical ("Code generated ... DO NOT
-+;; EDIT.") so Go tooling recognizes it too.
- (defconst lit-banner
-   "Code generated from BOOK.org by make tangle. DO NOT EDIT.")
- 
--(defun lit-banner-prefix ()
--  (let ((name (file-name-nondirectory (buffer-file-name))))
--    (cond ((string-suffix-p ".go" name) "// ")
--          ((string-suffix-p ".js" name) "// ")
--          ((string-suffix-p ".mjs" name) "// ")
--          ((string-suffix-p ".cjs" name) "// ")
--          ((string-suffix-p ".el" name) ";; ")
--          ((string-suffix-p ".lua" name) "-- ")
--          (t "# "))))
--
- (defun lit-insert-banner ()
-   (goto-char (point-min))
--  (let ((banner (concat (lit-banner-prefix) lit-banner "\n")))
-+  (let ((banner (concat (lit-file-comment-prefix) " " lit-banner "\n")))
-     (when (looking-at "#!.*\n")
-       (goto-char (match-end 0)))
-     (unless (looking-at-p (regexp-quote banner))
-#+end_src
-#+end:
 
 
 The first generated view: a diff between two named blocks, used to
@@ -900,41 +596,11 @@ generated view, save the book if that changed it, then tangle.
   (with-current-buffer (find-file-noselect file)
     (org-update-all-dblocks)
     (when (buffer-modified-p)
-      (save-buffer)))
-  (org-babel-tangle-file file))
-#+end_src
-
-*************** PLANNED stage 2 replaces the block above ([[#stage-2][plan]]) :stage2:
-The twin loads the comment table and builds the target-to-language
-map while the book is open, which is the only moment both are
-available.
-*************** END
-
-#+name: tangle-entry--planned
-#+begin_src emacs-lisp :tangle no
-(defun lit-tangle (file)
-  (with-current-buffer (find-file-noselect file)
-    (org-update-all-dblocks)
-    (when (buffer-modified-p)
       (save-buffer))
     (lit-load-comment-table file)
     (lit-collect-file-languages))
   (org-babel-tangle-file file))
 #+end_src
-
-#+begin: src-block-diff :old tangle-entry :new tangle-entry--planned
-#+begin_src diff
-@@ -2,5 +2,7 @@
-   (with-current-buffer (find-file-noselect file)
-     (org-update-all-dblocks)
-     (when (buffer-modified-p)
--      (save-buffer)))
-+      (save-buffer))
-+    (lit-load-comment-table file)
-+    (lit-collect-file-languages))
-   (org-babel-tangle-file file))
-#+end_src
-#+end:
 
 * The weave preprocessor
 
@@ -1711,6 +1377,18 @@ outside the book, exactly as the contract prescribes for every
 project.
 
 * Changes
+
+- [2026-08-11] Comment syntax became a property of the language a
+  block is written in, rather than of the file's extension and of
+  whatever major mode Emacs had loaded. One table answers both the
+  banner and the doc comment, so a ~go~ block writing a ~.templ~ file
+  opens with ~//~ without the toolchain knowing the extension. A
+  project extends the table through ~.lit/comments.json~ beside its
+  book. Two failures went with the old arrangement: a language whose
+  mode batch Emacs never loaded took the previous block's comment
+  syntax, and where there was no previous block Emacs prompted for a
+  syntax and hung the tangle. A file fed by blocks of two languages
+  is now an error rather than a guess.
 
 - [2026-08-11] The banner prefix table gained the JavaScript
   extensions, so a tangled ~.js~, ~.mjs~ or ~.cjs~ file opens with a

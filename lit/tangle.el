@@ -1,18 +1,62 @@
 ;; Code generated from BOOK.org by make tangle. DO NOT EDIT.
 
-;; Batch tangler for the org literate experiment.
-;; Provides Go comment syntax (no go-mode in batch) and turns the last
-;; prose paragraph before a :comments org block into its comment.
+;; Batch tangler for the org literate experiment. Supplies line-comment
+;; syntax per language and turns the last prose paragraph before a
+;; :comments org block into its comment.
 
 (require 'org)
 (require 'ob-tangle)
+(require 'json)
 
-;; batch has no go-mode; never shadow a real one loaded interactively
-(unless (fboundp 'go-mode)
-  (define-derived-mode go-mode prog-mode "Go"
-    (setq-local comment-start "//")
-    (setq-local comment-end "")
-    (setq-local comment-padding 1)))
+;; Line-comment syntax, keyed by the language a block is written in. A
+;; language absent here takes the hash, which comments shells, Python,
+;; Ruby and make.
+(defconst lit-comment-syntax
+  '(("go" . "//") ("js" . "//")
+    ("emacs-lisp" . ";;") ("elisp" . ";;")
+    ("lua" . "--")))
+
+(defvar lit-comment-table lit-comment-syntax)
+
+;; A project extends the table through .lit/comments.json beside its
+;; book, an object of language to prefix, whose entries win. The format
+;; is JSON because both engines parse it with a reader neither of them
+;; wrote, and a hand-written reader is where two implementations drift.
+(defun lit-load-comment-table (book)
+  (let ((file (expand-file-name
+               ".lit/comments.json"
+               (file-name-directory (expand-file-name book))))
+        (table (copy-alist lit-comment-syntax)))
+    (when (file-readable-p file)
+      (dolist (pair (with-temp-buffer
+                      (insert-file-contents file)
+                      (json-parse-buffer :object-type 'alist)))
+        (let ((lang (symbol-name (car pair)))
+              (prefix (cdr pair)))
+          (unless (stringp prefix)
+            (error "%s: comment prefix for %s is not a string" file lang))
+          (setf (alist-get lang table nil nil #'equal) prefix))))
+    (setq lit-comment-table table)))
+
+(defun lit-comment-prefix (lang)
+  (or (cdr (assoc lang lit-comment-table)) "#"))
+
+;; org takes comment syntax from a major mode, so a language whose mode
+;; batch Emacs never loaded silently reuses the previous block's
+;; syntax. Answering from the table instead makes comment syntax a
+;; property of the language rather than of what Emacs happens to have
+;; loaded.
+(defun lit-lang-mode (lang)
+  (let ((mode (intern (format "lit-comment-%s-mode" lang)))
+        (prefix (lit-comment-prefix lang)))
+    (unless (fboundp mode)
+      (eval `(define-derived-mode ,mode prog-mode "lit"
+               (setq-local comment-start ,prefix)
+               (setq-local comment-end "")
+               (setq-local comment-padding 1))))
+    mode))
+
+(advice-add 'org-src-get-lang-mode :override #'lit-lang-mode)
 
 (setq comment-empty-lines t)
 
@@ -45,37 +89,48 @@
 
 (setq org-babel-process-comment-text #'lit-docstring)
 
-;; comment-region writes a blank comment line as "// "; Go writes "//".
+;; Which language wrote each target. org stamps the banner in a hook
+;; that sees a filename and not a language, so the map is built while
+;; the book is still open and read back by name. One file takes one
+;; comment syntax, so two languages in a file is an error rather than
+;; a guess.
+(defvar lit-file-languages nil)
+
+(defun lit-collect-file-languages ()
+  (setq lit-file-languages nil)
+  (dolist (group (org-babel-tangle-collect-blocks))
+    (let ((file (expand-file-name (car group)))
+          (langs (delete-dups (mapcar (lambda (b) (nth 0 b)) (cdr group)))))
+      (when (cdr langs)
+        (error "%s: blocks in %s; one file takes one comment syntax"
+               file (mapconcat #'identity langs " and ")))
+      (push (cons file (car langs)) lit-file-languages))))
+
+(defun lit-file-comment-prefix ()
+  (lit-comment-prefix
+   (cdr (assoc (expand-file-name (buffer-file-name)) lit-file-languages))))
+
+;; comment-region pads an empty comment line; the file wants the bare
+;; marker.
 (defun lit-trim-empty-comment-lines ()
-  (goto-char (point-min))
-  (while (re-search-forward "^// $" nil t)
-    (replace-match "//"))
-  (save-buffer))
+  (let ((marker (lit-file-comment-prefix)))
+    (goto-char (point-min))
+    (while (re-search-forward (concat "^" (regexp-quote marker) " $") nil t)
+      (replace-match marker))
+    (save-buffer)))
 
 (add-hook 'org-babel-post-tangle-hook #'lit-trim-empty-comment-lines)
 
-;; Every tangled file opens with a generated-file banner in its own
-;; comment syntax, after a shebang when one is present. The Go
-;; spelling is canonical ("Code generated ... DO NOT EDIT.") so Go
-;; tooling recognizes it too. The hash is the fallback because it
-;; comments shells, Python, Ruby and make; the languages that would
-;; read it as code name themselves.
+;; Every tangled file opens with a generated-file banner in the comment
+;; syntax of the language that wrote it, after a shebang when one is
+;; present. The Go spelling is canonical ("Code generated ... DO NOT
+;; EDIT.") so Go tooling recognizes it too.
 (defconst lit-banner
   "Code generated from BOOK.org by make tangle. DO NOT EDIT.")
 
-(defun lit-banner-prefix ()
-  (let ((name (file-name-nondirectory (buffer-file-name))))
-    (cond ((string-suffix-p ".go" name) "// ")
-          ((string-suffix-p ".js" name) "// ")
-          ((string-suffix-p ".mjs" name) "// ")
-          ((string-suffix-p ".cjs" name) "// ")
-          ((string-suffix-p ".el" name) ";; ")
-          ((string-suffix-p ".lua" name) "-- ")
-          (t "# "))))
-
 (defun lit-insert-banner ()
   (goto-char (point-min))
-  (let ((banner (concat (lit-banner-prefix) lit-banner "\n")))
+  (let ((banner (concat (lit-file-comment-prefix) " " lit-banner "\n")))
     (when (looking-at "#!.*\n")
       (goto-char (match-end 0)))
     (unless (looking-at-p (regexp-quote banner))
@@ -189,5 +244,7 @@
   (with-current-buffer (find-file-noselect file)
     (org-update-all-dblocks)
     (when (buffer-modified-p)
-      (save-buffer)))
+      (save-buffer))
+    (lit-load-comment-table file)
+    (lit-collect-file-languages))
   (org-babel-tangle-file file))
