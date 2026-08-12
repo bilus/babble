@@ -262,6 +262,21 @@ func expandNoweb(d *book.Document, b *book.SrcBlock, body string) (string, error
 	panic("HOLE(8): named block first, else noweb-ref concatenation; cycles and misses error")
 }
 
+// One table gives every language its line-comment prefix. The
+// built-in rows name the languages the toolchain's own books tangle,
+// ~.lit/comments.json~ beside the book adds languages or overrides
+// these, its entries winning, and a language in neither takes the
+// hash.
+type commentTable map[string]string
+
+func loadCommentTable(bookPath string) (commentTable, error) {
+	panic("HOLE(22): built-in rows, then .lit/comments.json entries winning")
+}
+
+func (t commentTable) prefix(lang string) string {
+	panic("HOLE(22): table lookup, hash for a language the table does not name")
+}
+
 // A directory is created when any block in the unit asks for it, not
 // when the first one does. Blocks sharing a target can disagree about
 // ~:mkdirp~, and taking the first block's answer meant the file's
