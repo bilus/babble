@@ -29,6 +29,14 @@ function Link(el)
   if el.target:match('^fig:') then
     return pandoc.RawInline('latex', 'Figure~\\ref{' .. el.target .. '}')
   end
+  -- A stored link to a heading in another chapter names the file and
+  -- the custom id. Includes make the chapters one document, so by the
+  -- time this runs the file names nothing; the id resolves.
+  local id = el.target:match('::#(.+)$')
+  if id then
+    el.target = '#' .. id
+    return el
+  end
 end
 
 -- Pandoc's org reader wraps a captioned block in a captioned-content

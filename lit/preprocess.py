@@ -9,6 +9,7 @@
 - LaTeX preamble injected after #+options: (geometry only if absent)
 """
 import bisect
+import os
 import re
 import sys
 
@@ -174,8 +175,62 @@ def badges(lines):
         i += 1
     return out
 
+INCLUDE = re.compile(r'^[ \t]*#\+INCLUDE:(.*)$', re.IGNORECASE)
+BARE = re.compile(r'^"([^"]+)"$')
+WRAPPED = re.compile(r'^"([^"]+)"\s+example$')
+CUSTOM_ID = re.compile(r'^[ \t]*:CUSTOM_ID:[ \t]*(\S+)', re.IGNORECASE)
+
+
+def read_book(src, seen=None, ids=None, base=None):
+    """The master and every chapter it includes, as one text.
+
+    Only the bare quoted form is understood, the same one the tangler
+    accepts, so both halves of the toolchain read the same book. A
+    custom id defined twice is refused here rather than left to pandoc:
+    this function still knows which file and line the second definition
+    sits on, and after expansion nobody does.
+    """
+    seen = seen if seen is not None else set()
+    ids = ids if ids is not None else {}
+    path = os.path.abspath(src)
+    base = base if base is not None else os.path.dirname(path)
+    # positions are reported the way the includes are written, relative
+    # to the master, since that is how the reader will go looking
+    here = os.path.relpath(path, base)
+    if path in seen:
+        raise SystemExit("%s: includes itself" % here)
+    seen.add(path)
+    out = []
+    for n, line in enumerate(open(path, encoding="utf-8").read().split("\n"), 1):
+        m = INCLUDE.match(line)
+        if m:
+            rest = m.group(1).strip()
+            if WRAPPED.match(rest):
+                out.append(line)      # verbatim display; pandoc expands it
+                continue
+            arg = BARE.match(rest)
+            if not arg:
+                raise SystemExit(
+                    '%s:%d: only #+INCLUDE: "path" and #+INCLUDE: "path" '
+                    "example are understood" % (here, n))
+            out.append(read_book(
+                os.path.join(os.path.dirname(path), arg.group(1)),
+                seen, ids, base))
+            continue
+        cid = CUSTOM_ID.match(line)
+        if cid:
+            key = cid.group(1)
+            if key in ids:
+                raise SystemExit(
+                    "%s:%d: custom id %s is already defined at %s"
+                    % (here, n, key, ids[key]))
+            ids[key] = "%s:%d" % (here, n)
+        out.append(line)
+    return "\n".join(out)
+
+
 def main(src, dst):
-    text = open(src, encoding="utf-8").read()
+    text = read_book(src)
     text = criticmarkup(text)
     text = text.replace("\u2192", "$\\rightarrow$")
     has_geometry = re.search(r"^#\+latex_header:.*geometry", text,

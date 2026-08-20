@@ -7,6 +7,7 @@
 (require 'org)
 (require 'ob-tangle)
 (require 'json)
+(require 'ox)
 
 ;; Line-comment syntax, keyed by the language a block is written in. A
 ;; language absent here takes the hash, which comments shells, Python,
@@ -240,11 +241,38 @@
           (insert (format "- [[file:%s::%d][%d]] %s\n"
                           file n n (cdr h))))))))
 
+(defun lit-check-includes ()
+  (goto-char (point-min))
+  (while (re-search-forward "^[ \t]*#\\+INCLUDE:\\(.*\\)$" nil t)
+    (let ((rest (string-trim (match-string 1))))
+      (unless (string-match "\\`\"[^\"]+\"\\(\\s-+example\\)?\\'" rest)
+        (error "%s:%d: only #+INCLUDE: \"path\" and #+INCLUDE: \"path\" \
+example are understood"
+               (buffer-file-name) (line-number-at-pos))))))
+
+(defun lit-neutralize-example-includes ()
+  "Rename wrapped includes so the expander passes over them.
+The buffer is thrown away after tangling, and the line stays a
+keyword line, which the docstring rule drops either way."
+  (goto-char (point-min))
+  (while (re-search-forward
+          "^\\([ \t]*\\)#\\+INCLUDE:\\([ \t]*\"[^\"]+\"[ \t]+example[ \t]*\\)$"
+          nil t)
+    (replace-match "\\1#+example_include:\\2")))
+
 (defun lit-tangle (file)
   (with-current-buffer (find-file-noselect file)
     (org-update-all-dblocks)
     (when (buffer-modified-p)
       (save-buffer))
+    (lit-check-includes)
     (lit-load-comment-table file)
-    (lit-collect-file-languages))
-  (org-babel-tangle-file file))
+    ;; Expanding rewrites the buffer, so nothing may save it after this
+    ;; point: org-babel-pre-tangle-hook saves by default, and the master
+    ;; on disk would become the merged book.
+    (lit-neutralize-example-includes)
+    (org-export-expand-include-keyword)
+    (lit-collect-file-languages)
+    (let ((org-babel-pre-tangle-hook nil))
+      (org-babel-tangle))
+    (set-buffer-modified-p nil)))

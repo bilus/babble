@@ -1,97 +1,6 @@
 #+title: lit, a toolchain for literate programs
 #+todo: PLANNED(p!) HOLE(h!) FILLING(f!) | LIVE(l!) DROPPED(d@)
 
-* Plan                                                                :plan:
-
-** PLANNED Stage 3: a book in several files                        :stage3:
-:PROPERTIES:
-:CUSTOM_ID: stage-3
-:SPEC:     The contract, Tangling and Weaving; The tangling driver; The weave preprocessor
-:ACCEPTANCE: a split book tangles and weaves; duplicate custom ids fail the weave; make check
-:END:
-
-Claim: after this stage a book can be split into chapter files that
-a master includes, and both tangling and weaving read the whole
-book, with a stored link to another chapter resolving inside the
-PDF and a repeated custom id stopping the build.
-
-~#+INCLUDE:~ belongs to export. The tangler does not expand it, so
-a master of nothing but includes tangles no blocks at all, and
-~preprocess.py~ sees only the master, so plan markup inside a
-chapter is never rewritten and reaches the PDF as literal text.
-Four changes are needed and they are separate places in the
-pipeline, which is why they are one stage rather than four.
-
-Decided: (1) The tangler expands includes with org's own expander
-before tangling. It must run against the buffer visiting the
-master, since org asks the buffer for its file name while writing
-blocks, and ~org-babel-pre-tangle-hook~ must be unbound for the
-call, because its default saves the buffer and would write the
-expanded text over the master. Nothing is saved afterwards. (2)
-Only the bare quoted form is accepted, ~#+INCLUDE: "path"~ and
-nothing else. Org's expander understands line ranges, level
-shifting and wrapping, and pandoc understands a different subset;
-admitting one form keeps both engines reading the same book. A
-line with anything after the path is an error naming the line. The
-path must be quoted, because pandoc ignores an unquoted include
-without a word and the chapter would be missing from the PDF while
-the tangle looked correct. (3) ~preprocess.py~ expands the same
-form, so badges and CriticMarkup inside a chapter are rewritten
-before pandoc reads them. (4) The duplicate check lives in
-~preprocess.py~ rather than in pandoc's warnings, because
-preprocess reads the chapter files itself and can name the file
-and line the second definition sits on, while pandoc after
-expansion can only name a line in the merged text.
-
-Also in this stage, and useful whether or not a book is split: a
-stored link to a heading in another file, ~[[file:ch.org::#id]]~,
-becomes an internal reference in the PDF. Includes make the
-chapters one document, so the file part of such a link no longer
-identifies anything by the time the weave runs; the custom id
-does. Without this the link becomes a link to a ~.org~ file that
-does not sit beside the PDF.
-
-The reasoning above belongs in the book rather than only here,
-because this entry is deleted at acceptance and babble has to
-reimplement every rule in it. A rule that survives only as code
-leaves the second implementation guessing at intent.
-
-Known limit, recorded rather than fixed: plan-toc writes its jump
-list as line numbers in the master. Once chapters carry badges,
-those numbers no longer identify a badge, and the list will point
-at the wrong ones. Badges themselves render correctly. Making the
-jump list follow a site into a chapter needs the writer to emit a
-file with each line, and preprocess to map both back, which is its
-own stage.
-
-- [ ] skeleton approved (twins at [[tangle-setup--planned]],
-  [[tangle-entry--planned]], [[preprocess-preamble--planned]],
-  [[preprocess-main--planned]], [[notes-figrefs--planned]])
-- [ ] inserted prose reads steady-state
-- [ ] Changes draft below reads right in the journal
-- [ ] the four behaviours seen to fail first: a split book tangling
-  nothing, a badge in a chapter reaching the PDF unstyled, a stored
-  link rendering as a file link, a repeated custom id passing
-- [ ] twins accepted: :tangle headers swapped, old blocks DROPPED
-- [ ] census clean, suite green
-- [ ] Changes entry dated and filed, plan entry deleted
-
-*** Changes draft
-
-#+begin_quote
-A book may be split into chapter files that a master includes.
-Tangling expands the includes before it collects blocks, and the
-weave preprocessor expands them before it rewrites plan markup, so
-both halves read the whole book rather than the master alone. Only
-the bare quoted form of ~#+INCLUDE:~ is accepted: org and pandoc
-understand different extensions of it, and an unquoted path is
-ignored by pandoc without a word, which would drop a chapter from
-the PDF while the tangle stayed correct. A custom id defined twice
-stops the weave and names the file and line of the second
-definition. A stored link to a heading in another chapter resolves
-inside the PDF instead of pointing at a file beside it.
-#+end_quote
-
 * Introduction
 
 A program and its explanation drift apart because they live in
@@ -158,17 +67,25 @@ line-comment prefix, whose entries win over the built-in table. A
 file fed by blocks of two languages is an error, since one file
 takes one comment syntax.
 
-*************** PLANNED stage 3 adds the paragraphs below ([[#stage-3][plan]]) :stage3:
 A book that has outgrown one file is split into chapter files, and a
-master file includes them in reading order. Only one spelling is
-understood, ~#+INCLUDE: "path"~, with the quotes and nothing after
-the path. Two programs read a book, org and pandoc, and each
-understands a different set of extensions to that keyword; the one
-form both read the same way is the only form that can mean one
-thing. The quotes are part of the rule rather than a convention: org
-accepts an unquoted path and pandoc ignores it without a word, so an
-unquoted include would tangle correctly and weave a book with a
-chapter missing.
+master file includes them in reading order. Two spellings are
+understood and no others. ~#+INCLUDE: "path"~ brings a chapter into
+the book, and ~#+INCLUDE: "path" example~ shows a file's text in the
+PDF without making it part of the book. Two programs read a book,
+org and pandoc, and each understands a different set of extensions
+to that keyword; the forms both read the same way are the only ones
+that can mean one thing. The quotes are part of the rule rather than
+a convention: org accepts an unquoted path and pandoc ignores it
+without a word, so an unquoted include would tangle correctly and
+weave a book with a chapter missing.
+
+The two forms differ in what reads them. A chapter is expanded by
+both halves, because it can hold blocks and prose that the rest of
+the book depends on. A file shown as an example holds neither, being
+verbatim text wherever it lands, so only the weave has any use for
+it and the tangler leaves the line alone. This is what lets a book
+show a test fixture, or any other file it does not own, on the page
+without that file becoming part of the program.
 
 Both halves of the toolchain expand the includes before they do
 anything else, so a split book and a whole one produce the same
@@ -178,7 +95,6 @@ doc comment's extent runs back to the nearest structure above the
 block, which may be in the chapter before it. An engine that read
 chapters one at a time would not see either, and would write
 different files from the same book.
-*************** END
 
 Books may also hold generated views: blocks whose content is
 derived from the rest of the book, such as a diff between a block
@@ -204,7 +120,6 @@ three affordances that make the code navigable:
 - A reference to a named block inside another listing is a
   hyperlink; clicking it jumps to the named block's caption.
 
-*************** PLANNED stage 3 adds the paragraphs below ([[#stage-3][plan]]) :stage3:
 A custom id identifies a heading across the whole book, so two
 headings may not claim the same one. After the includes are expanded
 the chapters are a single document with a single set of anchors, and
@@ -220,7 +135,6 @@ custom id, which is the form Emacs stores. Weaving resolves it to
 the id alone. The merged document has no separate files left to
 point at, and a link naming an org file would sit in the PDF
 pointing at something that is not beside it.
-*************** END
 
 Diagrams written in mermaid, a plain-text diagram language, render
 as pictures. Note and Apropos asides render as indented quotations.
@@ -441,82 +355,6 @@ by default so a block can target a path that does not exist yet.
 (require 'org)
 (require 'ob-tangle)
 (require 'json)
-
-;; Line-comment syntax, keyed by the language a block is written in. A
-;; language absent here takes the hash, which comments shells, Python,
-;; Ruby and make.
-(defconst lit-comment-syntax
-  '(("go" . "//") ("js" . "//")
-    ("emacs-lisp" . ";;") ("elisp" . ";;")
-    ("lua" . "--")))
-
-(defvar lit-comment-table lit-comment-syntax)
-
-;; A project extends the table through .lit/comments.json beside its
-;; book, an object of language to prefix, whose entries win. The format
-;; is JSON because both engines parse it with a reader neither of them
-;; wrote, and a hand-written reader is where two implementations drift.
-(defun lit-load-comment-table (book)
-  (let ((file (expand-file-name
-               ".lit/comments.json"
-               (file-name-directory (expand-file-name book))))
-        (table (copy-alist lit-comment-syntax)))
-    (when (file-readable-p file)
-      (dolist (pair (with-temp-buffer
-                      (insert-file-contents file)
-                      (json-parse-buffer :object-type 'alist)))
-        (let ((lang (symbol-name (car pair)))
-              (prefix (cdr pair)))
-          (unless (stringp prefix)
-            (error "%s: comment prefix for %s is not a string" file lang))
-          (setf (alist-get lang table nil nil #'equal) prefix))))
-    (setq lit-comment-table table)))
-
-(defun lit-comment-prefix (lang)
-  (or (cdr (assoc lang lit-comment-table)) "#"))
-
-;; org takes comment syntax from a major mode, so a language whose mode
-;; batch Emacs never loaded silently reuses the previous block's
-;; syntax. Answering from the table instead makes comment syntax a
-;; property of the language rather than of what Emacs happens to have
-;; loaded.
-(defun lit-lang-mode (lang)
-  (let ((mode (intern (format "lit-comment-%s-mode" lang)))
-        (prefix (lit-comment-prefix lang)))
-    (unless (fboundp mode)
-      (eval `(define-derived-mode ,mode prog-mode "lit"
-               (setq-local comment-start ,prefix)
-               (setq-local comment-end "")
-               (setq-local comment-padding 1))))
-    mode))
-
-(advice-add 'org-src-get-lang-mode :override #'lit-lang-mode)
-
-(setq comment-empty-lines t)
-
-;; the post-tangle hooks modify and save every tangled file; without
-;; this, batch Emacs strews foo~ backups through the tree
-(when noninteractive
-  (setq make-backup-files nil))
-
-(setq org-babel-default-header-args
-      (cons '(:mkdirp . "yes") org-babel-default-header-args))
-#+end_src
-
-*************** PLANNED stage 3 replaces the block above ([[#stage-3][plan]]) :stage3:
-The twin loads org's export engine, which is where the include
-expander lives; ob-tangle does not pull it in.
-*************** END
-
-#+name: tangle-setup--planned
-#+begin_src emacs-lisp :tangle no
-;; Batch tangler for the org literate experiment. Supplies line-comment
-;; syntax per language and turns the last prose paragraph before a
-;; :comments org block into its comment.
-
-(require 'org)
-(require 'ob-tangle)
-(require 'json)
 (require 'ox)
 
 ;; Line-comment syntax, keyed by the language a block is written in. A
@@ -579,19 +417,6 @@ expander lives; ob-tangle does not pull it in.
 (setq org-babel-default-header-args
       (cons '(:mkdirp . "yes") org-babel-default-header-args))
 #+end_src
-
-#+begin: src-block-diff :old tangle-setup :new tangle-setup--planned
-#+begin_src diff
-@@ -5,6 +5,7 @@
- (require 'org)
- (require 'ob-tangle)
- (require 'json)
-+(require 'ox)
- 
- ;; Line-comment syntax, keyed by the language a block is written in. A
- ;; language absent here takes the hash, which comments shells, Python,
-#+end_src
-#+end:
 
 The docstring rule from the contract lives in one function. Org
 hands it the raw text between the previous block or heading and the
@@ -813,17 +638,43 @@ generated view, save the book if that changed it, then tangle.
 
 #+name: tangle-entry
 #+begin_src emacs-lisp :tangle tangle.el
+(defun lit-check-includes ()
+  (goto-char (point-min))
+  (while (re-search-forward "^[ \t]*#\\+INCLUDE:\\(.*\\)$" nil t)
+    (let ((rest (string-trim (match-string 1))))
+      (unless (string-match "\\`\"[^\"]+\"\\(\\s-+example\\)?\\'" rest)
+        (error "%s:%d: only #+INCLUDE: \"path\" and #+INCLUDE: \"path\" \
+example are understood"
+               (buffer-file-name) (line-number-at-pos))))))
+
+(defun lit-neutralize-example-includes ()
+  "Rename wrapped includes so the expander passes over them.
+The buffer is thrown away after tangling, and the line stays a
+keyword line, which the docstring rule drops either way."
+  (goto-char (point-min))
+  (while (re-search-forward
+          "^\\([ \t]*\\)#\\+INCLUDE:\\([ \t]*\"[^\"]+\"[ \t]+example[ \t]*\\)$"
+          nil t)
+    (replace-match "\\1#+example_include:\\2")))
+
 (defun lit-tangle (file)
   (with-current-buffer (find-file-noselect file)
     (org-update-all-dblocks)
     (when (buffer-modified-p)
       (save-buffer))
+    (lit-check-includes)
     (lit-load-comment-table file)
-    (lit-collect-file-languages))
-  (org-babel-tangle-file file))
+    ;; Expanding rewrites the buffer, so nothing may save it after this
+    ;; point: org-babel-pre-tangle-hook saves by default, and the master
+    ;; on disk would become the merged book.
+    (lit-neutralize-example-includes)
+    (org-export-expand-include-keyword)
+    (lit-collect-file-languages)
+    (let ((org-babel-pre-tangle-hook nil))
+      (org-babel-tangle))
+    (set-buffer-modified-p nil)))
 #+end_src
 
-*************** PLANNED stage 3 adds the paragraphs below ([[#stage-3][plan]]) :stage3:
 The entry point expands the book's includes before org collects any
 block, and where that expansion happens is forced from two
 directions.
@@ -843,71 +694,6 @@ that merge over the master, replacing the file that names the
 chapters with a copy of their contents. The failure destroys the
 book rather than the output, which is why the hook is unbound rather
 than worked around.
-*************** END
-
-*************** PLANNED stage 3 replaces the block above ([[#stage-3][plan]]) :stage3:
-The twin is that entry point.
-*************** END
-
-#+name: tangle-entry--planned
-#+begin_src emacs-lisp :tangle no
-(defun lit-check-includes ()
-  (goto-char (point-min))
-  (while (re-search-forward "^[ \t]*#\\+INCLUDE:\\(.*\\)$" nil t)
-    (let ((rest (string-trim (match-string 1))))
-      (unless (string-match "\\`\"[^\"]+\"\\'" rest)
-        (error "%s:%d: only #+INCLUDE: \"path\" is understood, with the \
-quotes and nothing after the path"
-               (buffer-file-name) (line-number-at-pos))))))
-
-(defun lit-tangle (file)
-  (with-current-buffer (find-file-noselect file)
-    (org-update-all-dblocks)
-    (when (buffer-modified-p)
-      (save-buffer))
-    (lit-check-includes)
-    (lit-load-comment-table file)
-    ;; Expanding rewrites the buffer, so nothing may save it after this
-    ;; point: org-babel-pre-tangle-hook saves by default, and the master
-    ;; on disk would become the merged book.
-    (org-export-expand-include-keyword)
-    (lit-collect-file-languages)
-    (let ((org-babel-pre-tangle-hook nil))
-      (org-babel-tangle))
-    (set-buffer-modified-p nil)))
-#+end_src
-
-#+begin: src-block-diff :old tangle-entry :new tangle-entry--planned
-#+begin_src diff
-@@ -1,8 +1,24 @@
-+(defun lit-check-includes ()
-+  (goto-char (point-min))
-+  (while (re-search-forward "^[ \t]*#\\+INCLUDE:\\(.*\\)$" nil t)
-+    (let ((rest (string-trim (match-string 1))))
-+      (unless (string-match "\\`\"[^\"]+\"\\'" rest)
-+        (error "%s:%d: only #+INCLUDE: \"path\" is understood, with the \
-+quotes and nothing after the path"
-+               (buffer-file-name) (line-number-at-pos))))))
-+
- (defun lit-tangle (file)
-   (with-current-buffer (find-file-noselect file)
-     (org-update-all-dblocks)
-     (when (buffer-modified-p)
-       (save-buffer))
-+    (lit-check-includes)
-     (lit-load-comment-table file)
--    (lit-collect-file-languages))
--  (org-babel-tangle-file file))
-+    ;; Expanding rewrites the buffer, so nothing may save it after this
-+    ;; point: org-babel-pre-tangle-hook saves by default, and the master
-+    ;; on disk would become the merged book.
-+    (org-export-expand-include-keyword)
-+    (lit-collect-file-languages)
-+    (let ((org-babel-pre-tangle-hook nil))
-+      (org-babel-tangle))
-+    (set-buffer-modified-p nil)))
-#+end_src
-#+end:
 
 * The weave preprocessor
 
@@ -919,7 +705,6 @@ prose. The preprocessor rewrites all three into org and raw LaTeX
 that pandoc passes through, and it injects the LaTeX preamble the
 rest of the weave depends on.
 
-*************** PLANNED stage 3 adds the paragraph below ([[#stage-3][plan]]) :stage3:
 It reads the master and every chapter it includes as one text. Plan
 markup sits where the change it describes sits, which is in the
 chapters, so a preprocessor that read only the master would rewrite
@@ -927,72 +712,9 @@ nothing and the badges would reach the PDF as literal rows of stars.
 Reading the chapter files here also puts the duplicate custom id
 check in the one place that can report a useful position, since
 after this point every line number refers to merged text.
-*************** END
 
 #+name: preprocess-preamble
 #+begin_src python :tangle preprocess.py
-#!/usr/bin/env python3
-"""Review-weave preprocessor: org with plan markup -> pandoc-friendly org.
-
-- inline tasks (15+ stars) -> #+begin_planned / #+begin_hole special blocks
-- CriticMarkup {++new++} {--old--} {~~old~>new~~} {>>note<<} -> LaTeX
-- #+begin:/#+end: dynamic-block wrapper lines dropped (inner content kept)
-- LaTeX preamble injected after #+options: (geometry only if absent)
-"""
-import bisect
-import re
-import sys
-
-KEYWORDS = {"PLANNED": "planned", "FILLING": "planned", "LIVE": "planned",
-            "DROPPED": "planned", "HOLE": "planned"}
-
-PREAMBLE = [
-    "#+latex_header: \\usepackage[margin=2.6cm]{geometry}",
-    "#+latex_header: \\usepackage{xcolor}",
-    "#+latex_header: \\usepackage[normalem]{ulem}",
-    "#+latex_header: \\definecolor{cmdel}{RGB}{176,32,32}",
-    "#+latex_header: \\definecolor{cmins}{RGB}{22,122,48}",
-    "#+latex_header: \\definecolor{cmnote}{RGB}{28,82,160}",
-    "#+latex_header: \\definecolor{badgeplan}{RGB}{176,98,20}",
-    "#+latex_header: \\definecolor{badgehole}{RGB}{104,54,160}",
-    "#+latex_header: \\newcommand{\\cmdel}[1]{\\textcolor{cmdel}{\\sout{#1}}}",
-    "#+latex_header: \\newcommand{\\cmins}[1]{\\textcolor{cmins}{#1}}",
-    "#+latex_header: \\newcommand{\\cmnote}[1]{\\textcolor{cmnote}{\\itshape [#1]}}",
-    "#+latex_header: \\usepackage{framed}",
-    "#+latex_header: \\usepackage{marginnote}",
-    "#+latex_header: \\reversemarginpar",
-    "#+latex_header: \\usepackage{bookmark}",
-    # inside framed environments, color must be explicitly paired
-    # (begingroup/endgroup or textcolor): a bare \color relying on the
-    # environment group leaks past the box under framed's splitting
-    "#+latex_header: \\newcommand{\\planmark}[2]{\\marginnote{\\textcolor{#1}{\\rule{2.5pt}{9pt}\\,{\\scriptsize #2}}}}",
-    # badge variant: same margin mark plus a sticky-note annotation
-    # (xdvipdfmx pdf:ann special), so PDF viewers list the badge's why
-    # under Highlights and Notes
-    "#+latex_header: \\newcommand{\\planbadgemark}[3]{\\marginnote{\\special{pdf:ann width 8pt height 8pt << /Type /Annot /Subtype /Text /Name /Comment /C [0.69 0.38 0.08] /Contents (#3) >>}\\hspace{14pt}\\textcolor{#1}{\\rule{2.5pt}{9pt}\\,{\\scriptsize #2}}}}",
-    "#+latex_header: \\newenvironment{planbox}[1]{\\def\\FrameCommand{{\\color{#1}\\vrule width 3pt}\\hspace{8pt}}\\MakeFramed{\\advance\\hsize-\\width\\FrameRestore}\\begingroup\\color{#1}\\itshape}{\\endgroup\\endMakeFramed}",
-    # numbered caption above every tangling block (notes.lua emits the
-    # calls, adding [name] when the block has one); detokenize keeps
-    # underscores in filenames and block names typesettable
-    "#+latex_header: \\newcounter{codelisting}",
-    "#+latex_header: \\newcommand{\\codecaption}[2][]{\\par\\medskip\\noindent{\\stepcounter{codelisting}\\small\\textbf{Listing \\thecodelisting:} \\texttt{\\detokenize{#2}}\\if\\relax\\detokenize{#1}\\relax\\else\\quad\\textcolor{gray}{\\texttt{\\detokenize{<<#1>>}}}\\fi}\\par\\nopagebreak\\vspace{2pt}}",
-    # noweb references inside highlighted code: texlinks.py rewrites
-    # the placeholders notes.lua planted into \NowebRef calls. Plain
-    # \hyperlink, not \hyperref[label]: label lookup explodes under
-    # fancyvrb's verbatim catcodes, so notes.lua plants matching
-    # \hypertarget anchors at the named blocks instead. The dest name
-    # is detokenized too: fancyvrb makes - active, and an active -
-    # expands to hyphenation boxes inside the destination string
-    "#+latex_header: \\newcommand{\\NowebRef}[1]{\\hyperlink{noweb:\\detokenize{#1}}{\\detokenize{<<#1>>}}}",
-]
-#+end_src
-
-*************** PLANNED stage 3 replaces the block above ([[#stage-3][plan]]) :stage3:
-The twin adds the one import the include reader needs.
-*************** END
-
-#+name: preprocess-preamble--planned
-#+begin_src python :tangle no
 #!/usr/bin/env python3
 """Review-weave preprocessor: org with plan markup -> pandoc-friendly org.
 
@@ -1049,19 +771,6 @@ PREAMBLE = [
     "#+latex_header: \\newcommand{\\NowebRef}[1]{\\hyperlink{noweb:\\detokenize{#1}}{\\detokenize{<<#1>>}}}",
 ]
 #+end_src
-
-#+begin: src-block-diff :old preprocess-preamble :new preprocess-preamble--planned
-#+begin_src diff
-@@ -7,6 +7,7 @@
- - LaTeX preamble injected after #+options: (geometry only if absent)
- """
- import bisect
-+import os
- import re
- import sys
- 
-#+end_src
-#+end:
 
 CriticMarkup spans become LaTeX color macros, but only the shells
 are raw: the content between the braces stays org, so links and
@@ -1208,81 +917,13 @@ each site's governing badge.
 
 #+name: preprocess-main
 #+begin_src python :tangle preprocess.py
-def main(src, dst):
-    text = open(src, encoding="utf-8").read()
-    text = criticmarkup(text)
-    text = text.replace("\u2192", "$\\rightarrow$")
-    has_geometry = re.search(r"^#\+latex_header:.*geometry", text,
-                             re.IGNORECASE | re.MULTILINE)
-    preamble = [p for p in PREAMBLE
-                if "geometry" not in p or not has_geometry]
-    # badge ordinals by original line number: the jump list's targets
-    badge_lines = [i + 1 for i, l in enumerate(text.split("\n"))
-                   if re.match(r"^\*{15,}\s+(?!END\b)", l)]
-    # a "Plan sites" branch in the PDF outline, one entry per badge;
-    # level 1 keeps the book's chapters as siblings, not children
-    marks = []
-    titles = badge_titles(text)
-    if titles:
-        marks.append("#+latex: \\bookmark[level=1,dest=planbadge-1]"
-                     "{Plan sites}")
-        for j, t in enumerate(titles, 1):
-            marks.append("#+latex: \\bookmark[level=2,dest=planbadge-%d]"
-                         "{%s}" % (j, re.sub(r"[{}\\%$&#^_~]", " ", t)))
-    lines = []
-    in_toc = False
-    injected = False
-    for line in text.split("\n"):
-        if re.match(r"^#\+begin: plan-toc", line):
-            in_toc = True
-            continue
-        if re.match(r"^#\+(begin|end):", line):
-            if line.startswith("#+end:"):
-                in_toc = False
-            continue
-        if in_toc:
-            # file links are external in a PDF; link each item to its
-            # governing badge instead, the nearest one above the site
-            m = re.match(r"^- \[\[file:[^]]*::(\d+)\]\[(\d+)\]\] (.*)$", line)
-            if m and bisect.bisect_right(badge_lines, int(m.group(1))):
-                k = bisect.bisect_right(badge_lines, int(m.group(1)))
-                line = "- @@latex:\\hyperlink{planbadge-%d}{%s}@@ %s" % (
-                    k, m.group(2), m.group(3))
-            else:
-                line = re.sub(r"\[\[file:[^]]*\]\[([^]]*)\]\]", r"\1", line)
-        # inject after #+options: when the book has one, else before
-        # the first content line, so headerless books weave too
-        if (not injected and line.strip()
-                and not line.startswith("#+")):
-            lines.extend(preamble)
-            lines.extend(marks)
-            injected = True
-        lines.append(line)
-        if not injected and line.startswith("#+options:"):
-            lines.extend(preamble)
-            lines.extend(marks)
-            injected = True
-    open(dst, "w", encoding="utf-8", newline="\n").write(
-        "\n".join(badges(lines)) + "\n")
-
-if __name__ == "__main__":
-    main(sys.argv[1], sys.argv[2])
-#+end_src
-
-*************** PLANNED stage 3 replaces the block above ([[#stage-3][plan]]) :stage3:
-The twin reads the master and its chapters as one text, so plan
-markup inside a chapter is rewritten like any other, and refuses a
-custom id that two files both define.
-*************** END
-
-#+name: preprocess-main--planned
-#+begin_src python :tangle no
 INCLUDE = re.compile(r'^[ \t]*#\+INCLUDE:(.*)$', re.IGNORECASE)
 BARE = re.compile(r'^"([^"]+)"$')
+WRAPPED = re.compile(r'^"([^"]+)"\s+example$')
 CUSTOM_ID = re.compile(r'^[ \t]*:CUSTOM_ID:[ \t]*(\S+)', re.IGNORECASE)
 
 
-def read_book(src, seen=None, ids=None):
+def read_book(src, seen=None, ids=None, base=None):
     """The master and every chapter it includes, as one text.
 
     Only the bare quoted form is understood, the same one the tangler
@@ -1294,30 +935,38 @@ def read_book(src, seen=None, ids=None):
     seen = seen if seen is not None else set()
     ids = ids if ids is not None else {}
     path = os.path.abspath(src)
+    base = base if base is not None else os.path.dirname(path)
+    # positions are reported the way the includes are written, relative
+    # to the master, since that is how the reader will go looking
+    here = os.path.relpath(path, base)
     if path in seen:
-        raise SystemExit("%s: includes itself" % src)
+        raise SystemExit("%s: includes itself" % here)
     seen.add(path)
     out = []
     for n, line in enumerate(open(path, encoding="utf-8").read().split("\n"), 1):
         m = INCLUDE.match(line)
         if m:
-            arg = BARE.match(m.group(1).strip())
+            rest = m.group(1).strip()
+            if WRAPPED.match(rest):
+                out.append(line)      # verbatim display; pandoc expands it
+                continue
+            arg = BARE.match(rest)
             if not arg:
                 raise SystemExit(
-                    '%s:%d: only #+INCLUDE: "path" is understood, with the '
-                    "quotes and nothing after the path" % (src, n))
+                    '%s:%d: only #+INCLUDE: "path" and #+INCLUDE: "path" '
+                    "example are understood" % (here, n))
             out.append(read_book(
-                os.path.join(os.path.dirname(path), arg.group(1)), seen, ids))
+                os.path.join(os.path.dirname(path), arg.group(1)),
+                seen, ids, base))
             continue
         cid = CUSTOM_ID.match(line)
         if cid:
             key = cid.group(1)
             if key in ids:
-                where, before = ids[key], ids[key]
                 raise SystemExit(
                     "%s:%d: custom id %s is already defined at %s"
-                    % (src, n, key, before))
-            ids[key] = "%s:%d" % (src, n)
+                    % (here, n, key, ids[key]))
+            ids[key] = "%s:%d" % (here, n)
         out.append(line)
     return "\n".join(out)
 
@@ -1382,63 +1031,6 @@ def main(src, dst):
 if __name__ == "__main__":
     main(sys.argv[1], sys.argv[2])
 #+end_src
-
-#+begin: src-block-diff :old preprocess-main :new preprocess-main--planned
-#+begin_src diff
-@@ -1,5 +1,50 @@
-+INCLUDE = re.compile(r'^[ \t]*#\+INCLUDE:(.*)$', re.IGNORECASE)
-+BARE = re.compile(r'^"([^"]+)"$')
-+CUSTOM_ID = re.compile(r'^[ \t]*:CUSTOM_ID:[ \t]*(\S+)', re.IGNORECASE)
-+
-+
-+def read_book(src, seen=None, ids=None):
-+    """The master and every chapter it includes, as one text.
-+
-+    Only the bare quoted form is understood, the same one the tangler
-+    accepts, so both halves of the toolchain read the same book. A
-+    custom id defined twice is refused here rather than left to pandoc:
-+    this function still knows which file and line the second definition
-+    sits on, and after expansion nobody does.
-+    """
-+    seen = seen if seen is not None else set()
-+    ids = ids if ids is not None else {}
-+    path = os.path.abspath(src)
-+    if path in seen:
-+        raise SystemExit("%s: includes itself" % src)
-+    seen.add(path)
-+    out = []
-+    for n, line in enumerate(open(path, encoding="utf-8").read().split("\n"), 1):
-+        m = INCLUDE.match(line)
-+        if m:
-+            arg = BARE.match(m.group(1).strip())
-+            if not arg:
-+                raise SystemExit(
-+                    '%s:%d: only #+INCLUDE: "path" is understood, with the '
-+                    "quotes and nothing after the path" % (src, n))
-+            out.append(read_book(
-+                os.path.join(os.path.dirname(path), arg.group(1)), seen, ids))
-+            continue
-+        cid = CUSTOM_ID.match(line)
-+        if cid:
-+            key = cid.group(1)
-+            if key in ids:
-+                where, before = ids[key], ids[key]
-+                raise SystemExit(
-+                    "%s:%d: custom id %s is already defined at %s"
-+                    % (src, n, key, before))
-+            ids[key] = "%s:%d" % (src, n)
-+        out.append(line)
-+    return "\n".join(out)
-+
-+
- def main(src, dst):
--    text = open(src, encoding="utf-8").read()
-+    text = read_book(src)
-     text = criticmarkup(text)
-     text = text.replace("\u2192", "$\\rightarrow$")
-     has_geometry = re.search(r"^#\+latex_header:.*geometry", text,
-#+end_src
-#+end:
 
 * The pandoc filters
 
@@ -1594,35 +1186,6 @@ function Link(el)
   if el.target:match('^fig:') then
     return pandoc.RawInline('latex', 'Figure~\\ref{' .. el.target .. '}')
   end
-end
-#+end_src
-
-*************** PLANNED stage 3 adds the paragraph below ([[#stage-3][plan]]) :stage3:
-The filter also resolves a link that names a file and a custom id,
-the form Emacs stores when a link is made to a heading in another
-chapter. Both halves are true while the book is being edited, and
-only one of them survives the weave: the includes make the chapters
-a single document, so the file names nothing that the PDF contains,
-while the id names a heading in it. Keeping the id and dropping the
-file is what the link meant. The alternative, leaving it alone,
-produces a link to an org file that is not beside the PDF, which
-fails silently for the reader.
-*************** END
-
-*************** PLANNED stage 3 replaces the block above ([[#stage-3][plan]]) :stage3:
-The twin carries that rule.
-*************** END
-
-#+name: notes-figrefs--planned
-#+begin_src lua :tangle no
--- A link whose target names a figure (#+name: fig:...) becomes a
--- numbered cross-reference. Pandoc's org reader turns [[fig:x]] into
--- an autolink, which the LaTeX writer would set as a \url; the label
--- comes from the #+name: on the figure itself.
-function Link(el)
-  if el.target:match('^fig:') then
-    return pandoc.RawInline('latex', 'Figure~\\ref{' .. el.target .. '}')
-  end
   -- A stored link to a heading in another chapter names the file and
   -- the custom id. Includes make the chapters one document, so by the
   -- time this runs the file names nothing; the id resolves.
@@ -1634,23 +1197,15 @@ function Link(el)
 end
 #+end_src
 
-#+begin: src-block-diff :old notes-figrefs :new notes-figrefs--planned
-#+begin_src diff
-@@ -6,4 +6,12 @@
-   if el.target:match('^fig:') then
-     return pandoc.RawInline('latex', 'Figure~\\ref{' .. el.target .. '}')
-   end
-+  -- A stored link to a heading in another chapter names the file and
-+  -- the custom id. Includes make the chapters one document, so by the
-+  -- time this runs the file names nothing; the id resolves.
-+  local id = el.target:match('::#(.+)$')
-+  if id then
-+    el.target = '#' .. id
-+    return el
-+  end
- end
-#+end_src
-#+end:
+The filter also resolves a link that names a file and a custom id,
+the form Emacs stores when a link is made to a heading in another
+chapter. Both halves are true while the book is being edited, and
+only one of them survives the weave: the includes make the chapters
+a single document, so the file names nothing that the PDF contains,
+while the id names a heading in it. Keeping the id and dropping the
+file is what the link meant. The alternative, leaving it alone,
+produces a link to an org file that is not beside the PDF, which
+fails silently for the reader.
 
 An image written as a link is a figure already, because pandoc's org
 reader promotes a captioned paragraph on its own. A captioned block
@@ -1996,6 +1551,20 @@ outside the book, exactly as the contract prescribes for every
 project.
 
 * Changes
+
+- [2026-08-20] A book may be split into chapter files that a master
+  includes. Both halves of the toolchain expand the includes before
+  they do anything else, because blocks reach a file in the order
+  they appear across the whole book and a doc comment's extent can
+  run back into the chapter before it; reading chapters one at a
+  time would write different files from the same book. Only the bare
+  quoted form is understood, since org and pandoc understand
+  different extensions of the keyword and pandoc ignores an unquoted
+  path without a word. A custom id must be unique across the book,
+  and the check runs while the chapter files are read, which is the
+  last moment the file and line of the second definition are known.
+  A stored link to a heading in another chapter resolves to that
+  heading in the PDF.
 
 - [2026-08-11] Comment syntax became a property of the language a
   block is written in, rather than of the file's extension and of
