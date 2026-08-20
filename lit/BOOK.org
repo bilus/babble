@@ -51,6 +51,11 @@ identifies anything by the time the weave runs; the custom id
 does. Without this the link becomes a link to a ~.org~ file that
 does not sit beside the PDF.
 
+The reasoning above belongs in the book rather than only here,
+because this entry is deleted at acceptance and babble has to
+reimplement every rule in it. A rule that survives only as code
+leaves the second implementation guessing at intent.
+
 Known limit, recorded rather than fixed: plan-toc writes its jump
 list as line numbers in the master. Once chapters carry badges,
 those numbers no longer identify a badge, and the list will point
@@ -153,6 +158,28 @@ line-comment prefix, whose entries win over the built-in table. A
 file fed by blocks of two languages is an error, since one file
 takes one comment syntax.
 
+*************** PLANNED stage 3 adds the paragraphs below ([[#stage-3][plan]]) :stage3:
+A book that has outgrown one file is split into chapter files, and a
+master file includes them in reading order. Only one spelling is
+understood, ~#+INCLUDE: "path"~, with the quotes and nothing after
+the path. Two programs read a book, org and pandoc, and each
+understands a different set of extensions to that keyword; the one
+form both read the same way is the only form that can mean one
+thing. The quotes are part of the rule rather than a convention: org
+accepts an unquoted path and pandoc ignores it without a word, so an
+unquoted include would tangle correctly and weave a book with a
+chapter missing.
+
+Both halves of the toolchain expand the includes before they do
+anything else, so a split book and a whole one produce the same
+bytes. This is a requirement rather than an optimisation. Blocks
+reach a file in the order they appear across the whole book, and a
+doc comment's extent runs back to the nearest structure above the
+block, which may be in the chapter before it. An engine that read
+chapters one at a time would not see either, and would write
+different files from the same book.
+*************** END
+
 Books may also hold generated views: blocks whose content is
 derived from the rest of the book, such as a diff between a block
 and its planned replacement, or a jump list of every planned
@@ -176,6 +203,24 @@ three affordances that make the code navigable:
   stays uncaptioned.
 - A reference to a named block inside another listing is a
   hyperlink; clicking it jumps to the named block's caption.
+
+*************** PLANNED stage 3 adds the paragraphs below ([[#stage-3][plan]]) :stage3:
+A custom id identifies a heading across the whole book, so two
+headings may not claim the same one. After the includes are expanded
+the chapters are a single document with a single set of anchors, and
+a repeated id makes every link to it ambiguous, with no way for
+either engine to tell which heading was meant. The check runs while
+the chapter files are being read, because that is the last moment
+the file and line of the second definition are known. Once the text
+is merged, a position refers to a line in text that exists in no
+file, which is of no use to the person who has to fix it.
+
+A link to a heading in another chapter names both a file and a
+custom id, which is the form Emacs stores. Weaving resolves it to
+the id alone. The merged document has no separate files left to
+point at, and a link naming an org file would sit in the PDF
+pointing at something that is not beside it.
+*************** END
 
 Diagrams written in mermaid, a plain-text diagram language, render
 as pictures. Note and Apropos asides render as indented quotations.
@@ -778,10 +823,30 @@ generated view, save the book if that changed it, then tangle.
   (org-babel-tangle-file file))
 #+end_src
 
+*************** PLANNED stage 3 adds the paragraphs below ([[#stage-3][plan]]) :stage3:
+The entry point expands the book's includes before org collects any
+block, and where that expansion happens is forced from two
+directions.
+
+It happens in the buffer visiting the master, not in a scratch
+buffer, because org asks the buffer for its own file name while it
+writes blocks out. That also settles how a target named inside a
+chapter is resolved: against the master's directory, not the
+chapter's. The paths in a book are the project's paths, and a
+chapter that moves into a subdirectory does not drag its targets
+with it.
+
+It happens with the tangle hook that saves the source buffer unbound
+for the call, and the buffer is marked unmodified afterwards. By
+that point the buffer holds the merged book. Saving it would write
+that merge over the master, replacing the file that names the
+chapters with a copy of their contents. The failure destroys the
+book rather than the output, which is why the hook is unbound rather
+than worked around.
+*************** END
+
 *************** PLANNED stage 3 replaces the block above ([[#stage-3][plan]]) :stage3:
-The twin expands includes before collecting blocks. The tangle runs
-with the save hook unbound and the buffer is marked unmodified
-afterwards, so the expanded text never reaches the master on disk.
+The twin is that entry point.
 *************** END
 
 #+name: tangle-entry--planned
@@ -853,6 +918,16 @@ bracket-based notation for insertions, deletions, and comments in
 prose. The preprocessor rewrites all three into org and raw LaTeX
 that pandoc passes through, and it injects the LaTeX preamble the
 rest of the weave depends on.
+
+*************** PLANNED stage 3 adds the paragraph below ([[#stage-3][plan]]) :stage3:
+It reads the master and every chapter it includes as one text. Plan
+markup sits where the change it describes sits, which is in the
+chapters, so a preprocessor that read only the master would rewrite
+nothing and the badges would reach the PDF as literal rows of stars.
+Reading the chapter files here also puts the duplicate custom id
+check in the one place that can report a useful position, since
+after this point every line number refers to merged text.
+*************** END
 
 #+name: preprocess-preamble
 #+begin_src python :tangle preprocess.py
@@ -1522,9 +1597,20 @@ function Link(el)
 end
 #+end_src
 
+*************** PLANNED stage 3 adds the paragraph below ([[#stage-3][plan]]) :stage3:
+The filter also resolves a link that names a file and a custom id,
+the form Emacs stores when a link is made to a heading in another
+chapter. Both halves are true while the book is being edited, and
+only one of them survives the weave: the includes make the chapters
+a single document, so the file names nothing that the PDF contains,
+while the id names a heading in it. Keeping the id and dropping the
+file is what the link meant. The alternative, leaving it alone,
+produces a link to an org file that is not beside the PDF, which
+fails silently for the reader.
+*************** END
+
 *************** PLANNED stage 3 replaces the block above ([[#stage-3][plan]]) :stage3:
-The twin resolves a stored cross-chapter link to the heading it
-names, instead of leaving a link to an org file beside the PDF.
+The twin carries that rule.
 *************** END
 
 #+name: notes-figrefs--planned
