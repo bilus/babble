@@ -286,5 +286,40 @@ def main(src, dst):
     open(dst, "w", encoding="utf-8", newline="\n").write(
         "\n".join(badges(lines)) + "\n")
 
+def deps(src, seen=None, base=None):
+    """Every file the book is made of, the master included.
+
+    Reported for make, which needs to know when the PDF is stale.
+    Both include forms count: a chapter changes the book, and a file
+    shown as an example changes the page it appears on.
+    """
+    seen = seen if seen is not None else []
+    path = os.path.abspath(src)
+    base = base if base is not None else os.path.dirname(path)
+    rel = os.path.relpath(path, base)
+    if rel in seen:
+        return seen
+    seen.append(rel)
+    try:
+        text = open(path, encoding="utf-8").read()
+    except OSError:
+        return seen
+    for line in text.split("\n"):
+        m = INCLUDE.match(line)
+        if not m:
+            continue
+        arg = BARE.match(m.group(1).strip()) or WRAPPED.match(m.group(1).strip())
+        if arg:
+            deps(os.path.join(os.path.dirname(path), arg.group(1)), seen, base)
+    return seen
+
+
 if __name__ == "__main__":
-    main(sys.argv[1], sys.argv[2])
+    # --deps runs while make is still reading the Makefile, before a
+    # target exists, so it reports what it can and never fails. A bad
+    # include is refused later, by the tangler and by the weave, where
+    # there is somewhere sensible to report it.
+    if sys.argv[1] == "--deps":
+        print("\n".join(deps(sys.argv[2])))
+    else:
+        main(sys.argv[1], sys.argv[2])

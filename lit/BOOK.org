@@ -1,63 +1,6 @@
 #+title: lit, a toolchain for literate programs
 #+todo: PLANNED(p!) HOLE(h!) FILLING(f!) | LIVE(l!) DROPPED(d@)
 
-* Plan                                                                :plan:
-
-** PLANNED Stage 4: make knows what a book is made of               :stage4:
-:PROPERTIES:
-:CUSTOM_ID: stage-4
-:SPEC:     The make targets; The weave preprocessor
-:ACCEPTANCE: touching a chapter rebuilds the PDF; check passes on a split book
-:END:
-
-Claim: after this stage make rebuilds the PDF when any chapter
-changes, and check tangles a split book in its scratch directory
-instead of failing on a file it never copied.
-
-The recipes were written when a book was one file, and both of them
-still assume it. book.pdf depends on the master alone, so editing a
-chapter leaves the PDF stale and make reports nothing to do. check
-copies the master and the toolchain into a scratch directory and
-tangles there, which fails on a split book because the chapters were
-never copied.
-
-Decided: (1) The list of files a book is made of comes from
-preprocess.py, through a ~--deps~ mode, not from a pattern in the
-Makefile. Two readers of the same syntax drift apart, and this
-syntax already has two forms with different meanings. The program
-that decides what an include is should be the one that answers what
-the book contains. (2) ~--deps~ reports what it can and always
-succeeds. It runs while make is still reading the Makefile, before
-any target has been chosen, so a malformed include there would stop
-even make clean. Refusing a bad include is the tangler's job and the
-weave's, and both already do it with a file and a line. (3) check
-copies the chapter files it is told about, and nothing else. A book
-that keeps other files beside its chapters, diagrams for instance,
-excludes them through ~CHECK_EXTRA~, the same way it already
-excludes everything else it does not generate.
-
-- [ ] skeleton approved (twins at [[preprocess-main--planned]],
-  [[lit-mk-targets--planned]], [[lit-mk-check--planned]])
-- [ ] inserted prose reads steady-state
-- [ ] Changes draft below reads right in the journal
-- [ ] both behaviours seen to fail first
-- [ ] twins accepted: :tangle headers swapped, old blocks DROPPED
-- [ ] census clean, suite green
-- [ ] Changes entry dated and filed, plan entry deleted
-
-*** Changes draft
-
-#+begin_quote
-make learned what a book is made of. The PDF depends on every
-chapter the master includes, so editing one rebuilds it, and check
-copies those chapters into its scratch directory before tangling
-there. The list comes from the preprocessor rather than from a
-pattern in the Makefile, because the program that decides what an
-include is should also answer what the book contains. It reports
-what it can and always succeeds, since it runs while make is reading
-the Makefile and a bad include there would stop every target.
-#+end_quote
-
 * Introduction
 
 A program and its explanation drift apart because they live in
@@ -328,38 +271,6 @@ here.
 #+begin_src makefile :tangle lit.mk
 LIT ?= lit
 
-.PHONY: tangle weave review check setup
-
-tangle:
-	emacs -Q --batch -l $(LIT)/tangle.el --eval '(lit-tangle "BOOK.org")'
-
-weave: book.pdf
-
-book.pdf: BOOK.org $(LIT)/preprocess.py $(LIT)/plan.lua $(LIT)/notes.lua $(LIT)/mermaid.lua $(LIT)/svg.lua $(LIT)/texlinks.py
-	python3 $(LIT)/preprocess.py BOOK.org book-weave.org
-	t=$$(mktemp -d) && MERMAID_TMP=$$t pandoc book-weave.org -s --toc \
-	  --lua-filter=$(LIT)/mermaid.lua --lua-filter=$(LIT)/svg.lua \
-	  --lua-filter=$(LIT)/notes.lua \
-	  --lua-filter=$(LIT)/plan.lua -V colorlinks -V linkcolor=NavyBlue \
-	  -o book-weave.tex && \
-	  python3 $(LIT)/texlinks.py book-weave.tex && \
-	  tectonic book-weave.tex && \
-	  mv book-weave.pdf book.pdf; rc=$$?; \
-	  rm -rf "$$t" book-weave.org book-weave.tex book-weave.pdf; exit $$rc
-
-review: weave
-#+end_src
-
-*************** PLANNED stage 4 replaces the block above ([[#stage-4][plan]]) :stage4:
-The twin makes the PDF depend on the whole book. BOOK.org leaves the
-prerequisite list because it is the first entry the preprocessor
-reports.
-*************** END
-
-#+name: lit-mk-targets--planned
-#+begin_src makefile :tangle no
-LIT ?= lit
-
 # Every file the book is made of, so editing a chapter rebuilds the
 # PDF. The preprocessor answers, rather than a pattern here, because
 # it is what decides which lines are includes.
@@ -387,32 +298,6 @@ book.pdf: $(BOOK_PARTS) $(LIT)/preprocess.py $(LIT)/plan.lua $(LIT)/notes.lua $(
 review: weave
 #+end_src
 
-#+begin: src-block-diff :old lit-mk-targets :new lit-mk-targets--planned
-#+begin_src diff
-@@ -1,5 +1,10 @@
- LIT ?= lit
- 
-+# Every file the book is made of, so editing a chapter rebuilds the
-+# PDF. The preprocessor answers, rather than a pattern here, because
-+# it is what decides which lines are includes.
-+BOOK_PARTS := $(shell python3 $(LIT)/preprocess.py --deps BOOK.org)
-+
- .PHONY: tangle weave review check setup
- 
- tangle:
-@@ -7,7 +12,7 @@
- 
- weave: book.pdf
- 
--book.pdf: BOOK.org $(LIT)/preprocess.py $(LIT)/plan.lua $(LIT)/notes.lua $(LIT)/mermaid.lua $(LIT)/svg.lua $(LIT)/texlinks.py
-+book.pdf: $(BOOK_PARTS) $(LIT)/preprocess.py $(LIT)/plan.lua $(LIT)/notes.lua $(LIT)/mermaid.lua $(LIT)/svg.lua $(LIT)/texlinks.py
- 	python3 $(LIT)/preprocess.py BOOK.org book-weave.org
- 	t=$$(mktemp -d) && MERMAID_TMP=$$t pandoc book-weave.org -s --toc \
- 	  --lua-filter=$(LIT)/mermaid.lua --lua-filter=$(LIT)/svg.lua \
-#+end_src
-#+end:
-
-*************** PLANNED stage 4 adds the paragraph below ([[#stage-4][plan]]) :stage4:
 The PDF depends on every file the book is made of, not on the master
 alone, so editing a chapter rebuilds it. The list is asked for
 rather than matched for: the preprocessor decides which lines are
@@ -421,7 +306,6 @@ written as a pattern here would eventually disagree with it. The
 question is asked while make is reading this file, before any target
 has been chosen, which is why the answer never fails; a book that
 cannot be read is refused later, by the tangler and by the weave.
-*************** END
 
 setup bootstraps a new project, as the contract describes. It never
 overwrites an existing book, and it writes the one-line Makefile
@@ -453,26 +337,6 @@ diff flags: ~CHECK_EXTRA = -x PROMPT.md -x testdata~.
 #+name: lit-mk-check
 #+begin_src makefile :tangle lit.mk
 check:
-	@d=$$(mktemp -d) && mkdir $$d/lit && cp BOOK.org $$d && \
-	  cp -R $(LIT)/* $$d/lit/ && ( \
-	  cd $$d && emacs -Q --batch -l lit/tangle.el \
-	    --eval '(lit-tangle "BOOK.org")' >/dev/null 2>&1 \
-	) && diff -r -x BOOK.org -x lit -x example -x templates \
-	  -x Makefile -x .gitignore -x go.mod -x go.sum \
-	  -x requirements.txt -x README.md -x AGENTS.md -x book.pdf \
-	  -x book-review.pdf -x docs -x .git -x .DS_Store \
-	  $(CHECK_EXTRA) $$d . \
-	  && echo ok
-#+end_src
-
-*************** PLANNED stage 4 replaces the block above ([[#stage-4][plan]]) :stage4:
-The twin copies the chapters into the scratch directory, so a split
-book can be tangled there at all.
-*************** END
-
-#+name: lit-mk-check--planned
-#+begin_src makefile :tangle no
-check:
 	@d=$$(mktemp -d) && mkdir $$d/lit && \
 	  for f in $(BOOK_PARTS); do \
 	    mkdir -p $$d/$$(dirname $$f) && cp $$f $$d/$$f; \
@@ -488,29 +352,12 @@ check:
 	  && echo ok
 #+end_src
 
-#+begin: src-block-diff :old lit-mk-check :new lit-mk-check--planned
-#+begin_src diff
-@@ -1,5 +1,8 @@
- check:
--	@d=$$(mktemp -d) && mkdir $$d/lit && cp BOOK.org $$d && \
-+	@d=$$(mktemp -d) && mkdir $$d/lit && \
-+	  for f in $(BOOK_PARTS); do \
-+	    mkdir -p $$d/$$(dirname $$f) && cp $$f $$d/$$f; \
-+	  done && \
- 	  cp -R $(LIT)/* $$d/lit/ && ( \
- 	  cd $$d && emacs -Q --batch -l lit/tangle.el \
- 	    --eval '(lit-tangle "BOOK.org")' >/dev/null 2>&1 \
-#+end_src
-#+end:
-
-*************** PLANNED stage 4 adds the paragraph below ([[#stage-4][plan]]) :stage4:
 check copies the chapters into its scratch directory before tangling
 there, since a book it cannot read is a book it cannot check. It
 copies the chapters and nothing else around them. A book that keeps
 other files beside them, diagrams for instance, excludes those
 through ~CHECK_EXTRA~, which is how a book already tells check about
 everything it does not generate.
-*************** END
 
 * The tangling driver
 
@@ -1205,129 +1052,6 @@ def main(src, dst):
     open(dst, "w", encoding="utf-8", newline="\n").write(
         "\n".join(badges(lines)) + "\n")
 
-if __name__ == "__main__":
-    main(sys.argv[1], sys.argv[2])
-#+end_src
-
-*************** PLANNED stage 4 replaces the block above ([[#stage-4][plan]]) :stage4:
-The twin adds the mode that answers make. It walks the includes the
-same way the reader does, so the two cannot disagree about what the
-book contains.
-*************** END
-
-#+name: preprocess-main--planned
-#+begin_src python :tangle no
-INCLUDE = re.compile(r'^[ \t]*#\+INCLUDE:(.*)$', re.IGNORECASE)
-BARE = re.compile(r'^"([^"]+)"$')
-WRAPPED = re.compile(r'^"([^"]+)"\s+example$')
-CUSTOM_ID = re.compile(r'^[ \t]*:CUSTOM_ID:[ \t]*(\S+)', re.IGNORECASE)
-
-
-def read_book(src, seen=None, ids=None, base=None):
-    """The master and every chapter it includes, as one text.
-
-    Only the bare quoted form is understood, the same one the tangler
-    accepts, so both halves of the toolchain read the same book. A
-    custom id defined twice is refused here rather than left to pandoc:
-    this function still knows which file and line the second definition
-    sits on, and after expansion nobody does.
-    """
-    seen = seen if seen is not None else set()
-    ids = ids if ids is not None else {}
-    path = os.path.abspath(src)
-    base = base if base is not None else os.path.dirname(path)
-    # positions are reported the way the includes are written, relative
-    # to the master, since that is how the reader will go looking
-    here = os.path.relpath(path, base)
-    if path in seen:
-        raise SystemExit("%s: includes itself" % here)
-    seen.add(path)
-    out = []
-    for n, line in enumerate(open(path, encoding="utf-8").read().split("\n"), 1):
-        m = INCLUDE.match(line)
-        if m:
-            rest = m.group(1).strip()
-            if WRAPPED.match(rest):
-                out.append(line)      # verbatim display; pandoc expands it
-                continue
-            arg = BARE.match(rest)
-            if not arg:
-                raise SystemExit(
-                    '%s:%d: only #+INCLUDE: "path" and #+INCLUDE: "path" '
-                    "example are understood" % (here, n))
-            out.append(read_book(
-                os.path.join(os.path.dirname(path), arg.group(1)),
-                seen, ids, base))
-            continue
-        cid = CUSTOM_ID.match(line)
-        if cid:
-            key = cid.group(1)
-            if key in ids:
-                raise SystemExit(
-                    "%s:%d: custom id %s is already defined at %s"
-                    % (here, n, key, ids[key]))
-            ids[key] = "%s:%d" % (here, n)
-        out.append(line)
-    return "\n".join(out)
-
-
-def main(src, dst):
-    text = read_book(src)
-    text = criticmarkup(text)
-    text = text.replace("\u2192", "$\\rightarrow$")
-    has_geometry = re.search(r"^#\+latex_header:.*geometry", text,
-                             re.IGNORECASE | re.MULTILINE)
-    preamble = [p for p in PREAMBLE
-                if "geometry" not in p or not has_geometry]
-    # badge ordinals by original line number: the jump list's targets
-    badge_lines = [i + 1 for i, l in enumerate(text.split("\n"))
-                   if re.match(r"^\*{15,}\s+(?!END\b)", l)]
-    # a "Plan sites" branch in the PDF outline, one entry per badge;
-    # level 1 keeps the book's chapters as siblings, not children
-    marks = []
-    titles = badge_titles(text)
-    if titles:
-        marks.append("#+latex: \\bookmark[level=1,dest=planbadge-1]"
-                     "{Plan sites}")
-        for j, t in enumerate(titles, 1):
-            marks.append("#+latex: \\bookmark[level=2,dest=planbadge-%d]"
-                         "{%s}" % (j, re.sub(r"[{}\\%$&#^_~]", " ", t)))
-    lines = []
-    in_toc = False
-    injected = False
-    for line in text.split("\n"):
-        if re.match(r"^#\+begin: plan-toc", line):
-            in_toc = True
-            continue
-        if re.match(r"^#\+(begin|end):", line):
-            if line.startswith("#+end:"):
-                in_toc = False
-            continue
-        if in_toc:
-            # file links are external in a PDF; link each item to its
-            # governing badge instead, the nearest one above the site
-            m = re.match(r"^- \[\[file:[^]]*::(\d+)\]\[(\d+)\]\] (.*)$", line)
-            if m and bisect.bisect_right(badge_lines, int(m.group(1))):
-                k = bisect.bisect_right(badge_lines, int(m.group(1)))
-                line = "- @@latex:\\hyperlink{planbadge-%d}{%s}@@ %s" % (
-                    k, m.group(2), m.group(3))
-            else:
-                line = re.sub(r"\[\[file:[^]]*\]\[([^]]*)\]\]", r"\1", line)
-        # inject after #+options: when the book has one, else before
-        # the first content line, so headerless books weave too
-        if (not injected and line.strip()
-                and not line.startswith("#+")):
-            lines.extend(preamble)
-            lines.extend(marks)
-            injected = True
-        lines.append(line)
-        if not injected and line.startswith("#+options:"):
-            lines.extend(preamble)
-            lines.extend(marks)
-            injected = True
-    open(dst, "w", encoding="utf-8", newline="\n").write(
-        "\n".join(badges(lines)) + "\n")
-
 def deps(src, seen=None, base=None):
     """Every file the book is made of, the master included.
 
@@ -1366,53 +1090,6 @@ if __name__ == "__main__":
     else:
         main(sys.argv[1], sys.argv[2])
 #+end_src
-
-#+begin: src-block-diff :old preprocess-main :new preprocess-main--planned
-#+begin_src diff
-@@ -109,5 +109,40 @@
-     open(dst, "w", encoding="utf-8", newline="\n").write(
-         "\n".join(badges(lines)) + "\n")
- 
-+def deps(src, seen=None, base=None):
-+    """Every file the book is made of, the master included.
-+
-+    Reported for make, which needs to know when the PDF is stale.
-+    Both include forms count: a chapter changes the book, and a file
-+    shown as an example changes the page it appears on.
-+    """
-+    seen = seen if seen is not None else []
-+    path = os.path.abspath(src)
-+    base = base if base is not None else os.path.dirname(path)
-+    rel = os.path.relpath(path, base)
-+    if rel in seen:
-+        return seen
-+    seen.append(rel)
-+    try:
-+        text = open(path, encoding="utf-8").read()
-+    except OSError:
-+        return seen
-+    for line in text.split("\n"):
-+        m = INCLUDE.match(line)
-+        if not m:
-+            continue
-+        arg = BARE.match(m.group(1).strip()) or WRAPPED.match(m.group(1).strip())
-+        if arg:
-+            deps(os.path.join(os.path.dirname(path), arg.group(1)), seen, base)
-+    return seen
-+
-+
- if __name__ == "__main__":
--    main(sys.argv[1], sys.argv[2])
-+    # --deps runs while make is still reading the Makefile, before a
-+    # target exists, so it reports what it can and never fails. A bad
-+    # include is refused later, by the tangler and by the weave, where
-+    # there is somewhere sensible to report it.
-+    if sys.argv[1] == "--deps":
-+        print("\n".join(deps(sys.argv[2])))
-+    else:
-+        main(sys.argv[1], sys.argv[2])
-#+end_src
-#+end:
 
 * The pandoc filters
 
@@ -1933,6 +1610,17 @@ outside the book, exactly as the contract prescribes for every
 project.
 
 * Changes
+
+- [2026-08-20] make learned what a book is made of. The PDF depends
+  on every chapter the master includes, so editing one rebuilds it,
+  and check copies those chapters into its scratch directory before
+  tangling there; before this a split book left the PDF stale and
+  could not be checked at all. The list comes from the preprocessor
+  rather than from a pattern in the Makefile, because the program
+  that decides what an include is should also answer what the book
+  contains. It reports what it can and always succeeds, since it runs
+  while make is reading the Makefile and a bad include there would
+  stop every target.
 
 - [2026-08-20] A book may be split into chapter files that a master
   includes. Both halves of the toolchain expand the includes before

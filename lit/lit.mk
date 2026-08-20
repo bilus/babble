@@ -2,6 +2,11 @@
 
 LIT ?= lit
 
+# Every file the book is made of, so editing a chapter rebuilds the
+# PDF. The preprocessor answers, rather than a pattern here, because
+# it is what decides which lines are includes.
+BOOK_PARTS := $(shell python3 $(LIT)/preprocess.py --deps BOOK.org)
+
 .PHONY: tangle weave review check setup
 
 tangle:
@@ -9,7 +14,7 @@ tangle:
 
 weave: book.pdf
 
-book.pdf: BOOK.org $(LIT)/preprocess.py $(LIT)/plan.lua $(LIT)/notes.lua $(LIT)/mermaid.lua $(LIT)/svg.lua $(LIT)/texlinks.py
+book.pdf: $(BOOK_PARTS) $(LIT)/preprocess.py $(LIT)/plan.lua $(LIT)/notes.lua $(LIT)/mermaid.lua $(LIT)/svg.lua $(LIT)/texlinks.py
 	python3 $(LIT)/preprocess.py BOOK.org book-weave.org
 	t=$$(mktemp -d) && MERMAID_TMP=$$t pandoc book-weave.org -s --toc \
 	  --lua-filter=$(LIT)/mermaid.lua --lua-filter=$(LIT)/svg.lua \
@@ -38,7 +43,10 @@ setup:
 	$(MAKE) -f $(LIT)/lit.mk tangle
 
 check:
-	@d=$$(mktemp -d) && mkdir $$d/lit && cp BOOK.org $$d && \
+	@d=$$(mktemp -d) && mkdir $$d/lit && \
+	  for f in $(BOOK_PARTS); do \
+	    mkdir -p $$d/$$(dirname $$f) && cp $$f $$d/$$f; \
+	  done && \
 	  cp -R $(LIT)/* $$d/lit/ && ( \
 	  cd $$d && emacs -Q --batch -l lit/tangle.el \
 	    --eval '(lit-tangle "BOOK.org")' >/dev/null 2>&1 \
