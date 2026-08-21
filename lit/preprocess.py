@@ -45,11 +45,17 @@ PREAMBLE = [
     # into them, render as sidebars: a gray left rule through the same
     # framed machinery as planbox
     "#+latex_header: \\definecolor{quotebar}{RGB}{160,160,160}",
-    "#+latex_header: \\renewenvironment{quote}{\\def\\FrameCommand{{\\color{quotebar}\\vrule width 2pt}\\hspace{10pt}}\\MakeFramed{\\advance\\hsize-\\width\\FrameRestore}}{\\endMakeFramed}",
+    "#+latex_header: \\renewenvironment{quote}{\\par\\addvspace{\\bigskipamount}\\def\\FrameCommand{{\\color{quotebar}\\vrule width 2pt}\\hspace{10pt}}\\MakeFramed{\\advance\\hsize-\\width\\FrameRestore}}{\\endMakeFramed\\addvspace{\\bigskipamount}}",
     # numbered caption above every tangling block (notes.lua emits the
     # calls, adding [name] when the block has one); detokenize keeps
     # underscores in filenames and block names typesettable
     "#+latex_header: \\newcounter{codelisting}",
+    # a listing sits on a faint ground, so a reader's eye finds where
+    # the code starts and stops without a rule around it. framed's
+    # snugshade keeps the box tight to the text and lets it break
+    # across a page, which a long block needs
+    "#+latex_header: \\definecolor{shadecolor}{RGB}{247,247,244}",
+    "#+latex_header: \\renewenvironment{Shaded}{\\begin{snugshade}}{\\end{snugshade}}",
     "#+latex_header: \\newcommand{\\codecaption}[2][]{\\par\\medskip\\noindent{\\stepcounter{codelisting}\\small\\textbf{Listing \\thecodelisting:} \\texttt{\\detokenize{#2}}\\if\\relax\\detokenize{#1}\\relax\\else\\quad\\textcolor{gray}{\\texttt{\\detokenize{<<#1>>}}}\\fi}\\par\\nopagebreak\\vspace{2pt}}",
     # noweb references inside highlighted code: texlinks.py rewrites
     # the placeholders notes.lua planted into \NowebRef calls. Plain
