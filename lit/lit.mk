@@ -7,12 +7,24 @@ LIT ?= lit
 # it is what decides which lines are includes.
 BOOK_PARTS := $(shell python3 $(LIT)/preprocess.py --deps BOOK.org)
 
-.PHONY: tangle weave review check setup
+.PHONY: tangle weave review check setup \
+  before_tangle after_tangle before_weave after_weave tangle_el
 
-tangle:
+# Hooks a project can define in its own Makefile to run something
+# before or after a tangle or a weave. Each is declared with a double
+# colon, so a project adds its own rule for the same name instead of
+# overriding this empty one.
+before_tangle::
+after_tangle::
+before_weave::
+after_weave::
+
+tangle_el:
 	emacs -Q --batch -l $(LIT)/tangle.el --eval '(lit-tangle "BOOK.org")'
 
-weave: book.pdf
+tangle: before_tangle tangle_el after_tangle
+
+weave: before_weave book.pdf after_weave
 
 book.pdf: $(BOOK_PARTS) $(LIT)/preprocess.py $(LIT)/plan.lua $(LIT)/notes.lua $(LIT)/mermaid.lua $(LIT)/svg.lua $(LIT)/texlinks.py
 	python3 $(LIT)/preprocess.py BOOK.org book-weave.org

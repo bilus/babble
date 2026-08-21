@@ -267,6 +267,36 @@ directory the toolchain lives in; it defaults to lit, and this
 directory's own Makefile points it at "." so the same targets work
 here.
 
+Four hook targets sit around tangling and weaving: before_tangle,
+after_tangle, before_weave and after_weave. They are empty here, and
+a project fills the ones it needs by writing a rule for the same
+name in its own Makefile. The work a hook does is the work that
+belongs to the project rather than to the toolchain. Tangling a Go
+book writes go files and cannot write go.sum, since only the Go
+tools know what the imports resolve to, so an after_tangle hook that
+runs go mod tidy leaves the project buildable in one step:
+
+#+begin_example
+include lit/lit.mk
+
+after_tangle::
+	go mod tidy
+#+end_example
+
+The double colon is what makes that work. A rule written with one
+colon replaces any earlier rule for the same target, so a project
+Makefile would silently take the place of the empty definition and
+make would warn about it. Rules written with two colons add to each
+other and run in the order they were read, so a project can add a
+hook without knowing whether the toolchain or another include
+already did.
+
+Tangling is a target of its own, tangle_el, with tangle standing for
+the three steps in order. Weaving is arranged the same way around
+book.pdf. A hook that fails stops the run, since make stops at the
+first failing prerequisite, which is what you want from a check
+placed in before_tangle.
+
 #+name: lit-mk-targets
 #+begin_src makefile :tangle lit.mk
 LIT ?= lit
@@ -276,12 +306,24 @@ LIT ?= lit
 # it is what decides which lines are includes.
 BOOK_PARTS := $(shell python3 $(LIT)/preprocess.py --deps BOOK.org)
 
-.PHONY: tangle weave review check setup
+.PHONY: tangle weave review check setup \
+  before_tangle after_tangle before_weave after_weave tangle_el
 
-tangle:
+# Hooks a project can define in its own Makefile to run something
+# before or after a tangle or a weave. Each is declared with a double
+# colon, so a project adds its own rule for the same name instead of
+# overriding this empty one.
+before_tangle::
+after_tangle::
+before_weave::
+after_weave::
+
+tangle_el:
 	emacs -Q --batch -l $(LIT)/tangle.el --eval '(lit-tangle "BOOK.org")'
 
-weave: book.pdf
+tangle: before_tangle tangle_el after_tangle
+
+weave: before_weave book.pdf after_weave
 
 book.pdf: $(BOOK_PARTS) $(LIT)/preprocess.py $(LIT)/plan.lua $(LIT)/notes.lua $(LIT)/mermaid.lua $(LIT)/svg.lua $(LIT)/texlinks.py
 	python3 $(LIT)/preprocess.py BOOK.org book-weave.org
