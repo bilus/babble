@@ -126,7 +126,7 @@ type Params struct {
 	Padline        bool   `json:"padline,omitempty"`
 	Noweb          bool   `json:"noweb,omitempty"`
 	NowebRef       string `json:"nowebRef,omitempty"`
-	NowebSep       string `json:"nowebSep,omitempty"` // "" means one newline
+	NowebSep       string `json:"nowebSep,omitempty"` // the separator itself, a newline unless set
 	PreserveIndent bool   `json:"preserveIndent,omitempty"` // the -i switch
 }
 

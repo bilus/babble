@@ -777,7 +777,7 @@ func resolveNodes(d *book.Document, nodes []book.Node, sc scope) error {
 // the keys it names. The switch run lands last, since a switch is
 // part of the block's own line.
 func resolveBlock(b *book.SrcBlock, sc scope) (book.Params, error) {
-	p := book.Params{Tangle: "no", Comments: "no", Mkdirp: true, Padline: true}
+	p := book.Params{Tangle: "no", Comments: "no", Mkdirp: true, Padline: true, NowebSep: "\n"}
 	for _, header := range []string{sc.generic, sc.lang[b.Lang], b.RawHeader} {
 		if err := applyHeader(&p, header); err != nil {
 			return p, err

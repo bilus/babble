@@ -94,6 +94,7 @@ upper case delimiters
       "mkdirp": true,
       "comments": "org",
       "padline": true,
+      "nowebSep": "\n",
       "preserveIndent": true
      },
      "body": "90:104",
@@ -114,7 +115,8 @@ upper case delimiters
       "tangle": "no",
       "mkdirp": true,
       "comments": "no",
-      "padline": true
+      "padline": true,
+      "nowebSep": "\n"
      },
      "body": "130:136",
      "beginAt": 115,
@@ -161,7 +163,8 @@ upper case delimiters
         "tangle": "no",
         "mkdirp": true,
         "comments": "no",
-        "padline": true
+        "padline": true,
+        "nowebSep": "\n"
        },
        "body": "273:283",
        "beginAt": 256,
@@ -214,7 +217,8 @@ upper case delimiters
       "tangle": "up.go",
       "mkdirp": true,
       "comments": "no",
-      "padline": true
+      "padline": true,
+      "nowebSep": "\n"
      },
      "body": "441:463",
      "beginAt": 412,

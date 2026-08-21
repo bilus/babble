@@ -13,8 +13,8 @@ cmp out.go want/out.go
 exec babble tangle empty.org
 ! exists empty.go
 
-! exec babble tangle noweb.org
-stderr 'HOLE\(8\)'
+exec babble tangle noweb.org
+cmp noweb.go want/noweb.go
 
 exec babble tangle mkdirp.org
 exists sub/late.go
@@ -58,6 +58,10 @@ package bystander
 #+begin_src go :tangle self.org
 package self
 #+end_src
+-- want/noweb.go --
+// Code generated from BOOK.org by make tangle. DO NOT EDIT.
+
+	x := 1
 -- want/out.go --
 // Code generated from BOOK.org by make tangle. DO NOT EDIT.
 

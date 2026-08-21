@@ -61,25 +61,23 @@ every dynamic block, and the labels are spelled without the sigils,
 so the census never matches its own index.
 
 #+begin: plan-toc
-- [[file:BOOK.org::86][86]] entry: PLANNED Stage 21: the environment
-- [[file:BOOK.org::134][134]] entry: PLANNED Stage 12: the fixtures chapter
-- [[file:BOOK.org::197][197]] entry: PLANNED Stage 25: minting goldens from the oracle
-- [[file:BOOK.org::245][245]] entry: PLANNED Stage 8: noweb
-- [[file:BOOK.org::282][282]] entry: PLANNED Stage 9: dynamic blocks
-- [[file:BOOK.org::329][329]] entry: PLANNED Stage 10: the fence
-- [[file:BOOK.org::358][358]] entry: PLANNED Stage 11: parity and self-hosting
-- [[file:BOOK.org::868][868]] badge: PLANNED stage 12 adds the paragraph below (plan)
-- [[file:BOOK.org::1137][1137]] note: stage 22: the driver answers every language from the comment
-- [[file:BOOK.org::1502][1502]] badge: PLANNED stage 12 adds the chapter below (plan)
-- [[file:BOOK.org::3563][3563]] hole 10: duplicate names, a name doubling as a noweb-ref
-- [[file:BOOK.org::4071][4071]] hole 8: named block first, else noweb-ref concatenation; cycles a...
-- [[file:BOOK.org::4267][4267]] hole 9: splice fresh interiors into the retained bytes, report ch...
-- [[file:BOOK.org::4277][4277]] hole 9: a line link per plan site, sites below the block shifted ...
-- [[file:BOOK.org::4283][4283]] hole 9: system diff -u over the two named bodies, temp-file heade...
-- [[file:BOOK.org::4358][4358]] badge: PLANNED stage 12 includes the two files below (plan)
-- [[file:BOOK.org::4861][4861]] badge: PLANNED stage 12 adds the test below (plan)
-- [[file:BOOK.org::5878][5878]] badge: PLANNED stage 21 adds the two paragraphs below (plan)
-- [[file:BOOK.org::5901][5901]] insertion: devbox.json and its lockfile,
+- [[file:BOOK.org::84][84]] entry: PLANNED Stage 21: the environment
+- [[file:BOOK.org::132][132]] entry: PLANNED Stage 12: the fixtures chapter
+- [[file:BOOK.org::195][195]] entry: PLANNED Stage 25: minting goldens from the oracle
+- [[file:BOOK.org::243][243]] entry: PLANNED Stage 9: dynamic blocks
+- [[file:BOOK.org::290][290]] entry: PLANNED Stage 10: the fence
+- [[file:BOOK.org::319][319]] entry: PLANNED Stage 11: parity and self-hosting
+- [[file:BOOK.org::832][832]] badge: PLANNED stage 12 adds the paragraph below (plan)
+- [[file:BOOK.org::1119][1119]] note: stage 22: the driver answers every language from the comment
+- [[file:BOOK.org::1484][1484]] badge: PLANNED stage 12 adds the chapter below (plan)
+- [[file:BOOK.org::3545][3545]] hole 10: duplicate names, a name doubling as a noweb-ref
+- [[file:BOOK.org::4440][4440]] hole 9: splice fresh interiors into the retained bytes, report ch...
+- [[file:BOOK.org::4450][4450]] hole 9: a line link per plan site, sites below the block shifted ...
+- [[file:BOOK.org::4456][4456]] hole 9: system diff -u over the two named bodies, temp-file heade...
+- [[file:BOOK.org::4533][4533]] badge: PLANNED stage 12 includes the two files below (plan)
+- [[file:BOOK.org::5036][5036]] badge: PLANNED stage 12 adds the test below (plan)
+- [[file:BOOK.org::6081][6081]] badge: PLANNED stage 21 adds the two paragraphs below (plan)
+- [[file:BOOK.org::6104][6104]] insertion: devbox.json and its lockfile,
 
 #+end:
 
@@ -240,43 +238,6 @@ the writer only rewrites goldens that already exist.
 A golden is written back from the Emacs tree by a command rather
 than copied by hand. It never deletes, refuses the fixtures the
 cross-check excuses, and leaves each fixture's script untouched.
-#+end_quote
-
-** PLANNED Stage 8: noweb                                          :stage8:
-:PROPERTIES:
-:CUSTOM_ID: stage-8
-:SPEC:     The subset contract, "Noweb"
-:DEPS:     stages 5 and 6
-:ACCEPTANCE: noweb fixture family under ORACLE=1; error fixtures without it; go test ./...
-:SIZE:     ~220 lines
-:END:
-
-Claim: after this stage, ~:noweb yes~ expansion resolves a
-reference to the named block or to the document-order concatenation
-of the blocks sharing its ~:noweb-ref~, joined by each block's own
-~:noweb-sep~ or a newline, with the text before the reference
-replicated as a prefix on every expansion line, recursively, and an
-unresolvable or cyclic reference aborts with the names involved.
-
-Decided: names resolve case-sensitively. Org's named-block search
-runs under case folding, so a reference that only resolves by
-ignoring case tangles in Emacs and errors here; the fixture books
-avoid the shape, the corpora never contain it, and the error names
-the near-miss.
-
-- [ ] inserted prose reads steady-state
-- [ ] Changes draft below reads right in the journal
-- [ ] HOLE(8) cluster filled, expansion and error fixtures in the same commits
-- [ ] census clean for stage 8, suite green under ORACLE=1
-- [ ] Changes entry dated and filed, plan entry deleted
-
-*** Changes draft
-
-#+begin_quote
-Noweb references expand exactly as org expands them, prefixes and
-separators included, except where org is silently wrong: a missing
-reference expands to nothing in org and is an error here, and a
-cycle that would hang Emacs is an error naming the loop.
 #+end_quote
 
 ** PLANNED Stage 9: dynamic blocks                                 :stage9:
@@ -704,10 +665,13 @@ func main() {
 When no single block carries the name, the reference collects
 every block whose ~:noweb-ref~ equals it, in document order, each
 followed by its own ~:noweb-sep~ (a newline unless you say
-otherwise). Expansion is recursive: a referenced block may itself
-reference further blocks. A reference nothing defines is an error,
-and so is a cycle; Emacs would silently expand the first to
-nothing and hang on the second.
+otherwise), and the last block's separator is dropped. A referenced
+block may itself reference further blocks, but only if it carries
+~:noweb yes~ of its own. Without it, a reference inside that block
+reaches the file as the text you wrote. A reference nothing defines
+is an error, and so is a cycle; Emacs expands the first to nothing
+and writes the file, and gives up on the second when its own
+recursion runs out.
 
 ** Header arguments at large
 
@@ -1058,10 +1022,16 @@ block whose ~:noweb-ref~ equals it, each followed by its own
 ~:noweb-sep~ (default newline) except the last. The reference is
 single-line and its name neither starts nor ends with whitespace.
 Text before the reference on its line is replicated in front of
-every expansion line. Expansion is recursive. Blocks under COMMENT
-headings do not participate. An unresolvable reference and a
-reference cycle are errors; org would expand the first to nothing
-and recurse forever on the second.
+every expansion line, and it is the text since the previous
+reference on that line rather than the whole line. Expansion
+recurses only into a block that carries ~:noweb yes~ itself. A block
+that tangles nowhere is still a source. Blocks under COMMENT
+headings do not participate, and a commented block holding a name
+makes that name resolve to nothing for the whole document, since org
+takes the first block carrying it and then asks whether it is
+commented. An unresolvable reference and a reference cycle are
+errors; org expands the first to nothing and gives up on the second
+when its recursion runs out.
 
 ** Dynamic blocks
 
@@ -1107,12 +1077,24 @@ message always names the construct and the supported alternative.
   parses and not just src; org parses the opener as a paragraph and
   reads on.
 - An unresolvable noweb reference is an error; org expands it to
-  the empty string for most languages. A noweb cycle is an error;
-  org recurses without bound. A noweb call reference,
-  ~<<name(args)>>~, is evaluation and is rejected.
-- Noweb and named-block resolution is case-sensitive; a reference
-  that only resolves under org's case folding is an error naming
-  the near-miss.
+  the empty string and writes the file, which it does because the
+  variable that would make it complain is off and the driver leaves
+  it off. A noweb cycle is an error; org exhausts its own recursion
+  limit and writes nothing, so both engines refuse and only the
+  message differs. A noweb call reference, ~<<name(args)>>~, is
+  evaluation and is rejected; org treats any parentheses in the
+  name as a call, wherever they sit.
+- A reference naming a heading's ~CUSTOM_ID~ is an error. Org
+  searches those before it searches block names and answers with the
+  whole subtree as raw text, delimiter lines included.
+- A name that is both a block's name and some block's ~:noweb-ref~
+  value is an error. Which one org picks depends on what it expanded
+  earlier in the same run, because the group scan replaces the cache
+  the name lookup consults.
+- Noweb and named-block resolution is case-sensitive. Org folds case
+  when it searches for a block's name, though not when it looks up a
+  ~:noweb-ref~ group, so a reference that only resolves by ignoring
+  case tangles there and is an error here, naming the near miss.
 - A duplicate ~#+name:~ across src blocks is an error, as is a name
   that some block also uses as a ~:noweb-ref~ value; org would
   resolve both by whichever its scan finds first.
@@ -2207,7 +2189,7 @@ type Params struct {
 	Padline        bool   `json:"padline,omitempty"`
 	Noweb          bool   `json:"noweb,omitempty"`
 	NowebRef       string `json:"nowebRef,omitempty"`
-	NowebSep       string `json:"nowebSep,omitempty"` // "" means one newline
+	NowebSep       string `json:"nowebSep,omitempty"` // the separator itself, a newline unless set
 	PreserveIndent bool   `json:"preserveIndent,omitempty"` // the -i switch
 }
 #+end_src
@@ -3335,7 +3317,7 @@ part of the block's own line.
 
 #+begin_src go :tangle internal/org/org.go :comments org
 func resolveBlock(b *book.SrcBlock, sc scope) (book.Params, error) {
-	p := book.Params{Tangle: "no", Comments: "no", Mkdirp: true, Padline: true}
+	p := book.Params{Tangle: "no", Comments: "no", Mkdirp: true, Padline: true, NowebSep: "\n"}
 	for _, header := range []string{sc.generic, sc.lang[b.Lang], b.RawHeader} {
 		if err := applyHeader(&p, header); err != nil {
 			return p, err
@@ -4067,8 +4049,199 @@ wins, else the noweb-ref concatenation, prefixes replicate onto
 every expansion line, recursion allowed, cycles and misses loud.
 
 #+begin_src go :tangle internal/tangle/tangle.go :comments org
+// The reference pattern is org's, ported character for character.
+// Hand-rolling a line scanner instead would miss two things it does:
+// a name may hold spaces inside it but not at either end, and a
+// one-character name whose closer is followed by another reference on
+// the same line swallows both into one unresolvable name.
+var nowebRe = regexp.MustCompile(`(.*?)(<<([^ \t\n](?:.*?[^ \t\n])?)>>)`)
+
 func expandNoweb(d *book.Document, b *book.SrcBlock, body string) (string, error) {
-	panic("HOLE(8): named block first, else noweb-ref concatenation; cycles and misses error")
+	return expandInto(d, body, nil)
+}
+
+// The text before a reference is repeated in front of every line the
+// reference expands to, except the first, which already sits after
+// that text. The prefix is what lies between the previous reference
+// and this one on the same line, so a second reference on a line is
+// prefixed by the text between the two and not by the whole line. It
+// cannot reach back past a line ending, which is why the pattern's
+// dot does not match one.
+func expandInto(d *book.Document, body string, open []string) (string, error) {
+	var out strings.Builder
+	rest := body
+	for {
+		m := nowebRe.FindStringSubmatchIndex(rest)
+		if m == nil {
+			out.WriteString(rest)
+			return out.String(), nil
+		}
+		prefix := rest[m[2]:m[3]]
+		name := rest[m[6]:m[7]]
+		out.WriteString(rest[:m[0]])
+		out.WriteString(prefix)
+		text, err := resolve(d, name, open)
+		if err != nil {
+			return "", err
+		}
+		out.WriteString(strings.ReplaceAll(text, "\n", "\n"+prefix))
+		rest = rest[m[1]:]
+	}
+}
+
+// A name resolves to the block that carries it, or to the blocks that
+// share it as a :noweb-ref, joined by each one's own separator with
+// the last one's dropped. A referenced body is expanded further only
+// when that block asks for it: org gates recursion on the block's own
+// :noweb, so a plain block's references reach the file as text.
+func resolve(d *book.Document, name string, open []string) (string, error) {
+	for _, seen := range open {
+		if seen == name {
+			return "", fmt.Errorf("%s: noweb reference cycle: %s", d.Path, strings.Join(append(open, name), " -> "))
+		}
+	}
+	if strings.ContainsAny(name, "()") {
+		return "", fmt.Errorf("%s: <<%s>> is a call reference, which is evaluation and not in the subset", d.Path, name)
+	}
+	if err := refusedName(d, name); err != nil {
+		return "", err
+	}
+	if named := namedBlock(d, name); named != nil {
+		return bodyOf(d, named, append(open, name))
+	}
+	group := groupBlocks(d, name)
+	if len(group) == 0 {
+		return "", fmt.Errorf("%s: <<%s>> resolves to nothing%s", d.Path, name, nearMiss(d, name))
+	}
+	var parts []string
+	for i, g := range group {
+		text, err := bodyOf(d, g, append(open, name))
+		if err != nil {
+			return "", err
+		}
+		parts = append(parts, text)
+		if i < len(group)-1 {
+			parts = append(parts, g.Params.NowebSep)
+		}
+	}
+	return strings.Join(parts, ""), nil
+}
+#+end_src
+
+Two names resolve to something in org that babble will not follow.
+A heading's ~CUSTOM_ID~ is searched before any block, and it answers
+with the whole subtree as raw text, delimiter lines included and
+nothing unescaped, which no book means by a reference. And a name
+that some block also carries as a ~:noweb-ref~ resolves to the block
+or to the group depending on what org expanded earlier in the same
+run, since the group scan replaces the cache it consults. Neither is
+worth reproducing and both are quiet, so both are refused.
+
+#+begin_src go :tangle internal/tangle/tangle.go :comments org
+func refusedName(d *book.Document, name string) error {
+	var err error
+	d.Walk(func(n book.Node) bool {
+		switch n := n.(type) {
+		case *book.Headline:
+			if n.Properties["CUSTOM_ID"] == name {
+				err = fmt.Errorf("%s: <<%s>> names a heading's CUSTOM_ID, which org expands to the whole subtree as raw text; rename one of them", d.Path, name)
+				return false
+			}
+		case *book.SrcBlock:
+			if n.Name == name && n.Params.NowebRef == name {
+				err = fmt.Errorf("%s: <<%s>> is both a block name and a :noweb-ref value, and which one org picks depends on what it expanded before; rename one of them", d.Path, name)
+				return false
+			}
+		}
+		return true
+	})
+	return err
+}
+#+end_src
+
+A block under a COMMENT heading is not a noweb source, and the way
+org reaches that answer matters. It takes the first block carrying
+the name in document order and then asks whether it is commented,
+rather than passing over it and looking further, so a commented
+block holding a name makes that name resolve to nothing for the
+whole document. babble does the same, since the alternative is to
+find a different block than the driver finds.
+
+#+begin_src go :tangle internal/tangle/tangle.go :comments org
+func namedBlock(d *book.Document, name string) *book.SrcBlock {
+	var first *book.SrcBlock
+	commented := false
+	d.Walk(func(n book.Node) bool {
+		switch n := n.(type) {
+		case *book.Headline:
+			if n.Commented {
+				commented = true
+			}
+		case *book.SrcBlock:
+			if first == nil && n.Name == name {
+				first = n
+				if commented {
+					first = nil
+					return false
+				}
+			}
+		}
+		return true
+	})
+	return first
+}
+
+func groupBlocks(d *book.Document, name string) []*book.SrcBlock {
+	var group []*book.SrcBlock
+	d.Walk(func(n book.Node) bool {
+		switch n := n.(type) {
+		case *book.Headline:
+			return !n.Commented
+		case *book.SrcBlock:
+			if n.Params.NowebRef == name {
+				group = append(group, n)
+			}
+		}
+		return true
+	})
+	return group
+}
+
+// A referenced body arrives the way the block would have tangled it,
+// minus the target: comma escapes gone, one trailing newline gone,
+// and dedented unless the block preserves its indentation.
+func bodyOf(d *book.Document, b *book.SrcBlock, open []string) (string, error) {
+	body := unescapeCommas(string(d.Source[b.Body.Start:b.Body.End]))
+	body = strings.TrimSuffix(body, "\n")
+	if !b.Params.PreserveIndent {
+		body = dedent(body)
+	}
+	if !b.Params.Noweb {
+		return body, nil
+	}
+	return expandInto(d, body, open)
+}
+
+// The near miss is worth naming. Org folds case when it looks a name
+// up and babble does not, so a reference that differs only in case
+// tangles there and stops here, and the reader needs to see why.
+func nearMiss(d *book.Document, name string) string {
+	miss := ""
+	d.Walk(func(n book.Node) bool {
+		if b, ok := n.(*book.SrcBlock); ok && miss == "" {
+			if strings.EqualFold(b.Name, name) && b.Name != name {
+				miss = b.Name
+			}
+			if strings.EqualFold(b.Params.NowebRef, name) && b.Params.NowebRef != name {
+				miss = b.Params.NowebRef
+			}
+		}
+		return true
+	})
+	if miss == "" {
+		return ""
+	}
+	return fmt.Sprintf("; %s differs only in case, and names here are case-sensitive", miss)
 }
 #+end_src
 
@@ -4326,6 +4499,8 @@ The suite as it stands, by what each file pins:
 | tangle-body-trim.txtar | a bare comment marker in a body, trimmed as the driver trims it |
 | tangle-comments.txtar | doc comments: the extent, the marker, the sigil, the wrapping |
 | tangle-comment-refusals.txtar | a language with no marker, and a delimiter quoted in an example |
+| tangle-noweb.txtar | prefixes, group separators, and gated recursion |
+| tangle-noweb-refusals.txtar | a miss, a cycle, a call reference, and a near miss in case |
 
 tangle-comments pins the three parts of the rule that could each be
 read another way. Its anchors book asks that a block directly under
@@ -5575,6 +5750,34 @@ func TestDump(t *testing.T) {
 #+end_src
 
 * Changes
+
+** [2026-08-21] Noweb
+
+#+begin_quote
+A reference resolves to the block carrying its name, or to the
+blocks sharing it as a ~:noweb-ref~, joined by each block's own
+separator with the last one's dropped. The text before a reference
+is repeated in front of every line it expands to, and that text is
+what lies between the previous reference and this one on the same
+line, never the whole line.
+
+Three things the book said about org were wrong and are now measured
+rather than assumed. Recursion is gated: a referenced block's own
+references expand only if that block carries ~:noweb yes~, and
+otherwise reach the file as text. A cycle does not hang Emacs; it
+exhausts the recursion limit in about a second and writes nothing.
+And a block that tangles nowhere is still a source.
+
+Four references are refused. A miss, which org expands to nothing
+and writes anyway. A cycle. A call reference, since parentheses
+anywhere in a name make org evaluate. And a name differing only in
+case, because org folds case when searching for a block's name and
+babble does not, so the error names the near miss. Two more are
+refused because org's answer is not stable: a name that matches a
+heading's ~CUSTOM_ID~, which org answers with the whole subtree as
+raw text, and a name that is both a block's name and a
+~:noweb-ref~, where the answer depends on what org expanded before.
+#+end_quote
 
 ** [2026-08-21] Org comments
 

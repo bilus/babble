@@ -406,8 +406,193 @@ func sigil(text string) string {
 // expandNoweb resolves references against the tree: a named block
 // wins, else the noweb-ref concatenation, prefixes replicate onto
 // every expansion line, recursion allowed, cycles and misses loud.
+// The reference pattern is org's, ported character for character.
+// Hand-rolling a line scanner instead would miss two things it does:
+// a name may hold spaces inside it but not at either end, and a
+// one-character name whose closer is followed by another reference on
+// the same line swallows both into one unresolvable name.
+var nowebRe = regexp.MustCompile(`(.*?)(<<([^ \t\n](?:.*?[^ \t\n])?)>>)`)
+
 func expandNoweb(d *book.Document, b *book.SrcBlock, body string) (string, error) {
-	panic("HOLE(8): named block first, else noweb-ref concatenation; cycles and misses error")
+	return expandInto(d, body, nil)
+}
+
+// The text before a reference is repeated in front of every line the
+// reference expands to, except the first, which already sits after
+// that text. The prefix is what lies between the previous reference
+// and this one on the same line, so a second reference on a line is
+// prefixed by the text between the two and not by the whole line. It
+// cannot reach back past a line ending, which is why the pattern's
+// dot does not match one.
+func expandInto(d *book.Document, body string, open []string) (string, error) {
+	var out strings.Builder
+	rest := body
+	for {
+		m := nowebRe.FindStringSubmatchIndex(rest)
+		if m == nil {
+			out.WriteString(rest)
+			return out.String(), nil
+		}
+		prefix := rest[m[2]:m[3]]
+		name := rest[m[6]:m[7]]
+		out.WriteString(rest[:m[0]])
+		out.WriteString(prefix)
+		text, err := resolve(d, name, open)
+		if err != nil {
+			return "", err
+		}
+		out.WriteString(strings.ReplaceAll(text, "\n", "\n"+prefix))
+		rest = rest[m[1]:]
+	}
+}
+
+// A name resolves to the block that carries it, or to the blocks that
+// share it as a :noweb-ref, joined by each one's own separator with
+// the last one's dropped. A referenced body is expanded further only
+// when that block asks for it: org gates recursion on the block's own
+// :noweb, so a plain block's references reach the file as text.
+func resolve(d *book.Document, name string, open []string) (string, error) {
+	for _, seen := range open {
+		if seen == name {
+			return "", fmt.Errorf("%s: noweb reference cycle: %s", d.Path, strings.Join(append(open, name), " -> "))
+		}
+	}
+	if strings.ContainsAny(name, "()") {
+		return "", fmt.Errorf("%s: <<%s>> is a call reference, which is evaluation and not in the subset", d.Path, name)
+	}
+	if err := refusedName(d, name); err != nil {
+		return "", err
+	}
+	if named := namedBlock(d, name); named != nil {
+		return bodyOf(d, named, append(open, name))
+	}
+	group := groupBlocks(d, name)
+	if len(group) == 0 {
+		return "", fmt.Errorf("%s: <<%s>> resolves to nothing%s", d.Path, name, nearMiss(d, name))
+	}
+	var parts []string
+	for i, g := range group {
+		text, err := bodyOf(d, g, append(open, name))
+		if err != nil {
+			return "", err
+		}
+		parts = append(parts, text)
+		if i < len(group)-1 {
+			parts = append(parts, g.Params.NowebSep)
+		}
+	}
+	return strings.Join(parts, ""), nil
+}
+
+// Two names resolve to something in org that babble will not follow.
+// A heading's ~CUSTOM_ID~ is searched before any block, and it answers
+// with the whole subtree as raw text, delimiter lines included and
+// nothing unescaped, which no book means by a reference. And a name
+// that some block also carries as a ~:noweb-ref~ resolves to the block
+// or to the group depending on what org expanded earlier in the same
+// run, since the group scan replaces the cache it consults. Neither is
+// worth reproducing and both are quiet, so both are refused.
+func refusedName(d *book.Document, name string) error {
+	var err error
+	d.Walk(func(n book.Node) bool {
+		switch n := n.(type) {
+		case *book.Headline:
+			if n.Properties["CUSTOM_ID"] == name {
+				err = fmt.Errorf("%s: <<%s>> names a heading's CUSTOM_ID, which org expands to the whole subtree as raw text; rename one of them", d.Path, name)
+				return false
+			}
+		case *book.SrcBlock:
+			if n.Name == name && n.Params.NowebRef == name {
+				err = fmt.Errorf("%s: <<%s>> is both a block name and a :noweb-ref value, and which one org picks depends on what it expanded before; rename one of them", d.Path, name)
+				return false
+			}
+		}
+		return true
+	})
+	return err
+}
+
+// A block under a COMMENT heading is not a noweb source, and the way
+// org reaches that answer matters. It takes the first block carrying
+// the name in document order and then asks whether it is commented,
+// rather than passing over it and looking further, so a commented
+// block holding a name makes that name resolve to nothing for the
+// whole document. babble does the same, since the alternative is to
+// find a different block than the driver finds.
+func namedBlock(d *book.Document, name string) *book.SrcBlock {
+	var first *book.SrcBlock
+	commented := false
+	d.Walk(func(n book.Node) bool {
+		switch n := n.(type) {
+		case *book.Headline:
+			if n.Commented {
+				commented = true
+			}
+		case *book.SrcBlock:
+			if first == nil && n.Name == name {
+				first = n
+				if commented {
+					first = nil
+					return false
+				}
+			}
+		}
+		return true
+	})
+	return first
+}
+
+func groupBlocks(d *book.Document, name string) []*book.SrcBlock {
+	var group []*book.SrcBlock
+	d.Walk(func(n book.Node) bool {
+		switch n := n.(type) {
+		case *book.Headline:
+			return !n.Commented
+		case *book.SrcBlock:
+			if n.Params.NowebRef == name {
+				group = append(group, n)
+			}
+		}
+		return true
+	})
+	return group
+}
+
+// A referenced body arrives the way the block would have tangled it,
+// minus the target: comma escapes gone, one trailing newline gone,
+// and dedented unless the block preserves its indentation.
+func bodyOf(d *book.Document, b *book.SrcBlock, open []string) (string, error) {
+	body := unescapeCommas(string(d.Source[b.Body.Start:b.Body.End]))
+	body = strings.TrimSuffix(body, "\n")
+	if !b.Params.PreserveIndent {
+		body = dedent(body)
+	}
+	if !b.Params.Noweb {
+		return body, nil
+	}
+	return expandInto(d, body, open)
+}
+
+// The near miss is worth naming. Org folds case when it looks a name
+// up and babble does not, so a reference that differs only in case
+// tangles there and stops here, and the reader needs to see why.
+func nearMiss(d *book.Document, name string) string {
+	miss := ""
+	d.Walk(func(n book.Node) bool {
+		if b, ok := n.(*book.SrcBlock); ok && miss == "" {
+			if strings.EqualFold(b.Name, name) && b.Name != name {
+				miss = b.Name
+			}
+			if strings.EqualFold(b.Params.NowebRef, name) && b.Params.NowebRef != name {
+				miss = b.Params.NowebRef
+			}
+		}
+		return true
+	})
+	if miss == "" {
+		return ""
+	}
+	return fmt.Sprintf("; %s differs only in case, and names here are case-sensitive", miss)
 }
 
 // A prefix that is present but empty is used as it stands. The elisp

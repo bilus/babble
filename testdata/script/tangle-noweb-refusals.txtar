@@ -1,0 +1,53 @@
+# Four references babble will not expand. Org expands a missing one
+# to nothing and writes the file; a cycle exhausts its own recursion
+# limit and writes nothing; a call reference is evaluation, which is
+# outside the subset; and a name that differs only in case resolves
+# there and not here, so the error names the near miss.
+
+! exec babble tangle missing.org
+stderr 'resolves to nothing'
+! exists m.go
+
+! exec babble tangle cycle.org
+stderr 'cycle: aa -> bb -> aa'
+! exists c.go
+
+! exec babble tangle call.org
+stderr 'call reference'
+! exists f.go
+
+! exec babble tangle case.org
+stderr 'differs only in case'
+! exists k.go
+
+-- missing.org --
+#+begin_src go :tangle m.go :noweb yes
+<<nowhere>>
+#+end_src
+-- cycle.org --
+#+name: aa
+#+begin_src go :noweb yes
+<<bb>>
+#+end_src
+
+#+name: bb
+#+begin_src go :noweb yes
+<<aa>>
+#+end_src
+
+#+begin_src go :tangle c.go :noweb yes
+<<aa>>
+#+end_src
+-- call.org --
+#+begin_src go :tangle f.go :noweb yes
+<<part(1)>>
+#+end_src
+-- case.org --
+#+name: inner
+#+begin_src go
+INNER
+#+end_src
+
+#+begin_src go :tangle k.go :noweb yes
+<<Inner>>
+#+end_src

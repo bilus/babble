@@ -1,0 +1,99 @@
+# Noweb expansion: what a reference resolves to, how the text before
+# it is repeated, and how a group is joined. Recursion is gated on the
+# referenced block's own :noweb, so a plain block's references reach
+# the file as text.
+
+exec babble tangle prefix.org
+cmp p.go want/p.go
+
+exec babble tangle group.org
+cmp g.go want/g.go
+
+exec babble tangle gate.org
+cmp t.go want/t.go
+
+-- prefix.org --
+#+title: prefixes
+
+#+name: two
+#+begin_src go
+one
+two
+#+end_src
+
+* Text before and after a reference is kept
+
+#+begin_src go :tangle p.go :noweb yes
+BEFORE <<two>> AFTER
+X<<two>>Y<<two>>Z
+	<<two>>
+#+end_src
+-- group.org --
+#+title: a group
+
+* Members join with their own separators
+
+#+begin_src go :noweb-ref parts :noweb-sep "|A|"
+first
+#+end_src
+
+#+begin_src go :noweb-ref parts :noweb-sep ""
+second
+#+end_src
+
+#+begin_src go :noweb-ref parts :noweb-sep "|IGNORED|"
+third
+#+end_src
+
+#+begin_src go :tangle g.go :noweb yes
+S<<parts>>E
+#+end_src
+-- gate.org --
+#+title: recursion is gated
+
+#+name: leaf
+#+begin_src go
+LEAF
+#+end_src
+
+#+name: plain
+#+begin_src go
+p1 <<leaf>>
+#+end_src
+
+#+name: withyes
+#+begin_src go :noweb yes
+w1 <<leaf>>
+#+end_src
+
+* A block that tangles nowhere is still a source
+
+#+begin_src go :tangle no :noweb-ref sources
+from a block that tangles nowhere
+#+end_src
+
+#+begin_src go :tangle t.go :noweb yes
+A: <<plain>>
+B: <<withyes>>
+C: <<sources>>
+#+end_src
+-- want/p.go --
+// Code generated from BOOK.org by make tangle. DO NOT EDIT.
+
+BEFORE one
+BEFORE two AFTER
+Xone
+XtwoYone
+YtwoZ
+	one
+	two
+-- want/g.go --
+// Code generated from BOOK.org by make tangle. DO NOT EDIT.
+
+Sfirst|A|secondthirdE
+-- want/t.go --
+// Code generated from BOOK.org by make tangle. DO NOT EDIT.
+
+A: p1 <<leaf>>
+B: w1 LEAF
+C: from a block that tangles nowhere
