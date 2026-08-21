@@ -1029,11 +1029,13 @@ func unquote(v string) (string, error) {
 	return b.String(), nil
 }
 
-// Lint is the other half of the fence: the refusals that need the
-// whole document rather than one block. The header table catches what
-// one block can be judged on alone; these need every block first.
+// Judging either one needs every block in hand. A block carrying a
+// name cannot tell whether another block carries it too, and a name
+// cannot tell whether some group elsewhere answers to it, so these
+// cannot live in the header table with the rules a single block
+// settles.
 func Lint(d *book.Document) error {
-	panic("HOLE(10): duplicate names, a name doubling as a noweb-ref")
+	panic("HOLE(10): a name two src blocks carry, and a name that is also a group's")
 }
 
 // The shape is refused rather than reconciled. Reproducing org's

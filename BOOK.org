@@ -61,22 +61,26 @@ every dynamic block, and the labels are spelled without the sigils,
 so the census never matches its own index.
 
 #+begin: plan-toc
-- [[file:BOOK.org::83][83]] entry: PLANNED Stage 21: the environment
-- [[file:BOOK.org::131][131]] entry: PLANNED Stage 12: the fixtures chapter
-- [[file:BOOK.org::210][210]] entry: PLANNED Stage 26: chapter files
-- [[file:BOOK.org::311][311]] entry: PLANNED Stage 25: minting goldens from the oracle
-- [[file:BOOK.org::359][359]] entry: PLANNED Stage 10: the fence
-- [[file:BOOK.org::388][388]] entry: PLANNED Stage 11: parity and self-hosting
-- [[file:BOOK.org::888][888]] badge: PLANNED stage 12 drops a doubled word below (plan)
-- [[file:BOOK.org::898][898]] deletion: and--}
-- [[file:BOOK.org::907][907]] badge: PLANNED stage 12 corrects the paragraph below (plan)
-- [[file:BOOK.org::1281][1281]] note: stage 22: the driver answers every language from the comment
-- [[file:BOOK.org::3824][3824]] hole 10: duplicate names, a name doubling as a noweb-ref
-- [[file:BOOK.org::5346][5346]] badge: PLANNED stage 12 adds the chapter below (plan)
-- [[file:BOOK.org::5433][5433]] badge: PLANNED stage 12 includes the two files below (plan)
-- [[file:BOOK.org::5936][5936]] badge: PLANNED stage 12 adds the test below (plan)
-- [[file:BOOK.org::7096][7096]] badge: PLANNED stage 21 adds the two paragraphs below (plan)
-- [[file:BOOK.org::7119][7119]] insertion: devbox.json and its lockfile,
+- [[file:BOOK.org::87][87]] entry: PLANNED Stage 21: the environment
+- [[file:BOOK.org::135][135]] entry: PLANNED Stage 12: the fixtures chapter
+- [[file:BOOK.org::214][214]] entry: PLANNED Stage 26: chapter files
+- [[file:BOOK.org::315][315]] entry: PLANNED Stage 25: minting goldens from the oracle
+- [[file:BOOK.org::363][363]] entry: PLANNED Stage 10: the fence
+- [[file:BOOK.org::448][448]] entry: PLANNED Stage 11: parity and self-hosting
+- [[file:BOOK.org::948][948]] badge: PLANNED stage 12 drops a doubled word below (plan)
+- [[file:BOOK.org::958][958]] deletion: and--}
+- [[file:BOOK.org::967][967]] badge: PLANNED stage 12 corrects the paragraph below (plan)
+- [[file:BOOK.org::1363][1363]] note: stage 10: src bodies come out of this bullet. Measured, t...
+- [[file:BOOK.org::3882][3882]] badge: PLANNED stage 10 rewrites this section (plan)
+- [[file:BOOK.org::3905][3905]] hole 10: a name two src blocks carry, and a name that is also a gr...
+- [[file:BOOK.org::4976][4976]] badge: PLANNED stage 10 replaces the block above (plan)
+- [[file:BOOK.org::4983][4983]] twin of cmd-read
+- [[file:BOOK.org::5003][5003]] generated diff
+- [[file:BOOK.org::5476][5476]] badge: PLANNED stage 12 adds the chapter below (plan)
+- [[file:BOOK.org::5563][5563]] badge: PLANNED stage 12 includes the two files below (plan)
+- [[file:BOOK.org::6066][6066]] badge: PLANNED stage 12 adds the test below (plan)
+- [[file:BOOK.org::7226][7226]] badge: PLANNED stage 21 adds the two paragraphs below (plan)
+- [[file:BOOK.org::7249][7249]] insertion: devbox.json and its lockfile,
 
 #+end:
 
@@ -361,28 +365,84 @@ cross-check excuses, and leaves each fixture's script untouched.
 :CUSTOM_ID: stage-10
 :SPEC:     Deviations
 :DEPS:     stages 4 through 9
-:ACCEPTANCE: TestDeviationErrors, TestCorporaTriggerNoDeviation; go test ./...
-:SIZE:     ~150 lines
+:ACCEPTANCE: a fixture per uncovered refusal, TestCorporaTriggerNoDeviation; go test ./...; ORACLE=1 go test ./...
+:SIZE:     ~350 lines
 :END:
 
 Claim: after this stage, every refusal the [[#deviations][Deviations]] chapter
 lists fires as an error naming the construct and the supported set,
-a block or dynamic-block delimiter quoted inside an example, src,
-export, or comment body is a lint error, and a test proves that
-neither real corpus triggers any of it.
+each one driven through the command line by a fixture, and a test
+proves that none of them fires on any book this project owns.
 
+Decided: (1) Lint gets the two refusals that need every block
+before they can be judged: a name carried by two src blocks, and a
+name that is also some block's ~:noweb-ref~ value. Both are cases
+where org answers with whichever its scan reaches first, so the
+book means one thing to a reader and another to the tangler, and
+neither engine says so.
+
+(2) Lint is called from the flow, beside the two lints already
+there. It has been written and unreachable since stage 4, which is
+its own small lesson: a refusal nothing calls is not a fence, and
+the only reason nobody noticed is that its body is a hole.
+
+(3) Corrected before building: the claim that a delimiter quoted
+inside a src body needs refusing is dropped. It was written from
+the same reasoning as the verbatim rule and measurement does not
+support it. A ~#+begin_src~ at column zero inside a src body tangles
+identically under both engines, and an ~#+end_src~ cannot sit in one
+at all without ending the block, which both engines then do in the
+same place. The backward search the verbatim rule exists for looks
+for ~#+end_src~, and a src body cannot hold one. Refusing a shape the
+two engines agree on would be inventing a deviation to guard
+against a mistake this project does not make, which is the error
+[[#stage-12][stage 12]]'s gate caught once already.
+
+(4) Every refusal gets a fixture that drives it through the command
+line, not a unit test on the frontend. Seven of them have only unit
+coverage today, and a unit test proves the function refuses, where
+the fixture proves the tool refuses and prints something a reader
+can act on. The message is part of the contract: the chapter says
+every error names the construct and the supported alternative, and
+only a fixture reads what a user sees.
+
+(5) A corpus test asserts the fence is silent on every book here:
+this one, the toolchain's, and the example. A fence that fires on
+the project's own books is worse than no fence, because the first
+thing anyone does with it is turn it off. This is the check that
+would have caught the quoted opener stage 9 found, three stages
+earlier.
+
+(6) The Deviations chapter loses a bullet stage 22 left behind. Its
+entire content is a CriticMarkup note saying the limitation it
+recorded is gone, which is true; the bullet should have gone with
+it at acceptance and did not.
+
+- [ ] plan approved (the human ticks this box)
 - [ ] inserted prose reads steady-state
 - [ ] Changes draft below reads right in the journal
-- [ ] HOLE(10) cluster filled, one fixture per deviation in the same commits
-- [ ] census clean for stage 10, suite green
+- [ ] HOLE(10) filled and called, fixtures in the same commits
+- [ ] twin accepted: :tangle header swapped, old block DROPPED
+- [ ] seen to fail: every new fixture broken on purpose and watched
+- [ ] census clean for stage 10, suite green under ORACLE=1
 - [ ] Changes entry dated and filed, plan entry deleted
 
 *** Changes draft
 
 #+begin_quote
-The deviation list became executable: every rejection has a fixture
-proving it fires and says why, and a corpus test proves the fence
-never touches the two real books.
+The deviation list became executable. Every rejection now has a
+fixture that drives it through the command line and reads the
+message a user would see, because the chapter promises the error
+names the construct and the supported alternative, and only a
+fixture can check that promise. Lint gained the two refusals that
+need the whole document, a name carried twice and a name that is
+also a group's, and gained a caller: it had been written and
+unreachable since stage 4. A corpus test now asserts the fence is
+silent on every book this project owns, which is the check that
+would have found the quoted opener three stages before stage 9 did.
+One claim was dropped rather than built: a delimiter quoted inside a
+src body needs no refusal, because both engines tangle it the same
+way.
 #+end_quote
 
 ** PLANNED Stage 11: parity and self-hosting                      :stage11:
@@ -1277,10 +1337,6 @@ message always names the construct and the supported alternative.
   tangle-inert fixture carries one block with every one of them and
   one block with none, and requires the two targets to come out
   identical.
-- 
-  {>>stage 22: the driver answers every language from the comment
-  table now, so the limitation this entry recorded is gone and both
-  engines agree; nothing is left to deviate from<<}
 - A language whose comment prefix holds no marker, only whitespace
   or nothing, cannot carry a doc comment. babble refuses the block
   and names the language. The driver does not refuse it: it dies
@@ -1304,6 +1360,10 @@ message always names the construct and the supported alternative.
   would anchor comment extents on them, and no structural parser can
   agree with that. Dynamic-block delimiters are a separate rule, two
   bullets down, because indentation does not put one out of reach.
+  {>>stage 10: src bodies come out of this bullet. Measured, the two
+  engines agree on them: the backward search looks for an end
+  delimiter and a src body cannot carry one without ending itself,
+  and an opener quoted in one tangles the same way in both<<}
 - A dynamic block with an unknown name is an error; org empties
   its interior and logs a message it then ignores. An indented
   dynamic block is an error; org re-indents its interior, padding
@@ -3819,11 +3879,39 @@ Lint is the other half of the fence: the refusals that need the
 whole document rather than one block. The header table catches what
 one block can be judged on alone; these need every block first.
 
+*************** PLANNED stage 10 rewrites this section ([[#stage-10][plan]]) :stage10:
+The hole is restated with the reason each of its two rules exists,
+and the section gains the paragraph saying who calls it. Nothing
+called it before, which is the defect this stage closes as much as
+the hole is.
+*************** END
+
+Both of its rules are the same shape: a name that answers to two
+things. A name carried by two src blocks, and a name that is also
+some block's ~:noweb-ref~ value, both leave org resolving by
+whichever its scan reaches first. That is not a rule a reader can
+apply by eye, because the answer depends on what the run expanded
+before it got here, so the same book can mean one thing on the page
+and another in the file. Neither engine says a word about it.
+
+Judging either one needs every block in hand. A block carrying a
+name cannot tell whether another block carries it too, and a name
+cannot tell whether some group elsewhere answers to it, so these
+cannot live in the header table with the rules a single block
+settles.
+
 #+begin_src go :tangle internal/org/org.go :comments org
 func Lint(d *book.Document) error {
-	panic("HOLE(10): duplicate names, a name doubling as a noweb-ref")
+	panic("HOLE(10): a name two src blocks carry, and a name that is also a group's")
 }
 #+end_src
+
+The flow calls it beside the other two lints. That is worth saying
+because it was not true until this stage: Lint has existed since
+stage 4 and nothing has ever called it. A refusal nothing calls is
+not a fence, and the only reason the gap survived four stages is
+that its body is a hole, so calling it would have changed nothing
+except where the panic came from.
 
 One of its rules cannot wait for the rest, because doc comments
 make it visible. Org finds the block above by searching the raw
@@ -4868,6 +4956,7 @@ func Tangle(path string) error {
 read is the front half of Tangle, separate because Tangle performs
 it twice on the same path.
 
+#+name: cmd-read
 #+begin_src go :tangle internal/cmd/cmd.go :comments org
 func read(path string) (*book.Document, error) {
 	d, err := org.Parse(path)
@@ -4883,6 +4972,47 @@ func read(path string) (*book.Document, error) {
 	return d, nil
 }
 #+end_src
+
+*************** PLANNED stage 10 replaces the block above ([[#stage-10][plan]]) :stage10:
+The twin adds the call the fence has been missing. This is the only
+place it needs adding: every caller of the flow reaches the lints
+through here, which is why the flow was worth extracting in the
+first place.
+*************** END
+
+#+name: cmd-read--planned
+#+begin_src go :tangle no
+func read(path string) (*book.Document, error) {
+	d, err := org.Parse(path)
+	if err != nil {
+		return nil, err
+	}
+	if err := org.ResolveAll(d); err != nil {
+		return nil, err
+	}
+	if err := org.LintQuotedDelimiters(d); err != nil {
+		return nil, err
+	}
+	if err := org.Lint(d); err != nil {
+		return nil, err
+	}
+	return d, nil
+}
+#+end_src
+
+#+begin: src-block-diff :old cmd-read :new cmd-read--planned
+#+begin_src diff
+@@ -9,5 +9,8 @@
+ 	if err := org.LintQuotedDelimiters(d); err != nil {
+ 		return nil, err
+ 	}
++	if err := org.Lint(d); err != nil {
++		return nil, err
++	}
+ 	return d, nil
+ }
+#+end_src
+#+end:
 
 A book is rewritten the way a target is: written beside itself, then
 renamed over. The driver writes in place, which is what Emacs does
