@@ -885,6 +885,7 @@ PREAMBLE = [
     # unless the page has room for it and the first lines of the box,
     # which also keeps a top-of-page figure from landing in the gap
     "#+latex_header: \\usepackage{needspace}",
+    "#+latex_header: \\newcommand{\\codecaptiontext}[2][]{\\par\\medskip\\needspace{5\\baselineskip}\\noindent{\\stepcounter{codelisting}\\small\\textbf{Listing \\thecodelisting:} #2\\if\\relax\\detokenize{#1}\\relax\\else\\quad\\textcolor{gray}{\\texttt{\\detokenize{<<#1>>}}}\\fi}\\par\\nopagebreak\\vspace{2pt}\\nopagebreak}",
     "#+latex_header: \\newcommand{\\codecaption}[2][]{\\par\\medskip\\needspace{5\\baselineskip}\\noindent{\\stepcounter{codelisting}\\small\\textbf{Listing \\thecodelisting:}\\if\\relax\\detokenize{#2}\\relax\\if\\relax\\detokenize{#1}\\relax\\else\\ \\texttt{\\detokenize{<<#1>>}}\\fi\\else\\ \\texttt{\\detokenize{#2}}\\if\\relax\\detokenize{#1}\\relax\\else\\quad\\textcolor{gray}{\\texttt{\\detokenize{<<#1>>}}}\\fi\\fi}\\par\\nopagebreak\\vspace{2pt}\\nopagebreak}",
     # noweb references inside highlighted code: texlinks.py rewrites
     # the placeholders notes.lua planted into \NowebRef calls. Plain
@@ -1465,7 +1466,56 @@ end
 
 local REF = '<<([%w_][%w_.%-]*)>>'
 
+-- A caption written by hand is prose, so it reaches the page as
+-- prose rather than through the detokenized monospace a filename
+-- gets. Pandoc renders it, rather than this filter flattening it to
+-- text and escaping the result: a caption is the one place in a
+-- listing's furniture where an author writes org, and ~code~ and
+-- /emphasis/ in one should survive to the page. Handing the inlines
+-- back to pandoc also puts the escaping where it belongs, since the
+-- writer already knows which characters TeX reads as instructions.
+local function latexInlines(inlines)
+  local s = pandoc.write(pandoc.Pandoc({ pandoc.Plain(inlines) }), 'latex')
+  return (s:gsub('%s+$', ''))
+end
+
+-- A listing with no file, no name and no caption renders as a bare
+-- number, which tells a reader nothing about what they are looking
+-- at. The weave says so rather than silently printing it, because
+-- nothing else in the pipeline can tell the difference between a
+-- listing that needs a caption and one that does not.
+local function warnBareListing(el)
+  local first = (el.text:match('^[^\n]*') or ''):gsub('^%s+', '')
+  io.stderr:write(string.format(
+    'lit: a listing has no file, no name and no caption, so it renders as a bare number. Add a "#+caption:" line above it. First line: %s\n',
+    first:sub(1, 60)))
+end
+
 function Pandoc(doc)
+  -- A #+caption: line above a block is org's own way of naming a
+  -- listing, and pandoc reads it as a wrapper div holding a caption
+  -- div and the block. Unwrapping it here, with the text moved onto
+  -- the block as an attribute, means the rest of this filter never
+  -- has to know the shape: it keeps walking code blocks, and a
+  -- captioned one differs only by carrying one more attribute.
+  doc = doc:walk({ Div = function(el)
+    if el.classes[1] ~= 'captioned-content' then return nil end
+    local text, code
+    for _, b in ipairs(el.content) do
+      if b.t == 'Div' and b.classes[1] == 'caption' then
+        for _, inner in ipairs(b.content) do
+          if inner.content then text = latexInlines(inner.content) end
+        end
+      elseif b.t == 'CodeBlock' then
+        code = b
+      end
+    end
+    if not code then return nil end
+    if text and text ~= '' then
+      code.attributes['lit-caption'] = text
+    end
+    return code
+  end })
   local bodies = {}
   -- first pass: each block's own target, and who references whom
   local blocks = {}
@@ -1537,11 +1587,23 @@ function Pandoc(doc)
       file = resolved[el.identifier]
     end
     if el.classes[1] ~= 'example' then
+      local written = el.attributes['lit-caption']
       local caption = anchor .. '\\codecaption'
       if el.identifier ~= '' then
         caption = caption .. '[' .. el.identifier .. ']'
       end
-      caption = caption .. '{' .. (file or '') .. '}'
+      if written then
+        caption = anchor .. '\\codecaptiontext'
+        if el.identifier ~= '' then
+          caption = caption .. '[' .. el.identifier .. ']'
+        end
+        caption = caption .. '{' .. written .. '}'
+      else
+        caption = caption .. '{' .. (file or '') .. '}'
+        if not file and el.identifier == '' then
+          warnBareListing(el)
+        end
+      end
       return { pandoc.RawBlock('latex', caption), out }
     end
     if anchor ~= '' then

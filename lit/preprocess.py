@@ -79,6 +79,7 @@ PREAMBLE = [
     # unless the page has room for it and the first lines of the box,
     # which also keeps a top-of-page figure from landing in the gap
     "#+latex_header: \\usepackage{needspace}",
+    "#+latex_header: \\newcommand{\\codecaptiontext}[2][]{\\par\\medskip\\needspace{5\\baselineskip}\\noindent{\\stepcounter{codelisting}\\small\\textbf{Listing \\thecodelisting:} #2\\if\\relax\\detokenize{#1}\\relax\\else\\quad\\textcolor{gray}{\\texttt{\\detokenize{<<#1>>}}}\\fi}\\par\\nopagebreak\\vspace{2pt}\\nopagebreak}",
     "#+latex_header: \\newcommand{\\codecaption}[2][]{\\par\\medskip\\needspace{5\\baselineskip}\\noindent{\\stepcounter{codelisting}\\small\\textbf{Listing \\thecodelisting:}\\if\\relax\\detokenize{#2}\\relax\\if\\relax\\detokenize{#1}\\relax\\else\\ \\texttt{\\detokenize{<<#1>>}}\\fi\\else\\ \\texttt{\\detokenize{#2}}\\if\\relax\\detokenize{#1}\\relax\\else\\quad\\textcolor{gray}{\\texttt{\\detokenize{<<#1>>}}}\\fi\\fi}\\par\\nopagebreak\\vspace{2pt}\\nopagebreak}",
     # noweb references inside highlighted code: texlinks.py rewrites
     # the placeholders notes.lua planted into \NowebRef calls. Plain
