@@ -50,12 +50,17 @@ PREAMBLE = [
     # calls, adding [name] when the block has one); detokenize keeps
     # underscores in filenames and block names typesettable
     "#+latex_header: \\newcounter{codelisting}",
-    # a listing sits on a faint ground, so a reader's eye finds where
-    # the code starts and stops without a rule around it. framed's
-    # snugshade keeps the box tight to the text and lets it break
-    # across a page, which a long block needs
+    # a listing sits on a faint rounded ground, so a reader's eye finds
+    # where the code starts and stops without a rule around it. The box
+    # is tcolorbox rather than framed's snugshade because only tcolorbox
+    # rounds the corners; breakable and enhanced jigsaw are what let a
+    # long listing still split across a page, which framed did on its
+    # own. The padding is small on purpose: enough to keep the text off
+    # the corners, not enough to read as a panel
     "#+latex_header: \\definecolor{shadecolor}{RGB}{247,247,244}",
-    "#+latex_header: \\renewenvironment{Shaded}{\\begin{snugshade}}{\\end{snugshade}}",
+    "#+latex_header: \\usepackage[breakable,skins]{tcolorbox}",
+    "#+latex_header: \\newtcolorbox{listingground}{breakable,enhanced jigsaw,colback=shadecolor,colframe=shadecolor,boxrule=0pt,arc=4pt,outer arc=4pt,leftrule=0pt,rightrule=0pt,toprule=0pt,bottomrule=0pt,left=7pt,right=7pt,top=6pt,bottom=6pt,before skip=0pt,after skip=\\medskipamount}",
+    "#+latex_header: \\renewenvironment{Shaded}{\\begin{listingground}}{\\end{listingground}}",
     "#+latex_header: \\newcommand{\\codecaption}[2][]{\\par\\medskip\\noindent{\\stepcounter{codelisting}\\small\\textbf{Listing \\thecodelisting:} \\texttt{\\detokenize{#2}}\\if\\relax\\detokenize{#1}\\relax\\else\\quad\\textcolor{gray}{\\texttt{\\detokenize{<<#1>>}}}\\fi}\\par\\nopagebreak\\vspace{2pt}}",
     # noweb references inside highlighted code: texlinks.py rewrites
     # the placeholders notes.lua planted into \NowebRef calls. Plain
