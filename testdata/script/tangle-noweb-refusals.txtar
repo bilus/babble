@@ -1,8 +1,10 @@
-# Four references babble will not expand. Org expands a missing one
+# Five references babble will not expand. Org expands a missing one
 # to nothing and writes the file; a cycle exhausts its own recursion
 # limit and writes nothing; a call reference is evaluation, which is
-# outside the subset; and a name that differs only in case resolves
-# there and not here, so the error names the near miss.
+# outside the subset; a name that differs only in case resolves
+# there and not here, so the error names the near miss; and a name
+# whose first definition sits under a COMMENT heading resolves to
+# nothing even when a live block later carries the same name.
 
 ! exec babble tangle missing.org
 stderr 'resolves to nothing'
@@ -19,6 +21,10 @@ stderr 'call reference'
 ! exec babble tangle case.org
 stderr 'differs only in case'
 ! exists k.go
+
+! exec babble tangle shadow.org
+stderr 'resolves to nothing'
+! exists s.go
 
 -- missing.org --
 #+begin_src go :tangle m.go :noweb yes
@@ -50,4 +56,24 @@ INNER
 
 #+begin_src go :tangle k.go :noweb yes
 <<Inner>>
+#+end_src
+-- shadow.org --
+#+title: a buried name shadows a live one
+
+* COMMENT Dead
+
+#+name: twin
+#+begin_src go
+buried body
+#+end_src
+
+* Alive
+
+#+name: twin
+#+begin_src go
+live body
+#+end_src
+
+#+begin_src go :tangle s.go :noweb yes
+<<twin>>
 #+end_src

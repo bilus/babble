@@ -512,34 +512,42 @@ func refusedName(d *book.Document, name string) error {
 	return err
 }
 
-// A block under a COMMENT heading is not a noweb source, and the way
-// org reaches that answer matters. It takes the first block carrying
-// the name in document order and then asks whether it is commented,
-// rather than passing over it and looking further, so a commented
-// block holding a name makes that name resolve to nothing for the
-// whole document. babble does the same, since the alternative is to
-// find a different block than the driver finds.
+// The shape below exists because the obvious single walk gets this
+// wrong, and the way it gets it wrong is quiet. Carrying one flag
+// that turns true at a COMMENT heading and never turns off makes
+// every block after that heading look commented, wherever in the
+// document it actually sits, so one dead draft near the top
+// unresolves references far below it and the error names the
+// reference rather than the draft. The flag has no way back down,
+// because a walk that reports entering a node never reports leaving
+// it. Asking twice removes the need for the flag: each walk is a
+// plain search under a fixed rule about COMMENT, each is right on its
+// own, and the answer is whether they agree.
 func namedBlock(d *book.Document, name string) *book.SrcBlock {
-	var first *book.SrcBlock
-	commented := false
+	first := firstNamed(d, name, false)
+	if first == nil || first != firstNamed(d, name, true) {
+		return nil
+	}
+	return first
+}
+
+// firstNamed is the search both questions need: the first block in
+// document order carrying name, over the whole document or over
+// only the part org would still tangle.
+func firstNamed(d *book.Document, name string, skipCommented bool) *book.SrcBlock {
+	var found *book.SrcBlock
 	d.Walk(func(n book.Node) bool {
 		switch n := n.(type) {
 		case *book.Headline:
-			if n.Commented {
-				commented = true
-			}
+			return !(skipCommented && n.Commented)
 		case *book.SrcBlock:
-			if first == nil && n.Name == name {
-				first = n
-				if commented {
-					first = nil
-					return false
-				}
+			if found == nil && n.Name == name {
+				found = n
 			}
 		}
 		return true
 	})
-	return first
+	return found
 }
 
 func groupBlocks(d *book.Document, name string) []*book.SrcBlock {

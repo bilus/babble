@@ -1,7 +1,7 @@
 # Noweb expansion: what a reference resolves to, how the text before
-# it is repeated, and how a group is joined. Recursion is gated on the
-# referenced block's own :noweb, so a plain block's references reach
-# the file as text.
+# it is repeated, how a group is joined, and how far a COMMENT
+# subtree reaches. Recursion is gated on the referenced block's own
+# :noweb, so a plain block's references reach the file as text.
 
 exec babble tangle prefix.org
 cmp p.go want/p.go
@@ -16,6 +16,11 @@ cmp t.go want/t.go
 # reads it. Org carries it past without noticing.
 exec babble tangle inline.org
 cmp i.go want/i.go
+
+# A COMMENT subtree hides the blocks inside it and reaches no
+# further. The name below is defined after one and still resolves.
+exec babble tangle past-comment.org
+cmp pc.go want/pc.go
 
 -- prefix.org --
 #+title: prefixes
@@ -115,3 +120,27 @@ X: <<leaf>>
 // Code generated from BOOK.org by make tangle. DO NOT EDIT.
 
 X: LEAF
+-- past-comment.org --
+#+title: a comment subtree ends
+
+* COMMENT Dead
+
+#+name: buried
+#+begin_src go
+buried body
+#+end_src
+
+* Alive
+
+#+name: live
+#+begin_src go
+live body
+#+end_src
+
+#+begin_src go :tangle pc.go :noweb yes
+<<live>>
+#+end_src
+-- want/pc.go --
+// Code generated from BOOK.org by make tangle. DO NOT EDIT.
+
+live body

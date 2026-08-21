@@ -70,14 +70,14 @@ so the census never matches its own index.
 - [[file:BOOK.org::832][832]] badge: PLANNED stage 12 adds the paragraph below (plan)
 - [[file:BOOK.org::1130][1130]] note: stage 22: the driver answers every language from the comment
 - [[file:BOOK.org::1495][1495]] badge: PLANNED stage 12 adds the chapter below (plan)
-- [[file:BOOK.org::3565][3565]] hole 10: duplicate names, a name doubling as a noweb-ref
-- [[file:BOOK.org::4460][4460]] hole 9: splice fresh interiors into the retained bytes, report ch...
-- [[file:BOOK.org::4470][4470]] hole 9: a line link per plan site, sites below the block shifted ...
-- [[file:BOOK.org::4476][4476]] hole 9: system diff -u over the two named bodies, temp-file heade...
-- [[file:BOOK.org::4553][4553]] badge: PLANNED stage 12 includes the two files below (plan)
-- [[file:BOOK.org::5056][5056]] badge: PLANNED stage 12 adds the test below (plan)
-- [[file:BOOK.org::6101][6101]] badge: PLANNED stage 21 adds the two paragraphs below (plan)
-- [[file:BOOK.org::6124][6124]] insertion: devbox.json and its lockfile,
+- [[file:BOOK.org::3564][3564]] hole 10: duplicate names, a name doubling as a noweb-ref
+- [[file:BOOK.org::4483][4483]] hole 9: splice fresh interiors into the retained bytes, report ch...
+- [[file:BOOK.org::4493][4493]] hole 9: a line link per plan site, sites below the block shifted ...
+- [[file:BOOK.org::4499][4499]] hole 9: system diff -u over the two named bodies, temp-file heade...
+- [[file:BOOK.org::4576][4576]] badge: PLANNED stage 12 includes the two files below (plan)
+- [[file:BOOK.org::5079][5079]] badge: PLANNED stage 12 adds the test below (plan)
+- [[file:BOOK.org::6145][6145]] badge: PLANNED stage 21 adds the two paragraphs below (plan)
+- [[file:BOOK.org::6168][6168]] insertion: devbox.json and its lockfile,
 
 #+end:
 
@@ -2954,9 +2954,8 @@ func (p *parser) greaterBlockParser(kind string, bodyStart, limit int, aff affil
 #+end_src
 
 #+begin_example
-  #+begin: src-block-diff :old greet :new greet-quiet
-
-  #+end:
+,#+begin: src-block-diff :old greet :new greet-quiet
+,#+end:
 #+end_example
 
 A dynamic block keeps its interior twice over: the span refresh
@@ -4187,28 +4186,52 @@ block holding a name makes that name resolve to nothing for the
 whole document. babble does the same, since the alternative is to
 find a different block than the driver finds.
 
+That makes the lookup two questions, not one, and the reason to
+split them is that neither answers the other. The first block
+carrying the name is the one org picks, commented or not. Whether
+org would still tangle that block is a separate fact about where it
+sits. A block is a source only when both questions return it; when
+they return different blocks, the first one is buried and shadows
+whatever follows.
+
+The shape below exists because the obvious single walk gets this
+wrong, and the way it gets it wrong is quiet. Carrying one flag
+that turns true at a COMMENT heading and never turns off makes
+every block after that heading look commented, wherever in the
+document it actually sits, so one dead draft near the top
+unresolves references far below it and the error names the
+reference rather than the draft. The flag has no way back down,
+because a walk that reports entering a node never reports leaving
+it. Asking twice removes the need for the flag: each walk is a
+plain search under a fixed rule about COMMENT, each is right on its
+own, and the answer is whether they agree.
+
 #+begin_src go :tangle internal/tangle/tangle.go :comments org
 func namedBlock(d *book.Document, name string) *book.SrcBlock {
-	var first *book.SrcBlock
-	commented := false
+	first := firstNamed(d, name, false)
+	if first == nil || first != firstNamed(d, name, true) {
+		return nil
+	}
+	return first
+}
+
+// firstNamed is the search both questions need: the first block in
+// document order carrying name, over the whole document or over
+// only the part org would still tangle.
+func firstNamed(d *book.Document, name string, skipCommented bool) *book.SrcBlock {
+	var found *book.SrcBlock
 	d.Walk(func(n book.Node) bool {
 		switch n := n.(type) {
 		case *book.Headline:
-			if n.Commented {
-				commented = true
-			}
+			return !(skipCommented && n.Commented)
 		case *book.SrcBlock:
-			if first == nil && n.Name == name {
-				first = n
-				if commented {
-					first = nil
-					return false
-				}
+			if found == nil && n.Name == name {
+				found = n
 			}
 		}
 		return true
 	})
-	return first
+	return found
 }
 
 func groupBlocks(d *book.Document, name string) []*book.SrcBlock {
@@ -5770,6 +5793,27 @@ func TestDump(t *testing.T) {
 #+end_src
 
 * Changes
+
+** [2026-08-21] Two quiet defects the oracle found
+
+#+begin_quote
+Both showed up while measuring the driver for dynamic blocks, and
+both were quiet: the tangle kept working and the answer was wrong.
+
+The lookup for a named block carried one flag that turned true at
+the first COMMENT heading and never turned off, so every block
+after that heading counted as commented. One dead draft near the
+top made references far below it resolve to nothing. The lookup now
+asks two searches and compares them, which needs no flag and is
+right wherever the block sits.
+
+The book's own parser chapter quoted a dynamic block inside an
+example without escaping it. Org looks for dynamic blocks with a
+raw search over the buffer that ignores block structure and allows
+indentation, so it found that one, tried to refresh it, failed, and
+swallowed the error on every tangle. The line now wears a comma,
+the way the guide chapter already showed it.
+#+end_quote
 
 ** [2026-08-21] Noweb
 
