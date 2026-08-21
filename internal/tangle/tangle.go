@@ -501,20 +501,18 @@ func resolve(d *book.Document, name string, open []string) (string, error) {
 	return strings.Join(parts, ""), nil
 }
 
-// Two names resolve to something in org that babble will not follow.
-// A heading's ~CUSTOM_ID~ is searched before any block, and it answers
-// with the whole subtree as raw text, delimiter lines included and
-// nothing unescaped, which no book means by a reference. And a name
-// that some block also carries as a ~:noweb-ref~ resolves to the block
-// or to the group depending on what org expanded earlier in the same
-// run, since the group scan replaces the cache it consults. Neither is
-// worth reproducing and both are quiet, so both are refused.
+// Two names resolve to something in org that babble will not follow. A
+// heading's CUSTOM_ID is searched before any block and answers with the
+// whole subtree as raw text; a name some block also carries as a
+// :noweb-ref resolves to the block or to the group depending on what
+// org expanded earlier in the same run. Both are quiet, so both are
+// refused.
 func refusedName(d *book.Document, name string) error {
 	var err error
 	d.Walk(func(n book.Node) bool {
 		switch n := n.(type) {
 		case *book.Headline:
-			if n.Properties["CUSTOM_ID"] == name {
+			if n.Properties["custom_id"] == name {
 				err = fmt.Errorf("%s: <<%s>> names a heading's CUSTOM_ID, which org expands to the whole subtree as raw text; rename one of them", d.Path, name)
 				return false
 			}

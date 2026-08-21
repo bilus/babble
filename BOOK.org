@@ -73,14 +73,14 @@ so the census never matches its own index.
 - [[file:BOOK.org::1363][1363]] note: stage 10: src bodies come out of this bullet. Measured, t...
 - [[file:BOOK.org::3882][3882]] badge: PLANNED stage 10 rewrites this section (plan)
 - [[file:BOOK.org::3905][3905]] hole 10: a name two src blocks carry, and a name that is also a gr...
-- [[file:BOOK.org::4976][4976]] badge: PLANNED stage 10 replaces the block above (plan)
-- [[file:BOOK.org::4983][4983]] twin of cmd-read
-- [[file:BOOK.org::5003][5003]] generated diff
-- [[file:BOOK.org::5476][5476]] badge: PLANNED stage 12 adds the chapter below (plan)
-- [[file:BOOK.org::5563][5563]] badge: PLANNED stage 12 includes the two files below (plan)
-- [[file:BOOK.org::6066][6066]] badge: PLANNED stage 12 adds the test below (plan)
-- [[file:BOOK.org::7226][7226]] badge: PLANNED stage 21 adds the two paragraphs below (plan)
-- [[file:BOOK.org::7249][7249]] insertion: devbox.json and its lockfile,
+- [[file:BOOK.org::5000][5000]] badge: PLANNED stage 10 replaces the block above (plan)
+- [[file:BOOK.org::5007][5007]] twin of cmd-read
+- [[file:BOOK.org::5027][5027]] generated diff
+- [[file:BOOK.org::5500][5500]] badge: PLANNED stage 12 adds the chapter below (plan)
+- [[file:BOOK.org::5587][5587]] badge: PLANNED stage 12 includes the two files below (plan)
+- [[file:BOOK.org::6090][6090]] badge: PLANNED stage 12 adds the test below (plan)
+- [[file:BOOK.org::7250][7250]] badge: PLANNED stage 21 adds the two paragraphs below (plan)
+- [[file:BOOK.org::7273][7273]] insertion: devbox.json and its lockfile,
 
 #+end:
 
@@ -4557,13 +4557,37 @@ or to the group depending on what org expanded earlier in the same
 run, since the group scan replaces the cache it consults. Neither is
 worth reproducing and both are quiet, so both are refused.
 
+The property lookup below asks for a lowercase key, and that is not
+a detail of this function. Org folds a property name when it stores
+one, so a drawer writing ~:CUSTOM_ID:~ and a drawer writing
+~:custom_id:~ mean one property, and the parser folds the same way to
+match it. A caller spelling the key the way a drawer spells it finds
+nothing, every time, and nothing anywhere fails: a lookup that misses
+returns the empty string, which no name equals, so the refusal simply
+never fires.
+
+That is what this function did between the stage that wrote it and
+the stage that tested it. Written against the spelling in the drawer
+rather than the spelling in the map, it was dead the day it landed.
+The book kept promising the refusal and a book that tripped it wrote
+a file instead: org expands the subtree, babble expands the block,
+and both engines exit clean.
+
+# doc
+Two names resolve to something in org that babble will not follow. A
+heading's CUSTOM_ID is searched before any block and answers with the
+whole subtree as raw text; a name some block also carries as a
+:noweb-ref resolves to the block or to the group depending on what
+org expanded earlier in the same run. Both are quiet, so both are
+refused.
+
 #+begin_src go :tangle internal/tangle/tangle.go :comments org
 func refusedName(d *book.Document, name string) error {
 	var err error
 	d.Walk(func(n book.Node) bool {
 		switch n := n.(type) {
 		case *book.Headline:
-			if n.Properties["CUSTOM_ID"] == name {
+			if n.Properties["custom_id"] == name {
 				err = fmt.Errorf("%s: <<%s>> names a heading's CUSTOM_ID, which org expands to the whole subtree as raw text; rename one of them", d.Path, name)
 				return false
 			}
@@ -5525,7 +5549,7 @@ The suite as it stands, by what each file pins:
 | tangle-comments.txtar | doc comments: the extent, the marker, the sigil, the wrapping |
 | tangle-comment-refusals.txtar | a language with no marker, and a delimiter quoted in an example |
 | tangle-noweb.txtar | prefixes, group separators, gated recursion, and how far COMMENT reaches |
-| tangle-noweb-refusals.txtar | a miss, a cycle, a call reference, a near miss in case, and a buried name shadowing a live one |
+| tangle-noweb-refusals.txtar | a miss, a cycle, a call reference, a near miss in case, a buried name shadowing a live one, and a heading custom id |
 | dblock-refresh.txtar | both writers, from stale interiors, with the census folding case |
 | dblock-run-for-run.txtar | an index above a diff that grows, and why two runs differ |
 | dblock-refusals.txtar | seven dynamic-block shapes org writes and babble will not |
