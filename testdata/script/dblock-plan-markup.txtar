@@ -1,0 +1,211 @@
+# A book carrying the whole plan convention: a stage entry, a badge,
+# all four CriticMarkup kinds, a twin, and a hole. It pins that the
+# twin never tangles, that a dodged sigil spelling stays out of the
+# index, that only the first mark on a line is indexed, and that the
+# hole inside a generated diff becomes a site of its own once the
+# diff exists, which is why the first run and the second differ.
+
+exec babble tangle markup.org
+cmp markup.org want/pass1.org
+cmp m.go want/m.go
+
+exec babble tangle markup.org
+cmp markup.org want/pass2.org
+cmp m.go want/m.go
+
+-- markup.org --
+#+title: the whole plan convention
+#+todo: PLANNED(p!) HOLE(h!) FILLING(f!) | LIVE(l!) DROPPED(d@)
+
+* Plan                                                              :plan:
+
+** PLANNED Stage 1: a worked example                              :stage1:
+:PROPERTIES:
+:CUSTOM_ID: stage-1
+:END:
+
+A hole spelled HOLE[(] in prose is not a site, and neither is a
+twin suffix written with its hyphens split apart.
+
+#+begin: plan-toc
+#+end:
+
+* The program
+
+Prose carrying {++an insertion++} and nothing else.
+Prose carrying {--a deletion--} and nothing else.
+Prose carrying {~~a replacement~~} and nothing else.
+Prose carrying {>>a note<<} and nothing else.
+Two marks on one line: {++first++} then {--second--}.
+
+*************** PLANNED stage 1 replaces the block below :stage1:
+The badge points a reviewer here.
+*************** END
+
+#+name: greet
+#+begin_src go :tangle m.go
+package m
+
+func Greet() string {
+	return "hi"
+}
+#+end_src
+
+#+name: greet--planned
+#+begin_src go :tangle no
+package m
+
+func Greet() string {
+	panic("HOLE(1): return the configured greeting")
+}
+#+end_src
+
+#+begin: src-block-diff :old greet :new greet--planned
+#+end:
+-- want/pass1.org --
+#+title: the whole plan convention
+#+todo: PLANNED(p!) HOLE(h!) FILLING(f!) | LIVE(l!) DROPPED(d@)
+
+* Plan                                                              :plan:
+
+** PLANNED Stage 1: a worked example                              :stage1:
+:PROPERTIES:
+:CUSTOM_ID: stage-1
+:END:
+
+A hole spelled HOLE[(] in prose is not a site, and neither is a
+twin suffix written with its hyphens split apart.
+
+#+begin: plan-toc
+- [[file:markup.org::6][6]] entry: PLANNED Stage 1: a worked example
+- [[file:markup.org::30][30]] insertion: an insertion++} and nothing else.
+- [[file:markup.org::31][31]] deletion: a deletion--} and nothing else.
+- [[file:markup.org::32][32]] replacement: a replacement~~} and nothing else.
+- [[file:markup.org::33][33]] note: a note<<} and nothing else.
+- [[file:markup.org::34][34]] insertion: first++} then {--second--}.
+- [[file:markup.org::36][36]] badge: PLANNED stage 1 replaces the block below
+- [[file:markup.org::49][49]] twin of greet
+- [[file:markup.org::54][54]] hole 1: return the configured greeting
+- [[file:markup.org::58][58]] generated diff
+
+#+end:
+
+* The program
+
+Prose carrying {++an insertion++} and nothing else.
+Prose carrying {--a deletion--} and nothing else.
+Prose carrying {~~a replacement~~} and nothing else.
+Prose carrying {>>a note<<} and nothing else.
+Two marks on one line: {++first++} then {--second--}.
+
+*************** PLANNED stage 1 replaces the block below :stage1:
+The badge points a reviewer here.
+*************** END
+
+#+name: greet
+#+begin_src go :tangle m.go
+package m
+
+func Greet() string {
+	return "hi"
+}
+#+end_src
+
+#+name: greet--planned
+#+begin_src go :tangle no
+package m
+
+func Greet() string {
+	panic("HOLE(1): return the configured greeting")
+}
+#+end_src
+
+#+begin: src-block-diff :old greet :new greet--planned
+#+begin_src diff
+@@ -1,5 +1,5 @@
+ package m
+ 
+ func Greet() string {
+-	return "hi"
++	panic("HOLE(1): return the configured greeting")
+ }
+#+end_src
+#+end:
+-- want/pass2.org --
+#+title: the whole plan convention
+#+todo: PLANNED(p!) HOLE(h!) FILLING(f!) | LIVE(l!) DROPPED(d@)
+
+* Plan                                                              :plan:
+
+** PLANNED Stage 1: a worked example                              :stage1:
+:PROPERTIES:
+:CUSTOM_ID: stage-1
+:END:
+
+A hole spelled HOLE[(] in prose is not a site, and neither is a
+twin suffix written with its hyphens split apart.
+
+#+begin: plan-toc
+- [[file:markup.org::6][6]] entry: PLANNED Stage 1: a worked example
+- [[file:markup.org::31][31]] insertion: an insertion++} and nothing else.
+- [[file:markup.org::32][32]] deletion: a deletion--} and nothing else.
+- [[file:markup.org::33][33]] replacement: a replacement~~} and nothing else.
+- [[file:markup.org::34][34]] note: a note<<} and nothing else.
+- [[file:markup.org::35][35]] insertion: first++} then {--second--}.
+- [[file:markup.org::37][37]] badge: PLANNED stage 1 replaces the block below
+- [[file:markup.org::50][50]] twin of greet
+- [[file:markup.org::55][55]] hole 1: return the configured greeting
+- [[file:markup.org::59][59]] generated diff
+- [[file:markup.org::66][66]] hole 1: return the configured greeting
+
+#+end:
+
+* The program
+
+Prose carrying {++an insertion++} and nothing else.
+Prose carrying {--a deletion--} and nothing else.
+Prose carrying {~~a replacement~~} and nothing else.
+Prose carrying {>>a note<<} and nothing else.
+Two marks on one line: {++first++} then {--second--}.
+
+*************** PLANNED stage 1 replaces the block below :stage1:
+The badge points a reviewer here.
+*************** END
+
+#+name: greet
+#+begin_src go :tangle m.go
+package m
+
+func Greet() string {
+	return "hi"
+}
+#+end_src
+
+#+name: greet--planned
+#+begin_src go :tangle no
+package m
+
+func Greet() string {
+	panic("HOLE(1): return the configured greeting")
+}
+#+end_src
+
+#+begin: src-block-diff :old greet :new greet--planned
+#+begin_src diff
+@@ -1,5 +1,5 @@
+ package m
+ 
+ func Greet() string {
+-	return "hi"
++	panic("HOLE(1): return the configured greeting")
+ }
+#+end_src
+#+end:
+-- want/m.go --
+// Code generated from BOOK.org by make tangle. DO NOT EDIT.
+
+package m
+
+func Greet() string {
+	return "hi"
+}

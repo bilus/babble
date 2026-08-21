@@ -1,0 +1,141 @@
+# Ten books babble will not refresh. Org writes all seven, four of
+# them silently wrong: it empties an interior when a writer name has
+# no writer and when a named block is missing, it refreshes a
+# delimiter quoted inside an example block, and it reads an argument
+# through the lisp reader that babble has no use for. The other three
+# are shapes org and babble read differently: an indented opener,
+# which org indents the interior of when the book is in a window and
+# leaves alone when it is not, an opener written without the
+# whitespace org's search wants, which only babble sees, and a file
+# with CRLF endings, which org rewrites in its own ending and babble
+# splices bytes into.
+
+! exec babble tangle unknown.org
+stderr 'no dynamic-block writer named no-such-writer'
+
+! exec babble tangle missing.org
+stderr 'no block carries the name nowhere'
+
+! exec babble tangle indented.org
+stderr 'indented dynamic block'
+
+! exec babble tangle quoted.org
+stderr 'org reads this line as a dynamic block and babble does not'
+
+! exec babble tangle nospace.org
+stderr 'babble reads this line as a dynamic block and org does not'
+
+! exec babble tangle crlf.org
+stderr 'CRLF line endings'
+
+! exec babble tangle args.org
+stderr 'is not a keyword or a name'
+
+# The writer's name is matched as written even though the keyword
+# around it is not: org pastes the name onto a function name, and a
+# function name is case-sensitive.
+! exec babble tangle writercase.org
+stderr 'no dynamic-block writer named Plan-Toc'
+
+# Diff prefixes a context line with a space, and an indented closer
+# still closes. The generated block would end early.
+! exec babble tangle closerin.org
+stderr 'would end the generated block or open a dynamic block'
+
+# The same shape with an opener is worse: babble would write the book
+# and then refuse to read it back.
+! exec babble tangle openerin.org
+stderr 'would end the generated block or open a dynamic block'
+
+-- unknown.org --
+#+title: no such writer
+
+#+begin: no-such-writer :x 1
+stale
+#+end:
+-- missing.org --
+#+title: a name no block carries
+
+#+name: greet
+#+begin_src go :tangle no
+hi
+#+end_src
+
+#+begin: src-block-diff :old greet :new nowhere
+#+end:
+-- indented.org --
+#+title: an indented opener
+
+  #+begin: plan-toc
+  #+end:
+-- quoted.org --
+#+title: an opener quoted in an example
+
+#+begin_example
+#+begin: plan-toc
+#+end:
+#+end_example
+-- nospace.org --
+#+title: an opener with no whitespace
+
+#+begin:plan-toc
+#+end:
+-- crlf.org --
+#+title: dos endings
+
+#+begin: plan-toc
+#+end:
+-- args.org --
+#+title: an argument the reader would take
+
+#+name: greet
+#+begin_src go :tangle no
+hi
+#+end_src
+
+#+name: quiet
+#+begin_src go :tangle no
+shh
+#+end_src
+
+#+begin: src-block-diff :old "greet" :new quiet
+#+end:
+-- writercase.org --
+#+title: a writer name in the wrong case
+
+#+begin: Plan-Toc
+#+end:
+-- closerin.org --
+#+title: a closer inside a compared body
+
+#+name: a
+#+begin_src org :tangle no
+,#+end_src
+one
+#+end_src
+
+#+name: b
+#+begin_src org :tangle no
+,#+end_src
+two
+#+end_src
+
+#+begin: src-block-diff :old a :new b
+#+end:
+-- openerin.org --
+#+title: an opener inside a compared body
+
+#+name: a
+#+begin_src org :tangle no
+,#+begin: plan-toc
+one
+#+end_src
+
+#+name: b
+#+begin_src org :tangle no
+,#+begin: plan-toc
+two
+#+end_src
+
+#+begin: src-block-diff :old a :new b
+#+end:

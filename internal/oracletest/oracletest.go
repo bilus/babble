@@ -16,8 +16,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/bilus/babble/internal/org"
-	"github.com/bilus/babble/internal/tangle"
+	"github.com/bilus/babble/internal/cmd"
 	"golang.org/x/tools/txtar"
 )
 
@@ -79,14 +78,10 @@ func CrossCheck(t *testing.T, fixture string) {
 		t.Skip("no book to tangle")
 	}
 	oracleDir, babbleDir := t.TempDir(), t.TempDir()
-	before := map[string]bool{}
 	for _, dir := range []string{oracleDir, babbleDir} {
 		for _, f := range archive.Files {
 			write(t, dir, f.Name, f.Data)
 		}
-	}
-	for _, f := range archive.Files {
-		before[f.Name] = true
 	}
 	tangled := 0
 	for _, b := range run {
@@ -96,7 +91,7 @@ func CrossCheck(t *testing.T, fixture string) {
 	if tangled == 0 {
 		t.Fatalf("the oracle tangled no blocks from %v; two empty trees agree, which proves nothing", run)
 	}
-	compareAdditions(t, oracleDir, babbleDir, before)
+	compareAdditions(t, oracleDir, babbleDir)
 }
 
 func write(t *testing.T, dir, name string, body []byte) {
@@ -144,14 +139,7 @@ func runOracle(t *testing.T, dir, book string) int {
 
 func runBabble(t *testing.T, dir, book string) {
 	t.Helper()
-	d, err := org.Parse(filepath.Join(dir, book))
-	if err == nil {
-		err = org.ResolveAll(d)
-	}
-	if err == nil {
-		err = tangle.Run(d)
-	}
-	if err != nil {
+	if err := cmd.Tangle(filepath.Join(dir, book)); err != nil {
 		t.Fatalf("babble failed on %s where the oracle did not: %v", book, err)
 	}
 }
@@ -162,10 +150,10 @@ func runBabble(t *testing.T, dir, book string) {
 // babble writes a fixed mode where the driver takes the umask, and a
 // mode difference would be a difference neither engine is wrong
 // about.
-func compareAdditions(t *testing.T, oracleDir, babbleDir string, before map[string]bool) {
+func compareAdditions(t *testing.T, oracleDir, babbleDir string) {
 	t.Helper()
-	oracle := added(t, oracleDir, before)
-	babbled := added(t, babbleDir, before)
+	oracle := added(t, oracleDir)
+	babbled := added(t, babbleDir)
 	paths := map[string]bool{}
 	for p := range oracle {
 		paths[p] = true
@@ -192,10 +180,11 @@ func compareAdditions(t *testing.T, oracleDir, babbleDir string, before map[stri
 	}
 }
 
-// added is every file a run left behind, keyed by its path in the
-// tree. A file the fixture supplied counts when the run rewrote it,
-// which is how a book that holds a dynamic block is compared.
-func added(t *testing.T, dir string, before map[string]bool) map[string][]byte {
+// added is every file in the tree after a run, keyed by its path. It
+// does not subtract the files the fixture supplied, on purpose: a
+// book is one of those and a refresh rewrites it, so leaving them in
+// is what puts the book's own bytes under the comparison.
+func added(t *testing.T, dir string) map[string][]byte {
 	t.Helper()
 	out := map[string][]byte{}
 	err := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {

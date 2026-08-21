@@ -1,0 +1,131 @@
+# One refresh is not a fixed point, and babble is not allowed to be
+# better than the driver about it. plan-toc corrects for the lines it
+# is about to insert and for nothing else, so the generated diff
+# below it is still at its old size when the index is counted, and
+# every site under that diff comes out short. The second run finds
+# the diff already grown and prints the right number. Both runs are
+# the driver's own output.
+
+exec babble tangle order.org
+cmp order.org want/pass1.org
+
+exec babble tangle order.org
+cmp order.org want/pass2.org
+
+# A third run changes nothing, which is what "converged" means here.
+exec babble tangle order.org
+cmp order.org want/pass2.org
+
+-- order.org --
+#+title: index above a growing diff
+#+todo: PLANNED(p!) HOLE(h!) | LIVE(l!) DROPPED(d@)
+
+#+begin: plan-toc
+#+end:
+
+#+name: body
+#+begin_src go :tangle o.go
+package body
+
+func One() int {
+	return 1
+}
+#+end_src
+
+#+name: body--planned
+#+begin_src go :tangle no
+package body
+
+func One() int {
+	return 2
+}
+#+end_src
+
+#+begin: src-block-diff :old body :new body--planned
+#+end:
+
+* PLANNED A site below the diff
+-- want/pass1.org --
+#+title: index above a growing diff
+#+todo: PLANNED(p!) HOLE(h!) | LIVE(l!) DROPPED(d@)
+
+#+begin: plan-toc
+- [[file:order.org::20][20]] twin of body
+- [[file:order.org::29][29]] generated diff
+- [[file:order.org::32][32]] entry: PLANNED A site below the diff
+
+#+end:
+
+#+name: body
+#+begin_src go :tangle o.go
+package body
+
+func One() int {
+	return 1
+}
+#+end_src
+
+#+name: body--planned
+#+begin_src go :tangle no
+package body
+
+func One() int {
+	return 2
+}
+#+end_src
+
+#+begin: src-block-diff :old body :new body--planned
+#+begin_src diff
+@@ -1,5 +1,5 @@
+ package body
+ 
+ func One() int {
+-	return 1
++	return 2
+ }
+#+end_src
+#+end:
+
+* PLANNED A site below the diff
+-- want/pass2.org --
+#+title: index above a growing diff
+#+todo: PLANNED(p!) HOLE(h!) | LIVE(l!) DROPPED(d@)
+
+#+begin: plan-toc
+- [[file:order.org::20][20]] twin of body
+- [[file:order.org::29][29]] generated diff
+- [[file:order.org::41][41]] entry: PLANNED A site below the diff
+
+#+end:
+
+#+name: body
+#+begin_src go :tangle o.go
+package body
+
+func One() int {
+	return 1
+}
+#+end_src
+
+#+name: body--planned
+#+begin_src go :tangle no
+package body
+
+func One() int {
+	return 2
+}
+#+end_src
+
+#+begin: src-block-diff :old body :new body--planned
+#+begin_src diff
+@@ -1,5 +1,5 @@
+ package body
+ 
+ func One() int {
+-	return 1
++	return 2
+ }
+#+end_src
+#+end:
+
+* PLANNED A site below the diff

@@ -1,0 +1,173 @@
+# The edges measurement turned up, all in one book. A COMMENT
+# subtree hides nothing from a refresh: the dynamic block inside one
+# is rewritten, and the block named inside one answers a diff, even
+# though nothing there tangles. The opener and the closer fold case.
+# A closer with a word after its colon still closes, and the lines
+# after it are not the block's to overwrite. A book whose last line
+# has no newline gains one, because saving adds it. And the two
+# plan-toc blocks print different numbers for the same sites, which
+# is the part-refreshed buffer: the second one is counted after the
+# first has already grown.
+
+# A book with no dynamic block in it comes through untouched. The
+# newline half of that rule is pinned by TestFinalNewlineFollowsTheSave
+# instead, because txtar ends every file it holds with a newline and
+# cannot carry a book that lacks one.
+exec babble tangle plain.org
+cmp plain.org want/plain.org
+
+exec babble tangle edges.org
+cmp edges.org want/pass1.org
+cmp e.go want/e.go
+
+exec babble tangle edges.org
+cmp edges.org want/pass2.org
+
+-- edges.org --
+#+title: edges
+#+todo: PLANNED(p!) HOLE(h!) | LIVE(l!) DROPPED(d@)
+
+* COMMENT A dead chapter
+
+#+name: buried
+#+begin_src go :tangle no
+buried body
+#+end_src
+
+#+begin: plan-toc
+#+end:
+
+* Alive
+
+#+name: live
+#+begin_src go :tangle e.go
+live body
+#+end_src
+
+A diff of a buried block against a live one:
+
+#+BEGIN: src-block-diff :old buried :new live
+#+END:
+
+A closer with a word after the colon:
+
+#+begin: plan-toc
+#+end: ignored
+this line survives
+#+end:
+
+* PLANNED A site
+-- want/pass1.org --
+#+title: edges
+#+todo: PLANNED(p!) HOLE(h!) | LIVE(l!) DROPPED(d@)
+
+* COMMENT A dead chapter
+
+#+name: buried
+#+begin_src go :tangle no
+buried body
+#+end_src
+
+#+begin: plan-toc
+- [[file:edges.org::26][26]] generated diff
+- [[file:edges.org::36][36]] entry: PLANNED A site
+
+#+end:
+
+* Alive
+
+#+name: live
+#+begin_src go :tangle e.go
+live body
+#+end_src
+
+A diff of a buried block against a live one:
+
+#+BEGIN: src-block-diff :old buried :new live
+#+begin_src diff
+@@ -1 +1 @@
+-buried body
++live body
+#+end_src
+#+END:
+
+A closer with a word after the colon:
+
+#+begin: plan-toc
+- [[file:edges.org::26][26]] generated diff
+- [[file:edges.org::44][44]] entry: PLANNED A site
+
+#+end: ignored
+this line survives
+#+end:
+
+* PLANNED A site
+-- want/pass2.org --
+#+title: edges
+#+todo: PLANNED(p!) HOLE(h!) | LIVE(l!) DROPPED(d@)
+
+* COMMENT A dead chapter
+
+#+name: buried
+#+begin_src go :tangle no
+buried body
+#+end_src
+
+#+begin: plan-toc
+- [[file:edges.org::26][26]] generated diff
+- [[file:edges.org::44][44]] entry: PLANNED A site
+
+#+end:
+
+* Alive
+
+#+name: live
+#+begin_src go :tangle e.go
+live body
+#+end_src
+
+A diff of a buried block against a live one:
+
+#+BEGIN: src-block-diff :old buried :new live
+#+begin_src diff
+@@ -1 +1 @@
+-buried body
++live body
+#+end_src
+#+END:
+
+A closer with a word after the colon:
+
+#+begin: plan-toc
+- [[file:edges.org::26][26]] generated diff
+- [[file:edges.org::44][44]] entry: PLANNED A site
+
+#+end: ignored
+this line survives
+#+end:
+
+* PLANNED A site
+-- want/e.go --
+// Code generated from BOOK.org by make tangle. DO NOT EDIT.
+
+live body
+-- plain.org --
+#+title: no dynamic block here
+
+#+begin_src go :tangle p.go
+package plain
+#+end_src
+
+the last line has no newline
+-- want/plain.org --
+#+title: no dynamic block here
+
+#+begin_src go :tangle p.go
+package plain
+#+end_src
+
+the last line has no newline
+-- want/p.go --
+// Code generated from BOOK.org by make tangle. DO NOT EDIT.
+
+package plain

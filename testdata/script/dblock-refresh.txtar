@@ -1,0 +1,121 @@
+# Both writers, from stale interiors. src-block-diff renders a
+# unified diff of two named bodies, or the words "no differences"
+# when they match. plan-toc renders the jump list, and the entries
+# below pin that the census folds case the way Emacs folds it: a
+# lowercase todo word in a heading and a lowercase hole marker are
+# both sites. The index is right on the first run here because
+# every generated diff sits above it.
+
+exec babble tangle refresh.org
+cmp refresh.org want/refresh.org
+cmp r.go want/r.go
+
+-- refresh.org --
+#+title: both writers
+#+todo: PLANNED(p!) HOLE(h!) | LIVE(l!) DROPPED(d@)
+
+* Greeting
+
+#+name: greet
+#+begin_src go :tangle r.go
+package greet
+
+func Greet() string {
+	return "hi"
+}
+#+end_src
+
+#+name: greet--planned
+#+begin_src go :tangle no
+package greet
+
+func Greet() string {
+	return ""
+}
+#+end_src
+
+#+begin: src-block-diff :old greet :new greet--planned
+whatever was here before
+#+end:
+
+#+begin: src-block-diff :old greet :new greet
+stale
+#+end:
+
+* PLANNED An entry
+* live in lowercase
+
+x = hole(9): a lowercase marker.
+y = HOLE(9): an uppercase marker.
+
+#+begin: plan-toc
+stale index
+#+end:
+
+Tail prose.
+-- want/refresh.org --
+#+title: both writers
+#+todo: PLANNED(p!) HOLE(h!) | LIVE(l!) DROPPED(d@)
+
+* Greeting
+
+#+name: greet
+#+begin_src go :tangle r.go
+package greet
+
+func Greet() string {
+	return "hi"
+}
+#+end_src
+
+#+name: greet--planned
+#+begin_src go :tangle no
+package greet
+
+func Greet() string {
+	return ""
+}
+#+end_src
+
+#+begin: src-block-diff :old greet :new greet--planned
+#+begin_src diff
+@@ -1,5 +1,5 @@
+ package greet
+ 
+ func Greet() string {
+-	return "hi"
++	return ""
+ }
+#+end_src
+#+end:
+
+#+begin: src-block-diff :old greet :new greet
+no differences
+#+end:
+
+* PLANNED An entry
+* live in lowercase
+
+x = hole(9): a lowercase marker.
+y = HOLE(9): an uppercase marker.
+
+#+begin: plan-toc
+- [[file:refresh.org::15][15]] twin of greet
+- [[file:refresh.org::24][24]] generated diff
+- [[file:refresh.org::36][36]] generated diff
+- [[file:refresh.org::40][40]] entry: PLANNED An entry
+- [[file:refresh.org::41][41]] entry: live in lowercase
+- [[file:refresh.org::43][43]] hole 9: a lowercase marker.
+- [[file:refresh.org::44][44]] hole 9: an uppercase marker.
+
+#+end:
+
+Tail prose.
+-- want/r.go --
+// Code generated from BOOK.org by make tangle. DO NOT EDIT.
+
+package greet
+
+func Greet() string {
+	return "hi"
+}

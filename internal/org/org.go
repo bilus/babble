@@ -25,6 +25,9 @@ func Parse(path string) (*book.Document, error) {
 }
 
 func ParseBytes(src []byte, path string) (*book.Document, error) {
+	if bytes.Contains(src, []byte("\r\n")) {
+		return nil, fmt.Errorf("%s: CRLF line endings; org rewrites generated lines in the file's own ending and babble splices bytes, so the two cannot agree on a mixed file", path)
+	}
 	d := &book.Document{Path: path, Source: src,
 		Keywords: map[string][]string{}, Todo: todoWords(src)}
 	p := &parser{src: src, path: path, d: d,
@@ -37,16 +40,38 @@ func ParseBytes(src []byte, path string) (*book.Document, error) {
 		return nil, err
 	}
 	d.Nodes = nodes
+	if err := checkDynamicBlocks(d); err != nil {
+		return nil, err
+	}
 	return d, nil
 }
 
 // checkDynamicBlocks refuses a book where org's raw search for a
 // dynamic-block opener and the tree disagree about where the dynamic
 // blocks are.
-var dblockStart = regexp.MustCompile(`(?i)^[ \t]*#\+begin:[ \t]+(\S+)`)
+var dblockStart = regexp.MustCompile(`(?i)^[ \t]*#\+begin:[ \t]+\S`)
 
 func checkDynamicBlocks(d *book.Document) error {
-	panic("HOLE(9): compare org's raw opener search against the tree, both directions")
+	tree := map[int]bool{}
+	d.Walk(func(n book.Node) bool {
+		if db, ok := n.(*book.DynamicBlock); ok {
+			tree[db.Line] = true
+		}
+		return true
+	})
+	num := 0
+	for off := 0; off < len(d.Source); {
+		text, next := line(d.Source, off)
+		num++
+		switch found := dblockStart.MatchString(text); {
+		case found && !tree[num]:
+			return fmt.Errorf("%s:%d: %s: org reads this line as a dynamic block and babble does not, because org's search ignores whatever block the line sits in; escape it with a comma", d.Path, num, strings.TrimSpace(text))
+		case !found && tree[num]:
+			return fmt.Errorf("%s:%d: %s: babble reads this line as a dynamic block and org does not, because org's search wants whitespace after the colon; write the space", d.Path, num, strings.TrimSpace(text))
+		}
+		off = next
+	}
+	return nil
 }
 
 // The parser holds the source, a line index and an offset, which is
@@ -472,16 +497,26 @@ func (p *parser) greaterBlockParser(kind string, bodyStart, limit int, aff affil
 // rewrites, and the nodes inside it, because a generated diff holds
 // a real src block that collection has to see. The opener carries
 // the writer's name and its arguments.
+// org-dblock-end-re, which is looser than the keyword reader on
+// three counts: the colon is optional, anything after it is
+// ignored, and the line may be indented. The refresh overwrites
+// whatever this predicate calls the interior, so it follows org.
+var dblockEnd = regexp.MustCompile(`(?i)^[ \t]*#\+end([: \t\r]|$)`)
+
 func (p *parser) dynamicBlockParser(args string, bodyStart, limit int, aff affiliated) (parsed, int, error) {
 	beginAt := p.off
-	endOff, endText, ok := p.findEnd(bodyStart, limit, func(text string) bool {
-		key, value, ok := keywordLine(text)
-		return ok && key == kwEnd && value == ""
-	})
+	if text, _ := p.line(beginAt); text != strings.TrimLeft(text, " \t") {
+		return parsed{}, 0, fmt.Errorf("%s:%d: indented dynamic block; org indents the refreshed interior to match when the book is in a window and leaves it alone when it is not, so write it at column zero", p.path, p.lineNum(beginAt))
+	}
+	endOff, endText, ok := p.findEnd(bodyStart, limit, dblockEnd.MatchString)
 	if !ok {
 		return parsed{}, 0, fmt.Errorf("%s:%d: unterminated dynamic block", p.path, p.lineNum(beginAt))
 	}
-	name, rest, _ := strings.Cut(args, " ")
+	// org's opener pattern takes the name as a run of non-whitespace,
+	// so a tab between the name and the arguments ends it the way a
+	// space does; cutting on a space alone would fold the first
+	// argument into the name and lose the writer.
+	name, rest := cutWord(args)
 	db := &book.DynamicBlock{Name: name, Args: strings.TrimSpace(rest),
 		Interior: book.Span{Start: bodyStart, End: endOff},
 		Line:     p.lineNum(beginAt),
@@ -1006,7 +1041,7 @@ func Lint(d *book.Document) error {
 // it, and no book needs to quote a delimiter at column zero: indenting
 // it, or escaping it with a comma the way org already provides for,
 // leaves the meaning and removes the ambiguity.
-var quotedDelimiter = regexp.MustCompile(`^(#\+(begin|end)_src|#\+(begin|end):)`)
+var quotedDelimiter = regexp.MustCompile(`^#\+(begin|end)_src`)
 
 func LintQuotedDelimiters(d *book.Document) error {
 	var err error

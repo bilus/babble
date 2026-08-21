@@ -18,8 +18,8 @@ import (
 	"strings"
 
 	"github.com/bilus/babble/internal/book"
+	"github.com/bilus/babble/internal/cmd"
 	"github.com/bilus/babble/internal/org"
-	"github.com/bilus/babble/internal/tangle"
 )
 
 const usage = `usage: babble <command> [flags] [BOOK.org]
@@ -180,30 +180,14 @@ func replaceFile(target string, body []byte) error {
 	return os.Rename(tmp.Name(), target)
 }
 
-// {--Two more steps belong here and are not here yet. [[#stage-9][Stage 9]] adds a
-// refresh of the book's dynamic blocks before the tangle, and a
-// reparse after it, because refreshing rewrites the book and moves
-// every line number the tangle depends on. [[#stage-10][Stage 10]] adds the lint
-// pass, which is the half of the fence that needs the whole document.
-// Until both land this function is three calls, and the code below is
-// what runs.--}{++The flow itself lives in ~cmd.Tangle~, and this function is the
+// The flow itself lives in ~cmd.Tangle~, and this function is the
 // command-line wrapper around it: one call, one message, one exit
 // code. The order the flow keeps is subtle enough to be worth having
 // in one place, and the oracle harness runs the same function rather
 // than its own copy of the steps. One step is still missing:
-// [[#stage-10][stage 10]] adds the lint pass that needs the whole document.++}
+// [[#stage-10][stage 10]] adds the lint pass that needs the whole document.
 func tangleCmd(bookPath string, stderr io.Writer) int {
-	d, err := org.Parse(bookPath)
-	if err == nil {
-		err = org.ResolveAll(d)
-	}
-	if err == nil {
-		err = org.LintQuotedDelimiters(d)
-	}
-	if err == nil {
-		err = tangle.Run(d)
-	}
-	if err != nil {
+	if err := cmd.Tangle(bookPath); err != nil {
 		fmt.Fprintln(stderr, "babble:", err)
 		return 1
 	}

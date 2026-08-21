@@ -42,28 +42,17 @@ func Run(d *book.Document) error {
 // way org-babel hands a body over: comma escapes off, one trailing
 // newline off, dedented unless the block keeps its indentation, and
 // noweb references left standing.
-//
-// That shape is the tangling shape minus one step. References stay as
-// written because the driver asks org-babel for the body and org-babel
-// expands nothing at that point, so a twin of a block full of
-// references shows a diff of the references, which is also the diff a
-// reader wants to see.
-//
-// The lookup underneath it is the whole-document one, not the lookup
-// noweb uses. Those two differ on purpose. Noweb refuses a name whose
-// first definition sits under a COMMENT heading, because org's noweb
-// expansion refuses it. Org's named-block search is a plain scan of
-// the buffer that has never heard of COMMENT, so a buried block does
-// answer a diff even though nothing would tangle it. Reusing the noweb
-// lookup here would be the same kind of mistake in the other
-// direction.
-//
-// This function lives in package tangle rather than beside the writer
-// that calls it because the rules it applies are the tangler's. A
-// second copy of them would be free to drift away from the file the
-// diff claims to describe.
 func NamedBody(d *book.Document, name string) (string, error) {
-	panic("HOLE(9): the whole-document first block named name, shaped as org-babel hands it over")
+	b := firstNamed(d, name, false)
+	if b == nil {
+		return "", fmt.Errorf("no block carries the name %s", name)
+	}
+	body := unescapeCommas(string(d.Source[b.Body.Start:b.Body.End]))
+	body = strings.TrimSuffix(body, "\n")
+	if !b.Params.PreserveIndent {
+		body = dedent(body)
+	}
+	return body, nil
 }
 
 // It keeps the first error and walks the whole tree anyway. That
