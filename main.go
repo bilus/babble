@@ -116,6 +116,11 @@ func tangleCmd(bookPath string, stderr io.Writer) int {
 	return 0
 }
 
+// END
+func vendorCmd(dir string, stdout, stderr io.Writer) int {
+	panic("HOLE(24): write every embedded lit/ file into dir, overwriting, removing nothing")
+}
+
 // Two files are left out on purpose. lit/BOOK.org is lit's own
 // literate source and a consumer never tangles it, and lit/example
 // holds a symbolic link, which embedding cannot carry.
