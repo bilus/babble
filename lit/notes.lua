@@ -75,13 +75,25 @@ function Div(el)
 end
 
 -- Pandoc's org reader keeps :tangle and :noweb as block attributes;
--- blocks that land in a file get a paper-style numbered caption
--- naming it, plus the block's <<name>> when it has one. A named
--- region block (no target of its own, included through a reference)
--- is captioned with the file its includer tangles to, resolved
--- transitively over the whole document. Twins and illustrations are
--- referenced by nothing and tangle nowhere, so they stay
--- uncaptioned.
+-- every source block gets a paper-style numbered caption, so any
+-- listing in the book can be pointed at by number. What the caption
+-- says after the number is whatever identifies the block: the file
+-- it lands in, or its <<name>> when it reaches no file of its own,
+-- or nothing at all. A named region block (no target of its own,
+-- included through a reference) is captioned with the file its
+-- includer tangles to, resolved transitively over the whole
+-- document.
+--
+-- The test is what the block is, not whether it reaches a file. An
+-- example block is an illustration of markup rather than a listing
+-- of the program, so numbering one would put a listing number on
+-- text that is not a listing. Pandoc reads both as code blocks, and
+-- the only thing separating them is the class it hangs on each: a
+-- source block carries its language, an example block carries the
+-- literal word example. Every other org block that could be
+-- confused for one arrives as something else entirely, a quote as a
+-- block quote and an export as raw output, so example is the whole
+-- of what has to be excluded.
 --
 -- Syntax highlighting shreds a <<ref>> into operator and identifier
 -- tokens, so no literal <<ref>> survives into the .tex for a filter
@@ -166,13 +178,12 @@ function Pandoc(doc)
     if not file and el.identifier ~= '' then
       file = resolved[el.identifier]
     end
-    if file then
-      local caption
+    if el.classes[1] ~= 'example' then
+      local caption = anchor .. '\\codecaption'
       if el.identifier ~= '' then
-        caption = anchor .. '\\codecaption[' .. el.identifier .. ']{' .. file .. '}'
-      else
-        caption = '\\codecaption{' .. file .. '}'
+        caption = caption .. '[' .. el.identifier .. ']'
       end
+      caption = caption .. '{' .. (file or '') .. '}'
       return { pandoc.RawBlock('latex', caption), out }
     end
     if anchor ~= '' then

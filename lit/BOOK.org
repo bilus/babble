@@ -865,9 +865,18 @@ PREAMBLE = [
     # the corners, not enough to read as a panel
     "#+latex_header: \\definecolor{shadecolor}{RGB}{247,247,244}",
     "#+latex_header: \\usepackage[breakable,skins]{tcolorbox}",
-    "#+latex_header: \\newtcolorbox{listingground}{breakable,enhanced jigsaw,colback=shadecolor,colframe=shadecolor,boxrule=0pt,arc=4pt,outer arc=4pt,leftrule=0pt,rightrule=0pt,toprule=0pt,bottomrule=0pt,left=7pt,right=7pt,top=6pt,bottom=6pt,before skip=0pt,after skip=\\medskipamount}",
+    "#+latex_header: \\newtcolorbox{listingground}{breakable,enhanced jigsaw,colback=shadecolor,colframe=shadecolor,boxrule=0pt,arc=4pt,outer arc=4pt,leftrule=0pt,rightrule=0pt,toprule=0pt,bottomrule=0pt,left=7pt,right=7pt,top=5pt,bottom=11pt,before skip=0pt,after skip=\\medskipamount}",
     "#+latex_header: \\renewenvironment{Shaded}{\\begin{listingground}}{\\end{listingground}}",
-    "#+latex_header: \\newcommand{\\codecaption}[2][]{\\par\\medskip\\noindent{\\stepcounter{codelisting}\\small\\textbf{Listing \\thecodelisting:} \\texttt{\\detokenize{#2}}\\if\\relax\\detokenize{#1}\\relax\\else\\quad\\textcolor{gray}{\\texttt{\\detokenize{<<#1>>}}}\\fi}\\par\\nopagebreak\\vspace{2pt}}",
+    # a code line wider than the text block runs off the page and says
+    # nothing about it: fancyvrb neither wraps nor reports an overfull
+    # box, so the reader loses the end of the line with no warning
+    # anywhere. fvextra adds the breaking fancyvrb lacks. Breaking
+    # anywhere rather than at spaces is deliberate; the lines that
+    # overrun worst are long string literals and regexps, which have no
+    # spaces to break at
+    "#+latex_header: \\usepackage{fvextra}",
+    "#+latex_header: \\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\\\\{\\},breaklines,breakanywhere,breakindent=2em,breaksymbolleft=\\raisebox{0.3ex}{\\tiny\\ensuremath{\\hookrightarrow}},breaksymbolsepleft=0.3em,breaksymbolindentleft=0pt}",
+    "#+latex_header: \\newcommand{\\codecaption}[2][]{\\par\\medskip\\noindent{\\stepcounter{codelisting}\\small\\textbf{Listing \\thecodelisting:}\\if\\relax\\detokenize{#2}\\relax\\if\\relax\\detokenize{#1}\\relax\\else\\ \\texttt{\\detokenize{<<#1>>}}\\fi\\else\\ \\texttt{\\detokenize{#2}}\\if\\relax\\detokenize{#1}\\relax\\else\\quad\\textcolor{gray}{\\texttt{\\detokenize{<<#1>>}}}\\fi\\fi}\\par\\nopagebreak\\vspace{2pt}}",
     # noweb references inside highlighted code: texlinks.py rewrites
     # the placeholders notes.lua planted into \NowebRef calls. Plain
     # \hyperlink, not \hyperref[label]: label lookup explodes under
@@ -1415,13 +1424,25 @@ has written the LaTeX.
 #+name: notes-captions
 #+begin_src lua :tangle notes.lua
 -- Pandoc's org reader keeps :tangle and :noweb as block attributes;
--- blocks that land in a file get a paper-style numbered caption
--- naming it, plus the block's <<name>> when it has one. A named
--- region block (no target of its own, included through a reference)
--- is captioned with the file its includer tangles to, resolved
--- transitively over the whole document. Twins and illustrations are
--- referenced by nothing and tangle nowhere, so they stay
--- uncaptioned.
+-- every source block gets a paper-style numbered caption, so any
+-- listing in the book can be pointed at by number. What the caption
+-- says after the number is whatever identifies the block: the file
+-- it lands in, or its <<name>> when it reaches no file of its own,
+-- or nothing at all. A named region block (no target of its own,
+-- included through a reference) is captioned with the file its
+-- includer tangles to, resolved transitively over the whole
+-- document.
+--
+-- The test is what the block is, not whether it reaches a file. An
+-- example block is an illustration of markup rather than a listing
+-- of the program, so numbering one would put a listing number on
+-- text that is not a listing. Pandoc reads both as code blocks, and
+-- the only thing separating them is the class it hangs on each: a
+-- source block carries its language, an example block carries the
+-- literal word example. Every other org block that could be
+-- confused for one arrives as something else entirely, a quote as a
+-- block quote and an export as raw output, so example is the whole
+-- of what has to be excluded.
 --
 -- Syntax highlighting shreds a <<ref>> into operator and identifier
 -- tokens, so no literal <<ref>> survives into the .tex for a filter
@@ -1506,13 +1527,12 @@ function Pandoc(doc)
     if not file and el.identifier ~= '' then
       file = resolved[el.identifier]
     end
-    if file then
-      local caption
+    if el.classes[1] ~= 'example' then
+      local caption = anchor .. '\\codecaption'
       if el.identifier ~= '' then
-        caption = anchor .. '\\codecaption[' .. el.identifier .. ']{' .. file .. '}'
-      else
-        caption = '\\codecaption{' .. file .. '}'
+        caption = caption .. '[' .. el.identifier .. ']'
       end
+      caption = caption .. '{' .. (file or '') .. '}'
       return { pandoc.RawBlock('latex', caption), out }
     end
     if anchor ~= '' then

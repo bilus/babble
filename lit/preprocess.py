@@ -59,9 +59,18 @@ PREAMBLE = [
     # the corners, not enough to read as a panel
     "#+latex_header: \\definecolor{shadecolor}{RGB}{247,247,244}",
     "#+latex_header: \\usepackage[breakable,skins]{tcolorbox}",
-    "#+latex_header: \\newtcolorbox{listingground}{breakable,enhanced jigsaw,colback=shadecolor,colframe=shadecolor,boxrule=0pt,arc=4pt,outer arc=4pt,leftrule=0pt,rightrule=0pt,toprule=0pt,bottomrule=0pt,left=7pt,right=7pt,top=6pt,bottom=6pt,before skip=0pt,after skip=\\medskipamount}",
+    "#+latex_header: \\newtcolorbox{listingground}{breakable,enhanced jigsaw,colback=shadecolor,colframe=shadecolor,boxrule=0pt,arc=4pt,outer arc=4pt,leftrule=0pt,rightrule=0pt,toprule=0pt,bottomrule=0pt,left=7pt,right=7pt,top=5pt,bottom=11pt,before skip=0pt,after skip=\\medskipamount}",
     "#+latex_header: \\renewenvironment{Shaded}{\\begin{listingground}}{\\end{listingground}}",
-    "#+latex_header: \\newcommand{\\codecaption}[2][]{\\par\\medskip\\noindent{\\stepcounter{codelisting}\\small\\textbf{Listing \\thecodelisting:} \\texttt{\\detokenize{#2}}\\if\\relax\\detokenize{#1}\\relax\\else\\quad\\textcolor{gray}{\\texttt{\\detokenize{<<#1>>}}}\\fi}\\par\\nopagebreak\\vspace{2pt}}",
+    # a code line wider than the text block runs off the page and says
+    # nothing about it: fancyvrb neither wraps nor reports an overfull
+    # box, so the reader loses the end of the line with no warning
+    # anywhere. fvextra adds the breaking fancyvrb lacks. Breaking
+    # anywhere rather than at spaces is deliberate; the lines that
+    # overrun worst are long string literals and regexps, which have no
+    # spaces to break at
+    "#+latex_header: \\usepackage{fvextra}",
+    "#+latex_header: \\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\\\\{\\},breaklines,breakanywhere,breakindent=2em,breaksymbolleft=\\raisebox{0.3ex}{\\tiny\\ensuremath{\\hookrightarrow}},breaksymbolsepleft=0.3em,breaksymbolindentleft=0pt}",
+    "#+latex_header: \\newcommand{\\codecaption}[2][]{\\par\\medskip\\noindent{\\stepcounter{codelisting}\\small\\textbf{Listing \\thecodelisting:}\\if\\relax\\detokenize{#2}\\relax\\if\\relax\\detokenize{#1}\\relax\\else\\ \\texttt{\\detokenize{<<#1>>}}\\fi\\else\\ \\texttt{\\detokenize{#2}}\\if\\relax\\detokenize{#1}\\relax\\else\\quad\\textcolor{gray}{\\texttt{\\detokenize{<<#1>>}}}\\fi\\fi}\\par\\nopagebreak\\vspace{2pt}}",
     # noweb references inside highlighted code: texlinks.py rewrites
     # the placeholders notes.lua planted into \NowebRef calls. Plain
     # \hyperlink, not \hyperref[label]: label lookup explodes under
