@@ -61,127 +61,37 @@ every dynamic block, and the labels are spelled without the sigils,
 so the census never matches its own index.
 
 #+begin: plan-toc
-- [[file:BOOK.org::118][118]] entry: PLANNED Stage 22: comment syntax by language
-- [[file:BOOK.org::186][186]] entry: PLANNED Stage 21: the environment
-- [[file:BOOK.org::234][234]] entry: PLANNED Stage 12: the fixtures chapter
-- [[file:BOOK.org::297][297]] entry: PLANNED Stage 6: the oracle harness
-- [[file:BOOK.org::405][405]] entry: PLANNED Stage 7: org comments
-- [[file:BOOK.org::448][448]] entry: PLANNED Stage 8: noweb
-- [[file:BOOK.org::485][485]] entry: PLANNED Stage 9: dynamic blocks
-- [[file:BOOK.org::532][532]] entry: PLANNED Stage 10: the fence
-- [[file:BOOK.org::561][561]] entry: PLANNED Stage 11: parity and self-hosting
-- [[file:BOOK.org::726][726]] badge: PLANNED stage 22 edits the paragraph below (plan)
-- [[file:BOOK.org::731][731]] replacement: the file's own comment
-- [[file:BOOK.org::1078][1078]] badge: PLANNED stage 12 adds the paragraph below (plan)
-- [[file:BOOK.org::1170][1170]] badge: PLANNED stage 22 edits the paragraph below (plan)
-- [[file:BOOK.org::1184][1184]] replacement: the file's own comment syntax: ~//~ for .go, ~;;~ for
-- [[file:BOOK.org::1190][1190]] insertion: A target fed by blocks of two
-- [[file:BOOK.org::1318][1318]] deletion: , and ~#+include~ (org's file-inclusion
-- [[file:BOOK.org::1326][1326]] deletion: ~:comments org~ is limited to languages whose comment syn...
-- [[file:BOOK.org::1331][1331]] note: stage 22: the driver answers every language from the comment
-- [[file:BOOK.org::1677][1677]] badge: PLANNED stage 12 adds the chapter below (plan)
-- [[file:BOOK.org::3734][3734]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
-- [[file:BOOK.org::3740][3740]] badge: PLANNED stage 22 replaces the block below (plan)
-- [[file:BOOK.org::3781][3781]] twin of tangle-run
-- [[file:BOOK.org::3818][3818]] generated diff
-- [[file:BOOK.org::3910][3910]] badge: PLANNED stage 22 replaces the block above (plan)
-- [[file:BOOK.org::3916][3916]] twin of tangle-collect
-- [[file:BOOK.org::3967][3967]] generated diff
-- [[file:BOOK.org::4182][4182]] hole 7: extent between the anchors, then the docstring rule
-- [[file:BOOK.org::4188][4188]] hole 7: line-comment table per language, blank lines as a bare ma...
-- [[file:BOOK.org::4198][4198]] hole 8: named block first, else noweb-ref concatenation; cycles a...
-- [[file:BOOK.org::4210][4210]] badge: PLANNED stage 22 adds the table below and replaces the ba...
-- [[file:BOOK.org::4226][4226]] hole 22: built-in rows, then .lit/comments.json entries winning
-- [[file:BOOK.org::4230][4230]] hole 22: table lookup, hash for a language the table does not name
-- [[file:BOOK.org::4255][4255]] twin of tangle-banner
-- [[file:BOOK.org::4262][4262]] generated diff
-- [[file:BOOK.org::4282][4282]] badge: PLANNED stage 22 replaces the block below (plan)
-- [[file:BOOK.org::4321][4321]] twin of tangle-assemble
-- [[file:BOOK.org::4349][4349]] generated diff
-- [[file:BOOK.org::4408][4408]] hole 9: splice fresh interiors into the retained bytes, report ch...
-- [[file:BOOK.org::4418][4418]] hole 9: a line link per plan site, sites below the block shifted ...
-- [[file:BOOK.org::4424][4424]] hole 9: system diff -u over the two named bodies, temp-file heade...
-- [[file:BOOK.org::4467][4467]] badge: PLANNED stage 12 includes the two files below (plan)
-- [[file:BOOK.org::4957][4957]] badge: PLANNED stage 12 adds the test below (plan)
-- [[file:BOOK.org::5283][5283]] hole 6: ORACLE=1 in the environment
-- [[file:BOOK.org::5287][5287]] hole 6: UPDATE=1 in the environment
-- [[file:BOOK.org::5293][5293]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
-- [[file:BOOK.org::5305][5305]] hole 6: write the txtar's input files into dir, and name the book...
-- [[file:BOOK.org::5311][5311]] hole 6: copy lit/ in, run batch Emacs with the driver, fail loudl...
-- [[file:BOOK.org::5315][5315]] hole 6: every file on both sides, byte for byte, ignoring the inputs
-- [[file:BOOK.org::5319][5319]] hole 6: rewrite the fixture's want/ files from the oracle tree
-- [[file:BOOK.org::5662][5662]] badge: PLANNED stage 21 adds the two paragraphs below (plan)
-- [[file:BOOK.org::5685][5685]] insertion: devbox.json and its lockfile,
+- [[file:BOOK.org::96][96]] entry: PLANNED Stage 21: the environment
+- [[file:BOOK.org::144][144]] entry: PLANNED Stage 12: the fixtures chapter
+- [[file:BOOK.org::207][207]] entry: PLANNED Stage 6: the oracle harness
+- [[file:BOOK.org::315][315]] entry: PLANNED Stage 7: org comments
+- [[file:BOOK.org::356][356]] entry: PLANNED Stage 8: noweb
+- [[file:BOOK.org::393][393]] entry: PLANNED Stage 9: dynamic blocks
+- [[file:BOOK.org::440][440]] entry: PLANNED Stage 10: the fence
+- [[file:BOOK.org::469][469]] entry: PLANNED Stage 11: parity and self-hosting
+- [[file:BOOK.org::979][979]] badge: PLANNED stage 12 adds the paragraph below (plan)
+- [[file:BOOK.org::1221][1221]] note: stage 22: the driver answers every language from the comment
+- [[file:BOOK.org::1573][1573]] badge: PLANNED stage 12 adds the chapter below (plan)
+- [[file:BOOK.org::3630][3630]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
+- [[file:BOOK.org::3946][3946]] hole 7: extent between the anchors, then the docstring rule
+- [[file:BOOK.org::3952][3952]] hole 7: wrap in comments.prefix(lang), blank lines as a bare marker
+- [[file:BOOK.org::3962][3962]] hole 8: named block first, else noweb-ref concatenation; cycles a...
+- [[file:BOOK.org::4141][4141]] hole 9: splice fresh interiors into the retained bytes, report ch...
+- [[file:BOOK.org::4151][4151]] hole 9: a line link per plan site, sites below the block shifted ...
+- [[file:BOOK.org::4157][4157]] hole 9: system diff -u over the two named bodies, temp-file heade...
+- [[file:BOOK.org::4214][4214]] badge: PLANNED stage 12 includes the two files below (plan)
+- [[file:BOOK.org::4704][4704]] badge: PLANNED stage 12 adds the test below (plan)
+- [[file:BOOK.org::5030][5030]] hole 6: ORACLE=1 in the environment
+- [[file:BOOK.org::5034][5034]] hole 6: UPDATE=1 in the environment
+- [[file:BOOK.org::5040][5040]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
+- [[file:BOOK.org::5052][5052]] hole 6: write the txtar's input files into dir, and name the book...
+- [[file:BOOK.org::5058][5058]] hole 6: copy lit/ in, run batch Emacs with the driver, fail loudl...
+- [[file:BOOK.org::5062][5062]] hole 6: every file on both sides, byte for byte, ignoring the inputs
+- [[file:BOOK.org::5066][5066]] hole 6: rewrite the fixture's want/ files from the oracle tree
+- [[file:BOOK.org::5433][5433]] badge: PLANNED stage 21 adds the two paragraphs below (plan)
+- [[file:BOOK.org::5456][5456]] insertion: devbox.json and its lockfile,
 
 #+end:
-
-** PLANNED Stage 22: comment syntax by language                    :stage22:
-:PROPERTIES:
-:CUSTOM_ID: stage-22
-:SPEC:     The subset contract, Assembly; Writing a book for babble, How files assemble; Deviations
-:DEPS:     lit stage 2, accepted 2026-08-11
-:ACCEPTANCE: tangle-comment-table.txtar; make check; go test ./...
-:SIZE:     ~40 lines of Go, three prose edits, one fixture
-:END:
-
-Claim: after this stage babble decides a file's comment syntax the
-way the driver decides it: from the language that wrote the file,
-through one table that ~.lit/comments.json~ beside the book
-extends, with a hash for a language the table does not name and an
-error for a file fed by blocks of two languages.
-
-The driver moved first, in lit's stage 2, because babble's
-contract is byte-identical output and the driver is what the bytes
-are compared against. This stage is the follow. Until it lands the
-engines disagree on any target whose extension is not its
-language's own spelling, a ~go~ block writing ~.templ~ being the
-case that started this.
-
-Decided: (1) The table is the driver's table: ~go~ and ~js~ take
-~//~, ~emacs-lisp~ and ~elisp~ take ~;;~, ~lua~ takes ~--~, and a
-language in neither the built-in rows nor the config takes the
-hash. The extension stops mattering entirely; ~langExt~ and the
-~:tangle yes~ derivation stay untouched, since those are org's own
-naming rules. (2) The config is read with encoding/json, the stock
-parser, as the driver reads it with json-parse-buffer. Where a key
-repeats, the last entry wins in both readers. (3) The refusal of a
-target fed by two languages lives in collect, so it precedes every
-write, which is the property collect already promises. (4) The
-banner takes the unit's language from its first block, which after
-the collect refusal is every block's language. (5) The deviation
-recording that ~:comments org~ is limited to the driver's own
-language modes is struck: the driver answers every language from
-the table now, so the limitation is gone and there is nothing to
-deviate from. wrapComment, stage 7's hole, will read this same
-table.
-
-The fixture lands at acceptance and is seen to fail first: with
-the table in place, drop the ~go~ row and watch
-tangle-comment-table fail on the banner line before restoring it.
-
-- [ ] plan approved (the human ticks this box)
-- [ ] twins accepted: :tangle headers swapped, old blocks DROPPED
-- [ ] HOLE(22) loadCommentTable and prefix filled, tests in the
-  same commit
-- [ ] tangle-comment-table.txtar added, seen to fail, fixture
-  table row added
-- [ ] inserted prose reads steady-state
-- [ ] census clean for stage 22, suite green
-- [ ] Changes entry dated and filed, plan entry deleted
-
-*** Changes draft
-
-#+begin_quote
-babble's banner moved onto the comment table the driver reads: one
-map from language to line-comment prefix, extended by
-~.lit/comments.json~ beside the book, with the hash for a language
-the table does not name. The file's extension stopped mattering,
-so a ~go~ block writing a ~.templ~ file opens with ~//~ in both
-engines. A target fed by blocks of two languages became an error
-raised before anything is written. The deviation limiting
-~:comments org~ to the driver's own language modes went away with
-the limitation it recorded.
-#+end_quote
 
 ** PLANNED Stage 21: the environment                               :stage21:
 :PROPERTIES:
@@ -420,14 +330,12 @@ last paragraph; keyword lines drop, a leading Note: or Apropos:
 sigil drops, and the result wraps in the language's line-comment
 syntax with blank comment lines trimmed of their trailing space.
 
-Decided: the supported comment languages are go, python,
-emacs-lisp, sh, and makefile; any other language under
-~:comments org~ is an error. The reason is an oracle trap: batch
-Emacs without a language's mode silently keeps the previous block's
-mode, so comment syntax leaks from block to block in file order.
-That order-dependence is out of the subset. The banner is different:
-it keys on the file extension with a ~#~ default and stays open to
-every language.
+Decided: the doc comment reads the comment table, the one the
+banner reads, so the two agree by construction and a project that
+teaches the toolchain a language teaches it once. The trap this
+entry used to describe, batch Emacs keeping the previous block's
+mode when a language has none, is gone: the driver answers every
+language from the table now.
 
 - [ ] inserted prose reads steady-state
 - [ ] Changes draft below reads right in the journal
@@ -723,18 +631,11 @@ not a bug being reproduced: the driver hardcodes the string, babble
 hardcodes the same string, and matching the oracle means keeping
 it. Every book gets the same banner whatever it is called.
 
-*************** PLANNED stage 22 edits the paragraph below ([[#stage-22][plan]]) :stage22:
-Comment syntax follows the language, matching the driver, so the
-guide stops spelling the table by extension.
-*************** END
-
-Every tangled file opens with that banner in {~~the file's own comment
-syntax (~//~ for .go, ~;;~ for .el, ~--~
-for .lua, ~#~ for everything else)~>the comment syntax of the
+Every tangled file opens with that banner in the comment syntax of the
 language that wrote it: ~//~ for go and js, ~;;~ for emacs-lisp,
 ~--~ for lua, and ~#~ for a language the comment table does not
 name, with ~.lit/comments.json~ beside the book adding languages
-or overriding these~~}, then one blank line, then the
+or overriding these, then one blank line, then the
 code. Tangling
 again without changing the book rewrites nothing: the target's
 bytes already match, so its timestamp survives and nothing
@@ -875,10 +776,10 @@ A paragraph opening with ~Note:~ or ~Apropos:~ is an aside: the
 weave styles it, and the tangle drops the aside marker and keeps the
 text, so the aside lands in the source as an ordinary comment.
 
-Doc comments work for go, python, emacs-lisp, sh, and makefile
-blocks; any other language under ~:comments org~ is an error,
-because without a language mode, batch Emacs keeps the
-previous block's comment syntax.
+Doc comments come out in the language's own line-comment syntax,
+read from the same table the banner reads, so a language the table
+does not name gets a hash and a project adds its own through
+~.lit/comments.json~.
 
 ** Splitting code with noweb
 
@@ -1167,11 +1068,6 @@ trailing blanks never reach a target either way.
 
 ** Assembly
 
-*************** PLANNED stage 22 edits the paragraph below ([[#stage-22][plan]]) :stage22:
-The contract states the banner table, so it moves with the table
-to the language key and gains the one-language-per-file rule.
-*************** END
-
 Each target file is its blocks in document order, with one blank
 line between consecutive blocks and a single final newline at end
 of file. The blank line is org's padline and it is switchable: a
@@ -1181,16 +1077,15 @@ one blank line between bodies, not one blank line in the file, so
 an empty block still contributes its own newline and two adjacent
 empties show up as a run. The first line is the generated-file
 banner, ~Code generated from BOOK.org by make tangle. DO NOT
-EDIT.~, in {~~the file's own comment syntax: ~//~ for .go, ~;;~ for
-.el, ~--~ for .lua, ~#~ for everything else~>the comment syntax of
+EDIT.~, in the comment syntax of
 the language that wrote the file: ~//~ for go and js, ~;;~ for
 emacs-lisp and elisp, ~--~ for lua, ~#~ for a language the comment
 table does not name, with ~.lit/comments.json~ beside the book
-adding languages or overriding these~~},
-followed by one blank line. {++A target fed by blocks of two
+adding languages or overriding these,
+followed by one blank line. A target fed by blocks of two
 languages is an error naming the file and both languages, raised
 before anything is written, since one file takes one comment
-syntax.++}
+syntax.
 
 The banner names BOOK.org whatever the book is actually called.
 Both engines hardcode the same string, so a book named b.org still
@@ -1315,22 +1210,23 @@ message always names the construct and the supported alternative.
   attachment one), the ~-r~ and ~-l~
   coderef switches (org's code-reference labels), accumulating
   ~header-args+~ properties, inline src blocks (code blocks inside
-  a prose line){--, and ~#+include~ (org's file-inclusion
-  keyword)--}.
+  a prose line).
   The inert keys (evaluation-only arguments such as ~:results~ and
   ~:exports~, and the ~-n~ and ~-k~ switches) pass through because
   the oracle's tangle path never reads them. The
   tangle-inert fixture carries one block with every one of them and
   one block with none, and requires the two targets to come out
   identical.
-- {--~:comments org~ is limited to languages whose comment syntax the
-  batch-Emacs driver actually has: go, python, emacs-lisp, sh,
-  makefile. In batch Emacs a missing language mode silently leaves
-  the previous block's language mode active, so comment syntax leaks from
-  an earlier block; that order-dependence stays out of the subset.--}
+- 
   {>>stage 22: the driver answers every language from the comment
   table now, so the limitation this entry recorded is gone and both
   engines agree; nothing is left to deviate from<<}
+- ~.lit/comments.json~ is looked for beside the book. The driver
+  resolves the book's path a second time inside a buffer already
+  visiting it, so a relative path naming a subdirectory looks one
+  level too deep and finds nothing; babble looks where the file is.
+  The make rules always name the book from its own directory, so the
+  two agree on every path the toolchain itself uses.
 - Block and dynamic-block delimiters quoted verbatim inside
   example, src, export, or comment block bodies are a lint error:
   org's raw backward searches would anchor comment extents on them,
@@ -3737,49 +3633,12 @@ func Lint(d *book.Document) error {
 
 * The tangle engine
 
-*************** PLANNED stage 22 replaces the block below ([[#stage-22][plan]]) :stage22:
-The twin loads the comment table beside the book and threads it
-into assembly; encoding/json rides in this block's import list.
-*************** END
-
 Package tangle turns a tree into files. Run is the whole pass:
 collect the eligible blocks, resolve their targets, assemble each
 file with its banner, and write only what changed.
 
 #+name: tangle-run
 #+begin_src go :tangle internal/tangle/tangle.go :comments org
-package tangle
-
-import (
-	"bytes"
-	"fmt"
-	"os"
-	"path/filepath"
-	"strings"
-
-	"github.com/bilus/babble/internal/book"
-)
-
-func Run(d *book.Document) error {
-	units, err := collect(d)
-	if err != nil {
-		return err
-	}
-	for _, u := range units {
-		content, err := assemble(d, u)
-		if err != nil {
-			return err
-		}
-		if err := writeTarget(d.Path, u, content); err != nil {
-			return err
-		}
-	}
-	return nil
-}
-#+end_src
-
-#+name: tangle-run--planned
-#+begin_src go :tangle no
 package tangle
 
 import (
@@ -3794,11 +3653,11 @@ import (
 )
 
 func Run(d *book.Document) error {
-	units, err := collect(d)
+	comments, err := loadCommentTable(d.Path)
 	if err != nil {
 		return err
 	}
-	comments, err := loadCommentTable(d.Path)
+	units, err := collect(d)
 	if err != nil {
 		return err
 	}
@@ -3815,33 +3674,6 @@ func Run(d *book.Document) error {
 }
 #+end_src
 
-#+begin: src-block-diff :old tangle-run :new tangle-run--planned
-#+begin_src diff
-@@ -2,6 +2,7 @@
- 
- import (
- 	"bytes"
-+	"encoding/json"
- 	"fmt"
- 	"os"
- 	"path/filepath"
-@@ -15,8 +16,12 @@
- 	if err != nil {
- 		return err
- 	}
-+	comments, err := loadCommentTable(d.Path)
-+	if err != nil {
-+		return err
-+	}
- 	for _, u := range units {
--		content, err := assemble(d, u)
-+		content, err := assemble(d, u, comments)
- 		if err != nil {
- 			return err
- 		}
-#+end_src
-#+end:
-
 A unit is one target file's worth of blocks, in document order;
 collect builds them in first-appearance order, skipping COMMENT
 and ARCHIVE subtrees, erroring on a languageless block.
@@ -3857,6 +3689,7 @@ and a failure on the third target leaves the first two on disk.
 #+begin_src go :tangle internal/tangle/tangle.go :comments org
 type unit struct {
 	target string
+	lang   string
 	blocks []*book.SrcBlock
 }
 #+end_src
@@ -3897,63 +3730,11 @@ func collect(d *book.Document) ([]unit, error) {
 			if !seen {
 				i = len(units)
 				at[target] = i
-				units = append(units, unit{target: target})
+				units = append(units, unit{target: target, lang: n.Lang})
 			}
-			units[i].blocks = append(units[i].blocks, n)
-		}
-		return true
-	})
-	return units, firstErr
-}
-#+end_src
-
-*************** PLANNED stage 22 replaces the block above ([[#stage-22][plan]]) :stage22:
-The twin adds the refusal of a target fed by two languages. It
-sits in collect so it precedes every write, the property this
-function already promises.
-*************** END
-
-#+name: tangle-collect--planned
-#+begin_src go :tangle no
-func collect(d *book.Document) ([]unit, error) {
-	var units []unit
-	var firstErr error
-	at := map[string]int{}
-	fail := func(format string, args ...any) {
-		if firstErr == nil {
-			firstErr = fmt.Errorf(format, args...)
-		}
-	}
-	d.Walk(func(n book.Node) bool {
-		switch n := n.(type) {
-		case *book.Headline:
-			return !n.Commented && !n.Archived
-		case *book.SrcBlock:
-			if n.Lang == "" {
-				fail("%s:%d: src block without a language", d.Path, n.Line)
-				return true
-			}
-			if n.Params.Tangle == "no" || n.Params.Tangle == "" {
-				return true
-			}
-			target, err := targetFor(d, n)
-			if err != nil {
-				fail("%s", err)
-				return true
-			}
-			if sameFile(d.Path, target) {
-				fail("%s:%d: refusing to tangle into the book itself: %s", d.Path, n.Line, target)
-				return true
-			}
-			i, seen := at[target]
-			if !seen {
-				i = len(units)
-				at[target] = i
-				units = append(units, unit{target: target})
-			}
-			if prev := units[i].blocks; len(prev) > 0 && prev[0].Lang != n.Lang {
+			if units[i].lang != n.Lang {
 				fail("%s: blocks in %s and %s; one file takes one comment syntax",
-					target, prev[0].Lang, n.Lang)
+					target, units[i].lang, n.Lang)
 				return true
 			}
 			units[i].blocks = append(units[i].blocks, n)
@@ -3963,23 +3744,6 @@ func collect(d *book.Document) ([]unit, error) {
 	return units, firstErr
 }
 #+end_src
-
-#+begin: src-block-diff :old tangle-collect :new tangle-collect--planned
-#+begin_src diff
-@@ -34,6 +34,11 @@
- 				at[target] = i
- 				units = append(units, unit{target: target})
- 			}
-+			if prev := units[i].blocks; len(prev) > 0 && prev[0].Lang != n.Lang {
-+				fail("%s: blocks in %s and %s; one file takes one comment syntax",
-+					target, prev[0].Lang, n.Lang)
-+				return true
-+			}
- 			units[i].blocks = append(units[i].blocks, n)
- 		}
- 		return true
-#+end_src
-#+end:
 
 A target is a path, a derived name, or nothing. The derived name
 is the book's own, with the language's extension, and the map of
@@ -4178,14 +3942,14 @@ driver splits it: what text the extent and docstring rule choose,
 then how the language's comment syntax wears it.
 
 #+begin_src go :tangle internal/tangle/tangle.go :comments org
-func commentFor(d *book.Document, b *book.SrcBlock) (string, error) {
+func commentFor(d *book.Document, b *book.SrcBlock, comments commentTable) (string, error) {
 	panic("HOLE(7): extent between the anchors, then the docstring rule")
 }
 #+end_src
 
 #+begin_src go :tangle internal/tangle/tangle.go
-func wrapComment(lang, text string) (string, error) {
-	panic("HOLE(7): line-comment table per language, blank lines as a bare marker")
+func wrapComment(lang, text string, comments commentTable) (string, error) {
+	panic("HOLE(7): wrap in comments.prefix(lang), blank lines as a bare marker")
 }
 #+end_src
 
@@ -4207,27 +3971,80 @@ that a book which would overwrite itself leaves nothing on disk at
 all; having it here once meant the refusal fired after other
 targets were already written.
 
-*************** PLANNED stage 22 adds the table below and replaces the banner ([[#stage-22][plan]]) :stage22:
-The comment table arrives as holes, and banner's twin reads it
-instead of the extension. Nothing calls the holes until the twins
-swap, so the suite stays green.
-*************** END
-
 One table gives every language its line-comment prefix. The
 built-in rows name the languages the toolchain's own books tangle,
 ~.lit/comments.json~ beside the book adds languages or overrides
 these, its entries winning, and a language in neither takes the
 hash.
 
+Four rules govern the file itself. They exist because the driver
+reads it with Emacs's JSON parser and babble reads it with Go's, and
+those two parsers disagree in ways that change the bytes a tangle
+writes.
+
+A missing file is not an error, and neither is a file that cannot be
+read. The driver skips both without a word. A babble that refused
+would refuse every book in this repository, since none of them has
+the file.
+
+A value that is not a string is an error in both engines. That
+includes JSON null. Go would otherwise store null as the empty
+string and give every banner a leading space, where the driver
+refuses to tangle at all.
+
+Content after the closing brace is accepted, because Emacs reads one
+value and ignores whatever follows it. Go's usual reader rejects the
+whole document instead, so babble decodes one value and stops.
+
+A prefix that is present but empty is used as it stands. The elisp
+lookup treats the empty string as an answer; the Go habit of testing
+whether a value is empty would fall through to the hash.
+
 #+begin_src go :tangle internal/tangle/tangle.go :comments org
 type commentTable map[string]string
 
-func loadCommentTable(bookPath string) (commentTable, error) {
-	panic("HOLE(22): built-in rows, then .lit/comments.json entries winning")
+// The rows the toolchain's own books need. A language absent from
+// the table takes the hash, which comments shells, Python, Ruby and
+// make; the languages that would read a hash as code name themselves
+// here or in the project's own file.
+var builtinComments = commentTable{
+	"go": "//", "js": "//",
+	"emacs-lisp": ";;", "elisp": ";;",
+	"lua": "--",
 }
 
+func loadCommentTable(bookPath string) (commentTable, error) {
+	t := commentTable{}
+	for lang, prefix := range builtinComments {
+		t[lang] = prefix
+	}
+	path := filepath.Join(filepath.Dir(bookPath), ".lit", "comments.json")
+	f, err := os.Open(path)
+	if err != nil {
+		return t, nil
+	}
+	defer f.Close()
+	var raw map[string]any
+	if err := json.NewDecoder(f).Decode(&raw); err != nil {
+		return nil, fmt.Errorf("%s: %w", path, err)
+	}
+	for lang, v := range raw {
+		prefix, ok := v.(string)
+		if !ok {
+			return nil, fmt.Errorf("%s: comment prefix for %s is not a string", path, lang)
+		}
+		t[lang] = prefix
+	}
+	return t, nil
+}
+
+// A prefix that is present wins even when it is empty, which is why
+// this reads the second return value rather than testing for "".
 func (t commentTable) prefix(lang string) string {
-	panic("HOLE(22): table lookup, hash for a language the table does not name")
+	if prefix, ok := t[lang]; ok {
+		return prefix
+	}
+	return "#"
 }
 #+end_src
 
@@ -4238,52 +4055,10 @@ directory depended on which block happened to come first.
 
 #+name: tangle-banner
 #+begin_src go :tangle internal/tangle/tangle.go :comments org
-func banner(target string) string {
-	prefix := "# "
-	switch filepath.Ext(target) {
-	case ".go":
-		prefix = "// "
-	case ".el":
-		prefix = ";; "
-	case ".lua":
-		prefix = "-- "
-	}
-	return prefix + "Code generated from BOOK.org by make tangle. DO NOT EDIT.\n"
-}
-#+end_src
-
-#+name: tangle-banner--planned
-#+begin_src go :tangle no
 func banner(lang string, comments commentTable) string {
 	return comments.prefix(lang) + " Code generated from BOOK.org by make tangle. DO NOT EDIT.\n"
 }
 #+end_src
-
-#+begin: src-block-diff :old tangle-banner :new tangle-banner--planned
-#+begin_src diff
-@@ -1,12 +1,3 @@
--func banner(target string) string {
--	prefix := "# "
--	switch filepath.Ext(target) {
--	case ".go":
--		prefix = "// "
--	case ".el":
--		prefix = ";; "
--	case ".lua":
--		prefix = "-- "
--	}
--	return prefix + "Code generated from BOOK.org by make tangle. DO NOT EDIT.\n"
-+func banner(lang string, comments commentTable) string {
-+	return comments.prefix(lang) + " Code generated from BOOK.org by make tangle. DO NOT EDIT.\n"
- }
-#+end_src
-#+end:
-
-*************** PLANNED stage 22 replaces the block below ([[#stage-22][plan]]) :stage22:
-The twin takes the banner from the unit's language rather than its
-target path. After collect's refusal every block in a unit shares
-one language, so the first block's answer is the unit's.
-*************** END
 
 The file is its blocks in order, a blank line between them unless
 one asks for none, and a newline after each. The banner and the
@@ -4292,44 +4067,16 @@ hook puts them.
 
 #+name: tangle-assemble
 #+begin_src go :tangle internal/tangle/tangle.go :comments org
-func assemble(d *book.Document, u unit) ([]byte, error) {
-	var out strings.Builder
-	out.WriteString(banner(u.target))
-	out.WriteString("\n")
-	for i, b := range u.blocks {
-		if i > 0 && b.Params.Padline {
-			out.WriteString("\n")
-		}
-		if b.Params.Comments == "org" {
-			comment, err := commentFor(d, b)
-			if err != nil {
-				return nil, err
-			}
-			out.WriteString(comment)
-		}
-		body, err := bodyText(d, b)
-		if err != nil {
-			return nil, err
-		}
-		out.WriteString(body)
-		out.WriteString("\n")
-	}
-	return []byte(out.String()), nil
-}
-#+end_src
-
-#+name: tangle-assemble--planned
-#+begin_src go :tangle no
 func assemble(d *book.Document, u unit, comments commentTable) ([]byte, error) {
 	var out strings.Builder
-	out.WriteString(banner(u.blocks[0].Lang, comments))
+	out.WriteString(banner(u.lang, comments))
 	out.WriteString("\n")
 	for i, b := range u.blocks {
 		if i > 0 && b.Params.Padline {
 			out.WriteString("\n")
 		}
 		if b.Params.Comments == "org" {
-			comment, err := commentFor(d, b)
+			comment, err := commentFor(d, b, comments)
 			if err != nil {
 				return nil, err
 			}
@@ -4345,20 +4092,6 @@ func assemble(d *book.Document, u unit, comments commentTable) ([]byte, error) {
 	return []byte(out.String()), nil
 }
 #+end_src
-
-#+begin: src-block-diff :old tangle-assemble :new tangle-assemble--planned
-#+begin_src diff
-@@ -1,6 +1,6 @@
--func assemble(d *book.Document, u unit) ([]byte, error) {
-+func assemble(d *book.Document, u unit, comments commentTable) ([]byte, error) {
- 	var out strings.Builder
--	out.WriteString(banner(u.target))
-+	out.WriteString(banner(u.blocks[0].Lang, comments))
- 	out.WriteString("\n")
- 	for i, b := range u.blocks {
- 		if i > 0 && b.Params.Padline {
-#+end_src
-#+end:
 
 #+begin_src go :tangle internal/tangle/tangle.go :comments org
 func writeTarget(bookPath string, u unit, content []byte) error {
@@ -4463,6 +4196,20 @@ The suite as it stands, by what each file pins:
 | tangle-inert.txtar | the inert keys, proved to move no bytes |
 | tangle-tabs.txtar | dedenting when a tab straddles the cut |
 | init-guards.txtar | what init refuses to overwrite |
+| tangle-comment-table.txtar | comment syntax by language, and its four edges |
+
+tangle-comment-table pins four requirements. A go block writing a
+~.templ~ file opens with ~//~, since the marker follows the language
+and not the extension. A language the built-in table does not name
+opens with ~#~, unless ~.lit/comments.json~ names it. A prefix that
+is present but empty is used as it stands, where the Go habit of
+testing whether a value is empty would give a hash instead. A file
+fed by blocks of two languages is refused with nothing written.
+
+The last three are edges where the two engines read the same file
+with different parsers and could write different bytes without
+either of them failing. Each requirement was checked by breaking the
+code that satisfies it and watching the fixture report the break.
 
 *************** PLANNED stage 12 includes the two files below ([[#stage-12][plan]]) :stage12:
 The weave expands these; the tangle walks past them. What a reader
@@ -5442,6 +5189,30 @@ func TestDump(t *testing.T) {
 #+end_src
 
 * Changes
+
+** [2026-08-21] Comment syntax by language
+
+#+begin_quote
+babble's banner moved onto the comment table the driver reads: one
+map from language to line-comment prefix, extended by
+~.lit/comments.json~ beside the book, with a hash for a language the
+table does not name. The file's extension stopped mattering, so a
+~go~ block writing a ~.templ~ file opens with ~//~ in both engines.
+A target fed by blocks of two languages became an error raised
+before anything is written, and a unit now carries the language it
+was opened with, so assembly asks the unit rather than trusting its
+first block. The doc-comment writer takes the same table, so the
+stage that fills it inherits one rather than inventing a second. The
+deviation limiting ~:comments org~ to the driver's own language
+modes went away with the limitation it recorded.
+
+Four rules exist because Emacs and Go read the config with different
+parsers. A missing or unreadable file is not an error. A value that
+is not a string is, and that includes null, which Go would otherwise
+store as an empty string. Content after the closing brace is
+accepted, since Emacs reads one value and ignores the rest. And a
+prefix that is present but empty is used as it stands.
+#+end_quote
 
 ** [2026-08-21] vendor
 

@@ -7,6 +7,7 @@ package tangle
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -16,12 +17,16 @@ import (
 )
 
 func Run(d *book.Document) error {
+	comments, err := loadCommentTable(d.Path)
+	if err != nil {
+		return err
+	}
 	units, err := collect(d)
 	if err != nil {
 		return err
 	}
 	for _, u := range units {
-		content, err := assemble(d, u)
+		content, err := assemble(d, u, comments)
 		if err != nil {
 			return err
 		}
@@ -41,6 +46,7 @@ func Run(d *book.Document) error {
 // and a failure on the third target leaves the first two on disk.
 type unit struct {
 	target string
+	lang   string
 	blocks []*book.SrcBlock
 }
 
@@ -78,7 +84,12 @@ func collect(d *book.Document) ([]unit, error) {
 			if !seen {
 				i = len(units)
 				at[target] = i
-				units = append(units, unit{target: target})
+				units = append(units, unit{target: target, lang: n.Lang})
+			}
+			if units[i].lang != n.Lang {
+				fail("%s: blocks in %s and %s; one file takes one comment syntax",
+					target, units[i].lang, n.Lang)
+				return true
 			}
 			units[i].blocks = append(units[i].blocks, n)
 		}
@@ -247,12 +258,12 @@ func cutColumns(line string, n int) string {
 // commentFor and wrapComment split the doc-comment story where the
 // driver splits it: what text the extent and docstring rule choose,
 // then how the language's comment syntax wears it.
-func commentFor(d *book.Document, b *book.SrcBlock) (string, error) {
+func commentFor(d *book.Document, b *book.SrcBlock, comments commentTable) (string, error) {
 	panic("HOLE(7): extent between the anchors, then the docstring rule")
 }
 
-func wrapComment(lang, text string) (string, error) {
-	panic("HOLE(7): line-comment table per language, blank lines as a bare marker")
+func wrapComment(lang, text string, comments commentTable) (string, error) {
+	panic("HOLE(7): wrap in comments.prefix(lang), blank lines as a bare marker")
 }
 
 // expandNoweb resolves references against the tree: a named block
@@ -262,52 +273,77 @@ func expandNoweb(d *book.Document, b *book.SrcBlock, body string) (string, error
 	panic("HOLE(8): named block first, else noweb-ref concatenation; cycles and misses error")
 }
 
-// One table gives every language its line-comment prefix. The
-// built-in rows name the languages the toolchain's own books tangle,
-// ~.lit/comments.json~ beside the book adds languages or overrides
-// these, its entries winning, and a language in neither takes the
-// hash.
+// A prefix that is present but empty is used as it stands. The elisp
+// lookup treats the empty string as an answer; the Go habit of testing
+// whether a value is empty would fall through to the hash.
 type commentTable map[string]string
 
-func loadCommentTable(bookPath string) (commentTable, error) {
-	panic("HOLE(22): built-in rows, then .lit/comments.json entries winning")
+// The rows the toolchain's own books need. A language absent from
+// the table takes the hash, which comments shells, Python, Ruby and
+// make; the languages that would read a hash as code name themselves
+// here or in the project's own file.
+var builtinComments = commentTable{
+	"go": "//", "js": "//",
+	"emacs-lisp": ";;", "elisp": ";;",
+	"lua": "--",
 }
 
+func loadCommentTable(bookPath string) (commentTable, error) {
+	t := commentTable{}
+	for lang, prefix := range builtinComments {
+		t[lang] = prefix
+	}
+	path := filepath.Join(filepath.Dir(bookPath), ".lit", "comments.json")
+	f, err := os.Open(path)
+	if err != nil {
+		return t, nil
+	}
+	defer f.Close()
+	var raw map[string]any
+	if err := json.NewDecoder(f).Decode(&raw); err != nil {
+		return nil, fmt.Errorf("%s: %w", path, err)
+	}
+	for lang, v := range raw {
+		prefix, ok := v.(string)
+		if !ok {
+			return nil, fmt.Errorf("%s: comment prefix for %s is not a string", path, lang)
+		}
+		t[lang] = prefix
+	}
+	return t, nil
+}
+
+// A prefix that is present wins even when it is empty, which is why
+// this reads the second return value rather than testing for "".
 func (t commentTable) prefix(lang string) string {
-	panic("HOLE(22): table lookup, hash for a language the table does not name")
+	if prefix, ok := t[lang]; ok {
+		return prefix
+	}
+	return "#"
 }
 
 // A directory is created when any block in the unit asks for it, not
 // when the first one does. Blocks sharing a target can disagree about
 // ~:mkdirp~, and taking the first block's answer meant the file's
 // directory depended on which block happened to come first.
-func banner(target string) string {
-	prefix := "# "
-	switch filepath.Ext(target) {
-	case ".go":
-		prefix = "// "
-	case ".el":
-		prefix = ";; "
-	case ".lua":
-		prefix = "-- "
-	}
-	return prefix + "Code generated from BOOK.org by make tangle. DO NOT EDIT.\n"
+func banner(lang string, comments commentTable) string {
+	return comments.prefix(lang) + " Code generated from BOOK.org by make tangle. DO NOT EDIT.\n"
 }
 
 // The file is its blocks in order, a blank line between them unless
 // one asks for none, and a newline after each. The banner and the
 // blank line under it open the file, which is where the driver's
 // hook puts them.
-func assemble(d *book.Document, u unit) ([]byte, error) {
+func assemble(d *book.Document, u unit, comments commentTable) ([]byte, error) {
 	var out strings.Builder
-	out.WriteString(banner(u.target))
+	out.WriteString(banner(u.lang, comments))
 	out.WriteString("\n")
 	for i, b := range u.blocks {
 		if i > 0 && b.Params.Padline {
 			out.WriteString("\n")
 		}
 		if b.Params.Comments == "org" {
-			comment, err := commentFor(d, b)
+			comment, err := commentFor(d, b, comments)
 			if err != nil {
 				return nil, err
 			}

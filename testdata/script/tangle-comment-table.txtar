@@ -1,0 +1,90 @@
+# The banner's comment marker comes from the language a block is
+# written in, never from the file's extension: a go block writing a
+# .templ file opens with //, and a language the table does not name
+# opens with # unless .lit/comments.json names it. A file fed by
+# blocks of two languages is refused before anything is written. A
+# prefix that is present but empty is used as it stands, which is the
+# case a zero-value test in Go would silently turn back into #.
+
+exec babble tangle b.org
+cmp views/card.templ want-card.templ
+cmp main.zig want-main.zig
+cmp run.sh want-run.sh
+
+! exec babble tangle mixed.org
+stderr 'blocks in go and js'
+! exists mixed.out
+
+cp empty.json .lit/comments.json
+exec babble tangle empty.org
+cmp bare.zig want-bare.zig
+
+cp badvalue.json .lit/comments.json
+! exec babble tangle badvalue.org
+stderr 'is not a string'
+! exists a.go
+
+-- .lit/comments.json --
+{"zig": "//"}
+-- b.org --
+#+title: comment table
+
+* A go block writing a file named for another tool
+
+#+begin_src go :tangle views/card.templ
+templ Card() {}
+#+end_src
+
+* A language the built-in table does not name
+
+#+begin_src zig :tangle main.zig
+pub fn main() void {}
+#+end_src
+
+* A language nothing names
+
+#+begin_src sh :tangle run.sh
+echo hi
+#+end_src
+-- mixed.org --
+#+title: two languages, one file
+
+#+begin_src go :tangle mixed.out
+package a
+#+end_src
+
+#+begin_src js :tangle mixed.out
+export default 1;
+#+end_src
+-- empty.json --
+{"zig": ""}
+-- empty.org --
+#+title: a prefix that is present and empty
+
+#+begin_src zig :tangle bare.zig
+pub fn main() void {}
+#+end_src
+-- want-bare.zig --
+ Code generated from BOOK.org by make tangle. DO NOT EDIT.
+
+pub fn main() void {}
+-- badvalue.json --
+{"go": null}
+-- badvalue.org --
+#+title: a prefix that is not a string
+
+#+begin_src go :tangle a.go
+package a
+#+end_src
+-- want-card.templ --
+// Code generated from BOOK.org by make tangle. DO NOT EDIT.
+
+templ Card() {}
+-- want-main.zig --
+// Code generated from BOOK.org by make tangle. DO NOT EDIT.
+
+pub fn main() void {}
+-- want-run.sh --
+# Code generated from BOOK.org by make tangle. DO NOT EDIT.
+
+echo hi
