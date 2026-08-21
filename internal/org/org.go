@@ -40,6 +40,15 @@ func ParseBytes(src []byte, path string) (*book.Document, error) {
 	return d, nil
 }
 
+// checkDynamicBlocks refuses a book where org's raw search for a
+// dynamic-block opener and the tree disagree about where the dynamic
+// blocks are.
+var dblockStart = regexp.MustCompile(`(?i)^[ \t]*#\+begin:[ \t]+(\S+)`)
+
+func checkDynamicBlocks(d *book.Document) error {
+	panic("HOLE(9): compare org's raw opener search against the tree, both directions")
+}
+
 // The parser holds the source, a line index and an offset, which is
 // the buffer position org calls point. Every element parser reads
 // the line at that offset when it needs to decide something, which
@@ -1018,16 +1027,4 @@ func LintQuotedDelimiters(d *book.Document) error {
 		return true
 	})
 	return err
-}
-
-// So the question is not what a line looks like. It is whether the two
-// engines find the same set of dynamic blocks. babble can ask that
-// directly: run org's own opener pattern over the raw source, collect
-// what the tree reports, and compare the two lists by line number. A
-// line only org finds is a delimiter that needs a comma. A line only
-// the tree finds is one written without the space org's pattern wants
-// after the colon. Either way the book gets an error naming the line,
-// and neither engine has to imitate the other.
-func LintDynamicBlocks(d *book.Document) error {
-	panic("HOLE(9): refuse a book where org's raw opener search and the tree disagree")
 }

@@ -38,39 +38,32 @@ func Run(d *book.Document) error {
 	return nil
 }
 
-// The order is also why this is a function and not a paragraph in two
-// command implementations. ~babble tangle~ and the oracle harness both
-// need it, and when each carried its own copy they disagreed: the
-// harness never ran the lint, so the cross-check was quietly measuring
-// something the command does not do.
-func Book(path string) error {
-	panic("HOLE(9): read, refresh, write back if changed, read again, tangle")
-}
-
-// read is the front half, and it is separate because Book performs
-// it twice on the same path.
-func read(path string) (*book.Document, error) {
-	panic("HOLE(9): parse, resolve, and run the lints the fence owns so far")
-}
-
-// A book is rewritten the way a target is: beside itself, then
-// renamed over. The driver writes in place, which is what Emacs does
-// when it saves a buffer, and the bytes are the same either way. The
-// difference only shows when a run dies in the middle of the write,
-// and the file at stake here is the program itself.
-func replaceBook(path string, body []byte) error {
-	panic("HOLE(9): write beside the book and rename over it")
-}
-
-// The shape is the tangling shape minus one step. Comma escapes come
-// off, one trailing newline comes off, and the body is dedented unless
-// the block asked to keep its indentation. Noweb references stay as
-// they are written, because the driver asks org-babel for the body and
-// org-babel expands nothing at that point. So a twin of a block full
-// of references shows a diff of the references, which is also the
-// diff a reader wants to see.
+// NamedBody is the body of the first block carrying name, shaped the
+// way org-babel hands a body over: comma escapes off, one trailing
+// newline off, dedented unless the block keeps its indentation, and
+// noweb references left standing.
+//
+// That shape is the tangling shape minus one step. References stay as
+// written because the driver asks org-babel for the body and org-babel
+// expands nothing at that point, so a twin of a block full of
+// references shows a diff of the references, which is also the diff a
+// reader wants to see.
+//
+// The lookup underneath it is the whole-document one, not the lookup
+// noweb uses. Those two differ on purpose. Noweb refuses a name whose
+// first definition sits under a COMMENT heading, because org's noweb
+// expansion refuses it. Org's named-block search is a plain scan of
+// the buffer that has never heard of COMMENT, so a buried block does
+// answer a diff even though nothing would tangle it. Reusing the noweb
+// lookup here would be the same kind of mistake in the other
+// direction.
+//
+// This function lives in package tangle rather than beside the writer
+// that calls it because the rules it applies are the tangler's. A
+// second copy of them would be free to drift away from the file the
+// diff claims to describe.
 func NamedBody(d *book.Document, name string) (string, error) {
-	panic("HOLE(9): the first block named name, shaped as org-babel hands it over")
+	panic("HOLE(9): the whole-document first block named name, shaped as org-babel hands it over")
 }
 
 // It keeps the first error and walks the whole tree anyway. That

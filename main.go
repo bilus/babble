@@ -186,11 +186,11 @@ func replaceFile(target string, body []byte) error {
 // every line number the tangle depends on. [[#stage-10][Stage 10]] adds the lint
 // pass, which is the half of the fence that needs the whole document.
 // Until both land this function is three calls, and the code below is
-// what runs.--}{++The flow itself lives in ~tangle.Book~, and this function
-// is the command-line wrapper around it: one call, one message, one
-// exit code. The order the flow keeps is subtle enough to be worth
-// having in one place, and the oracle harness runs the same function
-// rather than its own copy of the steps. One step is still missing:
+// what runs.--}{++The flow itself lives in ~cmd.Tangle~, and this function is the
+// command-line wrapper around it: one call, one message, one exit
+// code. The order the flow keeps is subtle enough to be worth having
+// in one place, and the oracle harness runs the same function rather
+// than its own copy of the steps. One step is still missing:
 // [[#stage-10][stage 10]] adds the lint pass that needs the whole document.++}
 func tangleCmd(bookPath string, stderr io.Writer) int {
 	d, err := org.Parse(bookPath)

@@ -1,10 +1,7 @@
 // Code generated from BOOK.org by make tangle. DO NOT EDIT.
 
-// Refresh takes a function rather than reaching for the bodies itself.
-// A src-block-diff needs the body of a named block shaped the way
-// org-babel shapes it, and those rules belong to the tangler. Passing
-// them in keeps dblock resting on the document alone and keeps one
-// copy of the shaping.
+// Package dblock owns the book side: the two dynamic-block writers and
+// the splice that puts what they produce back into the book's bytes.
 package dblock
 
 import "github.com/bilus/babble/internal/book"
@@ -15,25 +12,22 @@ import "github.com/bilus/babble/internal/book"
 // drift away from the file the diff describes.
 type NamedBody func(name string) (string, error)
 
+// Refresh splices a fresh interior into every dynamic block and
+// returns the book's new bytes together with whether they differ from
+// the old ones, so the caller writes the file only when there is
+// something to write.
 func Refresh(d *book.Document, body NamedBody) ([]byte, bool, error) {
-	panic("HOLE(9): splice fresh interiors into the retained bytes, report change")
+	panic("HOLE(9): splice fresh interiors into the retained bytes, add a final newline, report change")
 }
 
-// The second is the buffer each writer reads. Org refreshes from the
-// top down, so a writer sees a book where the blocks above it are
-// already rewritten, its own interior is a single empty line, and the
-// blocks below it still hold their old contents. plan-toc counts lines
-// in that buffer. Handing it the original book, or the finished one,
-// gives different numbers for the same input. So the loop stages that
-// exact byte sequence for each writer: the output built so far, one
-// newline, and the rest of the original from the closing line onward.
+// write dispatches an interior to the writer its opener names, or
+// refuses a name no writer answers to.
 func write(name, args string, staged []byte, self int, file string, body NamedBody) (string, error) {
 	panic("HOLE(9): dispatch on the writer's name, or refuse a name with no writer")
 }
 
-// Labels are spelled without the sigils on purpose. A label that
-// carried them would be a plan site itself, and the index would start
-// indexing itself on the next refresh.
+// planToc renders the jump list: one line-number link per plan-markup
+// site in the staged book.
 func planToc(staged []byte, self int, file string) string {
 	panic("HOLE(9): a line link per plan site, sites below self shifted by the insert count")
 }
@@ -54,12 +48,10 @@ func planStrip(s string) string {
 	panic("HOLE(9): trim, unlink, untag, and truncate the way the driver does")
 }
 
-// Arguments are read strictly. Org hands the argument text to the lisp
-// reader, which accepts anything lisp accepts; babble takes keyword
-// and name tokens and refuses the rest, so the subset does not inherit
-// a reader it has no use for.
+// srcBlockDiff renders a unified diff of two named blocks' bodies, or
+// the words "no differences".
 func srcBlockDiff(args string, body NamedBody) (string, error) {
-	panic("HOLE(9): system diff -u over the two named bodies, temp-file headers dropped")
+	panic("HOLE(9): system diff -u over the two named bodies, headers dropped, a closer in the output refused")
 }
 
 // dblockArgs reads the opener's arguments as a keyword-to-name map.

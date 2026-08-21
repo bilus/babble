@@ -61,59 +61,66 @@ every dynamic block, and the labels are spelled without the sigils,
 so the census never matches its own index.
 
 #+begin: plan-toc
-- [[file:BOOK.org::120][120]] entry: PLANNED Stage 21: the environment
-- [[file:BOOK.org::168][168]] entry: PLANNED Stage 12: the fixtures chapter
-- [[file:BOOK.org::231][231]] entry: PLANNED Stage 25: minting goldens from the oracle
-- [[file:BOOK.org::279][279]] entry: PLANNED Stage 9: dynamic blocks
-- [[file:BOOK.org::390][390]] entry: PLANNED Stage 10: the fence
-- [[file:BOOK.org::419][419]] entry: PLANNED Stage 11: parity and self-hosting
-- [[file:BOOK.org::932][932]] badge: PLANNED stage 12 adds the paragraph below (plan)
-- [[file:BOOK.org::1157][1157]] badge: PLANNED stage 9 adds the paragraphs below (plan)
-- [[file:BOOK.org::1275][1275]] note: stage 22: the driver answers every language from the comment
-- [[file:BOOK.org::1291][1291]] note: stage 9: indenting stops saving a dynamic-block delimiter...
-- [[file:BOOK.org::1310][1310]] badge: PLANNED stage 9 adds the bullets below (plan)
-- [[file:BOOK.org::1674][1674]] badge: PLANNED stage 12 adds the chapter below (plan)
-- [[file:BOOK.org::1886][1886]] deletion: Two more steps belong here and are not here yet. Stage 9 ...
-- [[file:BOOK.org::1892][1892]] insertion: The flow itself lives in ~tangle.Book~, and this function
-- [[file:BOOK.org::1920][1920]] badge: PLANNED stage 9 replaces the block above (plan)
-- [[file:BOOK.org::1927][1927]] twin of cli-tangle
-- [[file:BOOK.org::1938][1938]] generated diff
-- [[file:BOOK.org::3195][3195]] badge: PLANNED stage 9 replaces the block above (plan)
-- [[file:BOOK.org::3203][3203]] twin of parse-dblock
-- [[file:BOOK.org::3229][3229]] generated diff
-- [[file:BOOK.org::3808][3808]] hole 10: duplicate names, a name doubling as a noweb-ref
-- [[file:BOOK.org::3852][3852]] badge: PLANNED stage 9 replaces the block above (plan)
-- [[file:BOOK.org::3859][3859]] twin of lint-quoted
-- [[file:BOOK.org::3885][3885]] generated diff
-- [[file:BOOK.org::3888][3888]] badge: PLANNED stage 9 adds the paragraphs and the block below (...
-- [[file:BOOK.org::3917][3917]] hole 9: refuse a book where org's raw opener search and the tree ...
-- [[file:BOOK.org::3965][3965]] badge: PLANNED stage 9 replaces the block above (plan)
-- [[file:BOOK.org::3970][3970]] twin of tangle-run
-- [[file:BOOK.org::4010][4010]] generated diff
-- [[file:BOOK.org::4013][4013]] badge: PLANNED stage 9 adds the section below (plan)
-- [[file:BOOK.org::4040][4040]] hole 9: read, refresh, write back if changed, read again, tangle
-- [[file:BOOK.org::4046][4046]] hole 9: parse, resolve, and run the lints the fence owns so far
-- [[file:BOOK.org::4058][4058]] hole 9: write beside the book and rename over it
-- [[file:BOOK.org::4077][4077]] hole 9: the first block named name, shaped as org-babel hands it ...
-- [[file:BOOK.org::4903][4903]] badge: PLANNED stage 9 rewrites this chapter (plan)
-- [[file:BOOK.org::4940][4940]] hole 9: splice fresh interiors into the retained bytes, report ch...
-- [[file:BOOK.org::4968][4968]] hole 9: dispatch on the writer's name, or refuse a name with no w...
-- [[file:BOOK.org::4988][4988]] hole 9: a line link per plan site, sites below self shifted by th...
-- [[file:BOOK.org::4996][4996]] hole 9: the census pattern, then the driver's naming rules in the...
-- [[file:BOOK.org::5004][5004]] hole 9: trim, unlink, untag, and truncate the way the driver does
-- [[file:BOOK.org::5027][5027]] hole 9: system diff -u over the two named bodies, temp-file heade...
-- [[file:BOOK.org::5032][5032]] hole 9: keyword and name tokens only, and an error on anything else
-- [[file:BOOK.org::5081][5081]] badge: PLANNED stage 9 adds the rows below at acceptance (plan)
-- [[file:BOOK.org::5122][5122]] badge: PLANNED stage 12 includes the two files below (plan)
-- [[file:BOOK.org::5625][5625]] badge: PLANNED stage 12 adds the test below (plan)
-- [[file:BOOK.org::5994][5994]] badge: PLANNED stage 9 replaces the block above (plan)
-- [[file:BOOK.org::5999][5999]] twin of oracle-head
-- [[file:BOOK.org::6023][6023]] generated diff
-- [[file:BOOK.org::6188][6188]] badge: PLANNED stage 9 replaces the block above (plan)
-- [[file:BOOK.org::6198][6198]] twin of oracle-run
-- [[file:BOOK.org::6235][6235]] generated diff
-- [[file:BOOK.org::6775][6775]] badge: PLANNED stage 21 adds the two paragraphs below (plan)
-- [[file:BOOK.org::6798][6798]] insertion: devbox.json and its lockfile,
+- [[file:BOOK.org::127][127]] entry: PLANNED Stage 21: the environment
+- [[file:BOOK.org::175][175]] entry: PLANNED Stage 12: the fixtures chapter
+- [[file:BOOK.org::238][238]] entry: PLANNED Stage 25: minting goldens from the oracle
+- [[file:BOOK.org::286][286]] entry: PLANNED Stage 9: dynamic blocks
+- [[file:BOOK.org::459][459]] entry: PLANNED Stage 10: the fence
+- [[file:BOOK.org::488][488]] entry: PLANNED Stage 11: parity and self-hosting
+- [[file:BOOK.org::1001][1001]] badge: PLANNED stage 12 adds the paragraph below (plan)
+- [[file:BOOK.org::1226][1226]] badge: PLANNED stage 9 adds the paragraphs below (plan)
+- [[file:BOOK.org::1374][1374]] note: stage 22: the driver answers every language from the comment
+- [[file:BOOK.org::1390][1390]] note: stage 9: indenting stops saving a dynamic-block delimiter...
+- [[file:BOOK.org::1409][1409]] badge: PLANNED stage 9 adds the bullets below (plan)
+- [[file:BOOK.org::1768][1768]] badge: PLANNED stage 9 adds the paragraph and the diagram below ...
+- [[file:BOOK.org::1783][1783]] twin of arch-graph
+- [[file:BOOK.org::1822][1822]] badge: PLANNED stage 12 adds the chapter below (plan)
+- [[file:BOOK.org::1876][1876]] badge: PLANNED stage 9 replaces the block above (plan)
+- [[file:BOOK.org::1882][1882]] twin of cli-head
+- [[file:BOOK.org::1918][1918]] generated diff
+- [[file:BOOK.org::2091][2091]] deletion: Two more steps belong here and are not here yet. Stage 9 ...
+- [[file:BOOK.org::2097][2097]] insertion: The flow itself lives in ~cmd.Tangle~, and this function ...
+- [[file:BOOK.org::2125][2125]] badge: PLANNED stage 9 replaces the block above (plan)
+- [[file:BOOK.org::2133][2133]] twin of cli-tangle
+- [[file:BOOK.org::2144][2144]] generated diff
+- [[file:BOOK.org::2864][2864]] badge: PLANNED stage 9 replaces the block above (plan)
+- [[file:BOOK.org::2873][2873]] twin of parse-bytes
+- [[file:BOOK.org::2898][2898]] generated diff
+- [[file:BOOK.org::2920][2920]] badge: PLANNED stage 9 adds the paragraphs and the block below (...
+- [[file:BOOK.org::2957][2957]] hole 9: compare org's raw opener search against the tree, both di...
+- [[file:BOOK.org::3518][3518]] badge: PLANNED stage 9 replaces the block above (plan)
+- [[file:BOOK.org::3533][3533]] twin of parse-dblock
+- [[file:BOOK.org::3562][3562]] generated diff
+- [[file:BOOK.org::4163][4163]] hole 10: duplicate names, a name doubling as a noweb-ref
+- [[file:BOOK.org::4207][4207]] badge: PLANNED stage 9 replaces the block above (plan)
+- [[file:BOOK.org::4214][4214]] twin of lint-quoted
+- [[file:BOOK.org::4240][4240]] generated diff
+- [[file:BOOK.org::4251][4251]] badge: PLANNED stage 9 adds the paragraph below (plan)
+- [[file:BOOK.org::4310][4310]] badge: PLANNED stage 9 adds the section below (plan)
+- [[file:BOOK.org::4345][4345]] hole 9: the whole-document first block named name, shaped as org-...
+- [[file:BOOK.org::5171][5171]] badge: PLANNED stage 9 adds this chapter (plan)
+- [[file:BOOK.org::5230][5230]] hole 9: read, refresh, write back if changed, read again, tangle
+- [[file:BOOK.org::5240][5240]] hole 9: parse, resolve, and run the lints the fence owns so far
+- [[file:BOOK.org::5256][5256]] hole 9: write beside the book and rename over it
+- [[file:BOOK.org::5262][5262]] badge: PLANNED stage 9 rewrites this chapter (plan)
+- [[file:BOOK.org::5311][5311]] hole 9: splice fresh interiors into the retained bytes, add a fin...
+- [[file:BOOK.org::5352][5352]] hole 9: dispatch on the writer's name, or refuse a name with no w...
+- [[file:BOOK.org::5391][5391]] hole 9: a line link per plan site, sites below self shifted by th...
+- [[file:BOOK.org::5399][5399]] hole 9: the census pattern, then the driver's naming rules in the...
+- [[file:BOOK.org::5407][5407]] hole 9: trim, unlink, untag, and truncate the way the driver does
+- [[file:BOOK.org::5444][5444]] hole 9: system diff -u over the two named bodies, headers dropped...
+- [[file:BOOK.org::5449][5449]] hole 9: keyword and name tokens only, and an error on anything else
+- [[file:BOOK.org::5498][5498]] badge: PLANNED stage 9 adds the rows below at acceptance (plan)
+- [[file:BOOK.org::5548][5548]] badge: PLANNED stage 12 includes the two files below (plan)
+- [[file:BOOK.org::6051][6051]] badge: PLANNED stage 12 adds the test below (plan)
+- [[file:BOOK.org::6420][6420]] badge: PLANNED stage 9 replaces the block above (plan)
+- [[file:BOOK.org::6426][6426]] twin of oracle-head
+- [[file:BOOK.org::6450][6450]] generated diff
+- [[file:BOOK.org::6627][6627]] badge: PLANNED stage 9 replaces the block above (plan)
+- [[file:BOOK.org::6637][6637]] twin of oracle-run
+- [[file:BOOK.org::6674][6674]] generated diff
+- [[file:BOOK.org::7232][7232]] badge: PLANNED stage 21 adds the two paragraphs below (plan)
+- [[file:BOOK.org::7255][7255]] insertion: devbox.json and its lockfile,
 
 #+end:
 
@@ -281,18 +288,19 @@ cross-check excuses, and leaves each fixture's script untouched.
 :CUSTOM_ID: stage-9
 :SPEC:     The subset contract, "Dynamic blocks"; Deviations
 :DEPS:     stages 3, 5, and 6
-:ACCEPTANCE: dblock fixture family incl. the plan-markup book, double-run idempotence, ORACLE=1
-:SIZE:     ~500 lines
+:ACCEPTANCE: dblock fixture family incl. the plan-markup book, run-for-run agreement with the oracle, ORACLE=1
+:SIZE:     ~900 lines
 :END:
 
 Claim: after this stage, ~babble tangle~ refreshes every plan-toc
 and src-block-diff block byte-identically to the driver before any
-block tangles, twice in a row produces the same bytes, and the book
-file itself is rewritten only when its bytes changed.
+block tangles, run for run, and the book file itself is rewritten
+only when its bytes changed.
 
 Everything below was measured against batch Emacs before it was
-written down, and three of the items are facts the earlier draft of
-this entry did not know.
+written down. The first draft of this entry was written from org's
+source instead, and the review that followed found six claims in it
+that measurement contradicts. Those are marked.
 
 Decided: (1) An interior is whatever the writer inserts, plus one
 newline. Org empties a dynamic block by deleting the interior and
@@ -310,54 +318,111 @@ and every block below it still holds the old one. plan-toc counts
 lines in exactly that buffer, so babble has to stage the same bytes
 rather than counting in the original or in the finished file.
 
-(3) The diff engine is the system ~diff -u~, invoked the way the
+(3) Corrected: a single refresh is not a fixed point, and the claim
+that it is was wrong. plan-toc corrects for the lines it is about to
+insert and for nothing else. Any dynamic block below it that changes
+size on the same run moves every site under that block, and the
+index does not learn about it until the next run. Two runs converge
+in practice because the second finds every interior already at its
+final size. The property to hold babble to is agreement with the
+driver run for run, not idempotence, and the fixture has to pin the
+first run of a book that has not converged. This book was one run
+short of converged when the plan commit landed, which is how the
+error was found.
+
+(4) The diff engine is the system ~diff -u~, invoked the way the
 driver invokes it, with the two temp-file header lines dropped. Both
 engines shell out to the same binary on the same machine, so the
-hunks agree. A pure-Go diff is a possible later stage, never a
-silent swap.
+hunks agree. ~diff~ exits nonzero when the files differ, which is
+the normal case here and not an error. A pure-Go diff is a possible
+later stage, never a silent swap.
 
-(4) The bodies a diff compares are the bodies org-babel hands over:
+(5) The bodies a diff compares are the bodies org-babel hands over:
 comma escapes off, one trailing newline off, dedented unless the
 block keeps its indentation, and noweb references left standing.
 That is the tangling shape minus the expansion, because the driver
 asks org-babel for the body and org-babel does not expand there.
 
-(5) Dynamic-block arguments are read by org's lisp reader; babble
+(6) Corrected: the lookup that finds those bodies does not know
+about COMMENT. Org's named-block search is a raw scan, so a block
+buried under a COMMENT heading answers a diff even though nothing
+would tangle it. The lookup the noweb code uses refuses that block
+on purpose, and reusing it here would be wrong.
+
+(7) Dynamic-block arguments are read by org's lisp reader; babble
 accepts only keyword and name tokens there and errors on anything
-else.
+else. Unreadable arguments fail before the interior is deleted,
+where an unknown writer name fails after, so org leaves the block
+alone in one case and empty in the other. babble refuses both.
 
-(6) Dynamic blocks are recognized at column zero only. Org indents
-the interior of an indented one to match, padding blank lines with
-trailing spaces, except in batch, where the indenting step wants a
-window and finds none. So the same book refreshes two ways depending
-on which Emacs refreshes it, and that stays out of the subset. The
-parser refuses the shape, which is what lets the refresh assume it.
+(8) Dynamic blocks are recognized at column zero only. Corrected:
+the reason batch org leaves an indented interior unindented is not
+that batch has no window. It has one. Org's indent step selects it,
+and selecting a window changes the current buffer to that window's
+buffer, which is not the book: the driver opens the book without
+showing it. The step then looks for a dynamic block in the wrong
+buffer and fails, and the failure is swallowed with the rest. Put
+the book in a window, even under batch, and the indenting happens.
+So the construct has two answers depending on how the book was
+opened, and that is what keeps it out of the subset.
 
-(7) Org and babble look for dynamic blocks in different places. Org
+(9) Corrected: org and babble also disagree about where a dynamic
+block ends, and this one can destroy text. Org closes on the first
+line reading ~#+end~ followed by a colon, whitespace, or nothing,
+ignoring anything after the colon and allowing indentation. babble's
+keyword reader wants a colon and an empty value. So a book holding
+~#+end: x~ inside a dynamic block gives babble an interior that runs
+past it, and splicing over that interior would delete the lines org
+kept. The closer gets org's rule rather than the reader's.
+
+(10) Org and babble look for dynamic blocks in different places. Org
 searches the raw buffer for a begin line, ignoring block structure
 and allowing indentation, so a line quoted inside an example block
 or sitting in a code body is a dynamic block to it. babble reads the
-tree, where the same line is text inside something else. A lint asks
-both and refuses the book when the answers differ, which is cheaper
-than reproducing a raw search and honest about why. This is not
-hypothetical: the parser chapter of this book carried such a line
-from stage 17 until it was measured, and every tangle since has
+tree, where the same line is text inside something else. The parser
+asks both and refuses the book when the answers differ, which is
+cheaper than reproducing a raw search and honest about why. This is
+not hypothetical: the parser chapter of this book carried such a
+line from stage 17 until it was measured, and every tangle since had
 silently tried to refresh it.
 
-(8) An unknown dynamic block name is an error, and so is a
-src-block-diff naming a block that does not exist. Org empties the
-interior in both cases, logs a message, and discards it.
+(11) Corrected: the refusal above belongs in the parser and not in a
+lint the caller has to remember. The first draft put it in a lint,
+and then argued three pages earlier that a rule a caller has to
+remember is a rule some caller will forget. There are three callers
+already and one of them, ~babble parse~, runs no lints at all. In
+the parser, every document that exists is one the refresh can
+splice.
 
-(9) The oracle saves the book on every refresh whether or not the
+(12) Corrected: every regular expression ported from the driver
+folds case, because Emacs folds case by default and the driver never
+turns it off. A lowercase ~planned~ heading is a plan site, ~hole(9)~
+is a hole, a name ending in a differently cased twin suffix is a
+twin, and ~#+BEGIN:~ opens a dynamic block. Ported literally into Go,
+which is case-sensitive, the index would quietly lose entries and
+the opener comparison in (10) would refuse valid books.
+
+(13) The oracle saves the book on every refresh whether or not the
 bytes changed, because the rewrite marks the buffer modified; babble
 compares bytes first. The bytes agree; only the mtime differs.
+Saving also appends a final newline when the book lacks one, so
+babble appends it too.
 
-(10) The tangle flow moves into one function that the command line
-and the oracle harness both call. Refreshing moves every line number
-the tangle depends on, so the document has to be read again
-afterwards, and an order that subtle should exist once. The two
-copies had already drifted: the harness skipped a lint the command
-ran, so the cross-check was not checking what ~babble tangle~ does.
+(14) A book with CRLF line endings is refused. Org decodes on read
+and encodes on write, so its generated lines come back with CRLF
+like the rest; babble splices raw bytes and would mix the two.
+Carrying a coding system through every span is a large change for a
+shape the toolchain's own books never take.
+
+(15) The tangle flow moves into a package of its own that the
+command line and the oracle harness both call. Refreshing moves
+every line number the tangle depends on, so the document has to be
+read again afterwards, and an order that subtle should exist once.
+The two copies had already drifted: the harness skipped a lint the
+command ran, so the cross-check was not checking what ~babble tangle~
+does. Corrected: the first draft put the flow in package tangle,
+which would have made the backend import the frontend and reversed
+an arrow the architecture chapter draws the other way.
 
 - [ ] plan approved (the human ticks this box)
 - [ ] inserted prose reads steady-state
@@ -365,6 +430,7 @@ ran, so the cross-check was not checking what ~babble tangle~ does.
 - [ ] HOLE(9) cluster filled, refresh and writer fixtures in the same commits
 - [ ] twins accepted: :tangle headers swapped, old blocks DROPPED
 - [ ] the plan-markup fixture book proves the twin never tangles
+- [ ] the unconverged book proves run-for-run agreement, not idempotence
 - [ ] seen to fail: every new fixture broken on purpose and watched
 - [ ] census clean for stage 9, suite green under ORACLE=1
 - [ ] Changes entry dated and filed, plan entry deleted
@@ -373,18 +439,21 @@ ran, so the cross-check was not checking what ~babble tangle~ does.
 
 #+begin_quote
 The book side closed: plan-toc and src-block-diff refresh
-byte-identically to the driver, idempotently, with the census
-regexes ported from tangle.el line by line. An interior is what the
-writer inserts plus the newline org leaves behind when it opens the
-line, which is the whole of why the two writers end differently. A
-writer reads the book part-refreshed, every block above it already
-rewritten and every block below it not, so the line numbers plan-toc
-prints are counted in that buffer and nowhere else. Org looks for
-dynamic blocks with a raw search that ignores block structure, and
-where that disagrees with the tree the book is refused rather than
-reconciled. A fixture book carrying the full plan convention
-(badges, CriticMarkup, a twin, holes) pins that the twin never
-tangles and that escaped sigil spellings stay out of the census.
+byte-identically to the driver, run for run, with the census regexes
+ported from tangle.el line by line and case-folded the way Emacs
+folds case. An interior is what the writer inserts plus the newline
+org leaves behind when it opens the line, which is the whole of why
+the two writers end differently. A writer reads the book
+part-refreshed, every block above it already rewritten and every
+block below it not, so one refresh is not a fixed point: an index
+entry below a diff that grew is short until the next run, and babble
+is short in the same place. Org looks for dynamic blocks with a raw
+search that ignores block structure, and closes them on a line the
+keyword reader would not accept, so the parser takes org's rules for
+both and refuses a book where the two searches disagree. A fixture
+book carrying the whole plan convention (badges, CriticMarkup, a
+twin, holes) pins that the twin never tangles and that a dodged
+sigil spelling stays out of the index.
 #+end_quote
 
 ** PLANNED Stage 10: the fence                                    :stage10:
@@ -1177,11 +1246,22 @@ plan-toc counts lines in that buffer, which is why a book with two
 generated diffs above a plan-toc and one below it produces different
 numbers than the same book would if all four were refreshed at once.
 
-plan-toc's own line does not move, and the lines below it do. The
-writer knows how many lines it is about to insert, so a site above
-the block keeps the number the staged buffer gave it and a site
-below the block gains that count. The result addresses the file that
-is about to exist rather than the one being read.
+plan-toc corrects for its own insertion and for nothing else. A site
+above the block keeps the number the staged buffer gave it; a site
+below the block gains the number of lines the writer is about to
+insert. Every other block below plan-toc is still at its old size in
+that buffer, so if one of them grows on the same run, every site
+under it gets a number that is short by the growth. The index is
+right one run later, when the writer finds those interiors already
+at their final size.
+
+That is worth stating plainly, because it means a single refresh is
+not a fixed point and the goal is not that it should be. The
+property babble holds to is that its first run matches the driver's
+first run and its second matches the driver's second, wrong numbers
+included. Producing a better index than the driver produces would be
+a difference, and a difference is the one thing the tangler is not
+allowed to be.
 
 The bodies a src-block-diff compares are the bodies org-babel hands
 over, which is the shape a tangle would write minus the noweb
@@ -1197,7 +1277,26 @@ care what element that line sits in, so a delimiter quoted inside an
 example block, or a line of code that happens to start that way, is
 a dynamic block to org. babble reads the tree, where the same line
 is text belonging to something else. Reproducing the raw search
-would mean giving up the tree, so the book is refused instead.
+would mean giving up the tree, so the book is refused instead, and
+the refusal lives in the parser so that no document reaches a
+refresh without it.
+
+Where a dynamic block ends is org's rule too, and not the keyword
+reader's. Org closes on the first line reading ~#+end~ followed by a
+colon, whitespace, or the end of the line, with anything after the
+colon ignored and any indentation allowed. The keyword reader is
+stricter on both counts, and the gap is not a difference of opinion
+about the tree: it decides which bytes a refresh overwrites. A book
+holding ~#+end: x~ inside a dynamic block would give the reader an
+interior running past it, and splicing over that interior would
+delete lines org kept.
+
+Every pattern taken from the driver folds case, because Emacs folds
+case when it searches and the driver never asks it not to. So
+~#+BEGIN:~ opens a dynamic block, a lowercase todo word in a heading
+is a plan site, and a twin suffix in any casing names a twin. A
+literal port into a case-sensitive language would lose index entries
+and refuse books that are fine.
 
 * Deviations
 
@@ -1309,11 +1408,8 @@ message always names the construct and the supported alternative.
 
 *************** PLANNED stage 9 adds the bullets below ([[#stage-9][plan]]) :stage9:
 The bullet above was written from org's source and is right about
-what it says. Measuring turned up three refusals it does not cover,
-and one correction: batch Emacs does not re-indent an indented
-dynamic block at all, because the step wants a window. So the same
-book refreshes two ways, which is a better reason to refuse it than
-the one recorded.
+what it says. Measuring turned up five refusals it does not cover,
+and one correction to the reason it gives.
 *************** END
 
 - A ~#+begin:~ line that babble's tree does not report as a dynamic
@@ -1332,11 +1428,33 @@ the one recorded.
   lookup fails, logs the failure, and moves on, so the block ends up
   empty with nothing on the page to say why.
 - An indented dynamic block is an error for a second reason the
-  entry above does not give. Interactive org indents the refreshed
-  interior to match the opener and pads blank lines with trailing
-  spaces to do it; batch org skips that step, because it selects a
-  window first and batch has none. The construct therefore has no
-  single answer to be compatible with.
+  entry above does not give: org has two answers for it. The step
+  that indents a refreshed interior begins by selecting a window,
+  and selecting a window also changes the current buffer to the one
+  that window shows. The driver opens the book without showing it,
+  so the step goes looking for a dynamic block in whatever buffer
+  happens to be on screen, fails to find one, and the failure is
+  swallowed with every other refresh failure. Under a driver that
+  shows the book, the same refresh indents the interior and pads its
+  blank lines with trailing spaces. Nothing about this depends on
+  batch mode; batch Emacs has a window like any other.
+- A dynamic block whose closing line babble's keyword reader and
+  org's search disagree about is not a refusal but a rule: org's
+  search wins. It closes on the first line reading ~#+end~ followed
+  by a colon, whitespace, or nothing, ignoring the rest of the line
+  and allowing indentation, where the reader wants a colon and an
+  empty value. The disagreement decides which bytes a refresh
+  overwrites, so following the reader here would delete text org
+  keeps.
+- A book with CRLF line endings is refused. Org decodes the file on
+  the way in and encodes it on the way out, so a line it generates
+  comes back with the same ending as the rest of the file; babble
+  splices bytes and would leave the file half one way and half the
+  other. The refusal is a limit of the subset, not of org.
+- A book whose last line has no newline gains one, because saving a
+  buffer adds it. This is the one place a refresh changes a byte
+  nobody asked it to change, and both engines change it the same
+  way.
 - Unchanged targets are not rewritten, so their mtimes survive a
   tangle; the oracle rewrites every target every run because its
   identity check compares a bannerless buffer to the bannered file
@@ -1636,6 +1754,7 @@ and assembly; ~internal/dblock~ owns refresh and the two writers.
 The dependency arrows all point one way, and everything passes
 through the tree:
 
+#+name: arch-graph
 #+begin_src mermaid
 graph LR
   book[BOOK.org] --> org["internal/org<br/>recognition, spans, headers"]
@@ -1644,6 +1763,35 @@ graph LR
   tree --> dblock["internal/dblock<br/>refresh, plan-toc, src-block-diff"]
   tangle --> files[tangled sources]
   dblock --> book2[BOOK.org rewritten]
+#+end_src
+
+*************** PLANNED stage 9 adds the paragraph and the diagram below ([[#stage-9][plan]]) :stage9:
+A fifth package joins the four, and it is the only one that touches
+more than one of them. Saying so here is the point: the arrows stay
+one-way because the step that needs three of them sits above all
+three instead of inside one.
+*************** END
+
+A fifth package sits above these. ~internal/cmd~ owns the order a
+command runs the others in, which for a tangle is read, refresh,
+write the book back if that changed it, read again, tangle. It is
+separate because that order is needed by two callers, the command
+line and the oracle harness, and because putting it inside any of
+the three packages it calls would point an arrow backwards. Nothing
+imports it but those two callers.
+
+#+name: arch-graph--planned
+#+begin_src mermaid :tangle no
+graph LR
+  book[BOOK.org] --> org["internal/org<br/>recognition, spans, headers"]
+  org -->|"org spellings stop here"| tree["internal/book<br/>the logical tree"]
+  tree --> tangle["internal/tangle<br/>collect, noweb, comments, assemble"]
+  tree --> dblock["internal/dblock<br/>refresh, plan-toc, src-block-diff"]
+  tangle --> files[tangled sources]
+  dblock --> book2[BOOK.org rewritten]
+  cmd["internal/cmd<br/>the order a command runs them in"] -.-> org
+  cmd -.-> tangle
+  cmd -.-> dblock
 #+end_src
 
 The confirm step makes the scan regexp almost invisible: whatever
@@ -1724,6 +1872,63 @@ func main() {
 	os.Exit(run(os.Args[1:], os.Stdout, os.Stderr))
 }
 #+end_src
+
+*************** PLANNED stage 9 replaces the block above ([[#stage-9][plan]]) :stage9:
+With the flow behind one call, main stops reaching for the backend
+and reaches for the flow package instead. The frontend import stays,
+because ~babble parse~ still reads a tree and prints it.
+*************** END
+
+#+name: cli-head--planned
+#+begin_src go :tangle no
+package main
+
+import (
+	"bytes"
+	"embed"
+	"encoding/json"
+	"flag"
+	"fmt"
+	"io"
+	"io/fs"
+	"os"
+	"os/exec"
+	"path/filepath"
+	"strings"
+
+	"github.com/bilus/babble/internal/book"
+	"github.com/bilus/babble/internal/cmd"
+	"github.com/bilus/babble/internal/org"
+)
+
+const usage = `usage: babble <command> [flags] [BOOK.org]
+
+commands:
+  tangle  write every eligible code block to its target file
+  parse   read the book and report whether it parses (--dump for JSON)
+  init    start a lit book in an empty directory (--module, --dir)
+  vendor  write the embedded lit/ into this directory (--dir)
+`
+
+func main() {
+	os.Exit(run(os.Args[1:], os.Stdout, os.Stderr))
+}
+#+end_src
+
+#+begin: src-block-diff :old cli-head :new cli-head--planned
+#+begin_src diff
+@@ -14,8 +14,8 @@
+ 	"strings"
+ 
+ 	"github.com/bilus/babble/internal/book"
++	"github.com/bilus/babble/internal/cmd"
+ 	"github.com/bilus/babble/internal/org"
+-	"github.com/bilus/babble/internal/tangle"
+ )
+ 
+ const usage = `usage: babble <command> [flags] [BOOK.org]
+#+end_src
+#+end:
 
 run dispatches the subcommands and owns the exit codes.
 
@@ -1889,11 +2094,11 @@ reparse after it, because refreshing rewrites the book and moves
 every line number the tangle depends on. [[#stage-10][Stage 10]] adds the lint
 pass, which is the half of the fence that needs the whole document.
 Until both land this function is three calls, and the code below is
-what runs.--}{++The flow itself lives in ~tangle.Book~, and this function
-is the command-line wrapper around it: one call, one message, one
-exit code. The order the flow keeps is subtle enough to be worth
-having in one place, and the oracle harness runs the same function
-rather than its own copy of the steps. One step is still missing:
+what runs.--}{++The flow itself lives in ~cmd.Tangle~, and this function is the
+command-line wrapper around it: one call, one message, one exit
+code. The order the flow keeps is subtle enough to be worth having
+in one place, and the oracle harness runs the same function rather
+than its own copy of the steps. One step is still missing:
 [[#stage-10][stage 10]] adds the lint pass that needs the whole document.++}
 
 #+name: cli-tangle
@@ -1919,15 +2124,16 @@ func tangleCmd(bookPath string, stderr io.Writer) int {
 
 *************** PLANNED stage 9 replaces the block above ([[#stage-9][plan]]) :stage9:
 The twin hands the whole flow to one function. The steps it drops
-are not dropped, they move: ~tangle.Book~ parses, resolves, lints,
+are not dropped, they move: ~cmd.Tangle~ parses, resolves, lints,
 refreshes, writes the book if the refresh changed it, reads it
-again, and tangles.
+again, and tangles. What is left here is what belongs to a command
+line, which is a message and an exit code.
 *************** END
 
 #+name: cli-tangle--planned
 #+begin_src go :tangle no
 func tangleCmd(bookPath string, stderr io.Writer) int {
-	if err := tangle.Book(bookPath); err != nil {
+	if err := cmd.Tangle(bookPath); err != nil {
 		fmt.Fprintln(stderr, "babble:", err)
 		return 1
 	}
@@ -1950,7 +2156,7 @@ func tangleCmd(bookPath string, stderr io.Writer) int {
 -		err = tangle.Run(d)
 -	}
 -	if err != nil {
-+	if err := tangle.Book(bookPath); err != nil {
++	if err := cmd.Tangle(bookPath); err != nil {
  		fmt.Fprintln(stderr, "babble:", err)
  		return 1
  	}
@@ -2636,6 +2842,7 @@ func Parse(path string) (*book.Document, error) {
 }
 #+end_src
 
+#+name: parse-bytes
 #+begin_src go :tangle internal/org/org.go
 func ParseBytes(src []byte, path string) (*book.Document, error) {
 	d := &book.Document{Path: path, Source: src,
@@ -2651,6 +2858,103 @@ func ParseBytes(src []byte, path string) (*book.Document, error) {
 	}
 	d.Nodes = nodes
 	return d, nil
+}
+#+end_src
+
+*************** PLANNED stage 9 replaces the block above ([[#stage-9][plan]]) :stage9:
+Two refusals join the parse itself. Both are about dynamic blocks,
+and both are here rather than in a lint because a document that
+carries either shape cannot be refreshed at all. A caller that has
+to remember to check first is a caller that will forget, and there
+are three of them: the tangle command, the parse command, and the
+oracle harness. The parse command runs no lints today.
+*************** END
+
+#+name: parse-bytes--planned
+#+begin_src go :tangle no
+func ParseBytes(src []byte, path string) (*book.Document, error) {
+	if bytes.Contains(src, []byte("\r\n")) {
+		return nil, fmt.Errorf("%s: CRLF line endings; org rewrites generated lines in the file's own ending and babble splices bytes, so the two cannot agree on a mixed file", path)
+	}
+	d := &book.Document{Path: path, Source: src,
+		Keywords: map[string][]string{}, Todo: todoWords(src)}
+	p := &parser{src: src, path: path, d: d,
+		todo: map[string]bool{}, lines: lineStarts(src)}
+	for _, w := range d.Todo {
+		p.todo[w] = true
+	}
+	nodes, err := p.parseElements(0, len(src), modeFirstSection)
+	if err != nil {
+		return nil, err
+	}
+	d.Nodes = nodes
+	if err := checkDynamicBlocks(d); err != nil {
+		return nil, err
+	}
+	return d, nil
+}
+#+end_src
+
+#+begin: src-block-diff :old parse-bytes :new parse-bytes--planned
+#+begin_src diff
+@@ -1,4 +1,7 @@
+ func ParseBytes(src []byte, path string) (*book.Document, error) {
++	if bytes.Contains(src, []byte("\r\n")) {
++		return nil, fmt.Errorf("%s: CRLF line endings; org rewrites generated lines in the file's own ending and babble splices bytes, so the two cannot agree on a mixed file", path)
++	}
+ 	d := &book.Document{Path: path, Source: src,
+ 		Keywords: map[string][]string{}, Todo: todoWords(src)}
+ 	p := &parser{src: src, path: path, d: d,
+@@ -11,5 +14,8 @@
+ 		return nil, err
+ 	}
+ 	d.Nodes = nodes
++	if err := checkDynamicBlocks(d); err != nil {
++		return nil, err
++	}
+ 	return d, nil
+ }
+#+end_src
+#+end:
+
+*************** PLANNED stage 9 adds the paragraphs and the block below ([[#stage-9][plan]]) :stage9:
+The comparison the parse ends with. It is the only place in babble
+that runs org's own pattern over raw text, and it does so to find
+out where the tree and org disagree, never to build anything.
+*************** END
+
+Org does not find dynamic blocks the way babble does, and the gap is
+not something a tree can be taught. Org reads the buffer line by
+line and takes the first line that looks like an opener, wherever it
+sits: inside an example block, inside a code body, indented by any
+amount. babble reads the tree, where such a line belongs to whatever
+element contains it. Reproducing org's search would mean giving up
+the tree for the one case that abuses it.
+
+So babble asks both and compares. Run org's opener pattern over the
+raw source, collect the line numbers the tree reports, and look at
+the difference. A line only org finds is a delimiter that wants a
+comma in front of it. A line only the tree finds is one written
+without the whitespace org's pattern requires after the colon.
+Either way the answer is an error naming the line, and neither
+engine has to imitate the other.
+
+The pattern folds case, and so does every other pattern this stage
+ports. Emacs searches case-insensitively unless told otherwise and
+the driver never tells it otherwise, so ~#+BEGIN:~ is an opener to
+org. A case-sensitive port would call that line tree-only and refuse
+a book org is perfectly happy with.
+
+# doc
+checkDynamicBlocks refuses a book where org's raw search for a
+dynamic-block opener and the tree disagree about where the dynamic
+blocks are.
+
+#+begin_src go :tangle internal/org/org.go :comments org
+var dblockStart = regexp.MustCompile(`(?i)^[ \t]*#\+begin:[ \t]+(\S+)`)
+
+func checkDynamicBlocks(d *book.Document) error {
+	panic("HOLE(9): compare org's raw opener search against the tree, both directions")
 }
 #+end_src
 
@@ -3212,24 +3516,34 @@ func (p *parser) dynamicBlockParser(args string, bodyStart, limit int, aff affil
 #+end_src
 
 *************** PLANNED stage 9 replaces the block above ([[#stage-9][plan]]) :stage9:
-The twin refuses an indented opener. That belongs to the parser
-rather than to a lint because it is the refresh that cannot cope,
-and a refusal here means every document the parser returns is one
-the refresh can splice. A rule the caller has to remember is a rule
-some caller will forget.
+Two changes, and the second is the one that matters. The twin
+refuses an indented opener, which belongs to the parser rather than
+to a lint because it is the refresh that cannot cope with it. And it
+closes the block on org's rule instead of the keyword reader's.
+
+The reader wants ~#+end:~ with nothing after the colon. Org wants
+~#+end~ followed by a colon, whitespace, or the end of the line, and
+ignores whatever comes next. A book holding ~#+end: x~ therefore
+ends the block for org and does not end it for the reader, so the
+tree's interior runs past the line org stopped at. That is not a
+harmless difference of opinion: the refresh splices over the
+interior, so babble would delete the lines org kept.
 *************** END
 
 #+name: parse-dblock--planned
 #+begin_src go :tangle no
+// org-dblock-end-re, which is looser than the keyword reader on
+// three counts: the colon is optional, anything after it is
+// ignored, and the line may be indented. The refresh overwrites
+// whatever this predicate calls the interior, so it follows org.
+var dblockEnd = regexp.MustCompile(`(?i)^[ \t]*#\+end([: \t]|$)`)
+
 func (p *parser) dynamicBlockParser(args string, bodyStart, limit int, aff affiliated) (parsed, int, error) {
 	beginAt := p.off
 	if text, _ := p.line(beginAt); text != strings.TrimLeft(text, " \t") {
-		return parsed{}, 0, fmt.Errorf("%s:%d: indented dynamic block; org indents the refreshed interior to match and batch org does not, so write it at column zero", p.path, p.lineNum(beginAt))
+		return parsed{}, 0, fmt.Errorf("%s:%d: indented dynamic block; org indents the refreshed interior to match when the book is in a window and leaves it alone when it is not, so write it at column zero", p.path, p.lineNum(beginAt))
 	}
-	endOff, endText, ok := p.findEnd(bodyStart, limit, func(text string) bool {
-		key, value, ok := keywordLine(text)
-		return ok && key == kwEnd && value == ""
-	})
+	endOff, endText, ok := p.findEnd(bodyStart, limit, dblockEnd.MatchString)
 	if !ok {
 		return parsed{}, 0, fmt.Errorf("%s:%d: unterminated dynamic block", p.path, p.lineNum(beginAt))
 	}
@@ -3247,15 +3561,26 @@ func (p *parser) dynamicBlockParser(args string, bodyStart, limit int, aff affil
 
 #+begin: src-block-diff :old parse-dblock :new parse-dblock--planned
 #+begin_src diff
-@@ -1,5 +1,8 @@
+@@ -1,9 +1,15 @@
++// org-dblock-end-re, which is looser than the keyword reader on
++// three counts: the colon is optional, anything after it is
++// ignored, and the line may be indented. The refresh overwrites
++// whatever this predicate calls the interior, so it follows org.
++var dblockEnd = regexp.MustCompile(`(?i)^[ \t]*#\+end([: \t]|$)`)
++
  func (p *parser) dynamicBlockParser(args string, bodyStart, limit int, aff affiliated) (parsed, int, error) {
  	beginAt := p.off
+-	endOff, endText, ok := p.findEnd(bodyStart, limit, func(text string) bool {
+-		key, value, ok := keywordLine(text)
+-		return ok && key == kwEnd && value == ""
+-	})
 +	if text, _ := p.line(beginAt); text != strings.TrimLeft(text, " \t") {
-+		return parsed{}, 0, fmt.Errorf("%s:%d: indented dynamic block; org indents the refreshed interior to match and batch org does not, so write it at column zero", p.path, p.lineNum(beginAt))
++		return parsed{}, 0, fmt.Errorf("%s:%d: indented dynamic block; org indents the refreshed interior to match when the book is in a window and leaves it alone when it is not, so write it at column zero", p.path, p.lineNum(beginAt))
 +	}
- 	endOff, endText, ok := p.findEnd(bodyStart, limit, func(text string) bool {
- 		key, value, ok := keywordLine(text)
- 		return ok && key == kwEnd && value == ""
++	endOff, endText, ok := p.findEnd(bodyStart, limit, dblockEnd.MatchString)
+ 	if !ok {
+ 		return parsed{}, 0, fmt.Errorf("%s:%d: unterminated dynamic block", p.path, p.lineNum(beginAt))
+ 	}
 #+end_src
 #+end:
 
@@ -3923,38 +4248,20 @@ func LintQuotedDelimiters(d *book.Document) error {
 #+end_src
 #+end:
 
-*************** PLANNED stage 9 adds the paragraphs and the block below ([[#stage-9][plan]]) :stage9:
-The dynamic-block half of the rule cannot be written the same way,
-because org's search for a dynamic block allows indentation and is
-not limited to verbatim bodies. The hole below states the rule the
-way it has to be stated: not "this line looks wrong" but "the two
-engines disagree about where the dynamic blocks are".
+*************** PLANNED stage 9 adds the paragraph below ([[#stage-9][plan]]) :stage9:
+The dynamic-block half of this rule cannot be written the same way
+and does not live here. It is a refusal the parse itself makes, for
+the reason given there.
 *************** END
 
-Dynamic-block delimiters need a rule of their own, and it is a
-different shape. The rule above asks whether a line looks like a
-delimiter in a place a delimiter should not be. That works because
-org's backward search for a block opener starts at column zero, so
-indenting the line puts it out of reach. Org's search for a dynamic
-block does not start at column zero and does not stop at a block
-boundary. It reads the buffer line by line and takes the first thing
-that looks like an opener, wherever it sits and however far it is
-indented.
-
-So the question is not what a line looks like. It is whether the two
-engines find the same set of dynamic blocks. babble can ask that
-directly: run org's own opener pattern over the raw source, collect
-what the tree reports, and compare the two lists by line number. A
-line only org finds is a delimiter that needs a comma. A line only
-the tree finds is one written without the space org's pattern wants
-after the colon. Either way the book gets an error naming the line,
-and neither engine has to imitate the other.
-
-#+begin_src go :tangle internal/org/org.go :comments org
-func LintDynamicBlocks(d *book.Document) error {
-	panic("HOLE(9): refuse a book where org's raw opener search and the tree disagree")
-}
-#+end_src
+Dynamic-block delimiters are not covered by the rule above, and the
+reason is worth naming here so a reader does not go looking. This
+rule works by asking whether a line looks like a delimiter
+somewhere a delimiter should not be, and indenting the line answers
+it, because org's backward search for a block opener starts at
+column zero. Org's search for a dynamic block starts anywhere and
+stops at no block boundary, so no test of one line can settle it.
+That refusal is made where the tree is finished, in the parse.
 
 * The tangle engine
 
@@ -4000,130 +4307,42 @@ func Run(d *book.Document) error {
 }
 #+end_src
 
-*************** PLANNED stage 9 replaces the block above ([[#stage-9][plan]]) :stage9:
-The twin only widens the import list. Run is untouched; the flow
-that calls it arrives below.
-*************** END
-
-#+name: tangle-run--planned
-#+begin_src go :tangle no
-package tangle
-
-import (
-	"bytes"
-	"encoding/json"
-	"fmt"
-	"os"
-	"path/filepath"
-	"regexp"
-	"strings"
-
-	"github.com/bilus/babble/internal/book"
-	"github.com/bilus/babble/internal/dblock"
-	"github.com/bilus/babble/internal/org"
-)
-
-func Run(d *book.Document) error {
-	comments, err := loadCommentTable(d.Path)
-	if err != nil {
-		return err
-	}
-	units, err := collect(d)
-	if err != nil {
-		return err
-	}
-	for _, u := range units {
-		content, err := assemble(d, u, comments)
-		if err != nil {
-			return err
-		}
-		if err := writeTarget(d.Path, u, content); err != nil {
-			return err
-		}
-	}
-	return nil
-}
-#+end_src
-
-#+begin: src-block-diff :old tangle-run :new tangle-run--planned
-#+begin_src diff
-@@ -10,6 +10,8 @@
- 	"strings"
- 
- 	"github.com/bilus/babble/internal/book"
-+	"github.com/bilus/babble/internal/dblock"
-+	"github.com/bilus/babble/internal/org"
- )
- 
- func Run(d *book.Document) error {
-#+end_src
-#+end:
-
 *************** PLANNED stage 9 adds the section below ([[#stage-9][plan]]) :stage9:
-Book is where the order lives. It exists because two callers were
-keeping their own copies of it and had already drifted apart.
+Run is untouched, and so are this package's imports. The flow that
+calls it lives in a package of its own, for reasons the section
+gives. Only NamedBody is added here, because the shaping it does is
+a tangling rule.
 *************** END
 
-Run takes a tree. Book takes a path, and everything between the two
-is order. Read the book, resolve the headers, refuse what the fence
-refuses, refresh the dynamic blocks, write the book back if that
-changed it, read it again, and only then tangle.
+# doc
+NamedBody is the body of the first block carrying name, shaped the
+way org-babel hands a body over: comma escapes off, one trailing
+newline off, dedented unless the block keeps its indentation, and
+noweb references left standing.
 
-The reread is the part worth explaining. Refreshing a dynamic block
-inserts and deletes lines, so every offset in the tree is stale the
-moment it happens, and the tangle depends on offsets throughout: a
-block's body is a byte range, a doc comment's extent is found by
-walking back from one, and a generated diff holds a real src block
-that collection has to see. Patching the tree to match would mean
-maintaining a second implementation of the parser. Parsing again
-costs one pass over a file that is already in memory.
+That shape is the tangling shape minus one step. References stay as
+written because the driver asks org-babel for the body and org-babel
+expands nothing at that point, so a twin of a block full of
+references shows a diff of the references, which is also the diff a
+reader wants to see.
 
-The order is also why this is a function and not a paragraph in two
-command implementations. ~babble tangle~ and the oracle harness both
-need it, and when each carried its own copy they disagreed: the
-harness never ran the lint, so the cross-check was quietly measuring
-something the command does not do.
+The lookup underneath it is the whole-document one, not the lookup
+noweb uses. Those two differ on purpose. Noweb refuses a name whose
+first definition sits under a COMMENT heading, because org's noweb
+expansion refuses it. Org's named-block search is a plain scan of
+the buffer that has never heard of COMMENT, so a buried block does
+answer a diff even though nothing would tangle it. Reusing the noweb
+lookup here would be the same kind of mistake in the other
+direction.
 
-#+begin_src go :tangle internal/tangle/tangle.go :comments org
-func Book(path string) error {
-	panic("HOLE(9): read, refresh, write back if changed, read again, tangle")
-}
-
-// read is the front half, and it is separate because Book performs
-// it twice on the same path.
-func read(path string) (*book.Document, error) {
-	panic("HOLE(9): parse, resolve, and run the lints the fence owns so far")
-}
-#+end_src
-
-A book is rewritten the way a target is: beside itself, then
-renamed over. The driver writes in place, which is what Emacs does
-when it saves a buffer, and the bytes are the same either way. The
-difference only shows when a run dies in the middle of the write,
-and the file at stake here is the program itself.
-
-#+begin_src go :tangle internal/tangle/tangle.go :comments org
-func replaceBook(path string, body []byte) error {
-	panic("HOLE(9): write beside the book and rename over it")
-}
-#+end_src
-
-NamedBody is the shape a dynamic block's diff compares. It is here
-rather than in package dblock because the shaping rules are the
-tangler's, and having two copies of them would let a diff drift away
-from the file it describes.
-
-The shape is the tangling shape minus one step. Comma escapes come
-off, one trailing newline comes off, and the body is dedented unless
-the block asked to keep its indentation. Noweb references stay as
-they are written, because the driver asks org-babel for the body and
-org-babel expands nothing at that point. So a twin of a block full
-of references shows a diff of the references, which is also the
-diff a reader wants to see.
+This function lives in package tangle rather than beside the writer
+that calls it because the rules it applies are the tangler's. A
+second copy of them would be free to drift away from the file the
+diff claims to describe.
 
 #+begin_src go :tangle internal/tangle/tangle.go :comments org
 func NamedBody(d *book.Document, name string) (string, error) {
-	panic("HOLE(9): the first block named name, shaped as org-babel hands it over")
+	panic("HOLE(9): the whole-document first block named name, shaped as org-babel hands it over")
 }
 #+end_src
 
@@ -4947,6 +5166,97 @@ func sameFile(a, b string) bool {
 }
 #+end_src
 
+* The tangle flow
+
+*************** PLANNED stage 9 adds this chapter ([[#stage-9][plan]]) :stage9:
+The chapter exists because the order below was being kept in two
+places that had already stopped agreeing, and because putting it in
+either of those places points a dependency arrow the wrong way.
+*************** END
+
+Package cmd holds what a command does once its arguments are
+parsed. Today that is one thing, Tangle, and it is here because two
+callers need it: the command line and the oracle harness. When each
+kept its own copy they drifted, and the drift was the worst kind.
+The harness never ran the lint the command ran, so the cross-check
+that exists to prove babble matches Emacs was quietly measuring
+something babble does not do.
+
+The order is short and every step in it has a reason to be where it
+is. Read the book. Refresh its dynamic blocks. Write the book back
+if the refresh changed it. Read it again. Tangle.
+
+The reread is the step to explain. Refreshing inserts and deletes
+lines, so every byte offset in the tree is stale the moment it
+happens, and the tangle leans on offsets throughout: a block's body
+is a byte range, a doc comment's extent is found by walking back
+from one, and a generated diff holds a real src block that
+collection has to see. Patching the tree to match would mean keeping
+a second implementation of the parser. Reading again costs one pass
+over a file that is already warm.
+
+It reads again only when the refresh changed something, because when
+nothing changed the tree in hand still describes the file on disk.
+
+The package sits above the other three and nothing else imports it,
+which is what keeps the arrows pointing one way. Putting this
+function in package tangle instead would have made the backend
+import the frontend, and putting it in main would have put it out of
+the harness's reach, since Go will not let a package import main.
+
+# doc
+Package cmd holds what a command does once its arguments are read,
+so that the command line and the oracle harness run the same steps
+in the same order.
+
+#+begin_src go :tangle internal/cmd/cmd.go :comments org
+package cmd
+
+import "github.com/bilus/babble/internal/book"
+#+end_src
+
+The import list is one line while the holes are holes. Filling them
+brings in org for the read, dblock for the refresh, and tangle for
+the write, which is the whole of what this package depends on and
+the reason it cannot live inside any of them.
+
+# doc
+Tangle is the whole of what "babble tangle" does to one book: read
+it, refresh its dynamic blocks, write it back if that changed it,
+read it again, and tangle.
+
+#+begin_src go :tangle internal/cmd/cmd.go :comments org
+func Tangle(path string) error {
+	panic("HOLE(9): read, refresh, write back if changed, read again, tangle")
+}
+#+end_src
+
+# doc
+read is the front half of Tangle, separate because Tangle performs
+it twice on the same path.
+
+#+begin_src go :tangle internal/cmd/cmd.go :comments org
+func read(path string) (*book.Document, error) {
+	panic("HOLE(9): parse, resolve, and run the lints the fence owns so far")
+}
+#+end_src
+
+A book is rewritten the way a target is: written beside itself, then
+renamed over. The driver writes in place, which is what Emacs does
+when it saves a buffer, and the bytes are the same either way. The
+difference only shows when a run dies in the middle of the write,
+and the file at stake is the program itself.
+
+# doc
+replaceBook writes the book beside itself and renames it over, so a
+run that dies mid-write leaves the old book intact.
+
+#+begin_src go :tangle internal/cmd/cmd.go :comments org
+func replaceBook(path string, body []byte) error {
+	panic("HOLE(9): write beside the book and rename over it")
+}
+#+end_src
+
 * Dynamic-block refresh
 
 *************** PLANNED stage 9 rewrites this chapter ([[#stage-9][plan]]) :stage9:
@@ -4963,16 +5273,20 @@ with whether they differ from the old ones, so the caller writes the
 file only when there is something to write.
 
 The package never renders org. It keeps the bytes the book already
-has and replaces the interiors, which is the whole reason a
-construct dblock has never heard of survives a refresh untouched.
-There is no round trip through a tree and back to text, so there is
-nothing for a round trip to lose.
+has and replaces the interiors, so a construct nothing here
+recognizes comes through a refresh unchanged. There is no round trip
+from text to a tree and back, which is the trip a book loses
+formatting on.
 
 Refresh takes a function rather than reaching for the bodies itself.
 A src-block-diff needs the body of a named block shaped the way
 org-babel shapes it, and those rules belong to the tangler. Passing
 them in keeps dblock resting on the document alone and keeps one
 copy of the shaping.
+
+# doc
+Package dblock owns the book side: the two dynamic-block writers and
+the splice that puts what they produce back into the book's bytes.
 
 #+begin_src go :tangle internal/dblock/dblock.go :comments org
 package dblock
@@ -4984,9 +5298,17 @@ import "github.com/bilus/babble/internal/book"
 // the shaping is the tangler's rule and a second copy of it could
 // drift away from the file the diff describes.
 type NamedBody func(name string) (string, error)
+#+end_src
 
+# doc
+Refresh splices a fresh interior into every dynamic block and
+returns the book's new bytes together with whether they differ from
+the old ones, so the caller writes the file only when there is
+something to write.
+
+#+begin_src go :tangle internal/dblock/dblock.go :comments org
 func Refresh(d *book.Document, body NamedBody) ([]byte, bool, error) {
-	panic("HOLE(9): splice fresh interiors into the retained bytes, report change")
+	panic("HOLE(9): splice fresh interiors into the retained bytes, add a final newline, report change")
 }
 #+end_src
 
@@ -5012,6 +5334,19 @@ gives different numbers for the same input. So the loop stages that
 exact byte sequence for each writer: the output built so far, one
 newline, and the rest of the original from the closing line onward.
 
+The walk that finds the blocks does not skip a COMMENT subtree,
+because org's search does not. A dynamic block under a commented
+heading refreshes like any other. Nothing tangles out of it, and it
+is still part of the book's text.
+
+Saving a buffer appends a final newline when the file lacks one, so
+the splice does too. It is the only byte a refresh changes that
+nobody asked it to change, and both engines change it.
+
+# doc
+write dispatches an interior to the writer its opener names, or
+refuses a name no writer answers to.
+
 #+begin_src go :tangle internal/dblock/dblock.go :comments org
 func write(name, args string, staged []byte, self int, file string, body NamedBody) (string, error) {
 	panic("HOLE(9): dispatch on the writer's name, or refuse a name with no writer")
@@ -5028,9 +5363,28 @@ them. Sites below it gain the number of lines the writer is about to
 insert, since those lines do not exist yet in the buffer being
 counted and will exist in the file the links have to address.
 
+That correction covers this writer's own insertion and nothing more.
+A dynamic block further down the book that grows on the same run
+moves every site beneath it, and the staged buffer still shows it at
+its old size, so those links come out short and stay short until the
+next refresh. babble reproduces that rather than fixing it, because
+matching the driver is the point and being right where the driver is
+wrong is a difference like any other.
+
+Every pattern below folds case. Emacs searches case-insensitively
+unless something turns that off, and nothing in the driver does, so
+a lowercase todo word in a heading is a plan site and a twin suffix
+in any casing names a twin. Ported literally into a language that
+does not fold, the index would quietly come out shorter than the
+driver's.
+
 Labels are spelled without the sigils on purpose. A label that
 carried them would be a plan site itself, and the index would start
 indexing itself on the next refresh.
+
+# doc
+planToc renders the jump list: one line-number link per plan-markup
+site in the staged book.
 
 #+begin_src go :tangle internal/dblock/dblock.go :comments org
 func planToc(staged []byte, self int, file string) string {
@@ -5064,16 +5418,30 @@ Each body is written with a newline appended, so a body that does
 not end in one still makes a whole last line. The first two lines of
 the output name the temporary files and are dropped. What is left is
 wrapped in a src block tagged diff, so the woven book highlights it
-and a tangler passes over it.
+and a tangler passes over it. ~diff~ exits nonzero when the files
+differ, which is the ordinary case here, so the exit status only
+means trouble above one.
+
+A compared body can carry a line that would close the wrapper. Diff
+prefixes context lines with a space, so a body line reading
+~#+end_src~ arrives indented by one column, and an indented closer
+still closes a block. The generated block would end early and the
+rest of the diff would become prose. That is refused, because the
+alternative is a book that stops meaning what it says and no warning
+anywhere.
 
 Arguments are read strictly. Org hands the argument text to the lisp
 reader, which accepts anything lisp accepts; babble takes keyword
 and name tokens and refuses the rest, so the subset does not inherit
 a reader it has no use for.
 
+# doc
+srcBlockDiff renders a unified diff of two named blocks' bodies, or
+the words "no differences".
+
 #+begin_src go :tangle internal/dblock/dblock.go :comments org
 func srcBlockDiff(args string, body NamedBody) (string, error) {
-	panic("HOLE(9): system diff -u over the two named bodies, temp-file headers dropped")
+	panic("HOLE(9): system diff -u over the two named bodies, headers dropped, a closer in the output refused")
 }
 
 // dblockArgs reads the opener's arguments as a keyword-to-name map.
@@ -5134,10 +5502,19 @@ the planned commit leaves the table alone and names the four here
 instead: dblock-refresh (both writers, from stale interiors),
 dblock-idempotence (a second run byte-identical to the first),
 dblock-refusals (unknown name, missing block, indented opener, a
-quoted opener, an argument the reader would take and babble will
-not), and dblock-plan-markup (a book carrying the whole plan
-convention, proving the twin never tangles and that a dodged sigil
-spelling stays out of the index).
+quoted opener, an opener the tree finds and org does not, CRLF, and
+an argument the reader would take and babble will not), and
+dblock-plan-markup (a book carrying the whole plan convention,
+proving the twin never tangles and that a dodged sigil spelling
+stays out of the index).
+
+Between them they have to reach the cases measurement turned up and
+reasoning did not: a plan-toc above a diff that grows, so the index
+comes out short in both engines; a lowercase todo word, a lowercase
+hole marker, and a differently cased twin suffix; an opener and a
+closer in mixed case; a closing line reading ~#+end: x~; a dynamic
+block under a COMMENT heading; a named block under one, which a diff
+still finds; and a book whose last line has no newline.
 *************** END
 
 tangle-comments pins the three parts of the rule that could each be
@@ -6042,7 +6419,8 @@ func Enabled() bool {
 
 *************** PLANNED stage 9 replaces the block above ([[#stage-9][plan]]) :stage9:
 With the flow behind one call the harness no longer reads the tree
-itself, so the frontend import goes.
+or writes files itself, so both of those imports go and the flow
+package takes their place.
 *************** END
 
 #+name: oracle-head--planned
@@ -6060,7 +6438,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/bilus/babble/internal/tangle"
+	"github.com/bilus/babble/internal/cmd"
 	"golang.org/x/tools/txtar"
 )
 
@@ -6071,14 +6449,16 @@ func Enabled() bool {
 
 #+begin: src-block-diff :old oracle-head :new oracle-head--planned
 #+begin_src diff
-@@ -11,7 +11,6 @@
+@@ -11,8 +11,7 @@
  	"strings"
  	"testing"
  
 -	"github.com/bilus/babble/internal/org"
- 	"github.com/bilus/babble/internal/tangle"
+-	"github.com/bilus/babble/internal/tangle"
++	"github.com/bilus/babble/internal/cmd"
  	"golang.org/x/tools/txtar"
  )
+ 
 #+end_src
 #+end:
 
@@ -6248,10 +6628,10 @@ func runBabble(t *testing.T, dir, book string) {
 The harness stops keeping its own copy of the tangle flow. This is
 the drift the plan entry names: the copy above never ran the lint
 that ~babble tangle~ runs, so the cross-check was comparing the
-oracle against something slightly other than babble. Calling
-~tangle.Book~ also brings the dynamic-block refresh into the
-comparison, which is what puts the book file itself under the
-cross-check.
+oracle against something slightly other than babble. The comparison
+already reads every file in both trees, the book included; what
+changes is that babble now rewrites the book, so the two versions
+of it become a comparison instead of a pair of untouched copies.
 *************** END
 
 #+name: oracle-run--planned
@@ -6285,7 +6665,7 @@ func runOracle(t *testing.T, dir, book string) int {
 
 func runBabble(t *testing.T, dir, book string) {
 	t.Helper()
-	if err := tangle.Book(filepath.Join(dir, book)); err != nil {
+	if err := cmd.Tangle(filepath.Join(dir, book)); err != nil {
 		t.Fatalf("babble failed on %s where the oracle did not: %v", book, err)
 	}
 }
@@ -6305,7 +6685,7 @@ func runBabble(t *testing.T, dir, book string) {
 -		err = tangle.Run(d)
 -	}
 -	if err != nil {
-+	if err := tangle.Book(filepath.Join(dir, book)); err != nil {
++	if err := cmd.Tangle(filepath.Join(dir, book)); err != nil {
  		t.Fatalf("babble failed on %s where the oracle did not: %v", book, err)
  	}
  }
