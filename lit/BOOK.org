@@ -1,62 +1,6 @@
 #+title: lit, a toolchain for literate programs
 #+todo: PLANNED(p!) HOLE(h!) FILLING(f!) | LIVE(l!) DROPPED(d@)
 
-* Plan                                                                :plan:
-
-** PLANNED Stage 5: inlining a reference in the weave              :stage5:
-:PROPERTIES:
-:CUSTOM_ID: stage-5
-:SPEC:     The contract, Weaving; The pandoc filters
-:ACCEPTANCE: a block marked inline shows the referenced body in the PDF; make check
-:END:
-
-Claim: after this stage a block written ~:noweb yes inline~ shows
-its references expanded in the woven listing, where every other
-block keeps showing the reference as a link.
-
-A listing that says ~<<parse-headline>>~ tells the reader the code
-is assembled from named parts and where to look for this one. That
-is the right default and it stays the default. It is the wrong
-answer for a short helper, where following a link costs more than
-reading three lines would.
-
-Decided: (1) The switch rides on the ~:noweb~ header as an extra
-word rather than arriving as a header of its own. Org reads that
-header by splitting it on whitespace and looking for a word it
-knows, so ~yes~ decides what tangling does and ~inline~ is carried
-along and ignored. A book marked this way tangles correctly under
-Emacs, under babble, and under any org that has never heard of it.
-(2) The word only means anything with ~yes~ beside it. Alone,
-~:noweb inline~ is a value org does not know, which it reads as
-~no~, so the references would reach the tangled file as text and
-nothing would say why. (3) A reference to a name no block carries
-stays a link. Group references, the ones a ~:noweb-ref~ answers,
-are not inlined; the weave would have to reproduce the joining
-rules to do it, and the reader following a link to a group is not
-badly served. (4) Inlining reproduces what tangling produces,
-including the repeated prefix, so the listing shows the bytes the
-file gets rather than an approximation of them.
-
-- [ ] skeleton approved (twin at [[notes-captions--planned]])
-- [ ] inserted prose reads steady-state
-- [ ] Changes draft below reads right in the journal
-- [ ] seen to fail: a marked block, and the reference still a link
-- [ ] twin accepted: :tangle headers swapped, old block DROPPED
-- [ ] census clean, suite green
-- [ ] Changes entry dated and filed, plan entry deleted
-
-*** Changes draft
-
-#+begin_quote
-A block written ~:noweb yes inline~ shows its references expanded in
-the woven listing. Every other block keeps the reference as a link,
-which is what tells a reader the code is assembled from named parts.
-The switch rides on org's own header as an extra word, because org
-reads that header by splitting it and looking for a word it knows,
-so ~yes~ decides what tangling does and ~inline~ is ignored by
-everything except this filter.
-#+end_quote
-
 * Introduction
 
 A program and its explanation drift apart because they live in
@@ -176,7 +120,6 @@ three affordances that make the code navigable:
 - A reference to a named block inside another listing is a
   hyperlink; clicking it jumps to the named block's caption.
 
-*************** PLANNED stage 5 adds the paragraphs below ([[#stage-5][plan]]) :stage5:
 A block can ask for the other rendering. Written
 ~:noweb yes inline~, its references are replaced in the listing by
 the code they name, so a reader sees the assembled block rather
@@ -201,7 +144,6 @@ it would mean reproducing the rules that join a group, and a reader
 who follows the link to a group is not badly served. What is inlined
 is what tangling produces, the repeated prefix included, so the
 listing shows the bytes the file gets.
-*************** END
 
 A custom id identifies a heading across the whole book, so two
 headings may not claim the same one. After the includes are expanded
@@ -1483,161 +1425,6 @@ end
 local REF = '<<([%w_][%w_.%-]*)>>'
 
 function Pandoc(doc)
-  -- first pass: each block's own target, and who references whom
-  local blocks = {}
-  doc:walk({ CodeBlock = function(el)
-    local t = el.attributes['tangle']
-    local entry = { id = el.identifier, names = {} }
-    if t and t ~= 'no' then
-      entry.target = t
-    end
-    if el.attributes['noweb'] == 'yes' then
-      for name in el.text:gmatch(REF) do
-        table.insert(entry.names, name)
-      end
-    end
-    table.insert(blocks, entry)
-  end })
-  -- resolve region names to their includer's file, transitively
-  local resolved = {}
-  for _, e in ipairs(blocks) do
-    if e.target and e.id ~= '' then
-      resolved[e.id] = e.target
-    end
-  end
-  for _ = 1, #blocks do
-    local changed = false
-    for _, e in ipairs(blocks) do
-      local t = e.target or (e.id ~= '' and resolved[e.id])
-      if t then
-        for _, name in ipairs(e.names) do
-          if not resolved[name] then
-            resolved[name] = t
-            changed = true
-          end
-        end
-      end
-    end
-    if not changed then
-      break
-    end
-  end
-  -- second pass: captions, anchors, and reference placeholders
-  return doc:walk({ CodeBlock = function(el)
-    local out = el
-    if el.attributes['noweb'] == 'yes' then
-      local text = el.text:gsub(REF, function(name)
-        return 'NOWEBREF' .. hex(name) .. 'FERBEWON'
-      end)
-      if text ~= el.text then
-        out = el:clone()
-        out.text = text
-      end
-    end
-    local anchor = ''
-    if el.identifier ~= '' then
-      anchor = '\\hypertarget{noweb:' .. el.identifier .. '}{}'
-    end
-    local t = el.attributes['tangle']
-    local file = (t and t ~= 'no') and t or nil
-    if not file and el.identifier ~= '' then
-      file = resolved[el.identifier]
-    end
-    if file then
-      local caption
-      if el.identifier ~= '' then
-        caption = anchor .. '\\codecaption[' .. el.identifier .. ']{' .. file .. '}'
-      else
-        caption = '\\codecaption{' .. file .. '}'
-      end
-      return { pandoc.RawBlock('latex', caption), out }
-    end
-    if anchor ~= '' then
-      return { pandoc.RawBlock('latex', anchor), out }
-    end
-    if out ~= el then
-      return out
-    end
-  end })
-end
-#+end_src
-
-The noweb header is a list of words, not one value. Org reads it by
-splitting on whitespace and looking for a word it knows, which is
-what lets a book carry a word org has never heard of without
-changing what tangling does.
-
-Inlining reproduces what tangling produces. A reference is replaced
-by the named block's body, the text before it on the line is
-repeated in front of every line after the first, and a body that
-asks for expansion itself is expanded further. A name no block
-carries is left alone, which is what a group reference is, and it
-stays a link.
-
-#+name: notes-inline
-#+begin_src lua :tangle no
--- The noweb header is a word list. Org splits it and looks for a
--- word it knows, so "yes inline" tangles as "yes" and carries the
--- extra word past every reader but this one.
-function nowebWord(el, word)
-  for w in (el.attributes['noweb'] or ''):gmatch('%S+') do
-    if w == word then return true end
-  end
-  return false
-end
-
-function expandsNoweb(el)
-  return nowebWord(el, 'yes')
-end
-
--- What tangling would produce: the named body in place of the
--- reference, with the text before it repeated in front of every line
--- after the first. A name nothing carries is left as it stands,
--- which is how a group reference keeps its link.
-function inlineRefs(text, bodies, open)
-  return (text:gsub('([^\n]-)(<<([%w_][%w_.%-]*)>>)', function(prefix, whole, name)
-    local block = bodies[name]
-    if not block or open[name] then return prefix .. whole end
-    open[name] = true
-    local body = block.text
-    if expandsNoweb(block) then
-      body = inlineRefs(body, bodies, open)
-    end
-    open[name] = nil
-    return prefix .. body:gsub('\n', '\n' .. prefix)
-  end))
-end
-#+end_src
-
-*************** PLANNED stage 5 replaces the block above ([[#stage-5][plan]]) :stage5:
-The twin reads the noweb header as the word list org reads, and
-inlines the references of a block that asked for it.
-*************** END
-
-#+name: notes-captions--planned
-#+begin_src lua :tangle no
--- Pandoc's org reader keeps :tangle and :noweb as block attributes;
--- blocks that land in a file get a paper-style numbered caption
--- naming it, plus the block's <<name>> when it has one. A named
--- region block (no target of its own, included through a reference)
--- is captioned with the file its includer tangles to, resolved
--- transitively over the whole document. Twins and illustrations are
--- referenced by nothing and tangle nowhere, so they stay
--- uncaptioned.
---
--- Syntax highlighting shreds a <<ref>> into operator and identifier
--- tokens, so no literal <<ref>> survives into the .tex for a filter
--- to linkify. Instead, in :noweb yes blocks each ref is swapped for
--- an alphanumeric placeholder (hex-encoded name), which every
--- lexer keeps whole; texlinks.py decodes it back into a \NowebRef
--- hyperlink after pandoc writes the .tex.
-local function hex(s)
-  return (s:gsub('.', function(c) return string.format('%02x', c:byte()) end))
-end
-
-local REF = '<<([%w_][%w_.%-]*)>>'
-
-function Pandoc(doc)
   local bodies = {}
   -- first pass: each block's own target, and who references whom
   local blocks = {}
@@ -1727,49 +1514,54 @@ function Pandoc(doc)
 end
 #+end_src
 
-#+begin: src-block-diff :old notes-captions :new notes-captions--planned
-#+begin_src diff
-@@ -20,6 +20,7 @@
- local REF = '<<([%w_][%w_.%-]*)>>'
- 
- function Pandoc(doc)
-+  local bodies = {}
-   -- first pass: each block's own target, and who references whom
-   local blocks = {}
-   doc:walk({ CodeBlock = function(el)
-@@ -28,11 +29,14 @@
-     if t and t ~= 'no' then
-       entry.target = t
-     end
--    if el.attributes['noweb'] == 'yes' then
-+    if expandsNoweb(el) then
-       for name in el.text:gmatch(REF) do
-         table.insert(entry.names, name)
-       end
-     end
-+    if el.identifier ~= '' then
-+      bodies[el.identifier] = el
-+    end
-     table.insert(blocks, entry)
-   end })
-   -- resolve region names to their includer's file, transitively
-@@ -62,7 +66,13 @@
-   -- second pass: captions, anchors, and reference placeholders
-   return doc:walk({ CodeBlock = function(el)
-     local out = el
--    if el.attributes['noweb'] == 'yes' then
-+    if nowebWord(el, 'inline') then
-+      local text = inlineRefs(el.text, bodies, {})
-+      if text ~= el.text then
-+        out = el:clone()
-+        out.text = text
-+      end
-+    elseif expandsNoweb(el) then
-       local text = el.text:gsub(REF, function(name)
-         return 'NOWEBREF' .. hex(name) .. 'FERBEWON'
-       end)
+The noweb header is a list of words, not one value. Org reads it by
+splitting on whitespace and looking for a word it knows, which is
+what lets a book carry a word org has never heard of without
+changing what tangling does.
+
+Inlining reproduces what tangling produces. A reference is replaced
+by the named block's body, the text before it on the line is
+repeated in front of every line after the first, and a body that
+asks for expansion itself is expanded further. A name no block
+carries is left alone, which is what a group reference is, and it
+stays a link.
+
+#+name: notes-inline
+#+begin_src lua :tangle notes.lua
+-- The noweb header is a word list. Org splits it and looks for a
+-- word it knows, so "yes inline" tangles as "yes" and carries the
+-- extra word past every reader but this one.
+function nowebWord(el, word)
+  for w in (el.attributes['noweb'] or ''):gmatch('%S+') do
+    if w == word then return true end
+  end
+  return false
+end
+
+function expandsNoweb(el)
+  return nowebWord(el, 'yes')
+end
+
+-- What tangling would produce: the named body in place of the
+-- reference, with the text before it repeated in front of every line
+-- after the first. The body's own trailing newline goes first, the
+-- way tangling drops it, or the prefix would be repeated once more
+-- onto a line with nothing after it. A name nothing carries is left
+-- as it stands, which is how a group reference keeps its link.
+function inlineRefs(text, bodies, open)
+  return (text:gsub('([^\n]-)(<<([%w_][%w_.%-]*)>>)', function(prefix, whole, name)
+    local block = bodies[name]
+    if not block or open[name] then return prefix .. whole end
+    open[name] = true
+    local body = block.text:gsub('\n$', '')
+    if expandsNoweb(block) then
+      body = inlineRefs(body, bodies, open)
+    end
+    open[name] = nil
+    return prefix .. body:gsub('\n', '\n' .. prefix)
+  end))
+end
 #+end_src
-#+end:
 
 The aside styling promotes "Note:" and "Apropos:" paragraphs into
 indented quotations with a bold lead, so promoted source comments
@@ -1949,6 +1741,17 @@ outside the book, exactly as the contract prescribes for every
 project.
 
 * Changes
+
+- [2026-08-21] A block written ~:noweb yes inline~ shows its
+  references expanded in the woven listing instead of as links. The
+  reference stays the default, since it tells a reader the code is
+  composed and where each part lives; this is for the short helper
+  where following a link costs more than reading the lines. The
+  switch rides on org's own header as an extra word: org reads that
+  header by splitting on whitespace and looking for a word it knows,
+  so ~yes~ decides what tangling does and ~inline~ is carried past
+  every reader but this filter. Alone the word does nothing, since
+  ~:noweb inline~ is a value org reads as ~no~.
 
 - [2026-08-20] Block quotes render as sidebars: a gray rule down the
   left edge, through the same framed machinery the plan boxes use.

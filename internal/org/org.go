@@ -825,10 +825,19 @@ func applyHeader(p *book.Params, header string) error {
 			}
 			p.Comments = value
 		case "noweb":
-			if value != "yes" && value != "no" {
-				return fmt.Errorf(":noweb %s is not in the subset; use yes or no", value)
+			for _, word := range strings.Fields(value) {
+				switch word {
+				case "yes":
+					p.Noweb = true
+				case "no":
+				case "inline":
+					if !p.Noweb {
+						return fmt.Errorf(":noweb inline only means something beside yes; alone org reads it as no and leaves the references in the file")
+					}
+				default:
+					return fmt.Errorf(":noweb %s is not in the subset; use yes or no, and inline beside yes", word)
+				}
 			}
-			p.Noweb = value == "yes"
 		case "noweb-ref":
 			p.NowebRef = value
 		case "noweb-sep":

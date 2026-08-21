@@ -68,16 +68,16 @@ so the census never matches its own index.
 - [[file:BOOK.org::290][290]] entry: PLANNED Stage 10: the fence
 - [[file:BOOK.org::319][319]] entry: PLANNED Stage 11: parity and self-hosting
 - [[file:BOOK.org::832][832]] badge: PLANNED stage 12 adds the paragraph below (plan)
-- [[file:BOOK.org::1119][1119]] note: stage 22: the driver answers every language from the comment
-- [[file:BOOK.org::1484][1484]] badge: PLANNED stage 12 adds the chapter below (plan)
-- [[file:BOOK.org::3545][3545]] hole 10: duplicate names, a name doubling as a noweb-ref
-- [[file:BOOK.org::4440][4440]] hole 9: splice fresh interiors into the retained bytes, report ch...
-- [[file:BOOK.org::4450][4450]] hole 9: a line link per plan site, sites below the block shifted ...
-- [[file:BOOK.org::4456][4456]] hole 9: system diff -u over the two named bodies, temp-file heade...
-- [[file:BOOK.org::4533][4533]] badge: PLANNED stage 12 includes the two files below (plan)
-- [[file:BOOK.org::5036][5036]] badge: PLANNED stage 12 adds the test below (plan)
-- [[file:BOOK.org::6081][6081]] badge: PLANNED stage 21 adds the two paragraphs below (plan)
-- [[file:BOOK.org::6104][6104]] insertion: devbox.json and its lockfile,
+- [[file:BOOK.org::1130][1130]] note: stage 22: the driver answers every language from the comment
+- [[file:BOOK.org::1495][1495]] badge: PLANNED stage 12 adds the chapter below (plan)
+- [[file:BOOK.org::3565][3565]] hole 10: duplicate names, a name doubling as a noweb-ref
+- [[file:BOOK.org::4460][4460]] hole 9: splice fresh interiors into the retained bytes, report ch...
+- [[file:BOOK.org::4470][4470]] hole 9: a line link per plan site, sites below the block shifted ...
+- [[file:BOOK.org::4476][4476]] hole 9: system diff -u over the two named bodies, temp-file heade...
+- [[file:BOOK.org::4553][4553]] badge: PLANNED stage 12 includes the two files below (plan)
+- [[file:BOOK.org::5056][5056]] badge: PLANNED stage 12 adds the test below (plan)
+- [[file:BOOK.org::6101][6101]] badge: PLANNED stage 21 adds the two paragraphs below (plan)
+- [[file:BOOK.org::6124][6124]] insertion: devbox.json and its lockfile,
 
 #+end:
 
@@ -1091,6 +1091,17 @@ message always names the construct and the supported alternative.
   value is an error. Which one org picks depends on what it expanded
   earlier in the same run, because the group scan replaces the cache
   the name lookup consults.
+- ~:noweb~ is read as a list of words, which is how org reads it:
+  it splits the value on whitespace and looks for a word it knows.
+  The subset takes ~yes~, ~no~, and ~inline~ beside ~yes~. The last
+  is not org's word. It asks the weave to show a block's references
+  expanded in the listing rather than as links, and org carries it
+  past without noticing, so a book marked that way tangles the same
+  under either engine and under an org that has never heard of it.
+  Alone it is refused, since org would read the value as ~no~ and
+  leave the references in the tangled file with nothing to say why.
+  A word neither engine knows is refused too, where org would
+  quietly ignore it.
 - Noweb and named-block resolution is case-sensitive. Org folds case
   when it searches for a block's name, though not when it looks up a
   ~:noweb-ref~ group, so a reference that only resolves by ignoring
@@ -3368,10 +3379,19 @@ func applyHeader(p *book.Params, header string) error {
 			}
 			p.Comments = value
 		case "noweb":
-			if value != "yes" && value != "no" {
-				return fmt.Errorf(":noweb %s is not in the subset; use yes or no", value)
+			for _, word := range strings.Fields(value) {
+				switch word {
+				case "yes":
+					p.Noweb = true
+				case "no":
+				case "inline":
+					if !p.Noweb {
+						return fmt.Errorf(":noweb inline only means something beside yes; alone org reads it as no and leaves the references in the file")
+					}
+				default:
+					return fmt.Errorf(":noweb %s is not in the subset; use yes or no, and inline beside yes", word)
+				}
 			}
-			p.Noweb = value == "yes"
 		case "noweb-ref":
 			p.NowebRef = value
 		case "noweb-sep":

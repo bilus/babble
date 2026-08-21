@@ -96,6 +96,7 @@ end
 local REF = '<<([%w_][%w_.%-]*)>>'
 
 function Pandoc(doc)
+  local bodies = {}
   -- first pass: each block's own target, and who references whom
   local blocks = {}
   doc:walk({ CodeBlock = function(el)
@@ -104,10 +105,13 @@ function Pandoc(doc)
     if t and t ~= 'no' then
       entry.target = t
     end
-    if el.attributes['noweb'] == 'yes' then
+    if expandsNoweb(el) then
       for name in el.text:gmatch(REF) do
         table.insert(entry.names, name)
       end
+    end
+    if el.identifier ~= '' then
+      bodies[el.identifier] = el
     end
     table.insert(blocks, entry)
   end })
@@ -138,7 +142,13 @@ function Pandoc(doc)
   -- second pass: captions, anchors, and reference placeholders
   return doc:walk({ CodeBlock = function(el)
     local out = el
-    if el.attributes['noweb'] == 'yes' then
+    if nowebWord(el, 'inline') then
+      local text = inlineRefs(el.text, bodies, {})
+      if text ~= el.text then
+        out = el:clone()
+        out.text = text
+      end
+    elseif expandsNoweb(el) then
       local text = el.text:gsub(REF, function(name)
         return 'NOWEBREF' .. hex(name) .. 'FERBEWON'
       end)
@@ -172,6 +182,40 @@ function Pandoc(doc)
       return out
     end
   end })
+end
+
+-- The noweb header is a word list. Org splits it and looks for a
+-- word it knows, so "yes inline" tangles as "yes" and carries the
+-- extra word past every reader but this one.
+function nowebWord(el, word)
+  for w in (el.attributes['noweb'] or ''):gmatch('%S+') do
+    if w == word then return true end
+  end
+  return false
+end
+
+function expandsNoweb(el)
+  return nowebWord(el, 'yes')
+end
+
+-- What tangling would produce: the named body in place of the
+-- reference, with the text before it repeated in front of every line
+-- after the first. The body's own trailing newline goes first, the
+-- way tangling drops it, or the prefix would be repeated once more
+-- onto a line with nothing after it. A name nothing carries is left
+-- as it stands, which is how a group reference keeps its link.
+function inlineRefs(text, bodies, open)
+  return (text:gsub('([^\n]-)(<<([%w_][%w_.%-]*)>>)', function(prefix, whole, name)
+    local block = bodies[name]
+    if not block or open[name] then return prefix .. whole end
+    open[name] = true
+    local body = block.text:gsub('\n$', '')
+    if expandsNoweb(block) then
+      body = inlineRefs(body, bodies, open)
+    end
+    open[name] = nil
+    return prefix .. body:gsub('\n', '\n' .. prefix)
+  end))
 end
 
 -- Style "Note:" / "Apropos:" paragraphs as indented asides with a bold

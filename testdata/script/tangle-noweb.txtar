@@ -12,6 +12,11 @@ cmp g.go want/g.go
 exec babble tangle gate.org
 cmp t.go want/t.go
 
+# The extra word changes nothing about what tangles; only the weave
+# reads it. Org carries it past without noticing.
+exec babble tangle inline.org
+cmp i.go want/i.go
+
 -- prefix.org --
 #+title: prefixes
 
@@ -97,3 +102,16 @@ Sfirst|A|secondthirdE
 A: p1 <<leaf>>
 B: w1 LEAF
 C: from a block that tangles nowhere
+-- inline.org --
+#+name: leaf
+#+begin_src go
+LEAF
+#+end_src
+
+#+begin_src go :tangle i.go :noweb yes inline
+X: <<leaf>>
+#+end_src
+-- want/i.go --
+// Code generated from BOOK.org by make tangle. DO NOT EDIT.
+
+X: LEAF
