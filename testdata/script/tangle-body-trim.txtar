@@ -1,0 +1,41 @@
+# The driver trims a line that is a comment marker and one space to
+# the bare marker, over the whole tangled file, so it reaches block
+# bodies and not only doc comments. A body line is the case babble
+# used to miss.
+
+exec babble tangle b.org
+cmp run.sh want/run.sh
+cmp lib.go want/lib.go
+
+-- b.org --
+#+title: body trim
+
+* A shell body holding a bare marker
+
+#+begin_src sh :tangle run.sh
+echo one
+# 
+echo two
+#+end_src
+
+* A go body holding one
+
+#+begin_src go :tangle lib.go
+package lib
+
+// 
+func f() {}
+#+end_src
+-- want/run.sh --
+# Code generated from BOOK.org by make tangle. DO NOT EDIT.
+
+echo one
+#
+echo two
+-- want/lib.go --
+// Code generated from BOOK.org by make tangle. DO NOT EDIT.
+
+package lib
+
+//
+func f() {}

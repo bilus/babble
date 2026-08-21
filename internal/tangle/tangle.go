@@ -356,7 +356,24 @@ func assemble(d *book.Document, u unit, comments commentTable) ([]byte, error) {
 		out.WriteString(body)
 		out.WriteString("\n")
 	}
-	return []byte(out.String()), nil
+	return []byte(trimBareMarkers(out.String(), comments.prefix(u.lang))), nil
+}
+
+// The driver trims these in a hook that runs over the whole tangled
+// file once it is written, so it reaches block bodies as readily as
+// doc comments. Applying it to the assembled file is what puts the
+// two engines in the same place. With an empty prefix the driver's
+// pattern matches a line holding one space, and emptying that line
+// is reproduced rather than skipped: a rule that quietly differed
+// here would be a second divergence wearing the shape of a fix.
+func trimBareMarkers(content, prefix string) string {
+	lines := strings.Split(content, "\n")
+	for i, line := range lines {
+		if line == prefix+" " {
+			lines[i] = prefix
+		}
+	}
+	return strings.Join(lines, "\n")
 }
 
 func writeTarget(bookPath string, u unit, content []byte) error {

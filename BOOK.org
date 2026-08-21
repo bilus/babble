@@ -70,19 +70,19 @@ so the census never matches its own index.
 - [[file:BOOK.org::373][373]] entry: PLANNED Stage 10: the fence
 - [[file:BOOK.org::402][402]] entry: PLANNED Stage 11: parity and self-hosting
 - [[file:BOOK.org::912][912]] badge: PLANNED stage 12 adds the paragraph below (plan)
-- [[file:BOOK.org::1154][1154]] note: stage 22: the driver answers every language from the comment
-- [[file:BOOK.org::1506][1506]] badge: PLANNED stage 12 adds the chapter below (plan)
-- [[file:BOOK.org::3563][3563]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
-- [[file:BOOK.org::3879][3879]] hole 7: extent between the anchors, then the docstring rule
-- [[file:BOOK.org::3885][3885]] hole 7: wrap in comments.prefix(lang), blank lines as a bare marker
-- [[file:BOOK.org::3895][3895]] hole 8: named block first, else noweb-ref concatenation; cycles a...
-- [[file:BOOK.org::4074][4074]] hole 9: splice fresh interiors into the retained bytes, report ch...
-- [[file:BOOK.org::4084][4084]] hole 9: a line link per plan site, sites below the block shifted ...
-- [[file:BOOK.org::4090][4090]] hole 9: system diff -u over the two named bodies, temp-file heade...
-- [[file:BOOK.org::4147][4147]] badge: PLANNED stage 12 includes the two files below (plan)
-- [[file:BOOK.org::4650][4650]] badge: PLANNED stage 12 adds the test below (plan)
-- [[file:BOOK.org::5632][5632]] badge: PLANNED stage 21 adds the two paragraphs below (plan)
-- [[file:BOOK.org::5655][5655]] insertion: devbox.json and its lockfile,
+- [[file:BOOK.org::1159][1159]] note: stage 22: the driver answers every language from the comment
+- [[file:BOOK.org::1511][1511]] badge: PLANNED stage 12 adds the chapter below (plan)
+- [[file:BOOK.org::3568][3568]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
+- [[file:BOOK.org::3884][3884]] hole 7: extent between the anchors, then the docstring rule
+- [[file:BOOK.org::3890][3890]] hole 7: wrap in comments.prefix(lang), blank lines as a bare marker
+- [[file:BOOK.org::3900][3900]] hole 8: named block first, else noweb-ref concatenation; cycles a...
+- [[file:BOOK.org::4096][4096]] hole 9: splice fresh interiors into the retained bytes, report ch...
+- [[file:BOOK.org::4106][4106]] hole 9: a line link per plan site, sites below the block shifted ...
+- [[file:BOOK.org::4112][4112]] hole 9: system diff -u over the two named bodies, temp-file heade...
+- [[file:BOOK.org::4170][4170]] badge: PLANNED stage 12 includes the two files below (plan)
+- [[file:BOOK.org::4673][4673]] badge: PLANNED stage 12 adds the test below (plan)
+- [[file:BOOK.org::5667][5667]] badge: PLANNED stage 21 adds the two paragraphs below (plan)
+- [[file:BOOK.org::5690][5690]] insertion: devbox.json and its lockfile,
 
 #+end:
 
@@ -1036,9 +1036,14 @@ affiliated name line sits inside the extent. The driver's docstring
 rule then applies: everything after the last ~# doc~ marker line if
 one is present, else the last paragraph; ~#+~ keyword lines drop; a
 leading ~Note:~ or ~Apropos:~ aside marker drops. The result wraps in the
-block language's line-comment syntax, blank lines becoming a bare
-comment marker with no trailing space, and a docstring that is all
+block language's line-comment syntax, and a docstring that is all
 whitespace inserts nothing.
+
+A line that reads as the comment marker followed by one space comes
+out as the bare marker. The driver does this in a hook that runs
+over the whole tangled file once it is written, so the rule reaches
+a block body as readily as a doc comment, and babble applies it to
+the assembled file for the same reason.
 
 The anchors need an example. Two commented blocks under one
 heading:
@@ -4022,7 +4027,24 @@ func assemble(d *book.Document, u unit, comments commentTable) ([]byte, error) {
 		out.WriteString(body)
 		out.WriteString("\n")
 	}
-	return []byte(out.String()), nil
+	return []byte(trimBareMarkers(out.String(), comments.prefix(u.lang))), nil
+}
+
+// The driver trims these in a hook that runs over the whole tangled
+// file once it is written, so it reaches block bodies as readily as
+// doc comments. Applying it to the assembled file is what puts the
+// two engines in the same place. With an empty prefix the driver's
+// pattern matches a line holding one space, and emptying that line
+// is reproduced rather than skipped: a rule that quietly differed
+// here would be a second divergence wearing the shape of a fix.
+func trimBareMarkers(content, prefix string) string {
+	lines := strings.Split(content, "\n")
+	for i, line := range lines {
+		if line == prefix+" " {
+			lines[i] = prefix
+		}
+	}
+	return strings.Join(lines, "\n")
 }
 #+end_src
 
@@ -4130,6 +4152,7 @@ The suite as it stands, by what each file pins:
 | tangle-tabs.txtar | dedenting when a tab straddles the cut |
 | init-guards.txtar | what init refuses to overwrite |
 | tangle-comment-table.txtar | comment syntax by language, and its four edges |
+| tangle-body-trim.txtar | a bare comment marker in a body, trimmed as the driver trims it |
 
 tangle-comment-table pins four requirements. A go block writing a
 ~.templ~ file opens with ~//~, since the marker follows the language
@@ -5364,6 +5387,18 @@ func TestDump(t *testing.T) {
 #+end_src
 
 * Changes
+
+** [2026-08-21] The trim the oracle missed
+
+#+begin_quote
+A line in a block body that reads as a comment marker followed by
+one space now comes out as the bare marker. The driver trims those
+lines in a hook that runs over the whole tangled file, which cannot
+tell a doc comment from a body, and babble had the rule attached to
+comment wrapping instead. The cross-check did not catch it because
+no fixture had such a line in a body, which is the kind of gap a
+cross-check has: it compares what the fixtures ask about.
+#+end_quote
 
 ** [2026-08-21] The oracle harness
 
