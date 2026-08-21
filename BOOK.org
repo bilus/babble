@@ -61,19 +61,22 @@ every dynamic block, and the labels are spelled without the sigils,
 so the census never matches its own index.
 
 #+begin: plan-toc
-- [[file:BOOK.org::80][80]] entry: PLANNED Stage 21: the environment
-- [[file:BOOK.org::128][128]] entry: PLANNED Stage 12: the fixtures chapter
-- [[file:BOOK.org::191][191]] entry: PLANNED Stage 25: minting goldens from the oracle
-- [[file:BOOK.org::239][239]] entry: PLANNED Stage 10: the fence
-- [[file:BOOK.org::268][268]] entry: PLANNED Stage 11: parity and self-hosting
-- [[file:BOOK.org::781][781]] badge: PLANNED stage 12 adds the paragraph below (plan)
-- [[file:BOOK.org::1148][1148]] note: stage 22: the driver answers every language from the comment
-- [[file:BOOK.org::1560][1560]] badge: PLANNED stage 12 adds the chapter below (plan)
-- [[file:BOOK.org::3697][3697]] hole 10: duplicate names, a name doubling as a noweb-ref
-- [[file:BOOK.org::5297][5297]] badge: PLANNED stage 12 includes the two files below (plan)
-- [[file:BOOK.org::5800][5800]] badge: PLANNED stage 12 adds the test below (plan)
-- [[file:BOOK.org::6960][6960]] badge: PLANNED stage 21 adds the two paragraphs below (plan)
-- [[file:BOOK.org::6983][6983]] insertion: devbox.json and its lockfile,
+- [[file:BOOK.org::83][83]] entry: PLANNED Stage 21: the environment
+- [[file:BOOK.org::131][131]] entry: PLANNED Stage 12: the fixtures chapter
+- [[file:BOOK.org::210][210]] entry: PLANNED Stage 26: chapter files
+- [[file:BOOK.org::311][311]] entry: PLANNED Stage 25: minting goldens from the oracle
+- [[file:BOOK.org::359][359]] entry: PLANNED Stage 10: the fence
+- [[file:BOOK.org::388][388]] entry: PLANNED Stage 11: parity and self-hosting
+- [[file:BOOK.org::888][888]] badge: PLANNED stage 12 drops a doubled word below (plan)
+- [[file:BOOK.org::898][898]] deletion: and--}
+- [[file:BOOK.org::907][907]] badge: PLANNED stage 12 corrects the paragraph below (plan)
+- [[file:BOOK.org::1281][1281]] note: stage 22: the driver answers every language from the comment
+- [[file:BOOK.org::3824][3824]] hole 10: duplicate names, a name doubling as a noweb-ref
+- [[file:BOOK.org::5346][5346]] badge: PLANNED stage 12 adds the chapter below (plan)
+- [[file:BOOK.org::5433][5433]] badge: PLANNED stage 12 includes the two files below (plan)
+- [[file:BOOK.org::5936][5936]] badge: PLANNED stage 12 adds the test below (plan)
+- [[file:BOOK.org::7096][7096]] badge: PLANNED stage 21 adds the two paragraphs below (plan)
+- [[file:BOOK.org::7119][7119]] insertion: devbox.json and its lockfile,
 
 #+end:
 
@@ -128,29 +131,29 @@ proves less than it looks like it proves.
 ** PLANNED Stage 12: the fixtures chapter                          :stage12:
 :PROPERTIES:
 :CUSTOM_ID: stage-12
-:SPEC:     Testing; Deviations
+:SPEC:     Testing; The subset contract, "Recognition"
 :DEPS:     none
 :ACCEPTANCE: the chapter reads without the plan open; make check; go test ./...
 :SIZE:     ~110 lines of prose
 :END:
 
 Claim: after this stage the book says where the suite's inputs
-live, how a golden is rebuilt by asking Emacs, and what order to
-follow when adding a fixture, and the refusal of ~#+include~
-carries the reason it is a refusal at all.
+live, how a golden is rebuilt by asking Emacs, what order to
+follow when adding a fixture, and what each of the two ~#+include~
+spellings does to a tangle.
 
-Decided: (1) ~#+include~ leaves the Deviations chapter, because
-babble does what org does with it, which is nothing. A deviation
-is a place the two engines part company; here they agree, and the
-entry claimed a refusal that was never built and should not be.
-What is worth recording is the oracle's own silence, so the
-contract's recognition rules gain a line: inclusion belongs to
-export, and no tangler expands it. (2) The fixtures stay on disk,
-and the weave shows them anyway. With nothing refusing the
-keyword, the chapter includes the short fixtures directly, so a
-reader sees a whole one without leaving the page, and names the
-long ones by path. (3) The manual Emacs recipe goes in the book
-beside the harness switch, because a reader who has run it once
+Decided: (1) ~#+include~ leaves the Deviations chapter, because a
+deviation is a place babble departs from the oracle on purpose and
+this is a gap instead. The contract carries the rule: the oracle
+expands a chapter include before it collects anything, the
+~example~ spelling reaches no tangler, and babble expands neither.
+[[#stage-26][Stage 26]] closes the gap; this stage says what is
+true while it is open. (2) The fixtures stay on disk, and the
+weave shows them anyway. The ~example~ spelling is what puts them
+on the page, so the chapter includes the short fixtures directly,
+a reader sees a whole one without leaving the page, and the long
+ones are named by path. (3) The manual Emacs recipe goes in the
+book beside the harness switch, because a reader who has run it once
 understands what a golden is; a reader who has only seen UPDATE=1
 knows a flag. (4) The chapter's table is hand-written, and a test
 keeps it honest: it fails when the table and the directory
@@ -165,12 +168,28 @@ deviation invented to protect against a mistake this project does
 not make, and it would have forbidden the one use the chapter
 wants.
 
-This entry is a repair. The chapter and the deviation landed
-before the plan did, which is the wrong order, and the badges
-below mark what a reviewer should read as if it had not.
+Decided again, after measuring: the second draft rested on org's
+silence, and org is not the oracle. lit/tangle.el calls
+~org-export-expand-include-keyword~ before it tangles, so a
+chapter include does reach a target under Emacs. Two engines over
+a book in two files write two trees: Emacs tangles the chapter's
+blocks and babble walks past the line. The difference goes quiet
+when a chapter and the master both feed one target, since both
+engines write the file and only one writes all of it. So the entry
+keeps its first sentence, loses its reason, and hands the gap to
+[[#stage-26][stage 26]].
+
+This entry is a repair. The fixtures chapter landed before the
+plan did, which is the wrong order, and the badges below mark what
+a reviewer should read as if it had not. One badge marks something
+smaller: a doubled word in the recognition list, found while
+reading the paragraph above the one this stage corrects.
 
 - [ ] plan approved (the human ticks this box)
-- [ ] the chapter reads steady-state, with no stage named in it
+- [ ] the fixtures chapter reads steady-state, with no stage named
+  in it
+- [ ] the recognition paragraph names stage 26, which the
+  contract's own rule allows for behavior no stage has built
 - [ ] Changes draft below reads right in the journal
 - [ ] badges and CriticMarkup removed at acceptance
 - [ ] census clean for stage 12, suite green
@@ -182,10 +201,111 @@ below mark what a reviewer should read as if it had not.
 The book gained a chapter on the fixtures: what sits on disk, how
 to rebuild a golden by running the driver the way lit.mk runs it,
 and the order to follow when adding one, starting from the
-behavior rather than the file. The refusal of a file-inclusion
-keyword gained its reason, which is that org's tangler ignores the
-keyword and the blocks it names reach no target without a word
-about it.
+behavior rather than the file. The contract gained the rule for
+the two file-inclusion spellings. The driver expands a chapter
+include before it collects anything; the spelling that ends in the
+word example reaches no tangler at all.
+#+end_quote
+
+** PLANNED Stage 26: chapter files                                 :stage26:
+:PROPERTIES:
+:CUSTOM_ID: stage-26
+:SPEC:     The subset contract, "Recognition"
+:DEPS:     stage 6, whose cross-check this stage's acceptance runs
+:ACCEPTANCE: a fixture whose book is split across three chapter files tangles identically under both engines; go test ./...; ORACLE=1 go test ./...
+:SIZE:     ~200 lines
+:END:
+
+Claim: after this stage babble tangles a book split across chapter
+files into the tree Emacs writes from the same book, and accepts
+two ~#+include~ spellings, refusing the rest.
+
+This is a gap rather than a deviation. lit/BOOK.org makes a
+multi-file book a feature of the toolchain: a master includes its
+chapters in reading order, both halves expand the includes before
+anything else, and a split book and a whole one produce the same
+bytes. The driver implements that with
+~org-export-expand-include-keyword~, called between the
+dynamic-block refresh and the tangle. babble implements nothing,
+so the two engines write different trees from one book. The
+difference is loud when the chapter owns a file of its own, and
+quiet when a chapter and the master both feed one target, since
+both engines write that file and only one writes all of it.
+
+Decided: (1) babble expands rather than refusing. A refusal would
+forbid the multi-file book. The toolchain documents it and the
+driver supports it, and forbidding it is the mistake the gate
+caught once already in [[#stage-12][stage 12]].
+
+(2) Expansion sits where the driver puts it, after the
+dynamic-block refresh and after the write-back. The refresh
+therefore sees the master alone, the master alone is written back,
+and a src-block-diff naming a block that lives in a chapter
+resolves under neither engine.
+
+(3) Heading levels shift, because org shifts them. Org takes the
+shallowest heading level in the included file and moves every
+heading in it by the difference to one level below the include's
+enclosing heading, or to level 1 at top level. A chapter starting
+at level 2 and included at top level is promoted; a chapter
+included under a level-1 heading is demoted; nesting compounds.
+The shift decides subtree membership and so decides what tangles.
+Put a chapter under a COMMENT heading and nothing in it tangles,
+where a flat splice of the same text would write the file.
+
+(4) Footnote labels are left alone. Org rewrites them in an
+included file with a per-file prefix and does not touch block
+bodies, so the renaming reaches no tangled byte and babble has no
+use for it.
+
+(5) The keyword is read case-insensitively, and every spelling
+outside the two is refused. This is the deviation the stage adds.
+The driver's own check reads only uppercase ~#+INCLUDE:~, so a
+lowercase form carrying extra arguments passes it and reaches
+org's expander, which honors the arguments; the weave's reader is
+case-insensitive and refuses that form. babble reads the keyword
+the way org and the weave read it, and refuses the rest by name.
+The check also differs in reach: the driver searches raw text and
+would refuse a malformed include quoted inside an example block,
+where org's expander, and babble's tree, pass over it.
+
+(6) Positions keep naming a file. Merged text has line numbers
+that belong to no file, so the expansion carries a map from merged
+line back to chapter and line, and an error still prints a chapter
+file with a line number inside it.
+
+(7) A missing chapter and an inclusion cycle are errors, as they
+are for the driver; only the message differs.
+
+One defect turned up in the measurement and belongs to lit rather
+than to this stage. The weave half splices a chapter with no level
+shift and the tangle half shifts, so the two halves disagree about
+any include below top level, against lit/BOOK.org's own
+requirement that a split book and a whole one produce the same
+bytes. No book in the corpus does this today, and the fix is a
+stage in lit/BOOK.org.
+
+- [ ] plan approved (the human ticks this box)
+- [ ] skeleton approved: twins for the read path, holes for the
+  expander
+- [ ] inserted prose reads steady-state
+- [ ] Changes draft below reads right in the journal
+- [ ] HOLE(26) cluster filled, fixtures in the same commits
+- [ ] seen to fail: each new fixture broken on purpose and watched
+  to report the break
+- [ ] census clean for stage 26, suite green under ORACLE=1
+- [ ] Changes entry dated and filed, plan entry deleted
+
+*** Changes draft
+
+#+begin_quote
+A book split across chapter files tangles here the way it tangles
+under Emacs. The master's includes are expanded after its dynamic
+blocks are refreshed and written back, heading levels shift the
+way org shifts them, and an error still names a chapter file and a
+line inside it. Every spelling outside those two is refused, in
+either case, where the driver reads only the uppercase keyword and
+lets the rest through to org's expander.
 #+end_quote
 
 ** PLANNED Stage 25: minting goldens from the oracle              :stage25:
@@ -765,11 +885,17 @@ the stage.
 
 ** Recognition
 
+*************** PLANNED stage 12 drops a doubled word below ([[#stage-12][plan]]) :stage12:
+One word, in the paragraph this stage was already reading. The
+list item runs "and and blocks inside example", across a line
+break, which is why it survived a proofread.
+*************** END
+
 A tangle candidate is a src block that has a language. Recognition
 follows org's element grammar: delimiter keywords are
 case-insensitive, only whitespace may follow ~#+end_src~ on its
 line, affiliated ~#+name:~ and ~#+header:~ lines belong to the run
-above the block below them, and
+above the block below them, {--and--}
 and blocks inside example, export, comment and verse blocks are
 text rather than blocks. A quote block is not in that list: org
 parses it as a greater element, so a src block quoted inside one
@@ -778,18 +904,25 @@ fixtures pin it. A src block without a language is an error
 (org's scanner cannot even see one, which is worse). A src block
 that never closes is an error (org reads it as a paragraph).
 
-*************** PLANNED stage 12 adds the paragraph below ([[#stage-12][plan]]) :stage12:
-The fact belongs in the contract rather than the deviations,
-since both engines behave the same way; only the reader is
-surprised.
+*************** PLANNED stage 12 corrects the paragraph below ([[#stage-12][plan]]) :stage12:
+The paragraph this stage first added said neither engine reads an
+included file. Measurement says otherwise. lit/tangle.el expands a
+chapter include before it tangles, so the blocks in that file
+reach their targets under Emacs and reach nothing here. What
+replaces it separates the two spellings and names the stage that
+closes the gap.
 *************** END
 
-Keyword lines are not blocks, and one of them deserves saying out
-loud: ~#+include~ expands during export and never during a
-tangle. Neither engine reads the file it names, so a block inside
-an included file reaches no target, in Emacs or here. A book may
-use it freely to show a file's text in the weave, which is what
-this one does with its fixtures.
+Keyword lines are not blocks. ~#+include~ is the exception worth
+stating, because expansion happens before recognition. The oracle
+expands a chapter include as its own step, so a block in the
+included file reaches its target as if the master had held it. The
+second spelling, ~#+include: "path" example~, shows a file's text
+in the weave without making it part of the book, and no tangler
+reads that line; this book uses it for its fixtures. Expansion is
+[[#stage-26][stage 26]]'s work. Until it lands, babble walks past
+both spellings, so a book split across chapter files tangles under
+Emacs and comes up short here.
 
 ** Collection
 
@@ -1556,12 +1689,6 @@ injection is refused rather than expanded. babble expands nothing
 and matches. The second is that the driver pins the whole comment
 story to five language modes, so comment wrapping is a table rather
 than a port of Emacs's comment machinery.
-
-*************** PLANNED stage 12 adds the chapter below ([[#stage-12][plan]]) :stage12:
-The chapter landed before this entry did. Read it as an insertion:
-nothing above or below it changed, and acceptance deletes this
-badge and nothing else.
-*************** END
 
 * The command line
 
@@ -5216,6 +5343,15 @@ func dblockArgs(args string) (map[string]string, error) {
 }
 #+end_src
 
+*************** PLANNED stage 12 adds the chapter below ([[#stage-12][plan]]) :stage12:
+The chapter landed before this entry did. Read it as an insertion:
+nothing above or below it changed, and acceptance deletes this
+badge and nothing else. Two things changed since the last review.
+The badge itself had been left behind where the chapter used to
+sit, six chapters above, and the opening paragraph now says which
+of the two ~#+include~ spellings reaches no tangler.
+*************** END
+
 * The fixtures
 :PROPERTIES:
 :CUSTOM_ID: the-fixtures
@@ -5226,9 +5362,9 @@ chapter says what they are, how to rebuild one, and how to add
 another. They stay outside because a golden is minted by Emacs and
 rewritten by a machine, and a file the machine owns does not
 belong in a document a human owns. The weave shows them anyway.
-~#+include~ pulls a file's text into the PDF and no tangler reads
-it, so the pages below are the files themselves, not a copy of
-them that could drift.
+In its ~example~ spelling ~#+include~ pulls a file's text into the
+PDF and no tangler reads it, so the pages below are the files
+themselves, not a copy of them that could drift.
 
 ** What is on disk
 
