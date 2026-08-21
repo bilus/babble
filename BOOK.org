@@ -61,129 +61,59 @@ every dynamic block, and the labels are spelled without the sigils,
 so the census never matches its own index.
 
 #+begin: plan-toc
-- [[file:BOOK.org::127][127]] entry: PLANNED Stage 24: vendor
-- [[file:BOOK.org::188][188]] entry: PLANNED Stage 22: comment syntax by language
-- [[file:BOOK.org::256][256]] entry: PLANNED Stage 21: the environment
-- [[file:BOOK.org::304][304]] entry: PLANNED Stage 12: the fixtures chapter
-- [[file:BOOK.org::367][367]] entry: PLANNED Stage 6: the oracle harness
-- [[file:BOOK.org::475][475]] entry: PLANNED Stage 7: org comments
-- [[file:BOOK.org::518][518]] entry: PLANNED Stage 8: noweb
-- [[file:BOOK.org::555][555]] entry: PLANNED Stage 9: dynamic blocks
-- [[file:BOOK.org::602][602]] entry: PLANNED Stage 10: the fence
-- [[file:BOOK.org::631][631]] entry: PLANNED Stage 11: parity and self-hosting
-- [[file:BOOK.org::796][796]] badge: PLANNED stage 22 edits the paragraph below (plan)
-- [[file:BOOK.org::801][801]] replacement: the file's own comment
-- [[file:BOOK.org::1148][1148]] badge: PLANNED stage 12 adds the paragraph below (plan)
-- [[file:BOOK.org::1240][1240]] badge: PLANNED stage 22 edits the paragraph below (plan)
-- [[file:BOOK.org::1254][1254]] replacement: the file's own comment syntax: ~//~ for .go, ~;;~ for
-- [[file:BOOK.org::1260][1260]] insertion: A target fed by blocks of two
-- [[file:BOOK.org::1388][1388]] deletion: , and ~#+include~ (org's file-inclusion
-- [[file:BOOK.org::1396][1396]] deletion: ~:comments org~ is limited to languages whose comment syn...
-- [[file:BOOK.org::1401][1401]] note: stage 22: the driver answers every language from the comment
-- [[file:BOOK.org::1747][1747]] badge: PLANNED stage 12 adds the chapter below (plan)
-- [[file:BOOK.org::1799][1799]] badge: PLANNED stage 24 replaces the block above (plan)
-- [[file:BOOK.org::1803][1803]] twin of cli-head
-- [[file:BOOK.org::1838][1838]] generated diff
-- [[file:BOOK.org::1916][1916]] badge: PLANNED stage 24 replaces the block above (plan)
-- [[file:BOOK.org::1921][1921]] twin of cli-run
-- [[file:BOOK.org::1996][1996]] generated diff
-- [[file:BOOK.org::2045][2045]] badge: PLANNED stage 24 adds the paragraphs below (plan)
-- [[file:BOOK.org::2065][2065]] hole 24: write every embedded lit/ file into dir, overwriting, rem...
-- [[file:BOOK.org::3842][3842]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
-- [[file:BOOK.org::3848][3848]] badge: PLANNED stage 22 replaces the block below (plan)
-- [[file:BOOK.org::3889][3889]] twin of tangle-run
-- [[file:BOOK.org::3926][3926]] generated diff
-- [[file:BOOK.org::4018][4018]] badge: PLANNED stage 22 replaces the block above (plan)
-- [[file:BOOK.org::4024][4024]] twin of tangle-collect
-- [[file:BOOK.org::4075][4075]] generated diff
-- [[file:BOOK.org::4290][4290]] hole 7: extent between the anchors, then the docstring rule
-- [[file:BOOK.org::4296][4296]] hole 7: line-comment table per language, blank lines as a bare ma...
-- [[file:BOOK.org::4306][4306]] hole 8: named block first, else noweb-ref concatenation; cycles a...
-- [[file:BOOK.org::4318][4318]] badge: PLANNED stage 22 adds the table below and replaces the ba...
-- [[file:BOOK.org::4334][4334]] hole 22: built-in rows, then .lit/comments.json entries winning
-- [[file:BOOK.org::4338][4338]] hole 22: table lookup, hash for a language the table does not name
-- [[file:BOOK.org::4363][4363]] twin of tangle-banner
-- [[file:BOOK.org::4370][4370]] generated diff
-- [[file:BOOK.org::4390][4390]] badge: PLANNED stage 22 replaces the block below (plan)
-- [[file:BOOK.org::4429][4429]] twin of tangle-assemble
-- [[file:BOOK.org::4457][4457]] generated diff
-- [[file:BOOK.org::4516][4516]] hole 9: splice fresh interiors into the retained bytes, report ch...
-- [[file:BOOK.org::4526][4526]] hole 9: a line link per plan site, sites below the block shifted ...
-- [[file:BOOK.org::4532][4532]] hole 9: system diff -u over the two named bodies, temp-file heade...
-- [[file:BOOK.org::4575][4575]] badge: PLANNED stage 12 includes the two files below (plan)
-- [[file:BOOK.org::5065][5065]] badge: PLANNED stage 12 adds the test below (plan)
-- [[file:BOOK.org::5267][5267]] hole 6: ORACLE=1 in the environment
-- [[file:BOOK.org::5271][5271]] hole 6: UPDATE=1 in the environment
-- [[file:BOOK.org::5277][5277]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
-- [[file:BOOK.org::5289][5289]] hole 6: write the txtar's input files into dir, and name the book...
-- [[file:BOOK.org::5295][5295]] hole 6: copy lit/ in, run batch Emacs with the driver, fail loudl...
-- [[file:BOOK.org::5299][5299]] hole 6: every file on both sides, byte for byte, ignoring the inputs
-- [[file:BOOK.org::5303][5303]] hole 6: rewrite the fixture's want/ files from the oracle tree
-- [[file:BOOK.org::5629][5629]] badge: PLANNED stage 21 adds the two paragraphs below (plan)
-- [[file:BOOK.org::5652][5652]] insertion: devbox.json and its lockfile,
+- [[file:BOOK.org::118][118]] entry: PLANNED Stage 22: comment syntax by language
+- [[file:BOOK.org::186][186]] entry: PLANNED Stage 21: the environment
+- [[file:BOOK.org::234][234]] entry: PLANNED Stage 12: the fixtures chapter
+- [[file:BOOK.org::297][297]] entry: PLANNED Stage 6: the oracle harness
+- [[file:BOOK.org::405][405]] entry: PLANNED Stage 7: org comments
+- [[file:BOOK.org::448][448]] entry: PLANNED Stage 8: noweb
+- [[file:BOOK.org::485][485]] entry: PLANNED Stage 9: dynamic blocks
+- [[file:BOOK.org::532][532]] entry: PLANNED Stage 10: the fence
+- [[file:BOOK.org::561][561]] entry: PLANNED Stage 11: parity and self-hosting
+- [[file:BOOK.org::726][726]] badge: PLANNED stage 22 edits the paragraph below (plan)
+- [[file:BOOK.org::731][731]] replacement: the file's own comment
+- [[file:BOOK.org::1078][1078]] badge: PLANNED stage 12 adds the paragraph below (plan)
+- [[file:BOOK.org::1170][1170]] badge: PLANNED stage 22 edits the paragraph below (plan)
+- [[file:BOOK.org::1184][1184]] replacement: the file's own comment syntax: ~//~ for .go, ~;;~ for
+- [[file:BOOK.org::1190][1190]] insertion: A target fed by blocks of two
+- [[file:BOOK.org::1318][1318]] deletion: , and ~#+include~ (org's file-inclusion
+- [[file:BOOK.org::1326][1326]] deletion: ~:comments org~ is limited to languages whose comment syn...
+- [[file:BOOK.org::1331][1331]] note: stage 22: the driver answers every language from the comment
+- [[file:BOOK.org::1677][1677]] badge: PLANNED stage 12 adds the chapter below (plan)
+- [[file:BOOK.org::3734][3734]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
+- [[file:BOOK.org::3740][3740]] badge: PLANNED stage 22 replaces the block below (plan)
+- [[file:BOOK.org::3781][3781]] twin of tangle-run
+- [[file:BOOK.org::3818][3818]] generated diff
+- [[file:BOOK.org::3910][3910]] badge: PLANNED stage 22 replaces the block above (plan)
+- [[file:BOOK.org::3916][3916]] twin of tangle-collect
+- [[file:BOOK.org::3967][3967]] generated diff
+- [[file:BOOK.org::4182][4182]] hole 7: extent between the anchors, then the docstring rule
+- [[file:BOOK.org::4188][4188]] hole 7: line-comment table per language, blank lines as a bare ma...
+- [[file:BOOK.org::4198][4198]] hole 8: named block first, else noweb-ref concatenation; cycles a...
+- [[file:BOOK.org::4210][4210]] badge: PLANNED stage 22 adds the table below and replaces the ba...
+- [[file:BOOK.org::4226][4226]] hole 22: built-in rows, then .lit/comments.json entries winning
+- [[file:BOOK.org::4230][4230]] hole 22: table lookup, hash for a language the table does not name
+- [[file:BOOK.org::4255][4255]] twin of tangle-banner
+- [[file:BOOK.org::4262][4262]] generated diff
+- [[file:BOOK.org::4282][4282]] badge: PLANNED stage 22 replaces the block below (plan)
+- [[file:BOOK.org::4321][4321]] twin of tangle-assemble
+- [[file:BOOK.org::4349][4349]] generated diff
+- [[file:BOOK.org::4408][4408]] hole 9: splice fresh interiors into the retained bytes, report ch...
+- [[file:BOOK.org::4418][4418]] hole 9: a line link per plan site, sites below the block shifted ...
+- [[file:BOOK.org::4424][4424]] hole 9: system diff -u over the two named bodies, temp-file heade...
+- [[file:BOOK.org::4467][4467]] badge: PLANNED stage 12 includes the two files below (plan)
+- [[file:BOOK.org::4957][4957]] badge: PLANNED stage 12 adds the test below (plan)
+- [[file:BOOK.org::5283][5283]] hole 6: ORACLE=1 in the environment
+- [[file:BOOK.org::5287][5287]] hole 6: UPDATE=1 in the environment
+- [[file:BOOK.org::5293][5293]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
+- [[file:BOOK.org::5305][5305]] hole 6: write the txtar's input files into dir, and name the book...
+- [[file:BOOK.org::5311][5311]] hole 6: copy lit/ in, run batch Emacs with the driver, fail loudl...
+- [[file:BOOK.org::5315][5315]] hole 6: every file on both sides, byte for byte, ignoring the inputs
+- [[file:BOOK.org::5319][5319]] hole 6: rewrite the fixture's want/ files from the oracle tree
+- [[file:BOOK.org::5662][5662]] badge: PLANNED stage 21 adds the two paragraphs below (plan)
+- [[file:BOOK.org::5685][5685]] insertion: devbox.json and its lockfile,
 
 #+end:
-
-** PLANNED Stage 24: vendor                                        :stage24:
-:PROPERTIES:
-:CUSTOM_ID: stage-24
-:SPEC:     The command line
-:ACCEPTANCE: vendor-refreshes.txtar; make check; go test ./...
-:SIZE:     ~35 lines of Go, one fixture
-:END:
-
-Claim: after this stage ~babble vendor~ writes the embedded
-toolchain into a directory that already holds a project, touching
-nothing but ~lit/~, so a build can refresh the toolchain instead of
-carrying a copy that drifts.
-
-A project carries a copy of ~lit/~, and a copy goes stale without
-saying so. Where the directory is ignored by version control, which
-is the usual arrangement, nothing reports the drift at all: a stale
-toolchain and a current one look alike, and the first symptom is
-some unrelated-looking failure in the weave. A build that restores
-the toolchain each time cannot drift, but ~init~ cannot serve that
-build, because it wants a directory with no book in it and a
-checkout has one.
-
-Decided: (1) A command of its own rather than a tolerant ~init~.
-Two jobs in one command means a contract with an exception in it,
-"writes what is missing, except the book, which it leaves alone",
-and a caller that has to know which case it is in. ~vendor~ says one
-thing and a build can call it without asking what is already there.
-(2) It overwrites, where ~init~'s writers refuse to. The refusal is
-right for ~init~, whose files belong to whoever runs it, and wrong
-here: ~lit/~ is generated, a hand edit to it is already a mistake by
-the toolchain's own contract, and refreshing it is the whole point.
-(3) It writes the embedded set and removes nothing. Two files are
-deliberately outside that set, and a repository that has them is the
-toolchain's own: sweeping the directory clean would delete
-~lit/BOOK.org~, which is the source everything else is tangled from.
-(4) It touches nothing outside ~lit/~. A checkout has a Makefile, a
-book and a package manifest already, and a command that rewrote any
-of them could not be run unconditionally, which is the one thing it
-is for.
-
-- [ ] plan approved (the human ticks this box)
-- [ ] HOLE(24) vendorCmd filled, tests in the same commit
-- [ ] twins accepted: :tangle headers swapped, old blocks DROPPED
-- [ ] vendor-refreshes.txtar added, seen to fail, fixture table row added
-- [ ] census clean for stage 24, suite green
-- [ ] Changes entry dated and filed, plan entry deleted
-
-*** Changes draft
-
-#+begin_quote
-~babble vendor~ writes the embedded toolchain into the current
-directory, touching nothing but ~lit/~. A project that carries a
-copy of the toolchain can refresh it with a command rather than a
-manual copy, and a build can restore it every run, which is the only
-arrangement in which it cannot go stale. It overwrites where ~init~
-refuses to, because the files it writes are generated and a hand
-edit to them is already a mistake, and it removes nothing, because
-the two files outside the embedded set belong to the toolchain's own
-repository.
-#+end_quote
 
 ** PLANNED Stage 22: comment syntax by language                    :stage22:
 :PROPERTIES:
@@ -1752,7 +1682,7 @@ badge and nothing else.
 
 * The command line
 
-babble is two subcommands over one book: ~tangle~ writes the
+babble is four subcommands over one book: ~tangle~ writes the
 sources, ~parse~ reads the book and reports whether it parses,
 printing the tree only when asked with ~--dump~. main is only the wiring, streams
 in and exit code out, so the tests can drive run the way a shell
@@ -1767,44 +1697,7 @@ BOOK.org.
 package main
 
 import (
-	"embed"
-	"encoding/json"
-	"flag"
-	"fmt"
-	"io"
-	"io/fs"
-	"os"
-	"os/exec"
-	"path/filepath"
-	"strings"
-
-	"github.com/bilus/babble/internal/book"
-	"github.com/bilus/babble/internal/org"
-	"github.com/bilus/babble/internal/tangle"
-)
-
-const usage = `usage: babble <command> [flags] [BOOK.org]
-
-commands:
-  tangle  write every eligible code block to its target file
-  parse   read the book and report whether it parses (--dump for JSON)
-  init    start a lit book in an empty directory (--module, --dir)
-`
-
-func main() {
-	os.Exit(run(os.Args[1:], os.Stdout, os.Stderr))
-}
-#+end_src
-
-*************** PLANNED stage 24 replaces the block above ([[#stage-24][plan]]) :stage24:
-The twin lists the new command where a reader looks for it.
-*************** END
-
-#+name: cli-head--planned
-#+begin_src go :tangle no
-package main
-
-import (
+	"bytes"
 	"embed"
 	"encoding/json"
 	"flag"
@@ -1835,91 +1728,10 @@ func main() {
 }
 #+end_src
 
-#+begin: src-block-diff :old cli-head :new cli-head--planned
-#+begin_src diff
-@@ -23,6 +23,7 @@
-   tangle  write every eligible code block to its target file
-   parse   read the book and report whether it parses (--dump for JSON)
-   init    start a lit book in an empty directory (--module, --dir)
-+  vendor  write the embedded lit/ into this directory (--dir)
- `
- 
- func main() {
-#+end_src
-#+end:
-
 run dispatches the subcommands and owns the exit codes.
 
 #+name: cli-run
 #+begin_src go :tangle main.go :comments org
-func run(args []string, stdout, stderr io.Writer) int {
-	if len(args) < 1 {
-		fmt.Fprint(stderr, usage)
-		return 2
-	}
-	switch args[0] {
-	case "parse":
-		fs := flag.NewFlagSet("parse", flag.ContinueOnError)
-		fs.SetOutput(stderr)
-		dump := fs.Bool("dump", false, "print the tree as JSON")
-		if err := fs.Parse(args[1:]); err != nil {
-			return 2
-		}
-		if fs.NArg() != 1 {
-			fmt.Fprint(stderr, usage)
-			return 2
-		}
-		d, err := org.Parse(fs.Arg(0))
-		if err == nil {
-			err = org.ResolveAll(d)
-		}
-		if err != nil {
-			fmt.Fprintln(stderr, "babble:", err)
-			return 1
-		}
-		if *dump {
-			out, err := book.Dump(d)
-			if err != nil {
-				fmt.Fprintln(stderr, "babble:", err)
-				return 1
-			}
-			if _, err := stdout.Write(out); err != nil {
-				return 1
-			}
-		}
-		return 0
-	case "tangle":
-		if len(args) != 2 {
-			fmt.Fprint(stderr, usage)
-			return 2
-		}
-		return tangleCmd(args[1], stderr)
-	case "init":
-		fs := flag.NewFlagSet("init", flag.ContinueOnError)
-		fs.SetOutput(stderr)
-		module := fs.String("module", "", "go module path (default: the directory name)")
-		dir := fs.String("dir", ".", "directory to set up")
-		if err := fs.Parse(args[1:]); err != nil {
-			return 2
-		}
-		if fs.NArg() != 0 {
-			fmt.Fprint(stderr, usage)
-			return 2
-		}
-		return initCmd(*dir, *module, stdout, stderr)
-	}
-	fmt.Fprint(stderr, usage)
-	return 2
-}
-#+end_src
-
-*************** PLANNED stage 24 replaces the block above ([[#stage-24][plan]]) :stage24:
-The twin dispatches the new command. It takes the same --dir flag as
-init, so a caller that names a directory names it the same way.
-*************** END
-
-#+name: cli-run--planned
-#+begin_src go :tangle no
 func run(args []string, stdout, stderr io.Writer) int {
 	if len(args) < 1 {
 		fmt.Fprint(stderr, usage)
@@ -1993,29 +1805,83 @@ func run(args []string, stdout, stderr io.Writer) int {
 }
 #+end_src
 
-#+begin: src-block-diff :old cli-run :new cli-run--planned
-#+begin_src diff
-@@ -53,6 +53,18 @@
- 			return 2
- 		}
- 		return initCmd(*dir, *module, stdout, stderr)
-+	case "vendor":
-+		fs := flag.NewFlagSet("vendor", flag.ContinueOnError)
-+		fs.SetOutput(stderr)
-+		dir := fs.String("dir", ".", "directory to write lit/ into")
-+		if err := fs.Parse(args[1:]); err != nil {
-+			return 2
-+		}
-+		if fs.NArg() != 0 {
-+			fmt.Fprint(stderr, usage)
-+			return 2
-+		}
-+		return vendorCmd(*dir, stdout, stderr)
- 	}
- 	fmt.Fprint(stderr, usage)
- 	return 2
+The walk writes only what differs, so the report names the files that
+were behind and says nothing when the copy is already current. A
+directory that is not there is refused rather than created: init
+makes a project and this refreshes one, so a mistyped path should
+say so instead of leaving a directory holding nothing but a
+toolchain. The toolchain's own checkout is refused too, since there
+the embedded copy is whatever was compiled in and the source beside
+it may be newer.
+
+#+begin_src go :tangle main.go :comments org
+func vendorLit(dir string, out io.Writer) error {
+	info, err := os.Stat(dir)
+	if err != nil {
+		return err
+	}
+	if !info.IsDir() {
+		return fmt.Errorf("%s is not a directory", dir)
+	}
+	if _, err := os.Stat(filepath.Join(dir, "lit", "BOOK.org")); err == nil {
+		return fmt.Errorf("%s holds lit/BOOK.org and is the toolchain's own checkout; run make tangle in lit/ instead", dir)
+	}
+	wrote := 0
+	err = fs.WalkDir(litFS, "lit", func(path string, d fs.DirEntry, err error) error {
+		if err != nil || d.IsDir() {
+			return err
+		}
+		want, err := litFS.ReadFile(path)
+		if err != nil {
+			return err
+		}
+		target := filepath.Join(dir, filepath.FromSlash(path))
+		if old, err := os.ReadFile(target); err == nil && bytes.Equal(old, want) {
+			return nil
+		}
+		if err := replaceFile(target, want); err != nil {
+			return err
+		}
+		wrote++
+		fmt.Fprintln(out, path)
+		return nil
+	})
+	if err == nil && wrote == 0 {
+		fmt.Fprintln(out, "lit/ is already current")
+	}
+	return err
+}
 #+end_src
-#+end:
+
+A file is written beside its target and renamed over it. The rename
+is what makes the file whole-old or whole-new, so a run that fails
+partway leaves no mixture of two toolchains, and it is also what
+replaces a symbolic link instead of writing through it to whatever
+it points at.
+
+#+begin_src go :tangle main.go :comments org
+func replaceFile(target string, body []byte) error {
+	if err := os.MkdirAll(filepath.Dir(target), 0o755); err != nil {
+		return err
+	}
+	tmp, err := os.CreateTemp(filepath.Dir(target), ".babble-*")
+	if err != nil {
+		return err
+	}
+	defer os.Remove(tmp.Name())
+	if _, err := tmp.Write(body); err != nil {
+		tmp.Close()
+		return err
+	}
+	if err := tmp.Close(); err != nil {
+		return err
+	}
+	if err := os.Chmod(tmp.Name(), 0o644); err != nil {
+		return err
+	}
+	return os.Rename(tmp.Name(), target)
+}
+#+end_src
 
 tangleCmd is the tangle flow in one place: parse the book, resolve
 every block's headers, then write the targets.
@@ -2063,27 +1929,32 @@ the same bytes the rest of the repository uses, so a new project
 gets whatever lit was current when the binary was built, and there
 is nothing to keep in step.
 
-*************** PLANNED stage 24 adds the paragraphs below ([[#stage-24][plan]]) :stage24:
 vendor writes the embedded toolchain into a directory that already
-holds a project. A copy of lit/ goes stale without saying so, and
-where the directory is ignored by version control nothing reports
-the drift; a build that restores the toolchain every run cannot
-drift, and this is the command such a build calls.
+holds a project. Everything under lit/ belongs to the toolchain, so
+vendor replaces the whole embedded set, and a project that wants
+instructions of its own keeps them somewhere else. A file is
+rewritten only when its bytes differ, which is the rule a tangled
+target already follows and which matters more here: lit.mk makes the
+PDF depend on the filters, so touching every file would cost every
+following weave a full rebuild.
 
-It differs from init's writers in two ways, and both follow from
-what it is for. It overwrites, because the files it writes are
-generated and refreshing them is the point, where init refuses to
-overwrite because the files it would clobber belong to whoever ran
-it. It removes nothing, because two files sit outside the embedded
-set on purpose and the repository that has them is the toolchain's
-own; a command that swept lit/ clean would delete the source the
-rest of it is tangled from. Nothing outside lit/ is touched, which
-is what lets a build call it without knowing what is already there.
-*************** END
+Each file is replaced whole or not at all, written beside its target
+and renamed over it, so a run that fails partway leaves no mixture of
+two toolchains and a symlink under lit/ is replaced rather than
+written through. Nothing is removed, because several paths sit
+outside the embedded set on purpose and the repository holding them
+is the toolchain's own; sweeping lit/ clean would delete the source
+the rest is tangled from. Nothing outside lit/ is touched at all,
+which is what lets a build call it without knowing what is already
+there.
 
 #+begin_src go :tangle main.go :comments org
 func vendorCmd(dir string, stdout, stderr io.Writer) int {
-	panic("HOLE(24): write every embedded lit/ file into dir, overwriting, removing nothing")
+	if err := vendorLit(dir, stdout); err != nil {
+		fmt.Fprintln(stderr, "babble:", err)
+		return 1
+	}
+	return 0
 }
 #+end_src
 
@@ -5152,6 +5023,130 @@ lit.mk is what actually decides. These tests read lit.mk and the
 filters and hold the lists to them, rather than naming the files and
 packages a second time, which would only record today's answer.
 
+vendor is tested against a directory that already holds a project,
+because that is the only situation it exists for. The three tests
+below pin what it writes, what it refuses to touch, and what it does
+on a second run, which is the run a build makes every time.
+
+#+name: TestVendorRefreshes
+#+begin_src go :tangle main_test.go :comments org
+func TestVendorRefreshes(t *testing.T) {
+	dir := t.TempDir()
+	stale := filepath.Join(dir, "lit", "lit.mk")
+	if err := os.MkdirAll(filepath.Dir(stale), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(stale, []byte("stale\n"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	var out strings.Builder
+	if code := vendorCmd(dir, &out, io.Discard); code != 0 {
+		t.Fatalf("vendor: exit %d", code)
+	}
+	got, err := os.ReadFile(stale)
+	if err != nil {
+		t.Fatal(err)
+	}
+	want, err := litFS.ReadFile("lit/lit.mk")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if string(got) != string(want) {
+		t.Error("lit.mk was not refreshed")
+	}
+	if !strings.Contains(out.String(), "lit/lit.mk") {
+		t.Errorf("the run did not report the file it wrote: %q", out.String())
+	}
+}
+#+end_src
+
+A build calls vendor on every run, so a run that changes nothing must
+leave every timestamp alone: lit.mk makes the PDF depend on these
+files, and a fresh timestamp costs a full weave.
+
+#+name: TestVendorSkipsFilesAlreadyCurrent
+#+begin_src go :tangle main_test.go :comments org
+func TestVendorSkipsFilesAlreadyCurrent(t *testing.T) {
+	dir := t.TempDir()
+	if code := vendorCmd(dir, io.Discard, io.Discard); code != 0 {
+		t.Fatalf("first vendor: exit %d", code)
+	}
+	path := filepath.Join(dir, "lit", "lit.mk")
+	before, err := os.Stat(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var out strings.Builder
+	if code := vendorCmd(dir, &out, io.Discard); code != 0 {
+		t.Fatalf("second vendor: exit %d", code)
+	}
+	after, err := os.Stat(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !after.ModTime().Equal(before.ModTime()) {
+		t.Error("a file with the same bytes was rewritten")
+	}
+	if strings.Contains(out.String(), "lit/lit.mk") {
+		t.Errorf("an unchanged file was reported as written: %q", out.String())
+	}
+}
+#+end_src
+
+The refusals are the other half of the contract. vendor touches
+nothing outside lit/ and removes nothing inside it, it will not
+create the directory it was pointed at, and it will not run in the
+toolchain's own checkout, where the embedded copy is older than the
+source beside it.
+
+#+name: TestVendorRefusals
+#+begin_src go :tangle main_test.go :comments org
+func TestVendorRefusals(t *testing.T) {
+	dir := t.TempDir()
+	keep := filepath.Join(dir, "lit", "notes.txt")
+	if err := os.MkdirAll(filepath.Dir(keep), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	for _, f := range []struct{ path, body string }{
+		{keep, "mine\n"},
+		{filepath.Join(dir, "Makefile"), "include lit/lit.mk\n"},
+	} {
+		if err := os.WriteFile(f.path, []byte(f.body), 0o644); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if code := vendorCmd(dir, io.Discard, io.Discard); code != 0 {
+		t.Fatalf("vendor: exit %d", code)
+	}
+	for _, f := range []struct{ path, want string }{
+		{keep, "mine\n"},
+		{filepath.Join(dir, "Makefile"), "include lit/lit.mk\n"},
+	} {
+		got, err := os.ReadFile(f.path)
+		if err != nil || string(got) != f.want {
+			t.Errorf("%s: %q, %v", f.path, got, err)
+		}
+	}
+	missing := filepath.Join(dir, "nope")
+	if code := vendorCmd(missing, io.Discard, io.Discard); code == 0 {
+		t.Error("vendor made a directory that was not there")
+	}
+	if _, err := os.Stat(missing); err == nil {
+		t.Error("the refused directory was created anyway")
+	}
+	own := t.TempDir()
+	if err := os.MkdirAll(filepath.Join(own, "lit"), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(own, "lit", "BOOK.org"), []byte("#+title: lit\n"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	if code := vendorCmd(own, io.Discard, io.Discard); code == 0 {
+		t.Error("vendor ran in the toolchain's own checkout")
+	}
+}
+#+end_src
+
 #+name: TestInitEmbedsWhatLitmkNeeds
 #+begin_src go :tangle main_test.go :comments org
 func TestInitEmbedsWhatLitmkNeeds(t *testing.T) {
@@ -5447,6 +5442,23 @@ func TestDump(t *testing.T) {
 #+end_src
 
 * Changes
+
+** [2026-08-21] vendor
+
+#+begin_quote
+~babble vendor~ writes the embedded toolchain into a directory that
+already holds a project, touching nothing but ~lit/~. A project that
+carries a copy of the toolchain can refresh it with a command, and a
+build can restore it every run, which is the only arrangement in
+which the copy cannot fall behind. A file is rewritten only when its
+bytes differ, because the PDF depends on those files and a fresh
+timestamp would cost a full weave; each one is written beside its
+target and renamed over it, so a failed run leaves no mixture of two
+toolchains. Nothing is removed, since several paths sit outside the
+embedded set on purpose and the repository holding them is the
+toolchain's own, and that checkout is refused outright, where the
+embedded copy would be older than the source beside it.
+#+end_quote
 
 ** [2026-08-20] init vendors what the weave needs
 

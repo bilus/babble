@@ -5,6 +5,7 @@
 package main
 
 import (
+	"bytes"
 	"embed"
 	"encoding/json"
 	"flag"
@@ -27,6 +28,7 @@ commands:
   tangle  write every eligible code block to its target file
   parse   read the book and report whether it parses (--dump for JSON)
   init    start a lit book in an empty directory (--module, --dir)
+  vendor  write the embedded lit/ into this directory (--dir)
 `
 
 func main() {
@@ -89,9 +91,93 @@ func run(args []string, stdout, stderr io.Writer) int {
 			return 2
 		}
 		return initCmd(*dir, *module, stdout, stderr)
+	case "vendor":
+		fs := flag.NewFlagSet("vendor", flag.ContinueOnError)
+		fs.SetOutput(stderr)
+		dir := fs.String("dir", ".", "directory to write lit/ into")
+		if err := fs.Parse(args[1:]); err != nil {
+			return 2
+		}
+		if fs.NArg() != 0 {
+			fmt.Fprint(stderr, usage)
+			return 2
+		}
+		return vendorCmd(*dir, stdout, stderr)
 	}
 	fmt.Fprint(stderr, usage)
 	return 2
+}
+
+// The walk writes only what differs, so the report names the files that
+// were behind and says nothing when the copy is already current. A
+// directory that is not there is refused rather than created: init
+// makes a project and this refreshes one, so a mistyped path should
+// say so instead of leaving a directory holding nothing but a
+// toolchain. The toolchain's own checkout is refused too, since there
+// the embedded copy is whatever was compiled in and the source beside
+// it may be newer.
+func vendorLit(dir string, out io.Writer) error {
+	info, err := os.Stat(dir)
+	if err != nil {
+		return err
+	}
+	if !info.IsDir() {
+		return fmt.Errorf("%s is not a directory", dir)
+	}
+	if _, err := os.Stat(filepath.Join(dir, "lit", "BOOK.org")); err == nil {
+		return fmt.Errorf("%s holds lit/BOOK.org and is the toolchain's own checkout; run make tangle in lit/ instead", dir)
+	}
+	wrote := 0
+	err = fs.WalkDir(litFS, "lit", func(path string, d fs.DirEntry, err error) error {
+		if err != nil || d.IsDir() {
+			return err
+		}
+		want, err := litFS.ReadFile(path)
+		if err != nil {
+			return err
+		}
+		target := filepath.Join(dir, filepath.FromSlash(path))
+		if old, err := os.ReadFile(target); err == nil && bytes.Equal(old, want) {
+			return nil
+		}
+		if err := replaceFile(target, want); err != nil {
+			return err
+		}
+		wrote++
+		fmt.Fprintln(out, path)
+		return nil
+	})
+	if err == nil && wrote == 0 {
+		fmt.Fprintln(out, "lit/ is already current")
+	}
+	return err
+}
+
+// A file is written beside its target and renamed over it. The rename
+// is what makes the file whole-old or whole-new, so a run that fails
+// partway leaves no mixture of two toolchains, and it is also what
+// replaces a symbolic link instead of writing through it to whatever
+// it points at.
+func replaceFile(target string, body []byte) error {
+	if err := os.MkdirAll(filepath.Dir(target), 0o755); err != nil {
+		return err
+	}
+	tmp, err := os.CreateTemp(filepath.Dir(target), ".babble-*")
+	if err != nil {
+		return err
+	}
+	defer os.Remove(tmp.Name())
+	if _, err := tmp.Write(body); err != nil {
+		tmp.Close()
+		return err
+	}
+	if err := tmp.Close(); err != nil {
+		return err
+	}
+	if err := os.Chmod(tmp.Name(), 0o644); err != nil {
+		return err
+	}
+	return os.Rename(tmp.Name(), target)
 }
 
 // Two more steps belong here and are not here yet. [[#stage-9][Stage 9]] adds a
@@ -116,9 +202,21 @@ func tangleCmd(bookPath string, stderr io.Writer) int {
 	return 0
 }
 
-// END
+// Each file is replaced whole or not at all, written beside its target
+// and renamed over it, so a run that fails partway leaves no mixture of
+// two toolchains and a symlink under lit/ is replaced rather than
+// written through. Nothing is removed, because several paths sit
+// outside the embedded set on purpose and the repository holding them
+// is the toolchain's own; sweeping lit/ clean would delete the source
+// the rest is tangled from. Nothing outside lit/ is touched at all,
+// which is what lets a build call it without knowing what is already
+// there.
 func vendorCmd(dir string, stdout, stderr io.Writer) int {
-	panic("HOLE(24): write every embedded lit/ file into dir, overwriting, removing nothing")
+	if err := vendorLit(dir, stdout); err != nil {
+		fmt.Fprintln(stderr, "babble:", err)
+		return 1
+	}
+	return 0
 }
 
 // Two files are left out on purpose. lit/BOOK.org is lit's own

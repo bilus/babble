@@ -74,10 +74,118 @@ func TestFixtureTable(t *testing.T) {
 	}
 }
 
-// Two lists in the command line describe what a project needs, and
-// lit.mk is what actually decides. These tests read lit.mk and the
-// filters and hold the lists to them, rather than naming the files and
-// packages a second time, which would only record today's answer.
+// vendor is tested against a directory that already holds a project,
+// because that is the only situation it exists for. The three tests
+// below pin what it writes, what it refuses to touch, and what it does
+// on a second run, which is the run a build makes every time.
+func TestVendorRefreshes(t *testing.T) {
+	dir := t.TempDir()
+	stale := filepath.Join(dir, "lit", "lit.mk")
+	if err := os.MkdirAll(filepath.Dir(stale), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(stale, []byte("stale\n"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	var out strings.Builder
+	if code := vendorCmd(dir, &out, io.Discard); code != 0 {
+		t.Fatalf("vendor: exit %d", code)
+	}
+	got, err := os.ReadFile(stale)
+	if err != nil {
+		t.Fatal(err)
+	}
+	want, err := litFS.ReadFile("lit/lit.mk")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if string(got) != string(want) {
+		t.Error("lit.mk was not refreshed")
+	}
+	if !strings.Contains(out.String(), "lit/lit.mk") {
+		t.Errorf("the run did not report the file it wrote: %q", out.String())
+	}
+}
+
+// A build calls vendor on every run, so a run that changes nothing must
+// leave every timestamp alone: lit.mk makes the PDF depend on these
+// files, and a fresh timestamp costs a full weave.
+func TestVendorSkipsFilesAlreadyCurrent(t *testing.T) {
+	dir := t.TempDir()
+	if code := vendorCmd(dir, io.Discard, io.Discard); code != 0 {
+		t.Fatalf("first vendor: exit %d", code)
+	}
+	path := filepath.Join(dir, "lit", "lit.mk")
+	before, err := os.Stat(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var out strings.Builder
+	if code := vendorCmd(dir, &out, io.Discard); code != 0 {
+		t.Fatalf("second vendor: exit %d", code)
+	}
+	after, err := os.Stat(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !after.ModTime().Equal(before.ModTime()) {
+		t.Error("a file with the same bytes was rewritten")
+	}
+	if strings.Contains(out.String(), "lit/lit.mk") {
+		t.Errorf("an unchanged file was reported as written: %q", out.String())
+	}
+}
+
+// The refusals are the other half of the contract. vendor touches
+// nothing outside lit/ and removes nothing inside it, it will not
+// create the directory it was pointed at, and it will not run in the
+// toolchain's own checkout, where the embedded copy is older than the
+// source beside it.
+func TestVendorRefusals(t *testing.T) {
+	dir := t.TempDir()
+	keep := filepath.Join(dir, "lit", "notes.txt")
+	if err := os.MkdirAll(filepath.Dir(keep), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	for _, f := range []struct{ path, body string }{
+		{keep, "mine\n"},
+		{filepath.Join(dir, "Makefile"), "include lit/lit.mk\n"},
+	} {
+		if err := os.WriteFile(f.path, []byte(f.body), 0o644); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if code := vendorCmd(dir, io.Discard, io.Discard); code != 0 {
+		t.Fatalf("vendor: exit %d", code)
+	}
+	for _, f := range []struct{ path, want string }{
+		{keep, "mine\n"},
+		{filepath.Join(dir, "Makefile"), "include lit/lit.mk\n"},
+	} {
+		got, err := os.ReadFile(f.path)
+		if err != nil || string(got) != f.want {
+			t.Errorf("%s: %q, %v", f.path, got, err)
+		}
+	}
+	missing := filepath.Join(dir, "nope")
+	if code := vendorCmd(missing, io.Discard, io.Discard); code == 0 {
+		t.Error("vendor made a directory that was not there")
+	}
+	if _, err := os.Stat(missing); err == nil {
+		t.Error("the refused directory was created anyway")
+	}
+	own := t.TempDir()
+	if err := os.MkdirAll(filepath.Join(own, "lit"), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(own, "lit", "BOOK.org"), []byte("#+title: lit\n"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	if code := vendorCmd(own, io.Discard, io.Discard); code == 0 {
+		t.Error("vendor ran in the toolchain's own checkout")
+	}
+}
+
 func TestInitEmbedsWhatLitmkNeeds(t *testing.T) {
 	mk, err := litFS.ReadFile("lit/lit.mk")
 	if err != nil {
