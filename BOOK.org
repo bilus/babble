@@ -70,17 +70,17 @@ so the census never matches its own index.
 - [[file:BOOK.org::948][948]] badge: PLANNED stage 12 drops a doubled word below (plan)
 - [[file:BOOK.org::958][958]] deletion: and--}
 - [[file:BOOK.org::967][967]] badge: PLANNED stage 12 corrects the paragraph below (plan)
-- [[file:BOOK.org::1363][1363]] note: stage 10: src bodies come out of this bullet. Measured, t...
-- [[file:BOOK.org::3882][3882]] badge: PLANNED stage 10 rewrites this section (plan)
-- [[file:BOOK.org::3905][3905]] hole 10: a name two src blocks carry, and a name that is also a gr...
-- [[file:BOOK.org::5000][5000]] badge: PLANNED stage 10 replaces the block above (plan)
-- [[file:BOOK.org::5007][5007]] twin of cmd-read
-- [[file:BOOK.org::5027][5027]] generated diff
-- [[file:BOOK.org::5500][5500]] badge: PLANNED stage 12 adds the chapter below (plan)
-- [[file:BOOK.org::5587][5587]] badge: PLANNED stage 12 includes the two files below (plan)
-- [[file:BOOK.org::6090][6090]] badge: PLANNED stage 12 adds the test below (plan)
-- [[file:BOOK.org::7250][7250]] badge: PLANNED stage 21 adds the two paragraphs below (plan)
-- [[file:BOOK.org::7273][7273]] insertion: devbox.json and its lockfile,
+- [[file:BOOK.org::1364][1364]] note: stage 10: src bodies come out of this bullet. Measured, t...
+- [[file:BOOK.org::3883][3883]] badge: PLANNED stage 10 rewrites this section (plan)
+- [[file:BOOK.org::3906][3906]] hole 10: a name two src blocks carry, and a name that is also a gr...
+- [[file:BOOK.org::5001][5001]] badge: PLANNED stage 10 replaces the block above (plan)
+- [[file:BOOK.org::5008][5008]] twin of cmd-read
+- [[file:BOOK.org::5028][5028]] generated diff
+- [[file:BOOK.org::5502][5502]] badge: PLANNED stage 12 adds the chapter below (plan)
+- [[file:BOOK.org::5589][5589]] badge: PLANNED stage 12 includes the two files below (plan)
+- [[file:BOOK.org::6092][6092]] badge: PLANNED stage 12 adds the test below (plan)
+- [[file:BOOK.org::7252][7252]] badge: PLANNED stage 21 adds the two paragraphs below (plan)
+- [[file:BOOK.org::7275][7275]] insertion: devbox.json and its lockfile,
 
 #+end:
 
@@ -383,7 +383,7 @@ neither engine says so.
 
 (2) Lint is called from the flow, beside the two lints already
 there. It has been written and unreachable since stage 4, which is
-its own small lesson: a refusal nothing calls is not a fence, and
+its own small lesson: an uncalled refusal fences nothing, and
 the only reason nobody noticed is that its body is a hole.
 
 (3) Corrected before building: the claim that a delimiter quoted
@@ -404,7 +404,7 @@ coverage today, and a unit test proves the function refuses, where
 the fixture proves the tool refuses and prints something a reader
 can act on. The message is part of the contract: the chapter says
 every error names the construct and the supported alternative, and
-only a fixture reads what a user sees.
+only a fixture reads back the message a user gets.
 
 (5) A corpus test asserts the fence is silent on every book here:
 this one, the toolchain's, and the example. A fence that fires on
@@ -438,7 +438,7 @@ fixture can check that promise. Lint gained the two refusals that
 need the whole document, a name carried twice and a name that is
 also a group's, and gained a caller: it had been written and
 unreachable since stage 4. A corpus test now asserts the fence is
-silent on every book this project owns, which is the check that
+silent on every book in this project, which is the check that
 would have found the quoted opener three stages before stage 9 did.
 One claim was dropped rather than built: a delimiter quoted inside a
 src body needs no refusal, because both engines tangle it the same
@@ -870,7 +870,7 @@ jump list and a twin's diff.
 
 Two generated views live in books, and tangling refreshes both
 before any code moves, so committed generated content cannot
-disagree with the blocks it describes. Hand edits inside them are
+disagree with the blocks under it. Hand edits inside them are
 lost: the next refresh rewrites the interior wholesale. Dynamic
 blocks start in column zero, and only these two names exist; an
 unknown name is an error.
@@ -1303,7 +1303,8 @@ message always names the construct and the supported alternative.
   earlier in the same run, because the group scan replaces the cache
   the name lookup consults.
 - ~:noweb~ is read as a list of words, which is how org reads it:
-  it splits the value on whitespace and looks for a word it knows.
+  it splits the value on whitespace and looks for a word from its own
+  list.
   The subset takes ~yes~, ~no~, and ~inline~ beside ~yes~. The last
   is not org's word. It asks the weave to show a block's references
   expanded in the listing rather than as links, and org carries it
@@ -1371,8 +1372,8 @@ message always names the construct and the supported alternative.
   are rejected; org hands them to the lisp reader.
 
 - A ~#+begin:~ line that babble's tree does not report as a dynamic
-  block is refused, and so is a dynamic block the tree reports that
-  a raw search would miss. Org looks for dynamic blocks by searching
+  block is refused, and so is a dynamic block that lives in the tree
+  and outside a raw search. Org looks for dynamic blocks by searching
   the buffer line by line, ignoring block structure and allowing
   indentation, so a delimiter quoted inside an example block or a
   code body is one to org and not to babble. Its own rule is
@@ -2687,7 +2688,7 @@ element contains it. Reproducing org's search would mean giving up
 the tree for the one case that abuses it.
 
 So babble asks both and compares. Run org's opener pattern over the
-raw source, collect the line numbers the tree reports, and look at
+raw source, collect every line number in the tree, and look at
 the difference. A line only org finds is a delimiter that wants a
 comma in front of it. A line only the tree finds is one written
 without the whitespace org's pattern requires after the colon.
@@ -2704,7 +2705,7 @@ The scan runs a line at a time rather than over the whole source,
 which is why the pattern anchors without a multiline flag. Comparing
 by line number is also what makes the two answers comparable at all:
 one side has offsets and elements, the other has lines and nothing
-else, and a line number is the only thing they both have.
+else, and a line number is the one thing common to both.
 
 # doc
 checkDynamicBlocks refuses a book where org's raw search for a
@@ -4554,7 +4555,7 @@ with the whole subtree as raw text, delimiter lines included and
 nothing unescaped, which no book means by a reference. And a name
 that some block also carries as a ~:noweb-ref~ resolves to the block
 or to the group depending on what org expanded earlier in the same
-run, since the group scan replaces the cache it consults. Neither is
+run, since the group scan overwrites the cache behind that lookup. Neither is
 worth reproducing and both are quiet, so both are refused.
 
 The property lookup below asks for a lowercase key, and that is not
@@ -4563,7 +4564,7 @@ one, so a drawer writing ~:CUSTOM_ID:~ and a drawer writing
 ~:custom_id:~ mean one property, and the parser folds the same way to
 match it. A caller spelling the key the way a drawer spells it finds
 nothing, every time, and nothing anywhere fails: a lookup that misses
-returns the empty string, which no name equals, so the refusal simply
+returns the empty string, and no name is ever empty, so the refusal simply
 never fires.
 
 That is what this function did between the stage that wrote it and
@@ -4613,7 +4614,7 @@ find a different block than the driver finds.
 
 That makes the lookup two questions, not one, and the reason to
 split them is that neither answers the other. The first block
-carrying the name is the one org picks, commented or not. Whether
+carrying the name is the one org settles on, commented or not. Whether
 org would still tangle that block is a separate fact about where it
 sits. A block is a source only when both questions return it; when
 they return different blocks, the first one is buried and shadows
@@ -4944,11 +4945,11 @@ import (
 )
 #+end_src
 
-Those four imports are the whole of what this package depends on,
+Those four imports are everything this package depends on,
 and they are the reason it cannot live inside any of them.
 
 # doc
-Tangle is the whole of what "babble tangle" does to one book: read
+Tangle is everything "babble tangle" does to one book: read
 it, refresh its dynamic blocks, write it back if that changed it,
 read it again, and tangle.
 
@@ -5109,8 +5110,8 @@ import (
 
 // NamedBody hands back the body of a block by name, shaped the way
 // org-babel hands it over. dblock takes it as an argument because
-// the shaping is the tangler's rule and a second copy of it could
-// drift away from the file the diff describes.
+// the shaping belongs to the tangler, and a second copy of those
+// rules could drift away from the file it claims to describe.
 type NamedBody func(name string) (string, error)
 #+end_src
 
@@ -5173,7 +5174,7 @@ keeps that newline behind it. babble appends it, which is why a
 writer here returns text that does not end in one and why the two
 writers can end differently without either being wrong.
 
-The second is the buffer each writer reads. Org refreshes from the
+The second is which buffer a writer reads. Org refreshes from the
 top down, so a writer sees a book where the blocks above it are
 already rewritten, its own interior is a single empty line, and the
 blocks below it still hold their old contents. plan-toc counts lines
@@ -5193,10 +5194,11 @@ nobody asked it to change, and the condition is exact: the driver
 saves only a buffer it modified, and emptying an interior modifies
 the buffer even when the text that replaces it is identical. A book
 with no dynamic block in it is never saved and never gains the
-newline, so a book with no dynamic block leaves here untouched.
+newline, so a book with no dynamic block comes out of a refresh
+byte for byte as it went in.
 
 # doc
-write dispatches an interior to the writer its opener names, or
+write dispatches an interior to whichever writer its opener asks for, or
 refuses a name no writer answers to.
 
 #+begin_src go :tangle internal/dblock/dblock.go :comments org
@@ -5388,15 +5390,15 @@ closer still closes a block: the generated block would end early and
 the rest of the diff would become prose. A body line reading
 ~#+begin:~ is worse. It arrives as an opener org's raw search will
 find, inside a src block where the tree will not, which is exactly
-the disagreement the parse refuses. babble would write the refreshed
+the disagreement that makes the parse refuse a book. babble would write the refreshed
 book and then refuse to read it again, leaving a file on disk that
 the tool that wrote it cannot parse.
 
 Both are refused here, before anything is written. A refusal that
-comes after the write is not a refusal, it is a trap.
+comes after the write does not refuse anything. It sets a trap.
 
 Arguments are read strictly. Org hands the argument text to the lisp
-reader, which accepts anything lisp accepts; babble takes keyword
+reader, whose grammar is the whole of lisp; babble takes keyword
 and name tokens and refuses the rest, so the subset does not inherit
 a reader it has no use for.
 
@@ -6088,8 +6090,8 @@ func TestSkipsIdenticalWrites(t *testing.T) {
 #+end_src
 
 *************** PLANNED stage 12 adds the test below ([[#stage-12][plan]]) :stage12:
-The table is prose, so nothing stops it drifting from the
-directory it describes. This is what stops it.
+The table is prose, so nothing stops it drifting away from the
+directory on disk. This is what stops it.
 *************** END
 
 
@@ -6099,7 +6101,7 @@ Two facts about the final newline cannot be pinned by a fixture,
 because the txtar format the fixtures are written in ends every file
 with a newline and there is no way to ask it for a file that lacks
 one. They are the two halves of the same rule: saving a buffer
-appends the newline, and the driver saves only a buffer it modified.
+appends the newline, and the driver saves only a buffer it has modified.
 A book with a dynamic block is always modified, even when the text
 that replaces the interior is identical, because the interior is
 deleted first. A book without one is never touched at all.
@@ -6518,8 +6520,8 @@ harness reads them from there rather than guessing. Half the
 fixtures tangle more than one book and one tangles none.
 
 A book the two engines cannot be compared on is named in a skip
-line. The words after ~skip~ that end in ~.org~ are the books it
-excuses; the rest of the line is the reason. A skip that names no
+line. The words after ~skip~ that end in ~.org~ name the excused
+books; the rest of the line is the reason. A skip that names no
 book excuses the whole fixture, which is how the two already
 written read. The line sits anywhere in the fixture's opening
 comment, which is where those two sit.
@@ -6862,10 +6864,10 @@ byte-identically to the driver, run for run, and babble now
 refreshes and tangles this book into the same bytes batch Emacs
 produces from it.
 
-An interior is what the writer inserts plus one newline. Org empties
+An interior is one newline more than the writer inserted. Org empties
 a dynamic block by deleting the interior and then opening a line for
 the writer to insert at, and that opened line's newline stays behind
-whatever arrives, which is the whole of why plan-toc leaves a blank
+whatever arrives, and that alone explains why plan-toc leaves a blank
 line before its closer and src-block-diff does not.
 
 A writer reads the book part-refreshed: every block above it already
@@ -6880,7 +6882,7 @@ wrong is a difference like any other.
 Org finds dynamic blocks with a raw search that ignores block
 structure and allows indentation, and closes them on a line the
 keyword reader rejects. The closer takes org's rule, because the
-disagreement decides which bytes a refresh overwrites and following
+disagreement decides which bytes get overwritten by a refresh, and following
 the reader would have deleted text org kept. The opener disagreement
 cannot be reconciled at all, so the parse asks both searches and
 refuses a book where they differ. This book carried such a line
@@ -7149,8 +7151,8 @@ that was never written.
 ** [2026-07-29 Wed] Rewriting the front matter
 
 The Introduction now explains literate programming before it
-explains babble, and names noweb as the one thing that does the
-reordering it promises. The cost of running batch Emacs is measured
+explains babble, and names noweb as the one thing that delivers the
+promised reordering. The cost of running batch Emacs is measured
 rather than asserted: about a second and 116 MB out of a 411 MB
 install, against ten milliseconds and 9 MB.
 Architecture states its exception where it makes the claim rather

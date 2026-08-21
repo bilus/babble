@@ -603,7 +603,7 @@ generated files.
 
 
 The first generated view: a diff between two named blocks, used to
-show a planned replacement beside the code it replaces. The writer
+show a planned replacement beside the live code. The writer
 resolves both blocks, runs diff, drops the two header lines that
 only name temporary files, and wraps the rest so both Emacs and the
 weave fontify it.
@@ -614,7 +614,7 @@ weave fontify it.
 ;; a unified diff of the two named blocks' bodies. The content is
 ;; derived: refresh one with C-c C-c on its begin line, and tangling
 ;; refreshes them all first, so a committed diff cannot disagree with
-;; the blocks it describes.
+;; the blocks under it.
 (defun lit-named-block-body (name)
   (save-excursion
     (goto-char (or (org-babel-find-named-block name)
@@ -650,8 +650,7 @@ weave fontify it.
 The second generated view: the jump list of every plan site in the
 book. One regular expression recognizes every kind of plan markup;
 a classifier turns each hit into a label spelled without the markup
-itself, so a search for the markup never matches the index it
-feeds. The writer inserts its own lines above some of the sites it
+itself, so a search for the markup never matches its own index. The writer inserts its own lines above some of the sites it
 just numbered, so sites below the insertion point are shifted by
 the number of lines inserted, which keeps the line links exact and
 the refresh idempotent.
@@ -661,7 +660,7 @@ the refresh idempotent.
 ;; A "#+begin: plan-toc" dynamic block renders a jump list of every
 ;; plan-markup site in the buffer: the human twin of the census grep.
 ;; Labels are spelled without the sigils, so the census never matches
-;; the index it feeds.
+;; its own index.
 (defconst lit-plan-site-re
   (concat "^\\*+ \\(?:PLANNED\\|FILLING\\|HOLE\\|LIVE\\|DROPPED\\) "
           "\\|^\\*\\{15,\\} "
@@ -1447,12 +1446,12 @@ has written the LaTeX.
 -- example block is an illustration of markup rather than a listing
 -- of the program, so numbering one would put a listing number on
 -- text that is not a listing. Pandoc reads both as code blocks, and
--- the only thing separating them is the class it hangs on each: a
+-- and the class pandoc hangs on each is what separates them: a
 -- source block carries its language, an example block carries the
 -- literal word example. Every other org block that could be
 -- confused for one arrives as something else entirely, a quote as a
--- block quote and an export as raw output, so example is the whole
--- of what has to be excluded.
+-- block quote and an export as raw output, so the exclusion needs
+-- only that one word.
 --
 -- Syntax highlighting shreds a <<ref>> into operator and identifier
 -- tokens, so no literal <<ref>> survives into the .tex for a filter

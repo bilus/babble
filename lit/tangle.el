@@ -144,7 +144,7 @@
 ;; a unified diff of the two named blocks' bodies. The content is
 ;; derived: refresh one with C-c C-c on its begin line, and tangling
 ;; refreshes them all first, so a committed diff cannot disagree with
-;; the blocks it describes.
+;; the blocks under it.
 (defun lit-named-block-body (name)
   (save-excursion
     (goto-char (or (org-babel-find-named-block name)
@@ -179,7 +179,7 @@
 ;; A "#+begin: plan-toc" dynamic block renders a jump list of every
 ;; plan-markup site in the buffer: the human twin of the census grep.
 ;; Labels are spelled without the sigils, so the census never matches
-;; the index it feeds.
+;; its own index.
 (defconst lit-plan-site-re
   (concat "^\\*+ \\(?:PLANNED\\|FILLING\\|HOLE\\|LIVE\\|DROPPED\\) "
           "\\|^\\*\\{15,\\} "

@@ -88,12 +88,12 @@ end
 -- example block is an illustration of markup rather than a listing
 -- of the program, so numbering one would put a listing number on
 -- text that is not a listing. Pandoc reads both as code blocks, and
--- the only thing separating them is the class it hangs on each: a
+-- and the class pandoc hangs on each is what separates them: a
 -- source block carries its language, an example block carries the
 -- literal word example. Every other org block that could be
 -- confused for one arrives as something else entirely, a quote as a
--- block quote and an export as raw output, so example is the whole
--- of what has to be excluded.
+-- block quote and an export as raw output, so the exclusion needs
+-- only that one word.
 --
 -- Syntax highlighting shreds a <<ref>> into operator and identifier
 -- tokens, so no literal <<ref>> survives into the .tex for a filter

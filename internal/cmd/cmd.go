@@ -15,7 +15,7 @@ import (
 	"github.com/bilus/babble/internal/tangle"
 )
 
-// Tangle is the whole of what "babble tangle" does to one book: read
+// Tangle is everything "babble tangle" does to one book: read
 // it, refresh its dynamic blocks, write it back if that changed it,
 // read it again, and tangle.
 func Tangle(path string) error {

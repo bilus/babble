@@ -18,8 +18,8 @@ import (
 
 // NamedBody hands back the body of a block by name, shaped the way
 // org-babel hands it over. dblock takes it as an argument because
-// the shaping is the tangler's rule and a second copy of it could
-// drift away from the file the diff describes.
+// the shaping belongs to the tangler, and a second copy of those
+// rules could drift away from the file it claims to describe.
 type NamedBody func(name string) (string, error)
 
 // Refresh splices a fresh interior into every dynamic block and
@@ -64,7 +64,7 @@ func Refresh(d *book.Document, body NamedBody) ([]byte, bool, error) {
 
 var newline = []byte("\n")
 
-// write dispatches an interior to the writer its opener names, or
+// write dispatches an interior to whichever writer its opener asks for, or
 // refuses a name no writer answers to.
 func write(db *book.DynamicBlock, staged []byte, self int, file string, body NamedBody) (string, error) {
 	switch db.Name {
