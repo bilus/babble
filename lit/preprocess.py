@@ -41,6 +41,11 @@ PREAMBLE = [
     # under Highlights and Notes
     "#+latex_header: \\newcommand{\\planbadgemark}[3]{\\marginnote{\\special{pdf:ann width 8pt height 8pt << /Type /Annot /Subtype /Text /Name /Comment /C [0.69 0.38 0.08] /Contents (#3) >>}\\hspace{14pt}\\textcolor{#1}{\\rule{2.5pt}{9pt}\\,{\\scriptsize #2}}}}",
     "#+latex_header: \\newenvironment{planbox}[1]{\\def\\FrameCommand{{\\color{#1}\\vrule width 3pt}\\hspace{8pt}}\\MakeFramed{\\advance\\hsize-\\width\\FrameRestore}\\begingroup\\color{#1}\\itshape}{\\endgroup\\endMakeFramed}",
+    # block quotes, including the Note/Apropos asides notes.lua turns
+    # into them, render as sidebars: a gray left rule through the same
+    # framed machinery as planbox
+    "#+latex_header: \\definecolor{quotebar}{RGB}{160,160,160}",
+    "#+latex_header: \\renewenvironment{quote}{\\def\\FrameCommand{{\\color{quotebar}\\vrule width 2pt}\\hspace{10pt}}\\MakeFramed{\\advance\\hsize-\\width\\FrameRestore}}{\\endMakeFramed}",
     # numbered caption above every tangling block (notes.lua emits the
     # calls, adding [name] when the block has one); detokenize keeps
     # underscores in filenames and block names typesettable
