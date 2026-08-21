@@ -120,14 +120,16 @@ func tangleCmd(bookPath string, stderr io.Writer) int {
 // literate source and a consumer never tangles it, and lit/example
 // holds a symbolic link, which embedding cannot carry.
 //go:embed lit/lit.mk lit/tangle.el lit/preprocess.py lit/texlinks.py
-//go:embed lit/mermaid.lua lit/notes.lua lit/plan.lua
+//go:embed lit/mermaid.lua lit/notes.lua lit/plan.lua lit/svg.lua
 //go:embed lit/README.md lit/AGENTS.md lit/templates
 var litFS embed.FS
 
 // The tool stack is pinned in devbox.json rather than assumed. Every
 // one of these is reached by lit.mk or by a filter it runs: emacs
 // tangles, python3 runs the preprocessor and the link fixer, pandoc
-// and tectonic make the PDF, and mmdc draws the mermaid diagrams.
+// and tectonic make the PDF, mmdc draws the mermaid diagrams, and
+// rsvg-convert turns a hand-drawn SVG figure into a PDF the LaTeX can
+// include.
 const devboxJSON = `{
   "packages": [
     "go@latest",
@@ -137,7 +139,8 @@ const devboxJSON = `{
     "python@latest",
     "pandoc@latest",
     "tectonic@latest",
-    "mermaid-cli@latest"
+    "mermaid-cli@latest",
+    "librsvg@latest"
   ]
 }
 `

@@ -4,8 +4,10 @@ package main
 
 import (
 	"io"
+	"io/fs"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"testing"
 
@@ -72,10 +74,59 @@ func TestFixtureTable(t *testing.T) {
 	}
 }
 
-// The lit.mk comparison is the only check that the embedded filesystem
-// carries real bytes. An embed that matched nothing would still
-// compile, still walk, and still write no error, so without this the
-// first sign of trouble would be a new project with an empty lit/.
+// Two lists in the command line describe what a project needs, and
+// lit.mk is what actually decides. These tests read lit.mk and the
+// filters and hold the lists to them, rather than naming the files and
+// packages a second time, which would only record today's answer.
+func TestInitEmbedsWhatLitmkNeeds(t *testing.T) {
+	mk, err := litFS.ReadFile("lit/lit.mk")
+	if err != nil {
+		t.Fatal(err)
+	}
+	seen := map[string]bool{}
+	for _, m := range regexp.MustCompile(`\$\(LIT\)/([\w.-]+)`).FindAllStringSubmatch(string(mk), -1) {
+		if seen[m[1]] {
+			continue
+		}
+		seen[m[1]] = true
+		if _, err := fs.Stat(litFS, "lit/"+m[1]); err != nil {
+			t.Errorf("lit.mk needs %s and init does not vendor it", m[1])
+		}
+	}
+	if len(seen) == 0 {
+		t.Fatal("no $(LIT)/ references found; the pattern has gone stale")
+	}
+}
+
+// A filter that shells out needs its program on the machine, and the
+// package that carries it is not always named after it. The pairs are
+// listed here because there is nowhere else to derive them from, and a
+// pair that is wrong shows up as a filter failing at weave time.
+func TestInitPackagesTheFiltersNeed(t *testing.T) {
+	pkg := map[string]string{"mmdc": "mermaid-cli", "rsvg-convert": "librsvg"}
+	filters, err := fs.Glob(litFS, "lit/*.lua")
+	if err != nil || len(filters) == 0 {
+		t.Fatalf("no filters embedded: %v", err)
+	}
+	call := regexp.MustCompile(`pandoc\.pipe,\s*"([\w-]+)"`)
+	for _, f := range filters {
+		body, err := litFS.ReadFile(f)
+		if err != nil {
+			t.Fatal(err)
+		}
+		for _, m := range call.FindAllStringSubmatch(string(body), -1) {
+			name, ok := pkg[m[1]]
+			if !ok {
+				t.Errorf("%s runs %s and no package is paired with it", f, m[1])
+				continue
+			}
+			if !strings.Contains(devboxJSON, name) {
+				t.Errorf("%s runs %s and devbox.json does not carry %s", f, m[1], name)
+			}
+		}
+	}
+}
+
 func TestInitWrites(t *testing.T) {
 	dir := filepath.Join(t.TempDir(), "fresh")
 	p, err := newProject(dir, "example.com/fresh", io.Discard)

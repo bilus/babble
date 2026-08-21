@@ -61,116 +61,59 @@ every dynamic block, and the labels are spelled without the sigils,
 so the census never matches its own index.
 
 #+begin: plan-toc
-- [[file:BOOK.org::125][125]] entry: PLANNED Stage 23: init vendors what the weave needs
-- [[file:BOOK.org::175][175]] entry: PLANNED Stage 22: comment syntax by language
-- [[file:BOOK.org::243][243]] entry: PLANNED Stage 21: the environment
-- [[file:BOOK.org::291][291]] entry: PLANNED Stage 12: the fixtures chapter
-- [[file:BOOK.org::354][354]] entry: PLANNED Stage 6: the oracle harness
-- [[file:BOOK.org::462][462]] entry: PLANNED Stage 7: org comments
-- [[file:BOOK.org::505][505]] entry: PLANNED Stage 8: noweb
-- [[file:BOOK.org::542][542]] entry: PLANNED Stage 9: dynamic blocks
-- [[file:BOOK.org::589][589]] entry: PLANNED Stage 10: the fence
-- [[file:BOOK.org::618][618]] entry: PLANNED Stage 11: parity and self-hosting
-- [[file:BOOK.org::783][783]] badge: PLANNED stage 22 edits the paragraph below (plan)
-- [[file:BOOK.org::788][788]] replacement: the file's own comment
-- [[file:BOOK.org::1135][1135]] badge: PLANNED stage 12 adds the paragraph below (plan)
-- [[file:BOOK.org::1227][1227]] badge: PLANNED stage 22 edits the paragraph below (plan)
-- [[file:BOOK.org::1241][1241]] replacement: the file's own comment syntax: ~//~ for .go, ~;;~ for
-- [[file:BOOK.org::1247][1247]] insertion: A target fed by blocks of two
-- [[file:BOOK.org::1375][1375]] deletion: , and ~#+include~ (org's file-inclusion
-- [[file:BOOK.org::1383][1383]] deletion: ~:comments org~ is limited to languages whose comment syn...
-- [[file:BOOK.org::1388][1388]] note: stage 22: the driver answers every language from the comment
-- [[file:BOOK.org::1734][1734]] badge: PLANNED stage 12 adds the chapter below (plan)
-- [[file:BOOK.org::1895][1895]] badge: PLANNED stage 23 replaces the block below (plan)
-- [[file:BOOK.org::1912][1912]] twin of init-embed
-- [[file:BOOK.org::1920][1920]] generated diff
-- [[file:BOOK.org::1923][1923]] badge: PLANNED stage 23 replaces the block below (plan)
-- [[file:BOOK.org::1957][1957]] twin of init-devbox
-- [[file:BOOK.org::1980][1980]] generated diff
-- [[file:BOOK.org::3714][3714]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
-- [[file:BOOK.org::3720][3720]] badge: PLANNED stage 22 replaces the block below (plan)
-- [[file:BOOK.org::3761][3761]] twin of tangle-run
-- [[file:BOOK.org::3798][3798]] generated diff
-- [[file:BOOK.org::3890][3890]] badge: PLANNED stage 22 replaces the block above (plan)
-- [[file:BOOK.org::3896][3896]] twin of tangle-collect
-- [[file:BOOK.org::3947][3947]] generated diff
-- [[file:BOOK.org::4162][4162]] hole 7: extent between the anchors, then the docstring rule
-- [[file:BOOK.org::4168][4168]] hole 7: line-comment table per language, blank lines as a bare ma...
-- [[file:BOOK.org::4178][4178]] hole 8: named block first, else noweb-ref concatenation; cycles a...
-- [[file:BOOK.org::4190][4190]] badge: PLANNED stage 22 adds the table below and replaces the ba...
-- [[file:BOOK.org::4206][4206]] hole 22: built-in rows, then .lit/comments.json entries winning
-- [[file:BOOK.org::4210][4210]] hole 22: table lookup, hash for a language the table does not name
-- [[file:BOOK.org::4235][4235]] twin of tangle-banner
-- [[file:BOOK.org::4242][4242]] generated diff
-- [[file:BOOK.org::4262][4262]] badge: PLANNED stage 22 replaces the block below (plan)
-- [[file:BOOK.org::4301][4301]] twin of tangle-assemble
-- [[file:BOOK.org::4329][4329]] generated diff
-- [[file:BOOK.org::4388][4388]] hole 9: splice fresh interiors into the retained bytes, report ch...
-- [[file:BOOK.org::4398][4398]] hole 9: a line link per plan site, sites below the block shifted ...
-- [[file:BOOK.org::4404][4404]] hole 9: system diff -u over the two named bodies, temp-file heade...
-- [[file:BOOK.org::4447][4447]] badge: PLANNED stage 12 includes the two files below (plan)
-- [[file:BOOK.org::4935][4935]] badge: PLANNED stage 12 adds the test below (plan)
-- [[file:BOOK.org::5076][5076]] hole 6: ORACLE=1 in the environment
-- [[file:BOOK.org::5080][5080]] hole 6: UPDATE=1 in the environment
-- [[file:BOOK.org::5086][5086]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
-- [[file:BOOK.org::5098][5098]] hole 6: write the txtar's input files into dir, and name the book...
-- [[file:BOOK.org::5104][5104]] hole 6: copy lit/ in, run batch Emacs with the driver, fail loudl...
-- [[file:BOOK.org::5108][5108]] hole 6: every file on both sides, byte for byte, ignoring the inputs
-- [[file:BOOK.org::5112][5112]] hole 6: rewrite the fixture's want/ files from the oracle tree
-- [[file:BOOK.org::5424][5424]] badge: PLANNED stage 21 adds the two paragraphs below (plan)
-- [[file:BOOK.org::5447][5447]] insertion: devbox.json and its lockfile,
+- [[file:BOOK.org::118][118]] entry: PLANNED Stage 22: comment syntax by language
+- [[file:BOOK.org::186][186]] entry: PLANNED Stage 21: the environment
+- [[file:BOOK.org::234][234]] entry: PLANNED Stage 12: the fixtures chapter
+- [[file:BOOK.org::297][297]] entry: PLANNED Stage 6: the oracle harness
+- [[file:BOOK.org::405][405]] entry: PLANNED Stage 7: org comments
+- [[file:BOOK.org::448][448]] entry: PLANNED Stage 8: noweb
+- [[file:BOOK.org::485][485]] entry: PLANNED Stage 9: dynamic blocks
+- [[file:BOOK.org::532][532]] entry: PLANNED Stage 10: the fence
+- [[file:BOOK.org::561][561]] entry: PLANNED Stage 11: parity and self-hosting
+- [[file:BOOK.org::726][726]] badge: PLANNED stage 22 edits the paragraph below (plan)
+- [[file:BOOK.org::731][731]] replacement: the file's own comment
+- [[file:BOOK.org::1078][1078]] badge: PLANNED stage 12 adds the paragraph below (plan)
+- [[file:BOOK.org::1170][1170]] badge: PLANNED stage 22 edits the paragraph below (plan)
+- [[file:BOOK.org::1184][1184]] replacement: the file's own comment syntax: ~//~ for .go, ~;;~ for
+- [[file:BOOK.org::1190][1190]] insertion: A target fed by blocks of two
+- [[file:BOOK.org::1318][1318]] deletion: , and ~#+include~ (org's file-inclusion
+- [[file:BOOK.org::1326][1326]] deletion: ~:comments org~ is limited to languages whose comment syn...
+- [[file:BOOK.org::1331][1331]] note: stage 22: the driver answers every language from the comment
+- [[file:BOOK.org::1677][1677]] badge: PLANNED stage 12 adds the chapter below (plan)
+- [[file:BOOK.org::3611][3611]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
+- [[file:BOOK.org::3617][3617]] badge: PLANNED stage 22 replaces the block below (plan)
+- [[file:BOOK.org::3658][3658]] twin of tangle-run
+- [[file:BOOK.org::3695][3695]] generated diff
+- [[file:BOOK.org::3787][3787]] badge: PLANNED stage 22 replaces the block above (plan)
+- [[file:BOOK.org::3793][3793]] twin of tangle-collect
+- [[file:BOOK.org::3844][3844]] generated diff
+- [[file:BOOK.org::4059][4059]] hole 7: extent between the anchors, then the docstring rule
+- [[file:BOOK.org::4065][4065]] hole 7: line-comment table per language, blank lines as a bare ma...
+- [[file:BOOK.org::4075][4075]] hole 8: named block first, else noweb-ref concatenation; cycles a...
+- [[file:BOOK.org::4087][4087]] badge: PLANNED stage 22 adds the table below and replaces the ba...
+- [[file:BOOK.org::4103][4103]] hole 22: built-in rows, then .lit/comments.json entries winning
+- [[file:BOOK.org::4107][4107]] hole 22: table lookup, hash for a language the table does not name
+- [[file:BOOK.org::4132][4132]] twin of tangle-banner
+- [[file:BOOK.org::4139][4139]] generated diff
+- [[file:BOOK.org::4159][4159]] badge: PLANNED stage 22 replaces the block below (plan)
+- [[file:BOOK.org::4198][4198]] twin of tangle-assemble
+- [[file:BOOK.org::4226][4226]] generated diff
+- [[file:BOOK.org::4285][4285]] hole 9: splice fresh interiors into the retained bytes, report ch...
+- [[file:BOOK.org::4295][4295]] hole 9: a line link per plan site, sites below the block shifted ...
+- [[file:BOOK.org::4301][4301]] hole 9: system diff -u over the two named bodies, temp-file heade...
+- [[file:BOOK.org::4344][4344]] badge: PLANNED stage 12 includes the two files below (plan)
+- [[file:BOOK.org::4834][4834]] badge: PLANNED stage 12 adds the test below (plan)
+- [[file:BOOK.org::5036][5036]] hole 6: ORACLE=1 in the environment
+- [[file:BOOK.org::5040][5040]] hole 6: UPDATE=1 in the environment
+- [[file:BOOK.org::5046][5046]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
+- [[file:BOOK.org::5058][5058]] hole 6: write the txtar's input files into dir, and name the book...
+- [[file:BOOK.org::5064][5064]] hole 6: copy lit/ in, run batch Emacs with the driver, fail loudl...
+- [[file:BOOK.org::5068][5068]] hole 6: every file on both sides, byte for byte, ignoring the inputs
+- [[file:BOOK.org::5072][5072]] hole 6: rewrite the fixture's want/ files from the oracle tree
+- [[file:BOOK.org::5398][5398]] badge: PLANNED stage 21 adds the two paragraphs below (plan)
+- [[file:BOOK.org::5421][5421]] insertion: devbox.json and its lockfile,
 
 #+end:
-
-** PLANNED Stage 23: init vendors what the weave needs             :stage23:
-:PROPERTIES:
-:CUSTOM_ID: stage-23
-:SPEC:     The command line, init
-:ACCEPTANCE: init-vendors.txtar; a fresh init weaves; make check; go test ./...
-:SIZE:     two lines, one fixture
-:END:
-
-Claim: after this stage a project made by ~init~ can weave, and an
-SVG figure in it converts.
-
-Two lists describe what a book needs and neither matches lit.mk.
-The embedded set leaves out ~svg.lua~, which lit.mk names as a
-prerequisite of book.pdf and passes to pandoc, so make stops before
-it starts: no rule to make target. This is not limited to books
-with figures, since the prerequisite is unconditional, and it means
-~init~ fails at its own last step, the weave it runs to prove the
-PDF path works. The package list leaves out librsvg, so even with
-the filter present ~rsvg-convert~ is missing and a figure becomes
-the words "could not be converted" on the page.
-
-Decided: (1) Both lists gain their missing entry. The prose above
-each says what belongs there, and in both cases the rule is the
-same: lit.mk decides, and these lists follow it. (2) The two files
-left out of the embed stay out, and the reason is unchanged.
-lit/BOOK.org is lit's own source, which a consumer never tangles,
-and lit/example holds a symbolic link, which embedding cannot
-carry. (3) A fixture runs init and weaves, because the defect is
-that a fresh project does not build, and only building a fresh
-project can catch it. Neither list is checked against lit.mk by
-anything else, so the fixture is the guard.
-
-- [ ] plan approved (the human ticks this box)
-- [ ] twins accepted: :tangle headers swapped, old blocks DROPPED
-- [ ] init-vendors.txtar added, seen to fail, fixture table row added
-- [ ] census clean for stage 23, suite green
-- [ ] Changes entry dated and filed, plan entry deleted
-
-*** Changes draft
-
-#+begin_quote
-init vendors the whole toolchain the weave asks for. The embedded
-set had no ~svg.lua~, which lit.mk names as a prerequisite of the
-PDF, so make stopped before it began and init failed at the weave it
-runs to prove itself. The package list had no librsvg, so a figure
-would have reached the page as the words saying it could not be
-converted. Both lists follow lit.mk, which is the thing that decides
-what a weave needs.
-#+end_quote
 
 ** PLANNED Stage 22: comment syntax by language                    :stage22:
 :PROPERTIES:
@@ -1892,11 +1835,6 @@ the same bytes the rest of the repository uses, so a new project
 gets whatever lit was current when the binary was built, and there
 is nothing to keep in step.
 
-*************** PLANNED stage 23 replaces the block below ([[#stage-23][plan]]) :stage23:
-lit.mk names svg.lua as a prerequisite of the PDF and hands it to
-pandoc, so a project without it cannot weave at all.
-*************** END
-
 Two files are left out on purpose. lit/BOOK.org is lit's own
 literate source and a consumer never tangles it, and lit/example
 holds a symbolic link, which embedding cannot carry.
@@ -1904,34 +1842,10 @@ holds a symbolic link, which embedding cannot carry.
 #+name: init-embed
 #+begin_src go :tangle main.go :comments org
 //go:embed lit/lit.mk lit/tangle.el lit/preprocess.py lit/texlinks.py
-//go:embed lit/mermaid.lua lit/notes.lua lit/plan.lua
-//go:embed lit/README.md lit/AGENTS.md lit/templates
-var litFS embed.FS
-#+end_src
-
-#+name: init-embed--planned
-#+begin_src go :tangle no
-//go:embed lit/lit.mk lit/tangle.el lit/preprocess.py lit/texlinks.py
 //go:embed lit/mermaid.lua lit/notes.lua lit/plan.lua lit/svg.lua
 //go:embed lit/README.md lit/AGENTS.md lit/templates
 var litFS embed.FS
 #+end_src
-
-#+begin: src-block-diff :old init-embed :new init-embed--planned
-#+begin_src diff
-@@ -1,4 +1,4 @@
- //go:embed lit/lit.mk lit/tangle.el lit/preprocess.py lit/texlinks.py
--//go:embed lit/mermaid.lua lit/notes.lua lit/plan.lua
-+//go:embed lit/mermaid.lua lit/notes.lua lit/plan.lua lit/svg.lua
- //go:embed lit/README.md lit/AGENTS.md lit/templates
- var litFS embed.FS
-#+end_src
-#+end:
-
-*************** PLANNED stage 23 replaces the block below ([[#stage-23][plan]]) :stage23:
-svg.lua shells out to rsvg-convert, so the package it comes from
-belongs in the list beside the programs the other filters need.
-*************** END
 
 The tool stack is pinned in devbox.json rather than assumed. Every
 one of these is reached by lit.mk or by a filter it runs: emacs
@@ -1942,28 +1856,6 @@ include.
 
 #+name: init-devbox
 #+begin_src go :tangle main.go :comments org
-const devboxJSON = `{
-  "packages": [
-    "go@latest",
-    "gnumake@latest",
-    "git@latest",
-    "emacs-nox@latest",
-    "python@latest",
-    "pandoc@latest",
-    "tectonic@latest",
-    "mermaid-cli@latest"
-  ]
-}
-`
-
-const gitignore = `book-weave.*
-.devbox/
-.venv/
-`
-#+end_src
-
-#+name: init-devbox--planned
-#+begin_src go :tangle no
 const devboxJSON = `{
   "packages": [
     "go@latest",
@@ -1984,21 +1876,6 @@ const gitignore = `book-weave.*
 .venv/
 `
 #+end_src
-
-#+begin: src-block-diff :old init-devbox :new init-devbox--planned
-#+begin_src diff
-@@ -7,7 +7,8 @@
-     "python@latest",
-     "pandoc@latest",
-     "tectonic@latest",
--    "mermaid-cli@latest"
-+    "mermaid-cli@latest",
-+    "librsvg@latest"
-   ]
- }
- `
-#+end_src
-#+end:
 
 initCmd is the whole setup in the order the steps depend on each
 other. The environment comes first, because make setup runs emacs
@@ -4637,8 +4514,10 @@ package main
 
 import (
 	"io"
+	"io/fs"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"testing"
 
@@ -5016,6 +4895,67 @@ carries real bytes. An embed that matched nothing would still
 compile, still walk, and still write no error, so without this the
 first sign of trouble would be a new project with an empty lit/.
 
+Two lists in the command line describe what a project needs, and
+lit.mk is what actually decides. These tests read lit.mk and the
+filters and hold the lists to them, rather than naming the files and
+packages a second time, which would only record today's answer.
+
+#+name: TestInitEmbedsWhatLitmkNeeds
+#+begin_src go :tangle main_test.go :comments org
+func TestInitEmbedsWhatLitmkNeeds(t *testing.T) {
+	mk, err := litFS.ReadFile("lit/lit.mk")
+	if err != nil {
+		t.Fatal(err)
+	}
+	seen := map[string]bool{}
+	for _, m := range regexp.MustCompile(`\$\(LIT\)/([\w.-]+)`).FindAllStringSubmatch(string(mk), -1) {
+		if seen[m[1]] {
+			continue
+		}
+		seen[m[1]] = true
+		if _, err := fs.Stat(litFS, "lit/"+m[1]); err != nil {
+			t.Errorf("lit.mk needs %s and init does not vendor it", m[1])
+		}
+	}
+	if len(seen) == 0 {
+		t.Fatal("no $(LIT)/ references found; the pattern has gone stale")
+	}
+}
+#+end_src
+
+A filter that shells out needs its program on the machine, and the
+package that carries it is not always named after it. The pairs are
+listed here because there is nowhere else to derive them from, and a
+pair that is wrong shows up as a filter failing at weave time.
+
+#+name: TestInitPackagesTheFiltersNeed
+#+begin_src go :tangle main_test.go :comments org
+func TestInitPackagesTheFiltersNeed(t *testing.T) {
+	pkg := map[string]string{"mmdc": "mermaid-cli", "rsvg-convert": "librsvg"}
+	filters, err := fs.Glob(litFS, "lit/*.lua")
+	if err != nil || len(filters) == 0 {
+		t.Fatalf("no filters embedded: %v", err)
+	}
+	call := regexp.MustCompile(`pandoc\.pipe,\s*"([\w-]+)"`)
+	for _, f := range filters {
+		body, err := litFS.ReadFile(f)
+		if err != nil {
+			t.Fatal(err)
+		}
+		for _, m := range call.FindAllStringSubmatch(string(body), -1) {
+			name, ok := pkg[m[1]]
+			if !ok {
+				t.Errorf("%s runs %s and no package is paired with it", f, m[1])
+				continue
+			}
+			if !strings.Contains(devboxJSON, name) {
+				t.Errorf("%s runs %s and devbox.json does not carry %s", f, m[1], name)
+			}
+		}
+	}
+}
+#+end_src
+
 #+name: TestInitWrites
 #+begin_src go :tangle main_test.go :comments org
 func TestInitWrites(t *testing.T) {
@@ -5255,6 +5195,20 @@ func TestDump(t *testing.T) {
 #+end_src
 
 * Changes
+
+** [2026-08-20] init vendors what the weave needs
+
+#+begin_quote
+init vendored a toolchain that could not weave. lit.mk names
+svg.lua as a prerequisite of the PDF and hands it to pandoc, and the
+embedded set left it out, so make stopped before it started and init
+failed at the weave it runs to prove itself. The prerequisite is
+unconditional, so this was every project init made, not only those
+with figures. The package list had the matching gap, no librsvg, so
+a figure would have reached the page as the words saying it could
+not be converted. Two tests hold both lists to lit.mk and to the
+filters rather than naming the files and packages a second time.
+#+end_quote
 
 :PROPERTIES:
 :CUSTOM_ID: changes
