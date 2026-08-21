@@ -4542,8 +4542,8 @@ The suite as it stands, by what each file pins:
 | tangle-body-trim.txtar | a bare comment marker in a body, trimmed as the driver trims it |
 | tangle-comments.txtar | doc comments: the extent, the marker, the sigil, the wrapping |
 | tangle-comment-refusals.txtar | a language with no marker, and a delimiter quoted in an example |
-| tangle-noweb.txtar | prefixes, group separators, and gated recursion |
-| tangle-noweb-refusals.txtar | a miss, a cycle, a call reference, and a near miss in case |
+| tangle-noweb.txtar | prefixes, group separators, gated recursion, and how far COMMENT reaches |
+| tangle-noweb-refusals.txtar | a miss, a cycle, a call reference, a near miss in case, and a buried name shadowing a live one |
 
 tangle-comments pins the three parts of the rule that could each be
 read another way. Its anchors book asks that a block directly under
