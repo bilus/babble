@@ -1,0 +1,44 @@
+# Two shapes a doc comment cannot be written for. A language whose
+# comment prefix has no marker in it leaves nothing to write with,
+# and the driver does not refuse it, it dies partway with the file
+# unwritten. A delimiter quoted at column zero inside an example body
+# is an anchor to org's backward text search and is not one to a
+# tree, so the two engines would disagree about where an extent
+# begins and both would write a file.
+
+# oracle: skip blank.org emacs dies partway here rather than
+# refusing, and quoted.org is the divergence this refusal exists to
+# prevent, so neither can be compared.
+
+! exec babble tangle blank.org
+stderr 'no comment marker'
+! exists blank.out
+
+! exec babble tangle quoted.org
+stderr 'quoted at column zero'
+! exists quoted.go
+
+-- .lit/comments.json --
+{"blank": " "}
+-- blank.org --
+#+title: a language with no marker
+
+* Nothing to write with
+
+The docstring that cannot be wrapped.
+
+#+begin_src blank :tangle blank.out :comments org
+whatever
+#+end_src
+-- quoted.org --
+#+title: a delimiter quoted inside an example
+
+* The paragraph org will not see
+
+#+begin_example
+#+end_src
+#+end_example
+
+#+begin_src go :tangle quoted.go :comments org
+package quoted
+#+end_src

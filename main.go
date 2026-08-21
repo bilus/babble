@@ -193,6 +193,9 @@ func tangleCmd(bookPath string, stderr io.Writer) int {
 		err = org.ResolveAll(d)
 	}
 	if err == nil {
+		err = org.LintQuotedDelimiters(d)
+	}
+	if err == nil {
 		err = tangle.Run(d)
 	}
 	if err != nil {

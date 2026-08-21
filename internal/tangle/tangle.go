@@ -11,6 +11,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 
 	"github.com/bilus/babble/internal/book"
@@ -259,11 +260,147 @@ func cutColumns(line string, n int) string {
 // driver splits it: what text the extent and docstring rule choose,
 // then how the language's comment syntax wears it.
 func commentFor(d *book.Document, b *book.SrcBlock, comments commentTable) (string, error) {
-	panic("HOLE(7): extent between the anchors, then the docstring rule")
+	text := docstring(string(d.Source[extentOf(d, b):b.BeginAt]))
+	if text == "" {
+		return "", nil
+	}
+	return wrapComment(b.Lang, text, comments)
 }
 
+// The extent starts at whichever anchor sits nearest above the block:
+// just past a headline's stars, just past a previous block's end
+// keyword, or the start of the file. A block that tangles nowhere is
+// still an anchor, so every block in the tree counts, not only the
+// ones being written.
+func extentOf(d *book.Document, b *book.SrcBlock) int {
+	at := 0
+	d.Walk(func(n book.Node) bool {
+		switch n := n.(type) {
+		case *book.Headline:
+			if n.AfterStars < b.BeginAt && n.AfterStars > at {
+				at = n.AfterStars
+			}
+		case *book.SrcBlock:
+			if n.AfterEnd < b.BeginAt && n.AfterEnd > at {
+				at = n.AfterEnd
+			}
+		}
+		return true
+	})
+	return at
+}
+
+// Wrapping follows comment-region, which is more particular than a
+// prefix on every line. It ignores whitespace at either end of the
+// text, indents every marker to the shallowest line it is about to
+// comment, and keeps whatever indentation the line had beyond that.
+// A blank line inside becomes the marker and a space, which the
+// file-wide trim later reduces to the bare marker.
+//
+// The marker takes one space unless the prefix already ends in
+// whitespace. The banner's rule differs: it always adds a space, so
+// a project whose prefix ends in one gets two there and one here.
+//
+// A prefix with nothing but whitespace in it has no marker to write.
+// The driver does not refuse that, it dies partway with the file
+// unwritten, and matching a crash is worth less than naming it.
 func wrapComment(lang, text string, comments commentTable) (string, error) {
-	panic("HOLE(7): wrap in comments.prefix(lang), blank lines as a bare marker")
+	prefix := comments.prefix(lang)
+	if strings.TrimSpace(prefix) == "" {
+		return "", fmt.Errorf("%s has no comment marker, so a :comments org block cannot be written; give it one in .lit/comments.json", lang)
+	}
+	marker := prefix
+	if !strings.HasSuffix(marker, " ") && !strings.HasSuffix(marker, "\t") {
+		marker += " "
+	}
+	lines := strings.Split(text, "\n")
+	lead := shallowest(lines)
+	var out strings.Builder
+	for _, line := range lines {
+		rest := line
+		if len(rest) >= len(lead) {
+			rest = rest[len(lead):]
+		} else {
+			rest = strings.TrimLeft(rest, " \t")
+		}
+		out.WriteString(lead)
+		out.WriteString(marker)
+		out.WriteString(rest)
+		out.WriteString("\n")
+	}
+	return out.String(), nil
+}
+
+// The indentation of the shallowest line that has anything on it.
+// A blank line does not lower it.
+func shallowest(lines []string) string {
+	lead := ""
+	found := false
+	for _, line := range lines {
+		if strings.TrimSpace(line) == "" {
+			continue
+		}
+		indent := line[:len(line)-len(strings.TrimLeft(line, " \t"))]
+		if !found || len(indent) < len(lead) {
+			lead, found = indent, true
+		}
+	}
+	return lead
+}
+
+// The docstring is everything after the last "# doc" marker line, or
+// the last paragraph when there is none. Keyword lines drop first,
+// which is why a keyword between two prose lines joins them: the rule
+// takes the line and its newline together, and the split that finds
+// the last paragraph runs afterwards.
+func docstring(text string) string {
+	if i := lastDocMarker(text); i >= 0 {
+		return sigil(strings.Trim(dropKeywordLines(text[i:]), " \t\n\r"))
+	}
+	clean := dropKeywordLines(text)
+	var last string
+	for _, para := range regexp.MustCompile(`\n\n+`).Split(clean, -1) {
+		if para != "" {
+			last = para
+		}
+	}
+	return sigil(strings.Trim(last, " \t\n\r"))
+}
+
+// The marker is the line "# doc" and nothing else, so a trailing
+// space disqualifies it, and the last one in the text wins.
+func lastDocMarker(text string) int {
+	at := -1
+	for i := 0; ; {
+		j := strings.Index(text[i:], "# doc\n")
+		if j < 0 {
+			break
+		}
+		start := i + j
+		if start == 0 || text[start-1] == '\n' {
+			at = start + len("# doc\n")
+		}
+		i = start + 1
+	}
+	return at
+}
+
+// Only a keyword at column zero counts, so an indented one reaches
+// the comment as ordinary text.
+func dropKeywordLines(text string) string {
+	return regexp.MustCompile(`(?m)^#\+[^\n]*\n?`).ReplaceAllString(text, "")
+}
+
+// The sigil marks an aside for the reader and is not part of the
+// comment. It needs the trailing space, and it runs after the trim,
+// which is the one way a docstring can start with a newline.
+func sigil(text string) string {
+	for _, word := range []string{"Note: ", "Apropos: "} {
+		if strings.HasPrefix(text, word) {
+			return text[len(word):]
+		}
+	}
+	return text
 }
 
 // expandNoweb resolves references against the tree: a named block

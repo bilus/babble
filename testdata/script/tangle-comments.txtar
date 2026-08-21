@@ -1,0 +1,147 @@
+# Doc comments: where the extent starts, which paragraph becomes the
+# comment, and how it is wrapped. The extent runs from the nearest
+# anchor above the block, which is a headline's stars, a previous
+# block's end keyword, or the start of the file.
+
+exec babble tangle anchors.org
+cmp a.go want/a.go
+
+exec babble tangle marker.org
+cmp m.go want/m.go
+
+exec babble tangle shapes.org
+cmp s.go want/s.go
+
+-- anchors.org --
+#+title: anchors
+
+Prose before any headline.
+
+#+begin_src go :tangle a.go :comments org
+package a
+#+end_src
+
+* Loading
+
+Load reads the set.
+
+#+begin_src go :tangle a.go :comments org
+func Load() {}
+#+end_src
+
+#+begin_src go :tangle a.go :comments org
+func Save() {}
+#+end_src
+
+* A heading with no paragraph
+
+#+name: named
+#+begin_src go :tangle a.go :comments org
+func Named() {}
+#+end_src
+-- marker.org --
+#+title: markers
+
+* Two markers, and the last one wins
+
+Narrative that is not the comment.
+
+# doc
+first marker.
+
+# doc
+second marker, over
+two lines.
+
+#+begin_src go :tangle m.go :comments org
+func Marked() {}
+#+end_src
+
+* A sigil is presentation
+
+Note: an aside, not a comment sigil.
+
+#+begin_src go :tangle m.go :comments org
+func Aside() {}
+#+end_src
+
+* A sigil without its space stays
+
+Note:no space after the colon.
+
+#+begin_src go :tangle m.go :comments org
+func Tight() {}
+#+end_src
+-- shapes.org --
+#+title: shapes
+
+* An indented keyword is not stripped
+
+# doc
+  #+name: indented
+text after it.
+
+#+begin_src go :tangle s.go :comments org
+func Indented() {}
+#+end_src
+
+* A blank line inside the docstring
+
+# doc
+first line.
+
+third line.
+
+#+begin_src go :tangle s.go :comments org
+func Blank() {}
+#+end_src
+
+* Indented docstring lines keep their shape
+
+# doc
+  outer.
+    inner.
+
+#+begin_src go :tangle s.go :comments org
+func Shape() {}
+#+end_src
+-- want/a.go --
+// Code generated from BOOK.org by make tangle. DO NOT EDIT.
+
+// Prose before any headline.
+package a
+
+// Load reads the set.
+func Load() {}
+
+func Save() {}
+
+// A heading with no paragraph
+func Named() {}
+-- want/m.go --
+// Code generated from BOOK.org by make tangle. DO NOT EDIT.
+
+// second marker, over
+// two lines.
+func Marked() {}
+
+// an aside, not a comment sigil.
+func Aside() {}
+
+// Note:no space after the colon.
+func Tight() {}
+-- want/s.go --
+// Code generated from BOOK.org by make tangle. DO NOT EDIT.
+
+// #+name: indented
+// text after it.
+func Indented() {}
+
+// first line.
+//
+// third line.
+func Blank() {}
+
+// outer.
+//     inner.
+func Shape() {}

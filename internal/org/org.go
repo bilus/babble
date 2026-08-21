@@ -8,6 +8,7 @@ import (
 	"bytes"
 	"fmt"
 	"os"
+	"regexp"
 	"sort"
 	"strconv"
 	"strings"
@@ -979,5 +980,33 @@ func unquote(v string) (string, error) {
 // whole document rather than one block. The header table catches what
 // one block can be judged on alone; these need every block first.
 func Lint(d *book.Document) error {
-	panic("HOLE(10): quoted delimiters in verbatim bodies, duplicate names, a name doubling as a noweb-ref")
+	panic("HOLE(10): duplicate names, a name doubling as a noweb-ref")
+}
+
+// The shape is refused rather than reconciled. Reproducing org's
+// search would mean giving up the tree for the one case that abuses
+// it, and no book needs to quote a delimiter at column zero: indenting
+// it, or escaping it with a comma the way org already provides for,
+// leaves the meaning and removes the ambiguity.
+var quotedDelimiter = regexp.MustCompile(`^(#\+(begin|end)_src|#\+(begin|end):)`)
+
+func LintQuotedDelimiters(d *book.Document) error {
+	var err error
+	d.Walk(func(n book.Node) bool {
+		v, ok := n.(*book.VerbatimBlock)
+		if !ok || err != nil {
+			return true
+		}
+		line := v.Line
+		for _, text := range strings.Split(string(d.Source[v.Body.Start:v.Body.End]), "\n") {
+			line++
+			if quotedDelimiter.MatchString(text) {
+				err = fmt.Errorf("%s:%d: %s quoted at column zero inside a %s block; org reads it as a real one and babble does not, so indent it or escape it with a comma",
+					d.Path, line, strings.TrimSpace(text), v.Kind)
+				return false
+			}
+		}
+		return true
+	})
+	return err
 }

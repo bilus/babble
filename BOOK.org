@@ -61,28 +61,25 @@ every dynamic block, and the labels are spelled without the sigils,
 so the census never matches its own index.
 
 #+begin: plan-toc
-- [[file:BOOK.org::89][89]] entry: PLANNED Stage 21: the environment
-- [[file:BOOK.org::137][137]] entry: PLANNED Stage 12: the fixtures chapter
-- [[file:BOOK.org::200][200]] entry: PLANNED Stage 25: minting goldens from the oracle
-- [[file:BOOK.org::248][248]] entry: PLANNED Stage 7: org comments
-- [[file:BOOK.org::289][289]] entry: PLANNED Stage 8: noweb
-- [[file:BOOK.org::326][326]] entry: PLANNED Stage 9: dynamic blocks
-- [[file:BOOK.org::373][373]] entry: PLANNED Stage 10: the fence
-- [[file:BOOK.org::402][402]] entry: PLANNED Stage 11: parity and self-hosting
-- [[file:BOOK.org::912][912]] badge: PLANNED stage 12 adds the paragraph below (plan)
-- [[file:BOOK.org::1159][1159]] note: stage 22: the driver answers every language from the comment
-- [[file:BOOK.org::1511][1511]] badge: PLANNED stage 12 adds the chapter below (plan)
-- [[file:BOOK.org::3568][3568]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
-- [[file:BOOK.org::3884][3884]] hole 7: extent between the anchors, then the docstring rule
-- [[file:BOOK.org::3890][3890]] hole 7: wrap in comments.prefix(lang), blank lines as a bare marker
-- [[file:BOOK.org::3900][3900]] hole 8: named block first, else noweb-ref concatenation; cycles a...
-- [[file:BOOK.org::4096][4096]] hole 9: splice fresh interiors into the retained bytes, report ch...
-- [[file:BOOK.org::4106][4106]] hole 9: a line link per plan site, sites below the block shifted ...
-- [[file:BOOK.org::4112][4112]] hole 9: system diff -u over the two named bodies, temp-file heade...
-- [[file:BOOK.org::4170][4170]] badge: PLANNED stage 12 includes the two files below (plan)
-- [[file:BOOK.org::4673][4673]] badge: PLANNED stage 12 adds the test below (plan)
-- [[file:BOOK.org::5667][5667]] badge: PLANNED stage 21 adds the two paragraphs below (plan)
-- [[file:BOOK.org::5690][5690]] insertion: devbox.json and its lockfile,
+- [[file:BOOK.org::86][86]] entry: PLANNED Stage 21: the environment
+- [[file:BOOK.org::134][134]] entry: PLANNED Stage 12: the fixtures chapter
+- [[file:BOOK.org::197][197]] entry: PLANNED Stage 25: minting goldens from the oracle
+- [[file:BOOK.org::245][245]] entry: PLANNED Stage 8: noweb
+- [[file:BOOK.org::282][282]] entry: PLANNED Stage 9: dynamic blocks
+- [[file:BOOK.org::329][329]] entry: PLANNED Stage 10: the fence
+- [[file:BOOK.org::358][358]] entry: PLANNED Stage 11: parity and self-hosting
+- [[file:BOOK.org::868][868]] badge: PLANNED stage 12 adds the paragraph below (plan)
+- [[file:BOOK.org::1137][1137]] note: stage 22: the driver answers every language from the comment
+- [[file:BOOK.org::1502][1502]] badge: PLANNED stage 12 adds the chapter below (plan)
+- [[file:BOOK.org::3563][3563]] hole 10: duplicate names, a name doubling as a noweb-ref
+- [[file:BOOK.org::4071][4071]] hole 8: named block first, else noweb-ref concatenation; cycles a...
+- [[file:BOOK.org::4267][4267]] hole 9: splice fresh interiors into the retained bytes, report ch...
+- [[file:BOOK.org::4277][4277]] hole 9: a line link per plan site, sites below the block shifted ...
+- [[file:BOOK.org::4283][4283]] hole 9: system diff -u over the two named bodies, temp-file heade...
+- [[file:BOOK.org::4358][4358]] badge: PLANNED stage 12 includes the two files below (plan)
+- [[file:BOOK.org::4861][4861]] badge: PLANNED stage 12 adds the test below (plan)
+- [[file:BOOK.org::5878][5878]] badge: PLANNED stage 21 adds the two paragraphs below (plan)
+- [[file:BOOK.org::5901][5901]] insertion: devbox.json and its lockfile,
 
 #+end:
 
@@ -243,47 +240,6 @@ the writer only rewrites goldens that already exist.
 A golden is written back from the Emacs tree by a command rather
 than copied by hand. It never deletes, refuses the fixtures the
 cross-check excuses, and leaves each fixture's script untouched.
-#+end_quote
-
-** PLANNED Stage 7: org comments                                   :stage7:
-:PROPERTIES:
-:CUSTOM_ID: stage-7
-:SPEC:     The subset contract, "Org comments"
-:DEPS:     stages 5 and 6
-:ACCEPTANCE: comment fixture family under ORACLE=1; go test ./...
-:SIZE:     ~250 lines
-:END:
-
-Claim: after this stage, a ~:comments org~ block tangles with its
-docstring attached exactly as the driver attaches it. The extent
-anchors between the nearest headline's after-stars offset or the
-previous block's after-end_src offset and the block's begin line;
-the docstring is everything after the last ~# doc~ marker or the
-last paragraph; keyword lines drop, a leading Note: or Apropos:
-sigil drops, and the result wraps in the language's line-comment
-syntax with blank comment lines trimmed of their trailing space.
-
-Decided: the doc comment reads the comment table, the one the
-banner reads, so the two agree by construction and a project that
-teaches the toolchain a language teaches it once. The trap this
-entry used to describe, batch Emacs keeping the previous block's
-mode when a language has none, is gone: the driver answers every
-language from the table now.
-
-- [ ] inserted prose reads steady-state
-- [ ] Changes draft below reads right in the journal
-- [ ] HOLE(7) cluster filled, extent and docstring fixtures in the same commits
-- [ ] census clean for stage 7, suite green under ORACLE=1
-- [ ] Changes entry dated and filed, plan entry deleted
-
-*** Changes draft
-
-#+begin_quote
-Doc comments came out of the book byte-for-byte: extents, the # doc
-rule, sigil stripping, and per-language wrapping all match the
-driver, pinned by the fixture family covering the hard cases (name
-lines inside extents, blocks directly under headings, blocks before
-any heading, badges as anchors).
 #+end_quote
 
 ** PLANNED Stage 8: noweb                                          :stage8:
@@ -1032,12 +988,34 @@ above it becomes its doc comment. The extent runs from whichever is
 nearest above: just past the stars and single space of the closest
 headline, or just past the literal end_src of the previous block,
 or offset zero, down to the start of the block's begin line, so an
-affiliated name line sits inside the extent. The driver's docstring
-rule then applies: everything after the last ~# doc~ marker line if
-one is present, else the last paragraph; ~#+~ keyword lines drop; a
-leading ~Note:~ or ~Apropos:~ aside marker drops. The result wraps in the
-block language's line-comment syntax, and a docstring that is all
-whitespace inserts nothing.
+affiliated name line sits inside the extent. A block that tangles
+nowhere still counts as a previous block, since the anchor is the
+text and not the target.
+
+The driver's docstring rule then applies. Each of its steps has an
+edge that is easy to read the wrong way, so they are worth stating
+one at a time.
+
+The marker is the line ~# doc~ exactly. A trailing space disqualifies
+it, and where there are several, the last one wins. With a marker,
+the docstring is everything after it and no paragraph is chosen.
+Without a marker, the docstring is the last paragraph, where
+paragraphs are separated by two or more newlines and a line of
+spaces separates nothing. Keyword lines drop before either of those
+steps runs, and only at column zero, so an indented ~#+name:~ reaches
+the comment as ordinary text, while a keyword sitting between two
+prose lines joins them into one. A leading ~Note:~ or ~Apropos:~
+drops, and only when the space after the colon is there.
+
+The result wraps in the block language's line-comment syntax, and a
+docstring that is all whitespace inserts nothing. Wrapping preserves
+indentation rather than putting a marker at column zero on every
+line. The marker sits at the indentation of the shallowest line, and
+each line keeps whatever indentation it had beyond that. The marker
+takes one space unless the prefix already ends in whitespace, which
+is where it parts company with the banner: the banner adds its space
+whatever the prefix, so a prefix ending in a space yields two spaces
+in a banner and one in a comment.
 
 A line that reads as the comment marker followed by one space comes
 out as the bare marker. The driver does this in a hook that runs
@@ -1159,6 +1137,19 @@ message always names the construct and the supported alternative.
   {>>stage 22: the driver answers every language from the comment
   table now, so the limitation this entry recorded is gone and both
   engines agree; nothing is left to deviate from<<}
+- A language whose comment prefix holds no marker, only whitespace
+  or nothing, cannot carry a doc comment. babble refuses the block
+  and names the language. The driver does not refuse it: it dies
+  partway through with the file unwritten, and matching a crash is
+  worth less than naming what is wrong.
+- A block or dynamic-block delimiter written at column zero inside
+  an example, export or comment body is refused. Org finds the block
+  above by searching the raw text backwards, so it reads that line
+  as a real delimiter and anchors a comment extent on it; babble
+  reads a tree, where the line is text inside one verbatim block.
+  Both engines would write a file and the files would differ.
+  Indenting the line, or escaping it with a comma, keeps the meaning
+  and removes the ambiguity.
 - ~.lit/comments.json~ is looked for beside the book. The driver
   resolves the book's path a second time inside a buffer already
   visiting it, so a relative path naming a subdirectory looks one
@@ -1733,6 +1724,9 @@ func tangleCmd(bookPath string, stderr io.Writer) int {
 	d, err := org.Parse(bookPath)
 	if err == nil {
 		err = org.ResolveAll(d)
+	}
+	if err == nil {
+		err = org.LintQuotedDelimiters(d)
 	}
 	if err == nil {
 		err = tangle.Run(d)
@@ -2407,6 +2401,7 @@ import (
 	"bytes"
 	"fmt"
 	"os"
+	"regexp"
 	"sort"
 	"strconv"
 	"strings"
@@ -3565,7 +3560,46 @@ one block can be judged on alone; these need every block first.
 
 #+begin_src go :tangle internal/org/org.go :comments org
 func Lint(d *book.Document) error {
-	panic("HOLE(10): quoted delimiters in verbatim bodies, duplicate names, a name doubling as a noweb-ref")
+	panic("HOLE(10): duplicate names, a name doubling as a noweb-ref")
+}
+#+end_src
+
+One of its rules cannot wait for the rest, because doc comments
+make it visible. Org finds the block above by searching the raw
+text backwards, so a ~#+end_src~ written inside an example body is
+an anchor to it. babble reads a tree, where that line is text
+inside one verbatim block and no anchor at all. The two then
+disagree about where a comment extent begins, and both write a
+file, which is the quiet kind of difference.
+
+The shape is refused rather than reconciled. Reproducing org's
+search would mean giving up the tree for the one case that abuses
+it, and no book needs to quote a delimiter at column zero: indenting
+it, or escaping it with a comma the way org already provides for,
+leaves the meaning and removes the ambiguity.
+
+#+begin_src go :tangle internal/org/org.go :comments org
+var quotedDelimiter = regexp.MustCompile(`^(#\+(begin|end)_src|#\+(begin|end):)`)
+
+func LintQuotedDelimiters(d *book.Document) error {
+	var err error
+	d.Walk(func(n book.Node) bool {
+		v, ok := n.(*book.VerbatimBlock)
+		if !ok || err != nil {
+			return true
+		}
+		line := v.Line
+		for _, text := range strings.Split(string(d.Source[v.Body.Start:v.Body.End]), "\n") {
+			line++
+			if quotedDelimiter.MatchString(text) {
+				err = fmt.Errorf("%s:%d: %s quoted at column zero inside a %s block; org reads it as a real one and babble does not, so indent it or escape it with a comma",
+					d.Path, line, strings.TrimSpace(text), v.Kind)
+				return false
+			}
+		}
+		return true
+	})
+	return err
 }
 #+end_src
 
@@ -3585,6 +3619,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 
 	"github.com/bilus/babble/internal/book"
@@ -3881,13 +3916,149 @@ then how the language's comment syntax wears it.
 
 #+begin_src go :tangle internal/tangle/tangle.go :comments org
 func commentFor(d *book.Document, b *book.SrcBlock, comments commentTable) (string, error) {
-	panic("HOLE(7): extent between the anchors, then the docstring rule")
+	text := docstring(string(d.Source[extentOf(d, b):b.BeginAt]))
+	if text == "" {
+		return "", nil
+	}
+	return wrapComment(b.Lang, text, comments)
+}
+
+// The extent starts at whichever anchor sits nearest above the block:
+// just past a headline's stars, just past a previous block's end
+// keyword, or the start of the file. A block that tangles nowhere is
+// still an anchor, so every block in the tree counts, not only the
+// ones being written.
+func extentOf(d *book.Document, b *book.SrcBlock) int {
+	at := 0
+	d.Walk(func(n book.Node) bool {
+		switch n := n.(type) {
+		case *book.Headline:
+			if n.AfterStars < b.BeginAt && n.AfterStars > at {
+				at = n.AfterStars
+			}
+		case *book.SrcBlock:
+			if n.AfterEnd < b.BeginAt && n.AfterEnd > at {
+				at = n.AfterEnd
+			}
+		}
+		return true
+	})
+	return at
 }
 #+end_src
 
 #+begin_src go :tangle internal/tangle/tangle.go
+// Wrapping follows comment-region, which is more particular than a
+// prefix on every line. It ignores whitespace at either end of the
+// text, indents every marker to the shallowest line it is about to
+// comment, and keeps whatever indentation the line had beyond that.
+// A blank line inside becomes the marker and a space, which the
+// file-wide trim later reduces to the bare marker.
+//
+// The marker takes one space unless the prefix already ends in
+// whitespace. The banner's rule differs: it always adds a space, so
+// a project whose prefix ends in one gets two there and one here.
+//
+// A prefix with nothing but whitespace in it has no marker to write.
+// The driver does not refuse that, it dies partway with the file
+// unwritten, and matching a crash is worth less than naming it.
 func wrapComment(lang, text string, comments commentTable) (string, error) {
-	panic("HOLE(7): wrap in comments.prefix(lang), blank lines as a bare marker")
+	prefix := comments.prefix(lang)
+	if strings.TrimSpace(prefix) == "" {
+		return "", fmt.Errorf("%s has no comment marker, so a :comments org block cannot be written; give it one in .lit/comments.json", lang)
+	}
+	marker := prefix
+	if !strings.HasSuffix(marker, " ") && !strings.HasSuffix(marker, "\t") {
+		marker += " "
+	}
+	lines := strings.Split(text, "\n")
+	lead := shallowest(lines)
+	var out strings.Builder
+	for _, line := range lines {
+		rest := line
+		if len(rest) >= len(lead) {
+			rest = rest[len(lead):]
+		} else {
+			rest = strings.TrimLeft(rest, " \t")
+		}
+		out.WriteString(lead)
+		out.WriteString(marker)
+		out.WriteString(rest)
+		out.WriteString("\n")
+	}
+	return out.String(), nil
+}
+
+// The indentation of the shallowest line that has anything on it.
+// A blank line does not lower it.
+func shallowest(lines []string) string {
+	lead := ""
+	found := false
+	for _, line := range lines {
+		if strings.TrimSpace(line) == "" {
+			continue
+		}
+		indent := line[:len(line)-len(strings.TrimLeft(line, " \t"))]
+		if !found || len(indent) < len(lead) {
+			lead, found = indent, true
+		}
+	}
+	return lead
+}
+
+// The docstring is everything after the last "# doc" marker line, or
+// the last paragraph when there is none. Keyword lines drop first,
+// which is why a keyword between two prose lines joins them: the rule
+// takes the line and its newline together, and the split that finds
+// the last paragraph runs afterwards.
+func docstring(text string) string {
+	if i := lastDocMarker(text); i >= 0 {
+		return sigil(strings.Trim(dropKeywordLines(text[i:]), " \t\n\r"))
+	}
+	clean := dropKeywordLines(text)
+	var last string
+	for _, para := range regexp.MustCompile(`\n\n+`).Split(clean, -1) {
+		if para != "" {
+			last = para
+		}
+	}
+	return sigil(strings.Trim(last, " \t\n\r"))
+}
+
+// The marker is the line "# doc" and nothing else, so a trailing
+// space disqualifies it, and the last one in the text wins.
+func lastDocMarker(text string) int {
+	at := -1
+	for i := 0; ; {
+		j := strings.Index(text[i:], "# doc\n")
+		if j < 0 {
+			break
+		}
+		start := i + j
+		if start == 0 || text[start-1] == '\n' {
+			at = start + len("# doc\n")
+		}
+		i = start + 1
+	}
+	return at
+}
+
+// Only a keyword at column zero counts, so an indented one reaches
+// the comment as ordinary text.
+func dropKeywordLines(text string) string {
+	return regexp.MustCompile(`(?m)^#\+[^\n]*\n?`).ReplaceAllString(text, "")
+}
+
+// The sigil marks an aside for the reader and is not part of the
+// comment. It needs the trailing space, and it runs after the trim,
+// which is the one way a docstring can start with a newline.
+func sigil(text string) string {
+	for _, word := range []string{"Note: ", "Apropos: "} {
+		if strings.HasPrefix(text, word) {
+			return text[len(word):]
+		}
+	}
+	return text
 }
 #+end_src
 
@@ -4153,6 +4324,23 @@ The suite as it stands, by what each file pins:
 | init-guards.txtar | what init refuses to overwrite |
 | tangle-comment-table.txtar | comment syntax by language, and its four edges |
 | tangle-body-trim.txtar | a bare comment marker in a body, trimmed as the driver trims it |
+| tangle-comments.txtar | doc comments: the extent, the marker, the sigil, the wrapping |
+| tangle-comment-refusals.txtar | a language with no marker, and a delimiter quoted in an example |
+
+tangle-comments pins the three parts of the rule that could each be
+read another way. Its anchors book asks that a block directly under
+a heading with no paragraph takes the heading's own title, that a
+block with only blank lines above it takes no comment at all, and
+that a block before any headline reaches back to the start of the
+file. Its marker book asks that the last ~# doc~ wins, that a sigil
+drops only with its space, and that one without the space stays. Its
+shapes book asks that an indented keyword survives, that a blank
+line inside becomes a bare marker, and that indentation beyond the
+shallowest line is kept.
+
+Each of those was checked by breaking the rule that satisfies it and
+watching both suites report it, the goldens and the cross-check
+against Emacs.
 
 tangle-comment-table pins four requirements. A go block writing a
 ~.templ~ file opens with ~//~, since the marker follows the language
@@ -5387,6 +5575,29 @@ func TestDump(t *testing.T) {
 #+end_src
 
 * Changes
+
+** [2026-08-21] Org comments
+
+#+begin_quote
+A ~:comments org~ block tangles with its docstring attached the way
+the driver attaches it. The extent runs from the nearest anchor
+above the block, which is a headline's stars, a previous block's end
+keyword, or the start of the file, and a block that tangles nowhere
+is still an anchor. The docstring is everything after the last
+~# doc~ marker, or the last paragraph when there is none. Wrapping
+follows the shape of what it wraps rather than putting a marker on
+every line: the marker sits at the shallowest indentation and each
+line keeps what it had beyond that.
+
+Two shapes are refused. A language whose prefix holds no marker
+cannot carry a comment, and the driver does not refuse that, it dies
+partway with the file unwritten. And a delimiter written at column
+zero inside an example body is an anchor to org's backward text
+search and not to a tree, so the two engines would disagree about
+where an extent begins and both would write a file. That second
+refusal was owed to a later stage, and doc comments are what make it
+visible, so it came forward to the stage whose reason it is.
+#+end_quote
 
 ** [2026-08-21] The trim the oracle missed
 
