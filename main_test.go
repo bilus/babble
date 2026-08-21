@@ -11,6 +11,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/bilus/babble/internal/oracletest"
 	"github.com/rogpeppe/go-internal/testscript"
 )
 
@@ -33,6 +34,26 @@ func TestScripts(t *testing.T) {
 		t.Skip("no fixtures yet")
 	}
 	testscript.Run(t, testscript.Params{Dir: dir})
+}
+
+// TestOracle is the cross-check, one subtest per fixture. It is a
+// test of its own rather than a hook inside the script runner,
+// because that runner works in its own directory and the cross-check
+// needs two of its own.
+func TestOracle(t *testing.T) {
+	if !oracletest.Enabled() {
+		t.Skip("set ORACLE=1 to compare against Emacs")
+	}
+	fixtures, _ := filepath.Glob(filepath.Join("testdata", "script", "*.txtar"))
+	if len(fixtures) == 0 {
+		t.Fatal("no fixtures to cross-check")
+	}
+	for _, f := range fixtures {
+		t.Run(strings.TrimSuffix(filepath.Base(f), ".txtar"), func(t *testing.T) {
+			t.Parallel()
+			oracletest.CrossCheck(t, f)
+		})
+	}
 }
 
 // TestFixtureTable keeps the fixtures chapter honest. The table

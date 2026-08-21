@@ -3,8 +3,9 @@
 # preserving indentation without losing noweb, a directory asked for
 # by a later block, and a refused book leaving no files behind.
 
-# oracle: skip three of these are refusals, and the panic case is a
-# crash Emacs never had.
+# oracle: skip empty.org an empty :tangle is a crash Emacs never had,
+# so there is nothing to compare it against. The two refusals below
+# are left out of the cross-check by their own ! exec.
 
 exec babble tangle indent.org
 cmp out.go want/out.go

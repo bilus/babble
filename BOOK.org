@@ -61,35 +61,28 @@ every dynamic block, and the labels are spelled without the sigils,
 so the census never matches its own index.
 
 #+begin: plan-toc
-- [[file:BOOK.org::96][96]] entry: PLANNED Stage 21: the environment
-- [[file:BOOK.org::144][144]] entry: PLANNED Stage 12: the fixtures chapter
-- [[file:BOOK.org::207][207]] entry: PLANNED Stage 6: the oracle harness
-- [[file:BOOK.org::315][315]] entry: PLANNED Stage 7: org comments
-- [[file:BOOK.org::356][356]] entry: PLANNED Stage 8: noweb
-- [[file:BOOK.org::393][393]] entry: PLANNED Stage 9: dynamic blocks
-- [[file:BOOK.org::440][440]] entry: PLANNED Stage 10: the fence
-- [[file:BOOK.org::469][469]] entry: PLANNED Stage 11: parity and self-hosting
-- [[file:BOOK.org::979][979]] badge: PLANNED stage 12 adds the paragraph below (plan)
-- [[file:BOOK.org::1221][1221]] note: stage 22: the driver answers every language from the comment
-- [[file:BOOK.org::1573][1573]] badge: PLANNED stage 12 adds the chapter below (plan)
-- [[file:BOOK.org::3630][3630]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
-- [[file:BOOK.org::3946][3946]] hole 7: extent between the anchors, then the docstring rule
-- [[file:BOOK.org::3952][3952]] hole 7: wrap in comments.prefix(lang), blank lines as a bare marker
-- [[file:BOOK.org::3962][3962]] hole 8: named block first, else noweb-ref concatenation; cycles a...
-- [[file:BOOK.org::4141][4141]] hole 9: splice fresh interiors into the retained bytes, report ch...
-- [[file:BOOK.org::4151][4151]] hole 9: a line link per plan site, sites below the block shifted ...
-- [[file:BOOK.org::4157][4157]] hole 9: system diff -u over the two named bodies, temp-file heade...
-- [[file:BOOK.org::4214][4214]] badge: PLANNED stage 12 includes the two files below (plan)
-- [[file:BOOK.org::4704][4704]] badge: PLANNED stage 12 adds the test below (plan)
-- [[file:BOOK.org::5030][5030]] hole 6: ORACLE=1 in the environment
-- [[file:BOOK.org::5034][5034]] hole 6: UPDATE=1 in the environment
-- [[file:BOOK.org::5040][5040]] hole 6: extract the fixture twice, run Emacs and babble, byte-com...
-- [[file:BOOK.org::5052][5052]] hole 6: write the txtar's input files into dir, and name the book...
-- [[file:BOOK.org::5058][5058]] hole 6: copy lit/ in, run batch Emacs with the driver, fail loudl...
-- [[file:BOOK.org::5062][5062]] hole 6: every file on both sides, byte for byte, ignoring the inputs
-- [[file:BOOK.org::5066][5066]] hole 6: rewrite the fixture's want/ files from the oracle tree
-- [[file:BOOK.org::5433][5433]] badge: PLANNED stage 21 adds the two paragraphs below (plan)
-- [[file:BOOK.org::5456][5456]] insertion: devbox.json and its lockfile,
+- [[file:BOOK.org::89][89]] entry: PLANNED Stage 21: the environment
+- [[file:BOOK.org::137][137]] entry: PLANNED Stage 12: the fixtures chapter
+- [[file:BOOK.org::200][200]] entry: PLANNED Stage 25: minting goldens from the oracle
+- [[file:BOOK.org::248][248]] entry: PLANNED Stage 7: org comments
+- [[file:BOOK.org::289][289]] entry: PLANNED Stage 8: noweb
+- [[file:BOOK.org::326][326]] entry: PLANNED Stage 9: dynamic blocks
+- [[file:BOOK.org::373][373]] entry: PLANNED Stage 10: the fence
+- [[file:BOOK.org::402][402]] entry: PLANNED Stage 11: parity and self-hosting
+- [[file:BOOK.org::912][912]] badge: PLANNED stage 12 adds the paragraph below (plan)
+- [[file:BOOK.org::1154][1154]] note: stage 22: the driver answers every language from the comment
+- [[file:BOOK.org::1506][1506]] badge: PLANNED stage 12 adds the chapter below (plan)
+- [[file:BOOK.org::3563][3563]] hole 10: quoted delimiters in verbatim bodies, duplicate names, a ...
+- [[file:BOOK.org::3879][3879]] hole 7: extent between the anchors, then the docstring rule
+- [[file:BOOK.org::3885][3885]] hole 7: wrap in comments.prefix(lang), blank lines as a bare marker
+- [[file:BOOK.org::3895][3895]] hole 8: named block first, else noweb-ref concatenation; cycles a...
+- [[file:BOOK.org::4074][4074]] hole 9: splice fresh interiors into the retained bytes, report ch...
+- [[file:BOOK.org::4084][4084]] hole 9: a line link per plan site, sites below the block shifted ...
+- [[file:BOOK.org::4090][4090]] hole 9: system diff -u over the two named bodies, temp-file heade...
+- [[file:BOOK.org::4147][4147]] badge: PLANNED stage 12 includes the two files below (plan)
+- [[file:BOOK.org::4650][4650]] badge: PLANNED stage 12 adds the test below (plan)
+- [[file:BOOK.org::5632][5632]] badge: PLANNED stage 21 adds the two paragraphs below (plan)
+- [[file:BOOK.org::5655][5655]] insertion: devbox.json and its lockfile,
 
 #+end:
 
@@ -204,112 +197,52 @@ keyword and the blocks it names reach no target without a word
 about it.
 #+end_quote
 
-** PLANNED Stage 6: the oracle harness                             :stage6:
+** PLANNED Stage 25: minting goldens from the oracle              :stage25:
 :PROPERTIES:
-:CUSTOM_ID: stage-6
-:SPEC:     Testing
-:DEPS:     stage 5
-:ACCEPTANCE: ORACLE=1 go test ./... green; UPDATE=1 remints committed goldens byte-identically
-:SIZE:     ~250 lines, plus CI workflows
+:CUSTOM_ID: stage-25
+:SPEC:     Testing, "Rebuilding a golden"
+:DEPS:     stage 6
+:ACCEPTANCE: remint, commit, remint again, git diff --exit-code testdata/
+:SIZE:     ~80 lines, plus a fixture migration
 :END:
 
-Claim: after this stage, ORACLE=1 runs every fixture's inputs
-through batch Emacs and through babble in two parallel trees and
-fails on any byte difference, UPDATE=1 rewrites every committed
-golden from the Emacs tree and never from babble's, and CI runs the golden
-suite without Emacs in one job and the oracle suite in another.
+Claim: after this stage a golden is written back from the Emacs
+tree by a command rather than copied by hand.
 
-Decided: (1) The harness lives in test code tangled from this
-book; the GitHub workflow files are hand-managed plumbing outside
-it, like the Makefile and the manifests. (2) A fixture is
-cross-checked whole rather than file by file: its inputs are
-extracted into two trees, Emacs with lit/ runs in one and babble
-in the other, and the trees are compared. A tree comparison
-catches a file one engine writes and the other does not, which a
-list of expected files cannot. (3) Expected outputs move under
-~want/~, mirroring the paths they pin, so reminting can write them
-back without guessing which golden belongs to which file. (4) A
-fixture that pins a deliberate deviation says so in a
-~# oracle: skip~ line naming the reason, and a fixture that never
-tangles is skipped because there is nothing to compare. (5) With
-ORACLE=1 set and no Emacs on the machine, the harness fails rather
-than skipping: a silent pass would retire the only check that
-matters. (6) The sweep over whole real books waits for the stage
-that can tangle them; this stage's books are the fixtures.
-(7) ORACLE=1 adds a layer, it does not replace one: the golden
-suite still runs each script against its goldens, and the
-cross-check runs beside it, so babble tangles each fixture twice
-and Emacs once. Keeping both is what separates two failures worth
-telling apart, a golden that has drifted from Emacs, which the
-golden suite passes and the cross-check fails, and a script
-assertion about a refusal or a file that should not exist, which
-only the script makes. (8) UPDATE=1 implies the oracle, since
-there is nothing else a golden may be minted from; setting it
-without ORACLE=1 is an error rather than a quiet no-op.
+This was decided out of [[#stage-6][stage 6]] rather than planned separately. A
+writer that edits committed fixtures has its own ways of going
+wrong, none of which the cross-check shares, and holding it back
+let the read-only check prove the goldens are already Emacs-shaped
+before a tool that can overwrite them existed.
 
-A fixture as this stage leaves it, indented here for quoting. The
-script names what it compares, the inputs and the goldens
-share one file, and every expected path sits under ~want/~
-mirroring the file it pins, which is what lets reminting write it
-back:
-
-#+begin_example
-  # Blocks reach their targets in document order, with the banner
-  # and one blank line between them.
-
-  exec babble tangle b.org
-  cmp greet.go want/greet.go
-  cmp sub/deep.go want/sub/deep.go
-
-  -- b.org --
-  #+begin_src go :tangle greet.go
-  package greet
-  #+end_src
-
-  #+begin_src go :tangle sub/deep.go
-  package deep
-  #+end_src
-  -- want/greet.go --
-  // Code generated from BOOK.org by make tangle. DO NOT EDIT.
-
-  package greet
-  -- want/sub/deep.go --
-  // Code generated from BOOK.org by make tangle. DO NOT EDIT.
-
-  package deep
-#+end_example
-
-Under ORACLE=1 the harness ignores the script and the want tree:
-it extracts b.org, runs both engines over it, and compares what
-they produced. Under UPDATE=1 it writes the oracle's output back
-into the want entries, so a golden can only ever be Emacs output.
-A fixture that pins a refusal has no oracle counterpart, since
-Emacs does not refuse, and says so in its first line:
-
-#+begin_example
-  # oracle: skip Emacs skips a languageless block instead of
-  # refusing it, so there is nothing to compare here.
-
-  ! exec babble tangle no-lang.org
-  stderr 'without a language'
-#+end_example
+Decided: (1) A golden sits under ~want/~ at the path it pins, so
+the writer knows which file each belongs to. Two fixtures still
+name theirs flat and are renamed, keeping the directory part:
+~want-deep.go~ pins ~sub/deep.go~ and becomes ~want/sub/deep.go~.
+(2) The writer never deletes. A ~want/~ entry with no matching
+output is reported, not removed, since the likeliest cause is that
+the run failed rather than that the golden is stale. (3) It refuses
+a fixture whose books are excused, and refuses when the run tangled
+nothing, by the same predicates the cross-check uses. (4) It leaves
+the script section byte-unchanged, so reformatting cannot quietly
+rewrite a fixture's assertions. (5) One fixture pins two targets
+against a single golden, which says the two come out identical.
+Writing each output to its own path would retire that assertion, so
+the writer only rewrites goldens that already exist.
 
 - [ ] plan approved (the human ticks this box)
-- [ ] inserted prose reads steady-state
-- [ ] Changes draft below reads right in the journal
-- [ ] HOLE(6) cluster filled, harness proves existing goldens Emacs-shaped
-- [ ] goldens moved under want/ and reminted from the Emacs tree
-- [ ] CI runs the golden suite without Emacs and the oracle suite with it
-- [ ] census clean for stage 6, suite green with and without ORACLE=1
+- [ ] HOLE(25) filled, tests in the same commit
+- [ ] the two flat fixtures renamed, directory parts kept
+- [ ] seen to fail: a golden edited by hand, and the remint restoring it
+- [ ] census clean for stage 25, suite green
 - [ ] Changes entry dated and filed, plan entry deleted
 
 *** Changes draft
 
 #+begin_quote
-The oracle harness landed: ORACLE=1 tangles each fixture
-twice, once per engine, and diffs the trees; UPDATE=1 mints goldens
-from the Emacs side only, so committed goldens are oracle output by
-construction.
+A golden is written back from the Emacs tree by a command rather
+than copied by hand. It never deletes, refuses the fixtures the
+cross-check excuses, and leaves each fixture's script untouched.
 #+end_quote
 
 ** PLANNED Stage 7: org comments                                   :stage7:
@@ -4257,12 +4190,11 @@ more than reading about it:
 #+end_example
 
 What lands beside b.org is the golden, byte for byte, and it is
-the same command lit.mk runs for a real book. The harness does
-this for you: UPDATE=1 with the oracle enabled extracts each
-fixture, runs those steps, and writes the result back into the
-fixture's want entries. It never writes what babble produced,
-which is the whole point. A golden that came from babble would
-agree with babble by construction and prove nothing.
+the same command lit.mk runs for a real book. Copy it into the
+fixture yourself. A golden must never be taken from what babble
+produced: it would agree with babble by construction and prove
+nothing. Doing this by hand is what the stage that mints goldens
+from the oracle will replace.
 
 ** Adding a fixture
 
@@ -4276,10 +4208,9 @@ Then, in order:
 1. Write the fixture book. Keep it to the smallest thing that
    shows the behavior, and give the blocks targets that say what
    they are for, greet.go rather than a.go.
-2. Mint the goldens with Emacs, by hand as above or with UPDATE=1
-   once the harness is in. Read what comes out. A golden accepted
-   without reading is a test that pins whatever the code did on
-   the day it was written.
+2. Mint the goldens with Emacs, by hand as above. Read what comes
+   out. A golden accepted without reading is a test that pins
+   whatever the code did on the day it was written.
    Each golden goes in the txtar under ~want/~, at the path it
    pins: the golden for ~sub/late.go~ is ~want/sub/late.go~.
    Reminting depends on that, since it has to write each file back
@@ -4320,17 +4251,32 @@ makes a passing suite evidence rather than agreement with myself,
 and it is the reason reminting reads the Emacs tree and refuses to
 read babble's.
 
-The oracle harness ties every fixture to Emacs's own output, and
-arrives with [[#stage-6][stage 6]]; the paragraph below is what it will do.
-Under ORACLE=1, each fixture's inputs are extracted twice; batch Emacs
-with lit/tangle.el runs in one tree and babble in the other, and
-any byte difference between the trees fails the test. Under
-UPDATE=1, the harness rewrites each fixture's goldens from
-the Emacs tree, never from babble's, so a committed golden cannot
-encode babble's own misunderstanding. Fixtures that pin babble's
-deliberate deviations (error paths, the mtime-preserving skip) are
-marked to run without the oracle, since the oracle disagrees with
-them by design.
+The oracle harness ties every fixture to Emacs's own output. Under
+ORACLE=1 each fixture's files are written into two directories,
+batch Emacs with lit/tangle.el runs in one and babble in the other,
+and the harness compares everything the two runs left behind. A
+file one engine wrote and the other did not is a failure, and so is
+the same path with different bytes.
+
+The books it runs are the ones the fixture's own script tangles.
+Half the fixtures tangle more than one and one tangles none, so
+reading them from the script is the only way to know which. A
+refusal is written with ~! exec~ rather than ~exec~ and is left out
+by the same rule, since a book babble is meant to refuse produces
+nothing to compare against.
+
+Two failures would otherwise pass. A run that tangled no blocks
+leaves two empty directories, and two empty directories agree, so
+the harness reads the count the driver prints and fails when the
+total is zero. With ORACLE=1 set on a machine without Emacs, it
+fails rather than skipping, because a skip here removes the
+comparison without reporting that it is gone.
+
+A book that cannot be compared is named in a skip line, followed by
+the reason. A skip that names no book excuses the whole fixture.
+Reminting goldens from the oracle is not part of this stage. A
+golden is minted by hand, with the recipe below, until the stage
+that mints them lands.
 
 The whole loop in one picture. The arrow into the goldens starts
 from the Emacs tree, never from babble's:
@@ -4345,7 +4291,6 @@ graph TD
   bt --> d
   d -->|equal| ok[ORACLE=1 green]
   d -->|differs| no[test fails]
-  et -->|UPDATE=1| g[committed goldens]
 #+end_src
 
 The real-book sweep copies each real book into a temp tree and
@@ -4391,6 +4336,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/bilus/babble/internal/oracletest"
 	"github.com/rogpeppe/go-internal/testscript"
 )
 
@@ -4709,6 +4655,29 @@ directory it describes. This is what stops it.
 
 ** The fixtures table
 
+TestOracle is the cross-check, one subtest per fixture. It is a
+test of its own rather than a hook inside the script runner,
+because that runner works in its own directory and the cross-check
+needs two of its own.
+
+#+begin_src go :tangle main_test.go :comments org
+func TestOracle(t *testing.T) {
+	if !oracletest.Enabled() {
+		t.Skip("set ORACLE=1 to compare against Emacs")
+	}
+	fixtures, _ := filepath.Glob(filepath.Join("testdata", "script", "*.txtar"))
+	if len(fixtures) == 0 {
+		t.Fatal("no fixtures to cross-check")
+	}
+	for _, f := range fixtures {
+		t.Run(strings.TrimSuffix(filepath.Base(f), ".txtar"), func(t *testing.T) {
+			t.Parallel()
+			oracletest.CrossCheck(t, f)
+		})
+	}
+}
+#+end_src
+
 TestFixtureTable keeps the fixtures chapter honest. The table
 there is written by hand, which is worth it for a column that says
 what a fixture is for, and worthless if it quietly stops matching
@@ -5018,52 +4987,258 @@ func TestInitDefaults(t *testing.T) {
 
 ** The oracle harness
 
-Package oracletest carries the two environment flags and the
-cross-check that runs a fixture through both engines.
+Package oracletest runs a fixture's books through both engines and
+compares what each run wrote. It reads and never writes: a golden
+is minted by hand until the stage that mints them lands.
 
 #+begin_src go :tangle internal/oracletest/oracletest.go :comments org
 package oracletest
 
-import "testing"
+import (
+	"bytes"
+	"fmt"
+	"os"
+	"os/exec"
+	"path/filepath"
+	"regexp"
+	"sort"
+	"strings"
+	"testing"
+
+	"github.com/bilus/babble/internal/org"
+	"github.com/bilus/babble/internal/tangle"
+	"golang.org/x/tools/txtar"
+)
 
 func Enabled() bool {
-	panic("HOLE(6): ORACLE=1 in the environment")
-}
-
-func Reminting() bool {
-	panic("HOLE(6): UPDATE=1 in the environment")
+	return os.Getenv("ORACLE") == "1"
 }
 #+end_src
 
-#+begin_src go :tangle internal/oracletest/oracletest.go
-func CrossCheck(t *testing.T, fixture string) {
-	panic("HOLE(6): extract the fixture twice, run Emacs and babble, byte-compare the trees")
-}
-#+end_src
+A fixture names the books it tangles in its own script, so the
+harness reads them from there rather than guessing. Half the
+fixtures tangle more than one book and one tangles none.
 
-The pieces CrossCheck stands on. Extraction writes a fixture's
-input files into a directory; the Emacs side copies lit/ in beside
-them and runs the driver exactly as lit.mk does; the comparison
-walks both trees and reports the first byte that differs, or the
-first file one side has and the other lacks.
+A book the two engines cannot be compared on is named in a skip
+line. The words after ~skip~ that end in ~.org~ are the books it
+excuses; the rest of the line is the reason. A skip that names no
+book excuses the whole fixture, which is how the two already
+written read. The line sits anywhere in the fixture's opening
+comment, which is where those two sit.
+
+A refusal needs no skip. A fixture asserts one with ~! exec~, and
+only a plain ~exec babble tangle~ names a book to compare, so the
+books babble is expected to refuse are left out by the same rule
+that finds the others.
 
 #+begin_src go :tangle internal/oracletest/oracletest.go :comments org
-func extract(t *testing.T, fixture, dir string) (book string) {
-	panic("HOLE(6): write the txtar's input files into dir, and name the book among them")
+var (
+	tangleLine = regexp.MustCompile(`(?m)^exec babble tangle (\S+)`)
+	skipLine   = regexp.MustCompile(`(?m)^# oracle: skip (.*)$`)
+)
+
+// books returns the books a fixture's script tangles, and the ones
+// its skip line excuses.
+func books(script string) (run []string, excusedAll bool) {
+	excused := map[string]bool{}
+	for _, m := range skipLine.FindAllStringSubmatch(script, -1) {
+		named := 0
+		for _, word := range strings.Fields(m[1]) {
+			if !strings.HasSuffix(word, ".org") {
+				break
+			}
+			excused[word] = true
+			named++
+		}
+		if named == 0 {
+			excusedAll = true
+		}
+	}
+	seen := map[string]bool{}
+	for _, m := range tangleLine.FindAllStringSubmatch(script, -1) {
+		if seen[m[1]] || excused[m[1]] {
+			continue
+		}
+		seen[m[1]] = true
+		run = append(run, m[1])
+	}
+	return run, excusedAll
 }
 #+end_src
 
-#+begin_src go :tangle internal/oracletest/oracletest.go
-func runOracle(t *testing.T, dir, book string) {
-	panic("HOLE(6): copy lit/ in, run batch Emacs with the driver, fail loudly when it is absent")
+CrossCheck extracts the fixture twice, runs one engine in each
+tree, and compares what each run added. The comparison is of the
+additions rather than of the trees, so a book the driver rewrote is
+compared too, which is what the stage that builds dynamic blocks
+will need.
+
+A fixture whose skip line has no books after it excuses the whole
+fixture, which is how the two fixtures that already carry one are
+written.
+
+#+begin_src go :tangle internal/oracletest/oracletest.go :comments org
+func CrossCheck(t *testing.T, fixture string) {
+	t.Helper()
+	archive, err := txtar.ParseFile(fixture)
+	if err != nil {
+		t.Fatal(err)
+	}
+	run, excusedAll := books(string(archive.Comment))
+	if excusedAll {
+		t.Skip("the fixture excuses itself from the oracle")
+	}
+	if len(run) == 0 {
+		t.Skip("no book to tangle")
+	}
+	oracleDir, babbleDir := t.TempDir(), t.TempDir()
+	before := map[string]bool{}
+	for _, dir := range []string{oracleDir, babbleDir} {
+		for _, f := range archive.Files {
+			write(t, dir, f.Name, f.Data)
+		}
+	}
+	for _, f := range archive.Files {
+		before[f.Name] = true
+	}
+	tangled := 0
+	for _, b := range run {
+		tangled += runOracle(t, oracleDir, b)
+		runBabble(t, babbleDir, b)
+	}
+	if tangled == 0 {
+		t.Fatalf("the oracle tangled no blocks from %v; two empty trees agree, which proves nothing", run)
+	}
+	compareAdditions(t, oracleDir, babbleDir, before)
 }
 
-func compareTrees(t *testing.T, oracle, babble string) {
-	panic("HOLE(6): every file on both sides, byte for byte, ignoring the inputs")
+func write(t *testing.T, dir, name string, body []byte) {
+	t.Helper()
+	path := filepath.Join(dir, filepath.FromSlash(name))
+	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(path, body, 0o644); err != nil {
+		t.Fatal(err)
+	}
+}
+#+end_src
+
+The driver is loaded by absolute path with the working directory
+set to the tree, so the tree holds the book and what the tangle
+wrote and nothing else.
+
+Three things can go wrong and they have three different causes.
+Emacs may be absent, which is the machine's fault and not babble's.
+Emacs may run and fail, in which case its own message on stderr is
+the useful half. Or it may run and tangle nothing, which reads as
+success and is not: the count it prints is what tells them apart.
+
+#+begin_src go :tangle internal/oracletest/oracletest.go :comments org
+var tangledCount = regexp.MustCompile(`Tangled (\d+) code block`)
+
+func runOracle(t *testing.T, dir, book string) int {
+	t.Helper()
+	if _, err := exec.LookPath("emacs"); err != nil {
+		t.Fatal("ORACLE=1 is set and emacs is not on PATH; the cross-check cannot run")
+	}
+	driver, err := filepath.Abs(filepath.Join("lit", "tangle.el"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	cmd := exec.Command("emacs", "-Q", "--batch", "-l", driver,
+		"--eval", fmt.Sprintf("(lit-tangle %q)", book))
+	cmd.Dir = dir
+	out, err := cmd.CombinedOutput()
+	if err != nil {
+		t.Fatalf("the oracle failed on %s: %v\n%s", book, err, out)
+	}
+	total := 0
+	for _, m := range tangledCount.FindAllSubmatch(out, -1) {
+		n := 0
+		fmt.Sscanf(string(m[1]), "%d", &n)
+		total += n
+	}
+	return total
 }
 
-func remint(t *testing.T, fixture, oracle string) {
-	panic("HOLE(6): rewrite the fixture's want/ files from the oracle tree")
+func runBabble(t *testing.T, dir, book string) {
+	t.Helper()
+	d, err := org.Parse(filepath.Join(dir, book))
+	if err == nil {
+		err = org.ResolveAll(d)
+	}
+	if err == nil {
+		err = tangle.Run(d)
+	}
+	if err != nil {
+		t.Fatalf("babble failed on %s where the oracle did not: %v", book, err)
+	}
+}
+#+end_src
+
+The comparison walks both trees and reports every path where the
+two runs disagree: a file one wrote and the other did not, or the
+same path with different bytes. Only bytes are compared, since
+babble writes a fixed mode where the driver takes the umask, and a
+mode difference would be a difference neither engine is wrong
+about.
+
+#+begin_src go :tangle internal/oracletest/oracletest.go :comments org
+func compareAdditions(t *testing.T, oracleDir, babbleDir string, before map[string]bool) {
+	t.Helper()
+	oracle := added(t, oracleDir, before)
+	babbled := added(t, babbleDir, before)
+	paths := map[string]bool{}
+	for p := range oracle {
+		paths[p] = true
+	}
+	for p := range babbled {
+		paths[p] = true
+	}
+	var names []string
+	for p := range paths {
+		names = append(names, p)
+	}
+	sort.Strings(names)
+	for _, p := range names {
+		want, inOracle := oracle[p]
+		got, inBabble := babbled[p]
+		switch {
+		case !inBabble:
+			t.Errorf("%s: the oracle wrote it and babble did not", p)
+		case !inOracle:
+			t.Errorf("%s: babble wrote it and the oracle did not", p)
+		case !bytes.Equal(want, got):
+			t.Errorf("%s: the two engines disagree\n oracle: %q\n babble: %q", p, want, got)
+		}
+	}
+}
+
+// added is every file a run left behind, keyed by its path in the
+// tree. A file the fixture supplied counts when the run rewrote it,
+// which is how a book that holds a dynamic block is compared.
+func added(t *testing.T, dir string, before map[string]bool) map[string][]byte {
+	t.Helper()
+	out := map[string][]byte{}
+	err := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
+		if err != nil || info.IsDir() {
+			return err
+		}
+		rel, err := filepath.Rel(dir, path)
+		if err != nil {
+			return err
+		}
+		body, err := os.ReadFile(path)
+		if err != nil {
+			return err
+		}
+		out[filepath.ToSlash(rel)] = body
+		return nil
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	return out
 }
 #+end_src
 
@@ -5189,6 +5364,30 @@ func TestDump(t *testing.T) {
 #+end_src
 
 * Changes
+
+** [2026-08-21] The oracle harness
+
+#+begin_quote
+ORACLE=1 runs every fixture's books through batch Emacs and through
+babble in two directories and compares everything the two runs left
+behind. A file one engine wrote and the other did not is a failure,
+and so is the same path with different bytes. The books come from
+the fixture's own script, since half the fixtures tangle more than
+one and one tangles none, and a refusal written with ~! exec~ is
+left out by the same rule.
+
+Two ways a broken harness could look healthy are refused. A run
+that tangled no blocks leaves two empty directories that agree, so
+the harness reads the count the driver prints and fails when the
+total is zero. With ORACLE=1 set and no Emacs on the machine it
+fails rather than skipping.
+
+The harness reads and never writes. Minting goldens from the oracle
+is a writer that edits committed fixtures, with its own ways of
+going wrong, and holding it back let this check prove the goldens
+are already Emacs-shaped before a tool that can overwrite them
+existed.
+#+end_quote
 
 ** [2026-08-21] Comment syntax by language
 
