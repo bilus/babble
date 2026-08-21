@@ -1019,3 +1019,15 @@ func LintQuotedDelimiters(d *book.Document) error {
 	})
 	return err
 }
+
+// So the question is not what a line looks like. It is whether the two
+// engines find the same set of dynamic blocks. babble can ask that
+// directly: run org's own opener pattern over the raw source, collect
+// what the tree reports, and compare the two lists by line number. A
+// line only org finds is a delimiter that needs a comma. A line only
+// the tree finds is one written without the space org's pattern wants
+// after the colon. Either way the book gets an error naming the line,
+// and neither engine has to imitate the other.
+func LintDynamicBlocks(d *book.Document) error {
+	panic("HOLE(9): refuse a book where org's raw opener search and the tree disagree")
+}
