@@ -4,6 +4,53 @@ How to work on a literate program. The rules are generic; the examples
 and the toolchain section are this repository's. This file is for
 agents; lit/README.md is the human companion.
 
+## Order serves the reader
+
+This is the first rule and the one the rest of the file serves.
+
+The book's order is the order that teaches. A file's order is the
+tangler's problem. Put each piece of code where the concept it belongs
+to is explained, and let named chunks assemble the file.
+
+That is what literate programming is for, rather than a preference
+about layout. Knuth's claim in 1984 was that a program "is best
+thought of as a web instead of a tree", and that a programmer states
+its parts "in whatever order is best for human comprehension, not in
+some rigidly determined order like top-down or bottom-up". The
+tangler exists so that choosing the reader's order costs nothing.
+
+So the question is never "which file does this belong to". It is
+"where will a reader need this". Someone meeting a rule needs three
+things together: the rule, the reason for it, and the thing that
+proves it. When those sit in three chapters because they tangle to
+three files, the book has been arranged for the machine.
+
+The deviations show it concretely. A deviation is a place the tangler
+refuses what org accepts, and its test is a small book that should
+trip it plus the error it should produce. All three belong in one
+place. Gathering them into a fixtures chapter, away from the rules
+they pin, buys nothing except that the chunks sit next to the other
+chunks of their file, which is the tangler's convenience and not the
+reader's. The file is assembled from chunks named at each site:
+
+    #+begin_src txtar :tangle testdata/script/refusals.txtar :noweb yes
+    <<refusal-scripts>>
+    <<refusal-books>>
+    #+end_src
+
+Each deviation adds to both groups where it is explained, and the
+tangler produces one file.
+
+Grouping by output file is the commonest way to lose the point, and
+the easiest to catch: if the only thing a chapter's contents have in
+common is their destination, it should not be a chapter.
+
+One limit. A file the machine owns cannot live in the book, because
+the book is a document a human owns and a machine would rewrite it.
+A golden minted from an oracle is such a file. A fixture written by
+hand is not, and the difference is who edits it, not whether it is a
+test.
+
 ## The contract
 
 - The book is the program. Code changes are edits to the book's code
