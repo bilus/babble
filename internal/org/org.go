@@ -262,7 +262,9 @@ func (p *parser) findEnd(from, limit int, closes func(string) bool) (int, string
 }
 
 // An affiliated keyword line belongs to the element below it. The
-// subset uses two, ~#+name:~ and ~#+header:~, and the offsets a run
+// subset {--uses two, ~#+name:~ and ~#+header:~,--}{++steps over org's whole
+// affiliated set and acts on three of them, ~#+name:~, ~#+header:~ and
+// ~#+headers:~,++} and the offsets a run
 // of them produces are load bearing: the element's span opens at
 // the first line of the run, and the tangler's anchor stays on the
 // block's own first line.
