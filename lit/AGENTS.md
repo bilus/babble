@@ -72,8 +72,8 @@ test.
   to explain.
 - Every code block gets one to three sentences of why directly before
   it: context or decision, never a paraphrase of the code. When
-  narrative and doc comment start repeating each other, the doc
-  comment wins and the narrative shrinks.
+  narrative and doc comment start repeating each other, see
+  "Comments and naming" for which one keeps the text.
 - Long functions become skeletons of named regions
   (`<<sync-create-loop>>`, `<<doc-link-helpers>>`). This is
   extract-block, not extract-function: the decomposition a refactoring
@@ -104,9 +104,9 @@ How to write and edit book prose, in working order:
 1. Load the writing-like-user skill before drafting a sentence, and
    keep its voice throughout: direct, conversational, varied
    sentence length, parenthetical asides. The skill is the voice;
-   the rules below are structure. Where the skill and "Sounding like
-   human" disagree, that section wins, and the dashes are the case
-   it wins: none, anywhere.
+   the rules below are structure. Where the skill and "Sounding human"
+   disagree, that section wins. The skill allows dashes for asides.
+   This file allows none, anywhere.
 2. Every chapter opens by stating its goal, in one or two sentences
    the reader can test the rest against. Every section has one
    overarching topic. Two topics may share a section when they
@@ -131,10 +131,10 @@ How to write and edit book prose, in working order:
    Vary the shape (an occasional question opener, a two-sentence
    paragraph with no moral), because the pattern applied ritually
    numbs the reader.
-7. No flowery language. "Sounding like human" below carries the
-   rule and the pass that enforces it; the short form is that a
-   phrase reading like it wants admiration gets deleted, and the
-   fact it was decorating gets stated.
+7. No flowery language. "Sounding human" below carries the rule and
+   the pass that enforces it. The short form: when a phrase reads
+   like it wants admiration, delete it and state the fact it was
+   decorating.
 8. Never justify a design by its history. A chapter argues from the
    problem, not from the bug that prompted the work or the version
    that came before. "X, because the old Y drifted" is a journal
@@ -154,23 +154,28 @@ Three limits. Only the first has an exception:
 
 A comment on a key function may run longer, and only to tell a
 caller how to use the thing: a trap to avoid, an ordering
-requirement, a precondition the signature does not show. Anything a
-caller must know to call it correctly earns the space.
+requirement, a precondition missing from the signature.
+Anything a caller must know to call it correctly earns the space.
 
 Nothing else does. Implementation detail, requirements, and the
 wider context belong in the book, where the prose has room and the
 code sits beside it. A comment explaining how the function works, or
 why the project wants it at all, is in the wrong place.
 
-This toolchain is what creates the temptation, which is why the rule
-has to be stated here rather than assumed. The paragraph above a
-block becomes that block's doc comment, so with one paragraph doing
-both jobs, everything drifts into the comment by default. Split
-them: the caller's instructions in the comment, the reasoning in the
-narrative around it. Length is earned by the kind of content, not by
-the identifier being exported.
+This toolchain creates the temptation, which is why the rule needs
+stating rather than assuming. The paragraph above a block becomes
+that block's doc comment, so with one paragraph doing both jobs,
+everything drifts into the comment by default.
 
-Write in the active voice. No stage performances. Where two words
+Splitting them is mechanical once you know which paragraph tangles.
+It is the last one before the block, or everything after a `# doc`
+marker when the comment needs several paragraphs (see the toolchain
+section). So the reasoning goes in the paragraphs before that one,
+and the caller's instructions go in the last. The kind of content
+earns the length. Exporting an identifier does not.
+
+Write in the active voice. Say what the thing does, without
+announcing it. Where two words
 fit, take the more common one. If the book has a vocabulary, check
 it before coining a term, and when a term proves itself across the
 codebase, propose adding it there. If the book has no vocabulary and
@@ -184,16 +189,19 @@ and they should not need to.
 
 So no history in comments. "Renamed funcA to funcB", "added for the
 counter spike", "this used to take a pointer": git holds all of it,
-with dates and diffs no comment can match.
+with dates and diffs that beat any comment.
 
-What git does not hold is the reasoning. Record a dead end when it
-still costs someone a day: "A deadlocks under concurrent writes, so
-this uses B." That comment earns its place forever.
+What git does not hold is the reasoning. A dead end that still costs
+someone a day belongs in the narrative above the block, where there
+is room for the evidence: which approach was tried, what broke, and
+why the current one avoids it. That paragraph stays useful for as
+long as the code does. Squeezed into a comment it becomes a warning
+with nothing to back it up.
 
 ### Why, not how
 
-The code already says how. A comment repeating it is noise, and it
-rots on the next edit, because nothing forces the two to agree.
+A comment restating the code is noise, and it rots on the next
+edit, because nothing forces the two to agree.
 
 The single exception is genuinely tricky code, where the how is not
 recoverable by reading it. Difficulty is the trigger, never habit.
@@ -231,23 +239,27 @@ recoverable by reading it. Difficulty is the trigger, never habit.
   what pandoc leaves spurious). Helper functions ride in unnamed,
   uncommented blocks beside their tests.
 
-## Sounding like human
+## Sounding human
 
-The failure this prevents is the one a reader notices first and the
-author never does. It deserves its own pass, and the pass is worth
+A reader notices this failure first. The author never notices it at
+all. It deserves its own pass, and the pass is worth
 real effort.
 
-Run it in a sub-agent, never inline. The writer of a paragraph is
-its worst judge: they read what they meant instead of what they
-wrote, and a reader with no memory of the drafting catches what the
-author reads past every time. This is measured rather than believed.
+Run it in a sub-agent, never inline, over the paragraphs a change
+touched. A whole-book pass belongs at stage acceptance or before a
+release weave: books here run to thousands of lines, and a rule
+priced per commit at that size is one an agent under pressure will
+skip. The writer of a paragraph is
+its worst judge: they see their intention on the page instead of
+the sentence, and a reader with no memory of the drafting catches
+what the author read past. Measurement backs this up.
 A pass run inline over this repository fixed twenty-six clauses, and
 the next two independent reviews found more in prose written after
 it, by the same author, against the same rule.
 
-Then review what comes back. A humanizer that smooths a precise
-claim into a vague one has done more harm than the prose problem it
-fixed.
+Then review what comes back. A humanizer that smooths a precise claim
+into a vague one does more harm than the prose problem it set out to
+fix.
 
 Start from the humanizer skill, `/anthropic-skills:humanizer`, and
 apply the rules below on top: the skill does not know about the
@@ -264,27 +276,30 @@ The rules:
   suite pins", "the handlers you mount", "the method it tests". End
   on the noun carrying the new information: "The suite pins their
   versions." Active voice fixes most cases, splitting into two
-  sentences fixes the rest. A clause ending before a comma counts,
-  and that is the instance everyone misses.
-- No em dashes or en dashes. A period, comma, colon or parentheses.
+  sentences fixes the rest. A clause ending before a comma counts
+  too, and most people miss that one.
+- No em dashes or en dashes, and none of their ASCII spellings
+  either: org renders both -- and --- as dashes, so a grep for the
+  characters alone will not find them. A period, comma, colon or
+  parentheses instead.
 - No signposting. "Here is", "let's look at", "in this section"
   announce instead of saying something. Cut the sentence, or give it
   a fact.
-- No inflated significance, no promotional adjectives, no
-  three-item lists built for rhythm.
+- No inflated significance and no promotional adjectives. No list
+  whose items exist to fill out a rhythm.
 - Vary sentence length. Uniform mid-length sentences read as machine
   output even when every other rule passes.
 - Comments and doc comments are prose. This section governs them
   too, not only the narrative.
 
-Dispatching the sub-agent, three things learned by doing it:
+Three things about dispatching the sub-agent, learned by doing it:
 
 - Scope it by construct, not by "the prose". Name what it may
   rewrite (badge bodies, CriticMarkup insertions, narrative
   paragraphs) and forbid the rest (code, block headers, dynamic
   block interiors). Then verify the counts afterwards: badges and
   their END lines, blocks, brace pairs.
-- Tell it to preserve every technical claim verbatim in substance.
+- Tell it to preserve every technical claim exactly.
   "Five arguments to a four-parameter function" must survive as
   that, not as something smoother and vaguer.
 - Ask it to report where a rule could not be satisfied without
@@ -429,19 +444,21 @@ A badge marks every place a human must look: a PLANNED inline task,
 carrying a letter, saying why the change is made, linking the plan
 entry, carrying the stage tag.
 
-The letter is how a reviewer names the site. Without one they have
-to quote a line of the badge back at you, or give a page number from
-a PDF that moves on the next weave. Letters run A, B, C in document
+The letter goes immediately after the keyword, and a reviewer names
+a site by stage and letter, as in "stage 4 B". Letters alone
+collide, because two stages can be in flight at once and the index
+is one flat list for the whole book. Without one they have
+to quote a line of the badge back at you, or give a page number that moves on the
+next weave. Letters run A, B, C in document
 order within a stage, they restart for each stage, and they go when
-the badges go. A stage past Z is a stage that should have been two
-stages. Before the paragraph, never between a paragraph and its
+the badges go. A stage needing more than twenty-six letters wanted splitting. Before the paragraph, never between a paragraph and its
 block, because the paragraph directly above a block is its doc
 comment. Every change cluster starts with one, including code whose
 only change is added holes and CriticMarkup-bearing paragraphs;
 there is no separate HOLE badge, since the hole strings and the
 census already carry the mechanics:
 
-    *************** PLANNED [C] stage 4 replaces the block above ([[#stage-4][plan]]) :stage4:
+    *************** PLANNED [A] stage 4 replaces the block above ([[#stage-4][plan]]) :stage4:
     The twin below is the skeleton. It must not tangle yet: the
     end-to-end test drives writeBack, and a body that reaches
     atomicWrite's panic would turn the suite red.
