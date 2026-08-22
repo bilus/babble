@@ -1442,16 +1442,16 @@ has written the LaTeX.
 -- includer tangles to, resolved transitively over the whole
 -- document.
 --
--- The test is what the block is, not whether it reaches a file. An
--- example block is an illustration of markup rather than a listing
--- of the program, so numbering one would put a listing number on
--- text that is not a listing. Pandoc reads both as code blocks, and
--- and the class pandoc hangs on each is what separates them: a
--- source block carries its language, an example block carries the
--- literal word example. Every other org block that could be
+-- The test is what the block is, not whether it reaches a file. A
+-- listing number belongs to a listing of the program, and pandoc
+-- hands this filter two things that are not one. An example block
+-- is an illustration of markup, and it arrives carrying the literal
+-- class example. The text of an included file arrives carrying no
+-- class at all, because by then it is a file's contents rather than
+-- a block anybody wrote. Only a source block carries a language, so
+-- the language is the test. Every other org block that could be
 -- confused for one arrives as something else entirely, a quote as a
--- block quote and an export as raw output, so the exclusion needs
--- only that one word.
+-- block quote and an export as raw output.
 --
 -- Syntax highlighting shreds a <<ref>> into operator and identifier
 -- tokens, so no literal <<ref>> survives into the .tex for a filter
@@ -1478,11 +1478,25 @@ local function latexInlines(inlines)
   return (s:gsub('%s+$', ''))
 end
 
+-- Whether a code block is a listing of the program at all. Only a
+-- source block is, and only a source block carries a language.
+local function isListing(el)
+  return el.classes[1] ~= nil and el.classes[1] ~= 'example'
+end
+
 -- A listing with no file, no name and no caption renders as a bare
 -- number, which tells a reader nothing about what they are looking
--- at. The weave says so rather than silently printing it, because
--- nothing else in the pipeline can tell the difference between a
--- listing that needs a caption and one that does not.
+-- at. The weave says so rather than printing it quietly, because
+-- nothing else in the pipeline can tell a listing that needs a
+-- caption from one that does not.
+--
+-- It stays quiet about a diff, and the reason is that the advice
+-- would not work there. The only diff listings in a lit book are the
+-- ones a src-block-diff dynamic block generates, and a caption
+-- written above that block attaches to the dynamic block rather
+-- than to the src block inside it. A warning a reader cannot act on
+-- is worse than no warning, because it teaches them to ignore the
+-- ones they can act on.
 local function warnBareListing(el)
   local first = (el.text:match('^[^\n]*') or ''):gsub('^%s+', '')
   io.stderr:write(string.format(
@@ -1585,7 +1599,7 @@ function Pandoc(doc)
     if not file and el.identifier ~= '' then
       file = resolved[el.identifier]
     end
-    if el.classes[1] ~= 'example' then
+    if isListing(el) then
       local written = el.attributes['lit-caption']
       local caption = anchor .. '\\codecaption'
       if el.identifier ~= '' then
@@ -1599,7 +1613,7 @@ function Pandoc(doc)
         caption = caption .. '{' .. written .. '}'
       else
         caption = caption .. '{' .. (file or '') .. '}'
-        if not file and el.identifier == '' then
+        if not file and el.identifier == '' and el.classes[1] ~= 'diff' then
           warnBareListing(el)
         end
       end
