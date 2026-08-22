@@ -6,6 +6,7 @@
 package cmd
 
 import (
+	"bytes"
 	"os"
 	"path/filepath"
 
@@ -37,6 +38,15 @@ func Tangle(path string) error {
 			return err
 		}
 	}
+	merged, _, err := Expand(path)
+	if err != nil {
+		return err
+	}
+	if !bytes.Equal(merged, d.Source) {
+		if d, err = readBytes(merged, path); err != nil {
+			return err
+		}
+	}
 	return tangle.Run(d)
 }
 
@@ -50,7 +60,18 @@ func Parse(path string) (*book.Document, error) {
 // read is the front half of Tangle, separate because Tangle performs
 // it twice on the same path.
 func read(path string) (*book.Document, error) {
-	d, err := org.Parse(path)
+	src, err := os.ReadFile(path)
+	if err != nil {
+		return nil, err
+	}
+	return readBytes(src, path)
+}
+
+// readBytes is read once the text is in hand, which the expansion is:
+// merged text belongs to no file, and parsing it from disk again would
+// read the master rather than the book.
+func readBytes(src []byte, path string) (*book.Document, error) {
+	d, err := org.ParseBytes(src, path)
 	if err != nil {
 		return nil, err
 	}

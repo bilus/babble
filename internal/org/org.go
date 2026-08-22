@@ -664,6 +664,12 @@ const (
 	kwHeaders = "headers" // org's other spelling of #+header:
 )
 
+// TodoWords is exported because the expander runs before there is a
+// document to ask, and it has to read a heading the way the parser
+// will: a word the book declared as a state is not part of the title,
+// and COMMENT may sit behind one.
+func TodoWords(src []byte) []string { return todoWords(src) }
+
 func todoWords(src []byte) []string {
 	var words []string
 	for off := 0; off < len(src); {

@@ -61,18 +61,13 @@ every dynamic block, and the labels are spelled without the sigils,
 so the census never matches its own index.
 
 #+begin: plan-toc
-- [[file:BOOK.org::79][79]] entry: PLANNED Stage 21: the environment
-- [[file:BOOK.org::127][127]] entry: PLANNED Stage 26: chapter files
-- [[file:BOOK.org::263][263]] entry: PLANNED Stage 25: minting goldens from the oracle
-- [[file:BOOK.org::311][311]] entry: PLANNED Stage 11: parity and self-hosting
-- [[file:BOOK.org::5253][5253]] twin of cmd-read
-- [[file:BOOK.org::5273][5273]] generated diff
-- [[file:BOOK.org::5277][5277]] badge: PLANNED [A] stage 26 adds the section below (plan)
-- [[file:BOOK.org::5317][5317]] hole 26: merge every chapter into one text, shifting headings, tra...
-- [[file:BOOK.org::5327][5327]] hole 26: move every star line by the target minus the shallowest
-- [[file:BOOK.org::5337][5337]] hole 26: the two spellings, case-insensitively, and nothing else
-- [[file:BOOK.org::7798][7798]] badge: PLANNED stage 21 adds the two paragraphs below (plan)
-- [[file:BOOK.org::7821][7821]] insertion: devbox.json and its lockfile,
+- [[file:BOOK.org::74][74]] entry: PLANNED Stage 21: the environment
+- [[file:BOOK.org::122][122]] entry: PLANNED Stage 25: minting goldens from the oracle
+- [[file:BOOK.org::170][170]] entry: PLANNED Stage 11: parity and self-hosting
+- [[file:BOOK.org::5139][5139]] twin of cmd-read
+- [[file:BOOK.org::5159][5159]] generated diff
+- [[file:BOOK.org::7886][7886]] badge: PLANNED stage 21 adds the two paragraphs below (plan)
+- [[file:BOOK.org::7909][7909]] insertion: devbox.json and its lockfile,
 
 #+end:
 
@@ -122,142 +117,6 @@ generated from that same file, and the reason a browser sandbox is
 turned off inside it. Emacs is the pin that carries weight, since
 the oracle is Emacs and a parity check run against another one
 proves less than it looks like it proves.
-#+end_quote
-
-** PLANNED Stage 26: chapter files                                 :stage26:
-:PROPERTIES:
-:CUSTOM_ID: stage-26
-:SPEC:     The subset contract, "Recognition"
-:DEPS:     stages 6, 9, 27 and 28
-:ACCEPTANCE: a fixture whose book is split across three chapter files tangles identically under both engines; go test ./...; ORACLE=1 go test ./...
-:SIZE:     ~200 lines
-:END:
-
-Claim: after this stage babble tangles a book split across chapter
-files into the tree Emacs writes from the same book, and accepts
-two ~#+include~ spellings, refusing the rest.
-
-This is a gap rather than a deviation. lit/BOOK.org makes a
-multi-file book a feature of the toolchain: a master includes its
-chapters in reading order, both halves expand the includes before
-anything else, and a split book and a whole one produce the same
-bytes. The driver implements that with
-~org-export-expand-include-keyword~, called between the
-dynamic-block refresh and the tangle. babble implements nothing,
-so the two engines write different trees from one book. The
-difference is loud when the chapter owns a file of its own, and
-quiet when a chapter and the master both feed one target, since
-both engines write that file and only one writes all of it.
-
-Decided: (1) babble expands rather than refusing. A refusal would
-forbid the multi-file book. The toolchain documents it and the
-driver supports it, and forbidding it is the mistake the gate
-caught once already, on the fixtures chapter.
-
-(2) Expansion sits where the driver puts it, after the
-dynamic-block refresh and after the write-back. The refresh
-therefore sees the master alone, the master alone is written back,
-and a src-block-diff naming a block that lives in a chapter
-resolves under neither engine.
-
-That places it inside the tangle flow, between the reread and the
-tangle, and it means the reader the parse command shares does not
-expand. That is deliberate rather than an omission. The check that
-runs before Emacs opens the book exists to catch what the refresh
-would damage, the refresh sees the master alone, so checking the
-master alone is checking the right text. A chapter's own faults are
-caught when it is expanded, which is a different moment with a
-different job.
-
-(3) Heading levels shift, because org shifts them. Org takes the
-shallowest heading level in the included file and moves every
-heading in it by the difference to one level below the include's
-enclosing heading, or to level 1 at top level. A chapter starting
-at level 2 and included at top level is promoted; a chapter
-included under a level-1 heading is demoted; nesting compounds.
-The shift decides subtree membership and so decides what tangles.
-Put a chapter under a COMMENT heading and nothing in it tangles,
-where a flat splice of the same text would write the file.
-
-(4) Corrected by measurement, and it is the trap this stage is most
-likely to walk into. What org counts as a heading here is a line of
-stars at column zero followed by a space, and nothing else. It finds
-them with its outline machinery, which never consults block
-structure, so an unescaped star line inside a code body is a heading
-to org and moves with the rest. babble reads a tree, where such a
-line is text, and taking the minimum over parsed headings would land
-a chapter at a different depth than the driver lands it at. The
-expansion works on lines, before there is a tree to consult. The
-weave was corrected the same way and the same reasoning is written
-down there.
-
-Nothing costs anything today: all five books here escape such lines
-with the comma org already provides, so the two rules agree on every
-book that exists. The rule still has to be the line-based one,
-because the day they disagree is the day a book quietly tangles two
-ways.
-
-(5) An include inside a COMMENT subtree is not expanded at all, and
-that is a second thing measurement corrected. Decision (3) is right
-that nothing in such a chapter tangles, and wrong about how: org
-never reads the file. The line stays in the merged text verbatim.
-The difference shows on a chapter that is missing. Outside a comment
-org dies; inside one it says nothing and tangles the rest, so an
-expander that read the file anyway would refuse a book org accepts.
-
-(6) Footnote labels are left alone. Org rewrites them in an
-included file with a per-file prefix and does not touch block
-bodies, so the renaming reaches no tangled byte and babble has no
-use for it.
-
-(7) The keyword is read case-insensitively, and every spelling
-outside the two is refused. This is the deviation the stage adds.
-The driver's own check reads only uppercase ~#+INCLUDE:~, so a
-lowercase form carrying extra arguments passes it and reaches
-org's expander, which honors the arguments; the weave's reader is
-case-insensitive and refuses that form. babble reads the keyword
-the way org and the weave read it, and refuses the rest by name.
-The check also differs in reach: the driver searches raw text and
-would refuse a malformed include quoted inside an example block,
-where org's expander, and babble's tree, pass over it.
-
-(8) Positions keep naming a file. Merged text has line numbers
-that belong to no file, so the expansion carries a map from merged
-line back to chapter and line, and an error still prints a chapter
-file with a line number inside it.
-
-(9) A missing chapter and an inclusion cycle are errors, as they
-are for the driver; only the message differs.
-
-One defect turned up in the measurement and belongs to lit rather
-than to this stage. The weave half splices a chapter with no level
-shift and the tangle half shifts, so the two halves disagree about
-any include below top level, against lit/BOOK.org's own
-requirement that a split book and a whole one produce the same
-bytes. No book in the corpus does this today, and the fix is a
-stage in lit/BOOK.org.
-
-- [X] plan approved (the human ticks this box)
-- [ ] skeleton approved: twins for the read path, holes for the
-  expander
-- [ ] inserted prose reads steady-state
-- [ ] Changes draft below reads right in the journal
-- [ ] HOLE(26) cluster filled, fixtures in the same commits
-- [ ] seen to fail: each new fixture broken on purpose and watched
-  to report the break
-- [ ] census clean for stage 26, suite green under ORACLE=1
-- [ ] Changes entry dated and filed, plan entry deleted
-
-*** Changes draft
-
-#+begin_quote
-A book split across chapter files tangles here the way it tangles
-under Emacs. The master's includes are expanded after its dynamic
-blocks are refreshed and written back, heading levels shift the
-way org shifts them, and an error still names a chapter file and a
-line inside it. Every spelling outside those two is refused, in
-either case, where the driver reads only the uppercase keyword and
-lets the rest through to org's expander.
 #+end_quote
 
 ** PLANNED Stage 25: minting goldens from the oracle              :stage25:
@@ -827,10 +686,10 @@ expands a chapter include as its own step, so a block in the
 included file reaches its target as if the master had held it. The
 second spelling, ~#+include: "path" example~, shows a file's text
 in the weave without making it part of the book, and no tangler
-reads that line; this book uses it for its fixtures. Expansion is
-[[#stage-26][stage 26]]'s work. Until it lands, babble walks past
-both spellings, so a book split across chapter files tangles under
-Emacs and comes up short here.
+reads that line; this book uses it for its fixtures. A chapter's headings move to the depth its
+include sits at, which decides what subtree it joins and so decides
+what tangles, and an include inside a COMMENT subtree is not read at
+all.
 
 ** Collection
 
@@ -3638,6 +3497,12 @@ const (
 	kwHeaders = "headers" // org's other spelling of #+header:
 )
 
+// TodoWords is exported because the expander runs before there is a
+// document to ask, and it has to read a heading the way the parser
+// will: a word the book declared as a state is not part of the title,
+// and COMMENT may sit behind one.
+func TodoWords(src []byte) []string { return todoWords(src) }
+
 func todoWords(src []byte) []string {
 	var words []string
 	for off := 0; off < len(src); {
@@ -5168,6 +5033,7 @@ in the same order.
 package cmd
 
 import (
+	"bytes"
 	"os"
 	"path/filepath"
 
@@ -5206,6 +5072,15 @@ func Tangle(path string) error {
 			return err
 		}
 	}
+	merged, _, err := Expand(path)
+	if err != nil {
+		return err
+	}
+	if !bytes.Equal(merged, d.Source) {
+		if d, err = readBytes(merged, path); err != nil {
+			return err
+		}
+	}
 	return tangle.Run(d)
 }
 #+end_src
@@ -5233,7 +5108,18 @@ it twice on the same path.
 #+name: cmd-read
 #+begin_src go :tangle internal/cmd/cmd.go :comments org
 func read(path string) (*book.Document, error) {
-	d, err := org.Parse(path)
+	src, err := os.ReadFile(path)
+	if err != nil {
+		return nil, err
+	}
+	return readBytes(src, path)
+}
+
+// readBytes is read once the text is in hand, which the expansion is:
+// merged text belongs to no file, and parsing it from disk again would
+// read the master rather than the book.
+func readBytes(src []byte, path string) (*book.Document, error) {
+	d, err := org.ParseBytes(src, path)
 	if err != nil {
 		return nil, err
 	}
@@ -5271,14 +5157,27 @@ func read(path string) (*book.Document, error) {
 #+end_src
 
 #+begin: src-block-diff :old cmd-read :new cmd-read--planned
-no differences
+#+begin_src diff
+@@ -1,16 +1,5 @@
+ func read(path string) (*book.Document, error) {
+-	src, err := os.ReadFile(path)
+-	if err != nil {
+-		return nil, err
+-	}
+-	return readBytes(src, path)
+-}
+-
+-// readBytes is read once the text is in hand, which the expansion is:
+-// merged text belongs to no file, and parsing it from disk again would
+-// read the master rather than the book.
+-func readBytes(src []byte, path string) (*book.Document, error) {
+-	d, err := org.ParseBytes(src, path)
++	d, err := org.Parse(path)
+ 	if err != nil {
+ 		return nil, err
+ 	}
+#+end_src
 #+end:
-
-*************** PLANNED [A] stage 26 adds the section below ([[#stage-26][plan]]) :stage26:
-The expander's seams, as holes. It reads lines rather than a tree,
-for the reason decision (4) gives, so it sits beside the flow rather
-than inside the frontend.
-*************** END
 
 ** Expanding a chapter include
 
@@ -5305,6 +5204,16 @@ that text back to the file and line it came from.
 #+begin_src go :tangle internal/cmd/expand.go :comments org
 package cmd
 
+import (
+	"fmt"
+	"os"
+	"path/filepath"
+	"regexp"
+	"strings"
+
+	"github.com/bilus/babble/internal/org"
+)
+
 // Origin says which file a merged line came from, so an error can
 // name a chapter and a line inside it rather than a position in a
 // text that exists nowhere.
@@ -5314,7 +5223,80 @@ type Origin struct {
 }
 
 func Expand(path string) ([]byte, []Origin, error) {
-	panic("HOLE(26): merge every chapter into one text, shifting headings, tracking origins")
+	lines, origins, err := expandFile(path, nil, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+	return []byte(strings.Join(lines, "\n")), origins, nil
+}
+#+end_src
+
+expandFile is the recursion. It walks a file line by line, because
+that is where org does this work too, and hands each chapter back to
+itself. The enclosing depth it passes down is the depth as the merged
+text will show it, so nesting compounds the way it does in org: a
+chapter two levels in has already been shifted once by the time its
+own includes are read.
+
+A commented subtree ends at the next heading no deeper than the one
+that opened it, and inside one the include line stays as it is. Org
+never opens the file, so neither does this, which is what keeps a
+missing chapter under a comment as quiet here as it is there.
+
+#+begin_src go :tangle internal/cmd/expand.go :comments org
+func expandFile(path string, open []string, todo map[string]bool) ([]string, []Origin, error) {
+	for _, seen := range open {
+		if seen == path {
+			return nil, nil, fmt.Errorf("%s: includes itself, through %s", path, strings.Join(open, " -> "))
+		}
+	}
+	src, err := os.ReadFile(path)
+	if err != nil {
+		return nil, nil, err
+	}
+	if todo == nil {
+		todo = map[string]bool{}
+		for _, w := range org.TodoWords(src) {
+			todo[w] = true
+		}
+	}
+	var out []string
+	var origins []Origin
+	level, commented := 0, 0
+	for n, line := range strings.Split(strings.TrimSuffix(string(src), "\n"), "\n") {
+		here := Origin{Path: path, Line: n + 1}
+		if stars := starRun(line); stars > 0 {
+			level = stars
+			if commented > 0 && stars <= commented {
+				commented = 0
+			}
+			if commented == 0 && commentedHeading(line, todo) {
+				commented = stars
+			}
+		}
+		chapter, isChapter, isInclude := includeSpelling(line)
+		if !isInclude || commented > 0 {
+			out = append(out, line)
+			origins = append(origins, here)
+			continue
+		}
+		if chapter == "" {
+			return nil, nil, fmt.Errorf("%s:%d: only #+include: \"path\" and #+include: \"path\" example are understood", path, n+1)
+		}
+		if !isChapter {
+			out = append(out, line)
+			origins = append(origins, here)
+			continue
+		}
+		sub, subOrigins, err := expandFile(filepath.Join(filepath.Dir(path), chapter), append(open, path), todo)
+		if err != nil {
+			return nil, nil, err
+		}
+		shiftHeadings(sub, level+1)
+		out = append(out, sub...)
+		origins = append(origins, subOrigins...)
+	}
+	return out, origins, nil
 }
 #+end_src
 
@@ -5323,8 +5305,66 @@ shallowest depth in the chapter, so the chapter keeps its own shape
 and one already at the right depth is untouched.
 
 #+begin_src go :tangle internal/cmd/expand.go :comments org
-func shiftHeadings(text []byte, target int) []byte {
-	panic("HOLE(26): move every star line by the target minus the shallowest")
+func shiftHeadings(lines []string, target int) {
+	lowest := 0
+	for _, line := range lines {
+		if n := starRun(line); n > 0 && (lowest == 0 || n < lowest) {
+			lowest = n
+		}
+	}
+	if lowest == 0 || target == lowest {
+		return
+	}
+	offset := target - lowest
+	for i, line := range lines {
+		if n := starRun(line); n > 0 {
+			lines[i] = strings.Repeat("*", n+offset) + line[n:]
+		}
+	}
+}
+
+// A heading is what org's outline search calls one: stars at column
+// zero and then a space. Nothing here parses, so a line inside a
+// block that looks like a heading is one, which is what org does too.
+func starRun(line string) int {
+	n := 0
+	for n < len(line) && line[n] == '*' {
+		n++
+	}
+	if n == 0 || n == len(line) || line[n] != ' ' {
+		return 0
+	}
+	return n
+}
+
+// Org reads a heading as commented when the word COMMENT opens its
+// title, after a todo keyword and a priority if either is there. The
+// expander cannot ask the parser, since it runs before there is one,
+// so it repeats the test on the line.
+func commentedHeading(line string, todo map[string]bool) bool {
+	n := starRun(line)
+	if n == 0 {
+		return false
+	}
+	rest := strings.TrimLeft(line[n:], " \t")
+	if w, r, ok := firstWord(rest); ok && todo[w] {
+		rest = r
+	}
+	if len(rest) >= 4 && strings.HasPrefix(rest, "[#") && rest[3] == ']' {
+		rest = strings.TrimLeft(rest[4:], " \t")
+	}
+	return rest == "COMMENT" || strings.HasPrefix(rest, "COMMENT ")
+}
+
+func firstWord(s string) (word, rest string, ok bool) {
+	i := strings.IndexAny(s, " \t")
+	if i < 0 {
+		if s == "" {
+			return "", s, false
+		}
+		return s, "", true
+	}
+	return s[:i], strings.TrimLeft(s[i:], " \t"), true
 }
 #+end_src
 
@@ -5333,8 +5373,29 @@ the deviation this stage adds. The keyword is read the way org reads
 it, without regard to case.
 
 #+begin_src go :tangle internal/cmd/expand.go :comments org
-func includeSpelling(line string) (path string, chapter bool, ok bool) {
-	panic("HOLE(26): the two spellings, case-insensitively, and nothing else")
+var includeLine = regexp.MustCompile(`(?i)^[ \t]*#\+include:(.*)$`)
+
+func includeSpelling(line string) (path string, chapter, ok bool) {
+	m := includeLine.FindStringSubmatch(line)
+	if m == nil {
+		return "", false, false
+	}
+	rest := strings.TrimSpace(m[1])
+	if !strings.HasPrefix(rest, `"`) {
+		return "", false, true
+	}
+	end := strings.IndexByte(rest[1:], '"')
+	if end < 0 {
+		return "", false, true
+	}
+	path, after := rest[1:1+end], strings.TrimSpace(rest[end+2:])
+	switch after {
+	case "":
+		return path, true, true
+	case "example":
+		return path, false, true
+	}
+	return "", false, true
 }
 #+end_src
 
@@ -5848,6 +5909,7 @@ The suite as it stands, by what each file pins:
 | tangle-comment-refusals.txtar | a language with no marker, and five delimiters quoted in a body |
 | tangle-noweb.txtar | prefixes, group separators, gated recursion, and how far COMMENT reaches |
 | refusals.txtar | assembled from the books beside the deviations they trip |
+| tangle-chapters.txtar | a book in three files, and the depths its chapters land at |
 | dblock-refresh.txtar | both writers, from stale interiors, with the census folding case |
 | dblock-run-for-run.txtar | an index above a diff that grows, and why two runs differ |
 | dblock-refusals.txtar | seven dynamic-block shapes org writes and babble will not |
@@ -7295,6 +7357,32 @@ func TestDump(t *testing.T) {
 #+end_src
 
 * Changes
+
+** [2026-08-22] Chapter files
+
+#+begin_quote
+babble expands a chapter include, so a book split across files
+tangles into the tree Emacs writes from the same book. It had
+implemented nothing, which was loud when a chapter owned a file and
+quiet when a chapter and the master fed one target.
+
+A chapter's headings move to the depth its include sits at: the
+shallowest becomes a child of the heading above the include, and the
+rest move with it, so the chapter keeps its shape. That decides
+subtree membership, and membership decides what tangles. A chapter
+that inherits header arguments from the heading it lands under
+reaches a file it never names; spliced flat, its own top-level
+heading would close that subtree and its blocks would name no target.
+
+Two things measurement corrected. What counts as a heading is a line
+of stars at column zero and then a space, found the way org's outline
+search finds one, which never consults block structure. Reading a
+tree first and shifting the headings a parser recognises would land a
+chapter at a different depth than the driver lands it at. And an
+include inside a COMMENT subtree is not expanded at all rather than
+expanded and skipped: org never opens the file, so a chapter that is
+missing is silent there and an error anywhere else.
+#+end_quote
 
 ** [2026-08-22] The fence
 

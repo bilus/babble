@@ -1,0 +1,67 @@
+# A book in four files, and every case where the depth a chapter
+# lands at decides the answer.
+#
+# The chapter at top level keeps its levels. The chapter included
+# under a heading is shifted under it and inherits its header
+# arguments, so its block reaches a file it never names; spliced flat
+# its own level-one heading would close that subtree and the block
+# would name no target at all. The chapter under a COMMENT heading is
+# never opened, which is why the file it names can be missing without
+# a word. And a run of stars with no space after it is not a heading,
+# so it neither counts toward the shift nor moves with it.
+
+exec babble tangle BOOK.org
+cmp top.go want/top.go
+cmp engine.go want/engine.go
+
+-- BOOK.org --
+#+title: a book in four files
+
+#+include: "book/TOP.org"
+
+* The engine
+:PROPERTIES:
+:header-args: :tangle engine.go
+:END:
+
+A chapter included here is shifted under this heading and inherits
+its header arguments. Spliced flat it would close the subtree and
+its block would name no target.
+
+#+include: "book/INHERIT.org"
+
+* COMMENT A dead chapter
+
+#+include: "book/NOSUCH.org"
+-- book/TOP.org --
+* A chapter at top level
+
+#+begin_src go :tangle top.go
+package top
+#+end_src
+-- book/INHERIT.org --
+* A chapter that starts at level one
+
+#+begin_src go
+package engine
+
+const shapes = `
+*not a heading, no space after the stars
+,* a heading escaped with a comma
+  * a heading indented out of column zero
+`
+#+end_src
+-- want/top.go --
+// Code generated from BOOK.org by make tangle. DO NOT EDIT.
+
+package top
+-- want/engine.go --
+// Code generated from BOOK.org by make tangle. DO NOT EDIT.
+
+package engine
+
+const shapes = `
+*not a heading, no space after the stars
+* a heading escaped with a comma
+  * a heading indented out of column zero
+`
