@@ -262,9 +262,8 @@ func (p *parser) findEnd(from, limit int, closes func(string) bool) (int, string
 }
 
 // An affiliated keyword line belongs to the element below it. The
-// subset {--uses two, ~#+name:~ and ~#+header:~,--}{++steps over org's whole
-// affiliated set and acts on three of them, ~#+name:~, ~#+header:~ and
-// ~#+headers:~,++} and the offsets a run
+// subset steps over org's whole affiliated set and acts on three of
+// them, ~#+name:~, ~#+header:~ and ~#+headers:~, and the offsets a run
 // of them produces are load bearing: the element's span opens at
 // the first line of the run, and the tangler's anchor stays on the
 // block's own first line.
@@ -274,9 +273,31 @@ type affiliated struct {
 	begin  int    // where the element's span starts
 }
 
-// ,#+header: :tangle greet.go
-//   ,#+name: greeting
-//   ,#+begin_src go
+// affiliatedKey answers whether a keyword belongs to the block below
+// it, and gives back the key org would file it under.
+var affiliatedKeys = map[string]bool{
+	"caption": true, "data": true, "header": true, "headers": true,
+	"label": true, "name": true, "plot": true, "resname": true,
+	"result": true, "results": true, "source": true, "srcname": true,
+	"tblname": true,
+}
+
+func affiliatedKey(key string) (string, bool) {
+	if j := strings.IndexByte(key, '['); j >= 0 {
+		if !strings.HasSuffix(key, "]") {
+			return "", false
+		}
+		base := key[:j]
+		return base, base == "caption" || base == "results"
+	}
+	if strings.HasPrefix(key, "attr_") {
+		return key, len(key) > len("attr_")
+	}
+	return key, affiliatedKeys[key]
+}
+
+// affiliatedRun gathers the affiliated lines above a block and reports
+// where the block starts, or nothing when the run reaches no block.
 func (p *parser) affiliatedRun(from, limit int) (blockAt int, name, header string, ok bool) {
 	for off := from; off < limit; {
 		text, next := p.line(off)
@@ -287,13 +308,15 @@ func (p *parser) affiliatedRun(from, limit int) (blockAt int, name, header strin
 		if !isKeyword {
 			return 0, "", "", false
 		}
+		key, affiliated := affiliatedKey(key)
+		if !affiliated {
+			return 0, "", "", false
+		}
 		switch key {
 		case kwName:
 			name = value
-		case kwHeader:
+		case kwHeader, kwHeaders:
 			header += " " + value
-		default:
-			return 0, "", "", false
 		}
 		off = next
 	}
@@ -604,7 +627,8 @@ func keywordLine(text string) (key, value string, ok bool) {
 	for _, c := range rest[:i] {
 		switch {
 		case c >= 'a' && c <= 'z', c >= 'A' && c <= 'Z',
-			c >= '0' && c <= '9', c == '_', c == '-':
+			c >= '0' && c <= '9', c == '_', c == '-',
+			c == '[', c == ']':
 		default:
 			return "", "", false
 		}
@@ -637,6 +661,7 @@ const (
 	kwHeader  = "header"
 	kwBegin   = "begin" // the dynamic-block opener, #+begin:
 	kwEnd     = "end"   // and its closer
+	kwHeaders = "headers" // org's other spelling of #+header:
 )
 
 func todoWords(src []byte) []string {

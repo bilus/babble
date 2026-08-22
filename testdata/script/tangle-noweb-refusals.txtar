@@ -1,4 +1,4 @@
-# Seven references babble will not expand. Org expands a missing one
+# Eight references babble will not expand. Org expands a missing one
 # to nothing and writes the file; a cycle exhausts its own recursion
 # limit and writes nothing; a call reference is evaluation, which is
 # outside the subset; a name that differs only in case resolves
@@ -38,6 +38,14 @@ stderr 'CUSTOM_ID, which org expands'
 ! exec babble tangle collide.org
 stderr 'CUSTOM_ID, which org expands'
 ! exists v.go
+
+# A keyword outside org's affiliated set, between a name and its
+# block, ends the run that would have carried the name. Org's noweb
+# lookup allows any keyword line there and resolves the reference;
+# babble follows org's element parser instead and refuses.
+! exec babble tangle unaffiliated.org
+stderr 'resolves to nothing'
+! exists w.go
 
 ! exec babble tangle shadow.org
 stderr 'resolves to nothing'
@@ -148,4 +156,16 @@ the named block body
 
 #+begin_src go :tangle v.go :noweb yes
 <<part>>
+#+end_src
+-- unaffiliated.org --
+#+title: a keyword outside the affiliated set
+
+#+name: inner
+#+title: not an affiliated keyword
+#+begin_src go :tangle no
+INNER
+#+end_src
+
+#+begin_src go :tangle w.go :noweb yes
+<<inner>>
 #+end_src

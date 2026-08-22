@@ -1,0 +1,97 @@
+# An affiliated keyword between a block's name and the block, in
+# both of org's spellings. The name survives on either side of a
+# caption, an attr line, and a caption carrying the bracketed
+# secondary value org allows on two of its keywords. #+headers: is
+# the other spelling of #+header: and its arguments are read, which
+# is the case that would fail silently rather than loudly. A bare
+# attr_ is not affiliated, so the header above it reaches nothing
+# and the oracle writes no file. And a #+property: line above a
+# block stays a document keyword, which is what the closed set
+# exists to protect.
+
+exec babble tangle set.org
+cmp set.go want/set.go
+
+exec babble tangle headers.org
+cmp headers.go want/headers.go
+
+exec babble tangle bracket.org
+cmp bracket.go want/bracket.go
+
+exec babble tangle attrbare.org
+! exists bare.go
+
+exec babble tangle property.org
+cmp property.go want/property.go
+
+-- set.org --
+#+title: the affiliated set
+
+#+caption: above the name
+#+name: above
+#+begin_src go
+ABOVE
+#+end_src
+
+#+name: below
+#+caption: below the name
+#+attr_latex: :width 3cm
+#+begin_src go
+BELOW
+#+end_src
+
+#+begin_src go :tangle set.go :noweb yes
+<<above>>
+<<below>>
+#+end_src
+-- headers.org --
+#+title: the other spelling
+
+#+headers: :tangle headers.go
+#+begin_src go
+HEADERS
+#+end_src
+-- bracket.org --
+#+title: the bracket form
+
+#+name: inner
+#+caption[short]: a caption with a secondary value
+#+begin_src go
+INNER
+#+end_src
+
+#+begin_src go :tangle bracket.go :noweb yes
+<<inner>>
+#+end_src
+-- attrbare.org --
+#+title: a bare attr prefix
+
+#+header: :tangle bare.go
+#+attr_: nothing follows the underscore
+#+begin_src go
+BARE
+#+end_src
+-- property.org --
+#+title: a property line above a block
+#+property: header-args:go :tangle property.go
+
+#+begin_src go
+PROPERTY
+#+end_src
+-- want/set.go --
+// Code generated from BOOK.org by make tangle. DO NOT EDIT.
+
+ABOVE
+BELOW
+-- want/headers.go --
+// Code generated from BOOK.org by make tangle. DO NOT EDIT.
+
+HEADERS
+-- want/bracket.go --
+// Code generated from BOOK.org by make tangle. DO NOT EDIT.
+
+INNER
+-- want/property.go --
+// Code generated from BOOK.org by make tangle. DO NOT EDIT.
+
+PROPERTY

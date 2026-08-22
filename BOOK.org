@@ -61,41 +61,25 @@ every dynamic block, and the labels are spelled without the sigils,
 so the census never matches its own index.
 
 #+begin: plan-toc
-- [[file:BOOK.org::102][102]] entry: PLANNED Stage 21: the environment
-- [[file:BOOK.org::150][150]] entry: PLANNED Stage 12: the fixtures chapter
-- [[file:BOOK.org::229][229]] entry: PLANNED Stage 26: chapter files
-- [[file:BOOK.org::330][330]] entry: PLANNED Stage 25: minting goldens from the oracle
-- [[file:BOOK.org::378][378]] entry: PLANNED Stage 27: the rest of the affiliated keywords
-- [[file:BOOK.org::482][482]] entry: PLANNED Stage 10: the fence
-- [[file:BOOK.org::567][567]] entry: PLANNED Stage 11: parity and self-hosting
-- [[file:BOOK.org::1067][1067]] badge: PLANNED stage 12 drops a doubled word below (plan)
-- [[file:BOOK.org::1077][1077]] note: stage 27: org's whole affiliated set
-- [[file:BOOK.org::1080][1080]] deletion: and--}
-- [[file:BOOK.org::1089][1089]] badge: PLANNED stage 12 corrects the paragraph below (plan)
-- [[file:BOOK.org::1486][1486]] note: stage 10: src bodies come out of this bullet. Measured, t...
-- [[file:BOOK.org::1535][1535]] badge: PLANNED stage 27 adds the bullet below (plan)
-- [[file:BOOK.org::3093][3093]] badge: PLANNED stage 27 edits the paragraph below (plan)
-- [[file:BOOK.org::3099][3099]] insertion: steps over org's whole
-- [[file:BOOK.org::3152][3152]] badge: PLANNED stage 27 replaces the block above and adds one (p...
-- [[file:BOOK.org::3177][3177]] twin of parse-affiliated-set
-- [[file:BOOK.org::3215][3215]] twin of parse-affiliated
-- [[file:BOOK.org::3243][3243]] generated diff
-- [[file:BOOK.org::3692][3692]] badge: PLANNED stage 27 replaces the block above (plan)
-- [[file:BOOK.org::3697][3697]] twin of parse-keywordline
-- [[file:BOOK.org::3765][3765]] generated diff
-- [[file:BOOK.org::3829][3829]] badge: PLANNED stage 27 replaces the block above (plan)
-- [[file:BOOK.org::3832][3832]] twin of parse-consts
-- [[file:BOOK.org::3874][3874]] generated diff
-- [[file:BOOK.org::4297][4297]] badge: PLANNED stage 10 rewrites this section (plan)
-- [[file:BOOK.org::4320][4320]] hole 10: a name two src blocks carry, and a name that is also a gr...
-- [[file:BOOK.org::5415][5415]] badge: PLANNED stage 10 replaces the block above (plan)
-- [[file:BOOK.org::5422][5422]] twin of cmd-read
-- [[file:BOOK.org::5442][5442]] generated diff
-- [[file:BOOK.org::5916][5916]] badge: PLANNED stage 12 adds the chapter below (plan)
-- [[file:BOOK.org::6003][6003]] badge: PLANNED stage 12 includes the two files below (plan)
-- [[file:BOOK.org::6506][6506]] badge: PLANNED stage 12 adds the test below (plan)
-- [[file:BOOK.org::7666][7666]] badge: PLANNED stage 21 adds the two paragraphs below (plan)
-- [[file:BOOK.org::7689][7689]] insertion: devbox.json and its lockfile,
+- [[file:BOOK.org::86][86]] entry: PLANNED Stage 21: the environment
+- [[file:BOOK.org::134][134]] entry: PLANNED Stage 12: the fixtures chapter
+- [[file:BOOK.org::213][213]] entry: PLANNED Stage 26: chapter files
+- [[file:BOOK.org::314][314]] entry: PLANNED Stage 25: minting goldens from the oracle
+- [[file:BOOK.org::362][362]] entry: PLANNED Stage 10: the fence
+- [[file:BOOK.org::447][447]] entry: PLANNED Stage 11: parity and self-hosting
+- [[file:BOOK.org::947][947]] badge: PLANNED stage 12 drops a doubled word below (plan)
+- [[file:BOOK.org::966][966]] badge: PLANNED stage 12 corrects the paragraph below (plan)
+- [[file:BOOK.org::1363][1363]] note: stage 10: src bodies come out of this bullet. Measured, t...
+- [[file:BOOK.org::3968][3968]] badge: PLANNED stage 10 rewrites this section (plan)
+- [[file:BOOK.org::3991][3991]] hole 10: a name two src blocks carry, and a name that is also a gr...
+- [[file:BOOK.org::5086][5086]] badge: PLANNED stage 10 replaces the block above (plan)
+- [[file:BOOK.org::5093][5093]] twin of cmd-read
+- [[file:BOOK.org::5113][5113]] generated diff
+- [[file:BOOK.org::5587][5587]] badge: PLANNED stage 12 adds the chapter below (plan)
+- [[file:BOOK.org::5675][5675]] badge: PLANNED stage 12 includes the two files below (plan)
+- [[file:BOOK.org::6178][6178]] badge: PLANNED stage 12 adds the test below (plan)
+- [[file:BOOK.org::7365][7365]] badge: PLANNED stage 21 adds the two paragraphs below (plan)
+- [[file:BOOK.org::7388][7388]] insertion: devbox.json and its lockfile,
 
 #+end:
 
@@ -373,110 +357,6 @@ the writer only rewrites goldens that already exist.
 A golden is written back from the Emacs tree by a command rather
 than copied by hand. It never deletes, refuses the fixtures the
 cross-check excuses, and leaves each fixture's script untouched.
-#+end_quote
-
-** PLANNED Stage 27: the rest of the affiliated keywords            :stage27:
-:PROPERTIES:
-:CUSTOM_ID: stage-27
-:SPEC:     The subset contract, "Recognition"
-:DEPS:     none
-:ACCEPTANCE: a fixture covering the set, the bracket form, the attr_ boundary and a property line above a block; go test ./...; ORACLE=1 go test ./...
-:SIZE:     ~250 lines
-:END:
-
-Claim: after this stage a block keeps its name and its header
-arguments when any affiliated keyword sits between them and the
-block, in either of the two spellings org allows.
-
-Today it does not. The run that gathers affiliated lines takes
-~#+name:~ and ~#+header:~ and ends on anything else, so a book
-written this way loses the name:
-
-#+begin_example
-,#+name: inner
-,#+caption: what the block does
-,#+begin_src go
-#+end_example
-
-The oracle resolves ~<<inner>>~ against that block. babble refuses
-with "resolves to nothing", because the name never reached it. Put
-the caption above the name and both engines agree, which is why no
-book has run into this: the order nobody writes is the order that
-works.
-
-Decided: (1) The run accepts org's affiliated set and only that set:
-caption, data, header, headers, label, name, plot, resname, result,
-results, source, srcname, tblname, and ~attr_~ followed by at least
-one character. It acts on three of them and steps over the rest.
-
-(2) Three, not two, and this is a correction. The first draft of
-this entry had the run step over ~#+headers:~ along with the keys
-that say nothing. Org translates that spelling to ~#+header:~ and
-reads the arguments, so stepping over it would have made babble
-write no file where the oracle writes one, with nothing said on
-either side. The draft would have turned a loud failure into a
-silent wrong answer, which is the one direction this project cannot
-afford.
-
-(3) Both spellings, which is a second correction. Org lets caption
-and results carry a secondary value in brackets, and the keyword
-reader here rejects a key holding one, so the run ends on
-~#+caption[short]:~ today. With a name above it that is loud, and
-with a header above it that is silent, so the reader now lets the
-bracket through and the run takes it off. A bracket on any other key
-ends the run, because org allows it on those two and nowhere else.
-
-(4) The set is closed rather than "any keyword line", and the reason
-is structural. Org's own noweb lookup is the permissive one: its
-pattern allows any number of keyword lines between the name and the
-block, so org resolves a reference even across a ~#+title:~. But this
-run is a lookahead that may return nothing and leave its lines to be
-walked again, so it cannot register what it passes over, and
-org-element does not attach those lines to the block either. A wider
-run would put babble's tree at odds with org's. The visible cost is
-easy to show: a ~#+property:~ line above a block sets header
-arguments for the whole file, and a run that stepped over it would
-take it out of the document.
-
-(5) So a keyword outside the set, between a name and its block,
-stays a divergence: org resolves the reference, babble refuses it by
-name. That belongs in the deviations rather than in the parser.
-
-(6) The aliases are stepped over and ignored rather than honoured.
-Org translates data, label, resname, source, srcname and tblname to
-name inside org-element, but its noweb lookup reads only ~#+name:~,
-and so does the driver's own named-block search. A block named
-through an alias answers no reference in either engine.
-
-(7) Nothing about the doc comment changes, and that was measured
-rather than assumed. A keyword line at column zero between the prose
-and the block is dropped from the docstring by both engines, and an
-indented one survives into it in both.
-
-- [ ] plan approved (the human ticks this box)
-- [ ] inserted prose reads steady-state
-- [ ] Changes draft below reads right in the journal
-- [ ] twins accepted: :tangle headers swapped, old blocks DROPPED
-- [ ] the contract's Recognition section says the same as the parser
-- [ ] seen to fail: every fixture case broken on purpose and watched
-- [ ] census clean for stage 27, suite green under ORACLE=1
-- [ ] Changes entry dated and filed, plan entry deleted
-
-*** Changes draft
-
-#+begin_quote
-A block keeps its name and its header arguments when an affiliated
-keyword sits between them and the block, so a listing can carry a
-~#+caption:~ without losing every reference to it. Both of org's
-spellings count, including the bracket form its two dual keywords
-allow. The run takes org's affiliated set and nothing wider: it is a
-lookahead that may return nothing and leave its lines to be walked
-again, so it cannot register what it steps over, and a wider run
-would attach lines org-element leaves in the document. A
-~#+property:~ line above a block is the visible case, since it sets
-header arguments for the whole file. A keyword outside the set in
-that position stays a refusal, since org resolves the reference
-there and babble cannot without giving up the tree.
 #+end_quote
 
 ** PLANNED Stage 10: the fence                                    :stage10:
@@ -1073,11 +953,8 @@ break, which is why it survived a proofread.
 A tangle candidate is a src block that has a language. Recognition
 follows org's element grammar: delimiter keywords are
 case-insensitive, only whitespace may follow ~#+end_src~ on its
-line, affiliated ~#+name:~ and ~#+header:~ lines belong to the run
-above the block below them,{>>stage 27: org's whole affiliated set
-belongs to that run, in both of the spellings org allows; the
-subset acts on name, header and headers and steps over the rest<<}
-{--and--}
+line, org's whole affiliated set belongs to the run above the
+block below it, in both of the spellings org allows,
 and blocks inside example, export, comment and verse blocks are
 text rather than blocks. A quote block is not in that list: org
 parses it as a greater element, so a src block quoted inside one
@@ -1532,11 +1409,6 @@ message always names the construct and the supported alternative.
   comes back with the same ending as the rest of the file; babble
   splices bytes and would leave the file half one way and half the
   other. The refusal is a limit of the subset, not of org.
-*************** PLANNED stage 27 adds the bullet below ([[#stage-27][plan]]) :stage27:
-The gap that stays open once the affiliated set is closed, and the
-reason it stays open rather than being closed the easy way.
-*************** END
-
 - A keyword outside org's affiliated set, written between a block's
   name and the block, is a refusal rather than a name. Org answers
   this twice and differently: its element parser holds a closed list
@@ -3090,15 +2962,9 @@ func (p *parser) findEnd(from, limit int, closes func(string) bool) (int, string
 
 ** The element parsers
 
-*************** PLANNED stage 27 edits the paragraph below ([[#stage-27][plan]]) :stage27:
-The paragraph is this struct's doc comment, so the edit shows here
-rather than in a twin.
-*************** END
-
 An affiliated keyword line belongs to the element below it. The
-subset {--uses two, ~#+name:~ and ~#+header:~,--}{++steps over org's whole
-affiliated set and acts on three of them, ~#+name:~, ~#+header:~ and
-~#+headers:~,++} and the offsets a run
+subset steps over org's whole affiliated set and acts on three of
+them, ~#+name:~, ~#+header:~ and ~#+headers:~, and the offsets a run
 of them produces are load bearing: the element's span opens at
 the first line of the run, and the tangler's anchor stays on the
 block's own first line.
@@ -3123,44 +2989,10 @@ matter, and a repeated key is won by the lower line.
   ,#+begin_src go
 #+end_example
 
-#+name: parse-affiliated
-#+begin_src go :tangle internal/org/org.go :comments org
-func (p *parser) affiliatedRun(from, limit int) (blockAt int, name, header string, ok bool) {
-	for off := from; off < limit; {
-		text, next := p.line(off)
-		if opensBlock(text) {
-			return off, name, header, off != from
-		}
-		key, value, isKeyword := keywordLine(text)
-		if !isKeyword {
-			return 0, "", "", false
-		}
-		switch key {
-		case kwName:
-			name = value
-		case kwHeader:
-			header += " " + value
-		default:
-			return 0, "", "", false
-		}
-		off = next
-	}
-	return 0, "", "", false
-}
-#+end_src
-
-*************** PLANNED stage 27 replaces the block above and adds one ([[#stage-27][plan]]) :stage27:
-The run ends on any key it does not act on, which drops the name of
-a block whose caption sits under it. The twins step over the rest of
-org's affiliated set instead, and act on one more key than before.
-The set arrives as a block of its own so that each keeps its own
-doc comment.
-*************** END
-
 Two of org's affiliated keywords carry something a tangler reads and
 the rest carry nothing, but a key carrying nothing is not a key that
 should end the run. All of them belong to the block below rather
-than to the document, so the run has to step over all of them.
+than to the document, so the run steps over all of them.
 
 Which keys belong in the set is worth deciding rather than guessing,
 because org answers it twice and the two answers differ. Org's noweb
@@ -3174,8 +3006,11 @@ so passing over a line org-element leaves in the document would lose
 that line entirely. A ~#+property:~ line above a block is the case a
 reader can see, since it sets header arguments for the whole file.
 
-#+name: parse-affiliated-set--planned
-#+begin_src go :tangle no
+# doc
+affiliatedKey answers whether a keyword belongs to the block below
+it, and gives back the key org would file it under.
+
+#+begin_src go :tangle internal/org/org.go :comments org
 var affiliatedKeys = map[string]bool{
 	"caption": true, "data": true, "header": true, "headers": true,
 	"label": true, "name": true, "plot": true, "resname": true,
@@ -3199,21 +3034,25 @@ func affiliatedKey(key string) (string, bool) {
 #+end_src
 
 Caption and results may carry a secondary value in brackets, which
-org takes off before it looks the keyword up, so the reader has to
-let a bracket through and the run has to strip it. No other key may
-carry one, and a bracket elsewhere ends the run the way an unknown
-key does. The ~attr_~ prefix wants at least one character after it.
-That is org's rule rather than a detail: a bare ~attr_~ is not
-affiliated, and a run that stepped over it would attach a header org
-leaves in the document.
+org takes off before it looks the keyword up, so the reader lets a
+bracket through and the run strips it. No other key may carry one,
+and a bracket elsewhere ends the run the way an unknown key does.
+The ~attr_~ prefix wants at least one character after it. That is
+org's rule rather than a detail: a bare ~attr_~ is not affiliated,
+and a run that stepped over it would attach a header org leaves in
+the document.
 
 Three keys are acted on. Name and header are the two a reader
 expects. The third is ~#+headers:~, which org translates to
 ~#+header:~ and reads for its arguments, so a run that stepped over
 it quietly would drop a target the oracle writes.
 
-#+name: parse-affiliated--planned
-#+begin_src go :tangle no
+# doc
+affiliatedRun gathers the affiliated lines above a block and reports
+where the block starts, or nothing when the run reaches no block.
+
+#+name: parse-affiliated
+#+begin_src go :tangle internal/org/org.go :comments org
 func (p *parser) affiliatedRun(from, limit int) (blockAt int, name, header string, ok bool) {
 	for off := from; off < limit; {
 		text, next := p.line(off)
@@ -3239,30 +3078,6 @@ func (p *parser) affiliatedRun(from, limit int) (blockAt int, name, header strin
 	return 0, "", "", false
 }
 #+end_src
-
-#+begin: src-block-diff :old parse-affiliated :new parse-affiliated--planned
-#+begin_src diff
-@@ -8,13 +8,15 @@
- 		if !isKeyword {
- 			return 0, "", "", false
- 		}
-+		key, affiliated := affiliatedKey(key)
-+		if !affiliated {
-+			return 0, "", "", false
-+		}
- 		switch key {
- 		case kwName:
- 			name = value
--		case kwHeader:
-+		case kwHeader, kwHeaders:
- 			header += " " + value
--		default:
--			return 0, "", "", false
- 		}
- 		off = next
- 	}
-#+end_src
-#+end:
 
 The aliases are stepped over and nothing more. Org's element parser
 treats data, label, resname, source, srcname and tblname as
@@ -3668,78 +3483,6 @@ func keywordLine(text string) (key, value string, ok bool) {
 	for _, c := range rest[:i] {
 		switch {
 		case c >= 'a' && c <= 'z', c >= 'A' && c <= 'Z',
-			c >= '0' && c <= '9', c == '_', c == '-':
-		default:
-			return "", "", false
-		}
-	}
-	return strings.ToLower(rest[:i]), strings.TrimSpace(rest[i+1:]), true
-}
-
-func colonLine(text string) (key, value string, ok bool) {
-	t := strings.TrimSpace(text)
-	if len(t) < 3 || t[0] != ':' {
-		return "", "", false
-	}
-	j := strings.IndexByte(t[1:], ':')
-	if j <= 0 || strings.ContainsAny(t[1:1+j], " \t") {
-		return "", "", false
-	}
-	return t[1 : 1+j], strings.TrimSpace(t[2+j:]), true
-}
-#+end_src
-
-*************** PLANNED stage 27 replaces the block above ([[#stage-27][plan]]) :stage27:
-The brackets org's two dual keywords carry. Letting them through the
-reader is what lets the affiliated run strip them; refusing them
-here is what ends the run on a captioned block today.
-*************** END
-#+name: parse-keywordline--planned
-#+begin_src go :tangle no
-func starRun(text string) int {
-	i := 0
-	for i < len(text) && text[i] == '*' {
-		i++
-	}
-	if i > 0 && i < len(text) && text[i] == ' ' {
-		return i
-	}
-	return 0
-}
-
-func blockDelim(text, word string) (name, rest string, after int, ok bool) {
-	i := 0
-	for i < len(text) && (text[i] == ' ' || text[i] == '\t') {
-		i++
-	}
-	prefix := "#+" + word + "_"
-	if len(text) < i+len(prefix) || !strings.EqualFold(text[i:i+len(prefix)], prefix) {
-		return "", "", 0, false
-	}
-	j := i + len(prefix)
-	k := j
-	for k < len(text) && text[k] != ' ' && text[k] != '\t' {
-		k++
-	}
-	if k == j {
-		return "", "", 0, false
-	}
-	return strings.ToLower(text[j:k]), strings.TrimSpace(text[k:]), k, true
-}
-
-func keywordLine(text string) (key, value string, ok bool) {
-	t := strings.TrimLeft(text, " \t")
-	if !strings.HasPrefix(t, "#+") {
-		return "", "", false
-	}
-	rest := t[2:]
-	i := strings.IndexByte(rest, ':')
-	if i <= 0 {
-		return "", "", false
-	}
-	for _, c := range rest[:i] {
-		switch {
-		case c >= 'a' && c <= 'z', c >= 'A' && c <= 'Z',
 			c >= '0' && c <= '9', c == '_', c == '-',
 			c == '[', c == ']':
 		default:
@@ -3762,21 +3505,6 @@ func colonLine(text string) (key, value string, ok bool) {
 }
 #+end_src
 
-#+begin: src-block-diff :old parse-keywordline :new parse-keywordline--planned
-#+begin_src diff
-@@ -42,7 +42,8 @@
- 	for _, c := range rest[:i] {
- 		switch {
- 		case c >= 'a' && c <= 'z', c >= 'A' && c <= 'Z',
--			c >= '0' && c <= '9', c == '_', c == '-':
-+			c >= '0' && c <= '9', c == '_', c == '-',
-+			c == '[', c == ']':
- 		default:
- 			return "", "", false
- 		}
-#+end_src
-#+end:
-
 ** Reading the whole document
 
 The todo words come from the book's own header before any headline
@@ -3787,50 +3515,6 @@ recognizing the words is all a tangler needs.
 
 #+name: parse-consts
 #+begin_src go :tangle internal/org/org.go :comments org
-const (
-	kwTodo    = "todo"
-	kwSeqTodo = "seq_todo"
-	kwTypTodo = "typ_todo"
-	kwName    = "name"
-	kwHeader  = "header"
-	kwBegin   = "begin" // the dynamic-block opener, #+begin:
-	kwEnd     = "end"   // and its closer
-)
-
-func todoWords(src []byte) []string {
-	var words []string
-	for off := 0; off < len(src); {
-		text, next := line(src, off)
-		if key, value, ok := keywordLine(text); ok {
-			switch key {
-			case kwTodo, kwSeqTodo, kwTypTodo:
-				for _, f := range strings.Fields(value) {
-					if f == "|" {
-						continue
-					}
-					if j := strings.IndexByte(f, '('); j >= 0 {
-						f = f[:j]
-					}
-					if f != "" {
-						words = append(words, f)
-					}
-				}
-			}
-		}
-		off = next
-	}
-	if words == nil {
-		words = []string{"TODO", "DONE"}
-	}
-	return words
-}
-#+end_src
-
-*************** PLANNED stage 27 replaces the block above ([[#stage-27][plan]]) :stage27:
-One constant. Org spells header arguments two ways and reads both.
-*************** END
-#+name: parse-consts--planned
-#+begin_src go :tangle no
 const (
 	kwTodo    = "todo"
 	kwSeqTodo = "seq_todo"
@@ -3870,19 +3554,6 @@ func todoWords(src []byte) []string {
 	return words
 }
 #+end_src
-
-#+begin: src-block-diff :old parse-consts :new parse-consts--planned
-#+begin_src diff
-@@ -6,6 +6,7 @@
- 	kwHeader  = "header"
- 	kwBegin   = "begin" // the dynamic-block opener, #+begin:
- 	kwEnd     = "end"   // and its closer
-+	kwHeaders = "headers" // org's other spelling of #+header:
- )
- 
- func todoWords(src []byte) []string {
-#+end_src
-#+end:
 
 #+begin_example
   go -i :tangle greet.go :comments org
@@ -5965,12 +5636,13 @@ The suite as it stands, by what each file pins:
 | tangle-comments.txtar | doc comments: the extent, the marker, the sigil, the wrapping |
 | tangle-comment-refusals.txtar | a language with no marker, and a delimiter quoted in an example |
 | tangle-noweb.txtar | prefixes, group separators, gated recursion, and how far COMMENT reaches |
-| tangle-noweb-refusals.txtar | a miss, a cycle, a call reference, a near miss in case, a buried name shadowing a live one, and a heading custom id |
+| tangle-noweb-refusals.txtar | a miss, a cycle, a call reference, a near miss in case, a buried name, a heading custom id, and a keyword outside the affiliated set |
 | dblock-refresh.txtar | both writers, from stale interiors, with the census folding case |
 | dblock-run-for-run.txtar | an index above a diff that grows, and why two runs differ |
 | dblock-refusals.txtar | seven dynamic-block shapes org writes and babble will not |
 | dblock-plan-markup.txtar | the whole plan convention, and the twin that never tangles |
 | dblock-edges.txtar | COMMENT, case, a closer with a word after it, a missing final newline |
+| parse-affiliated.txtar | org's affiliated set between a name and its block, in both spellings |
 
 tangle-comments pins the three parts of the rule that could each be
 read another way. Its anchors book asks that a block directly under
@@ -7269,6 +6941,33 @@ func TestDump(t *testing.T) {
 #+end_src
 
 * Changes
+
+** [2026-08-22] The rest of the affiliated keywords
+
+#+begin_quote
+A block keeps its name and its header arguments when an affiliated
+keyword sits between them and the block, so a listing can carry a
+~#+caption:~ without losing every reference to it. Before this, a
+caption under a name ended the run that carries the name, and the
+reference stopped resolving where the oracle resolved it. Writing
+the caption above the name worked, which is why no book had run into
+it.
+
+Both of org's spellings count, including the bracket form its two
+dual keywords allow. Three keys are acted on rather than two:
+~#+headers:~ is org's other spelling of ~#+header:~ and its arguments
+are read, so stepping over it would have written no file where the
+oracle writes one, with nothing said on either side.
+
+The run takes org's affiliated set and nothing wider, and the reason
+is what the run is. It is a lookahead that may find no block, return
+nothing, and leave its lines to be walked again as ordinary
+keywords, so it cannot register what it steps over. A wider run
+would swallow lines org-element leaves in the document, and a
+~#+property:~ line above a block is the case a reader can see, since
+it sets header arguments for the whole file. A keyword outside the
+set in that position stays a refusal.
+#+end_quote
 
 ** [2026-08-22] Dynamic blocks
 
