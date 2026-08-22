@@ -29,7 +29,7 @@ The deviations show it concretely. A deviation is a place the tangler
 refuses what org accepts, and its test is a small book that should
 trip it plus the error it should produce. All three belong in one
 place. Gathering them into a fixtures chapter, away from the rules
-they pin, buys nothing except that the chunks sit next to the other
+they check, buys nothing except that the chunks sit next to the other
 chunks of their file, which is the tangler's convenience and not the
 reader's. The file is assembled from chunks named at each site:
 
@@ -98,7 +98,7 @@ Those files stay outside.
   its failure scenario.
 - Tests live in a back-matter part, one section per chapter, linked in
   both directions. Chapters stay about the design; test sections say
-  what is pinned and why. Within a section, each test is its own
+  what is checked and why. Within a section, each test is its own
   named, described block, and the chapter's claims footnote to them
   (see Prose).
 - The build glue (lit/lit.mk) is tangled from the toolchain's own
@@ -231,7 +231,7 @@ recoverable by reading it. Difficulty is the trigger, never habit.
 - Document decisions where they bite, in the chapter that owns the
   code. Sometimes a Note aside is the right form, precisely because it
   reaches the source too.
-- A behavioral claim links to the test that pins it with an org
+- A behavioral claim links to the test that checks it with an org
   footnote: the reference rides in a narrative paragraph, never in a
   doc-comment paragraph (those tangle into source), and never inside
   CriticMarkup braces (the weave turns those into raw LaTeX) - after
@@ -286,9 +286,11 @@ The rules:
 - Plain, literal language. No metaphor that outlives its sentence,
   no applause lines, no personifying the program.
 - No clause ends on its verb. This is the object-gap relative
-  clause, often with "that" dropped: "the versions the suite pins",
+  clause, often with "that" dropped: "the versions a lockfile
+  records",
   "the handlers you mount", "the method it tests". End on the noun
-  with the new information in it: "The suite pins their versions."
+  with the new information in it: "A lockfile records those
+  versions."
   Active voice fixes most cases, splitting into two sentences fixes
   the rest. Three checks, not one:
 
@@ -329,6 +331,7 @@ list.
 | mint, mints, minted | generate, create |
 | carry, carries, carrying | contain, hold, include, or name what the thing does |
 | land, lands, landed, landing | reach, go to, arrive at, or name the actor |
+| pin, pins, pinned, pinning | check, require, or state the fact the test protects |
 
 Each of these reads as ordinary engineering vocabulary, which is
 what makes them hard to catch in your own prose. None of them means
@@ -341,6 +344,12 @@ different machine" resists every synonym for "land" until you write
 "A different machine may answer a reconnect", which turns an arrival
 into someone doing something. Treat an awkward replacement as a
 signal, not as grounds for keeping the metaphor.
+
+The last entry has a second meaning that is not on the list. Pinning
+a version is what a lockfile does, it is the ordinary word for it,
+and no plain verb replaces it. An entry bans a word in the sense the
+entry names, not everywhere it appears, and a sweep that greps for
+the letters will break the sentence about a pinned toolchain.
 
 A word a book defines and uses consistently is a term of art, not a
 metaphor reached for in the moment, and the list does not touch it.
