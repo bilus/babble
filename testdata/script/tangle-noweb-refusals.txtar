@@ -1,4 +1,4 @@
-# Five references babble will not expand. Org expands a missing one
+# Seven references babble will not expand. Org expands a missing one
 # to nothing and writes the file; a cycle exhausts its own recursion
 # limit and writes nothing; a call reference is evaluation, which is
 # outside the subset; a name that differs only in case resolves
@@ -21,6 +21,23 @@ stderr 'call reference'
 ! exec babble tangle case.org
 stderr 'differs only in case'
 ! exists k.go
+
+! exec babble tangle shadow.org
+stderr 'resolves to nothing'
+! exists s.go
+
+# Org searches heading CUSTOM_IDs before it searches block names and
+# answers with the whole subtree as raw text. On its own that leaves
+# babble with nothing to resolve; when a block carries the same name
+# the two engines quietly write different files, which is the case
+# the refusal exists for.
+! exec babble tangle customid.org
+stderr 'CUSTOM_ID, which org expands'
+! exists u.go
+
+! exec babble tangle collide.org
+stderr 'CUSTOM_ID, which org expands'
+! exists v.go
 
 ! exec babble tangle shadow.org
 stderr 'resolves to nothing'
@@ -76,4 +93,59 @@ live body
 
 #+begin_src go :tangle s.go :noweb yes
 <<twin>>
+#+end_src
+-- shadow.org --
+#+title: a buried name shadows a live one
+
+* COMMENT Dead
+
+#+name: twin
+#+begin_src go
+buried body
+#+end_src
+
+* Alive
+
+#+name: twin
+#+begin_src go
+live body
+#+end_src
+
+#+begin_src go :tangle s.go :noweb yes
+<<twin>>
+#+end_src
+-- customid.org --
+#+title: a reference naming a custom id
+
+* A section
+:PROPERTIES:
+:CUSTOM_ID: sec
+:END:
+
+Prose inside the subtree.
+
+* Elsewhere
+
+#+begin_src go :tangle u.go :noweb yes
+<<sec>>
+#+end_src
+-- collide.org --
+#+title: a custom id and a block sharing one name
+
+* A section
+:PROPERTIES:
+:CUSTOM_ID: part
+:END:
+
+Subtree prose.
+
+* Elsewhere
+
+#+name: part
+#+begin_src go :tangle no
+the named block body
+#+end_src
+
+#+begin_src go :tangle v.go :noweb yes
+<<part>>
 #+end_src
