@@ -219,6 +219,28 @@ INCLUDE = re.compile(r'^[ \t]*#\+INCLUDE:(.*)$', re.IGNORECASE)
 BARE = re.compile(r'^"([^"]+)"$')
 WRAPPED = re.compile(r'^"([^"]+)"\s+example$')
 CUSTOM_ID = re.compile(r'^[ \t]*:CUSTOM_ID:[ \t]*(\S+)', re.IGNORECASE)
+# org finds a heading with its outline regexp, which is stars at column
+# zero followed by a space. It never consults block structure, so this
+# must not either: matching what org counts is the whole point
+HEADING = re.compile(r'^(\*+) ')
+
+
+def shift_headings(text, target):
+    """The included text, with its shallowest heading moved to target."""
+    levels = [len(m.group(1)) for m in
+              (HEADING.match(l) for l in text.split("\n")) if m]
+    if not levels:
+        return text
+    offset = target - min(levels)
+    if offset == 0:
+        return text
+    out = []
+    for line in text.split("\n"):
+        h = HEADING.match(line)
+        if h:
+            line = "*" * (len(h.group(1)) + offset) + line[len(h.group(1)):]
+        out.append(line)
+    return "\n".join(out)
 
 
 def read_book(src, seen=None, ids=None, base=None):
@@ -241,7 +263,11 @@ def read_book(src, seen=None, ids=None, base=None):
         raise SystemExit("%s: includes itself" % here)
     seen.add(path)
     out = []
+    level = 0
     for n, line in enumerate(open(path, encoding="utf-8").read().split("\n"), 1):
+        h = HEADING.match(line)
+        if h:
+            level = len(h.group(1))
         m = INCLUDE.match(line)
         if m:
             rest = m.group(1).strip()
@@ -253,9 +279,11 @@ def read_book(src, seen=None, ids=None, base=None):
                 raise SystemExit(
                     '%s:%d: only #+INCLUDE: "path" and #+INCLUDE: "path" '
                     "example are understood" % (here, n))
-            out.append(read_book(
-                os.path.join(os.path.dirname(path), arg.group(1)),
-                seen, ids, base))
+            out.append(shift_headings(
+                read_book(
+                    os.path.join(os.path.dirname(path), arg.group(1)),
+                    seen, ids, base),
+                level + 1))
             continue
         cid = CUSTOM_ID.match(line)
         if cid:
