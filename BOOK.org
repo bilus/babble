@@ -65,15 +65,15 @@ so the census never matches its own index.
 - [[file:BOOK.org::128][128]] entry: PLANNED Stage 26: chapter files
 - [[file:BOOK.org::229][229]] entry: PLANNED Stage 25: minting goldens from the oracle
 - [[file:BOOK.org::277][277]] entry: PLANNED Stage 10: the fence
-- [[file:BOOK.org::389][389]] entry: PLANNED Stage 11: parity and self-hosting
-- [[file:BOOK.org::1206][1206]] badge: PLANNED stage 10 adds the skeleton and moves the first bo...
-- [[file:BOOK.org::3919][3919]] badge: PLANNED stage 10 rewrites this section (plan)
-- [[file:BOOK.org::3942][3942]] hole 10: a name two src blocks carry, and a name that is also a gr...
-- [[file:BOOK.org::5074][5074]] badge: PLANNED stage 10 replaces the block above (plan)
-- [[file:BOOK.org::5081][5081]] twin of cmd-read
-- [[file:BOOK.org::5101][5101]] generated diff
-- [[file:BOOK.org::7442][7442]] badge: PLANNED stage 21 adds the two paragraphs below (plan)
-- [[file:BOOK.org::7465][7465]] insertion: devbox.json and its lockfile,
+- [[file:BOOK.org::398][398]] entry: PLANNED Stage 11: parity and self-hosting
+- [[file:BOOK.org::1215][1215]] badge: PLANNED stage 10 adds the skeleton and moves the first bo...
+- [[file:BOOK.org::3928][3928]] badge: PLANNED stage 10 rewrites this section (plan)
+- [[file:BOOK.org::3951][3951]] hole 10: a name two src blocks carry, and a name that is also a gr...
+- [[file:BOOK.org::5083][5083]] badge: PLANNED stage 10 replaces the block above (plan)
+- [[file:BOOK.org::5090][5090]] twin of cmd-read
+- [[file:BOOK.org::5110][5110]] generated diff
+- [[file:BOOK.org::7451][7451]] badge: PLANNED stage 21 adds the two paragraphs below (plan)
+- [[file:BOOK.org::7474][7474]] insertion: devbox.json and its lockfile,
 
 #+end:
 
@@ -278,9 +278,9 @@ cross-check excuses, and leaves each fixture's script untouched.
 :PROPERTIES:
 :CUSTOM_ID: stage-10
 :SPEC:     Deviations
-:DEPS:     stages 4 through 9, and 27
-:ACCEPTANCE: every deviation carries the book that trips it; the assembled fixture runs; go test ./...; ORACLE=1 go test ./...
-:SIZE:     ~600 lines, most of it moved rather than written
+:DEPS:     stages 4 through 9, 27, and 28
+:ACCEPTANCE: Lint filled and called; every deviation carries the book that trips it; the assembled fixture runs and self-checks; go test ./...; ORACLE=1 go test ./...
+:SIZE:     ~700 lines, most of it moved rather than written
 :END:
 
 Claim: after this stage every deviation the [[#deviations][Deviations]] chapter
@@ -292,73 +292,77 @@ suite and the chapter exists for a reader.
 Decided: (1) The tests move to the deviations rather than the
 deviations gaining a reference to the tests. A reader meeting a rule
 needs the rule, the reason for it, and the thing that proves it,
-together. Today the reason is in the Deviations chapter and the proof
-is in a fixtures chapter nine chapters away, gathered with unrelated
-books whose only shared property is their destination on disk. That
-is the arrangement a tangler wants, and the tangler is the one party
-here with no trouble finding things.
+together. Today the reason is in the Deviations chapter and the
+proof is in a fixtures chapter nine chapters away, gathered with
+unrelated books whose only shared property is their destination on
+disk. That is the arrangement a tangler wants, and the tangler is
+the one party here that has no trouble finding things.
 
 (2) So the fixture becomes a skeleton and the books become chunks.
-Each deviation contributes to two named groups, one for its
-assertions and one for its book, and a single block assembles them:
+Each deviation adds to two named groups, one for its assertions and
+one for its book, and a single block assembles them. The mechanism
+was measured at full scale before it was planned: twelve
+contributors to each group, interleaved, with comma escapes for
+every construct a refusal book needs, produce identical bytes from
+both engines, in document order, with the generated banner inert to
+testscript.
 
-#+begin_example
-,#+begin_src txtar :tangle testdata/script/refusals.txtar :noweb yes
-,<<refusal-scripts>>
+(3) HOLE(10) is filled and called first, before a second noweb group
+exists in this book. Two groups is the arrangement that makes the
+name-versus-group ambiguity reachable: once a full scan has cached
+every reference, org answers a later name from the group where
+babble answers from the named block, and both engines write. The
+refusal for that is Lint, which has been written and uncalled since
+stage 4. Adding the second group before the refusal works would
+introduce the hazard and the fence for it in the wrong order.
 
-,<<refusal-books>>
-,#+end_src
-#+end_example
+(4) The assembled fixture rejoins the byte-identity gate. CHECK_EXTRA
+excludes testdata wholesale today, which was right while every
+fixture was hand-written and is wrong for one the book produces. The
+exclusion narrows to the hand-written fixtures by name, so the
+assembled one is diffed like any other tangled file.
 
-The mechanism was measured before it was planned. A txtar target
-takes the hash comment prefix, so the generated-file banner lands in
-the script section where testscript reads it as a comment; comma
-escapes inside the books survive, which matters because every book is
-org; and both engines produce the same bytes from the same chunks.
+(5) The assembly self-checks, because its failure mode is silence. A
+one-character typo in a `:noweb-ref` drops that deviation's
+assertions from the fixture, both engines tangle happily, and the
+suite stays green with one fewer test in it. A test over the
+assembled file asserts that every book it holds is named by exactly
+one assertion and the reverse, and that no book name appears twice.
 
-(3) The order of the assembled file stops mattering and stops being
-preserved. It follows the Deviations chapter, since that is the order
-a reader meets the rules in. So this is not a byte-preserving move
-and the acceptance cannot check it by diffing against today's file.
-What it checks instead is that every refusal still fires, one break
-at a time.
+(6) Corrected and settled: a delimiter quoted inside a src body does
+need refusing, and [[#stage-28][stage 28]] built the rule. What stays dropped is
+only the claim that an opener alone needs it.
 
-(4) A golden stays on disk. The fixtures chapter's reason for keeping
-the suite's inputs outside the book was that a golden is minted by
-Emacs and rewritten by a machine, and a file the machine owns does not
-belong in a document a human owns. That reason is sound and it does
-not reach here: a refusal fixture has no golden. It is an input book,
-an expected error, and nothing a machine writes back. The chapter
-gains the distinction rather than losing the rule.
+(7) Every refusal gets a book that drives it through the command
+line, written from the deviation's own sentence rather than from the
+code beneath it. Seven have only unit coverage today. A test written
+from an implementation inherits that implementation's blind spot,
+which is how four defects survived a green suite this month, each
+one a predicate that read plausibly and matched nothing.
 
-(5) The deviations with no test today get one, written from the
-deviation's own sentence rather than from the code that implements
-it. That ordering is the point of the stage: a test written from the
-implementation inherits the implementation's blind spot, which is
-how three defects survived a green suite this month.
+(8) A book made of this project's own plan markup stays out, and the
+Deviations chapter says so. Comma escaping protects a line from the
+searches anchored at a line start, and the census patterns are not
+anchored: a chunk holding a hole string or a CriticMarkup brace pair
+is indexed as a plan site wherever it sits, and the index gains
+entries for text that is a test rather than a plan. Both engines
+agree on that, so it costs parity nothing and costs a reader an
+index they cannot trust.
 
-(6) Corrected, and narrowed to what measurement supports. An earlier
-draft dropped the whole src-body refusal on the grounds that both
-engines agree there. They agree on a bare opener, and only on that. A
-closer carrying a trailing word ends no block for either parser and
-still moves a doc comment under the oracle, and a quoted name plus a
-quoted opener sends a reference to the carrying block. Those two
-shapes and the rule that refuses them are already in the book; what
-remains dropped is the claim that an opener alone needs refusing.
-
-(7) The org half of every deviation stays prose and the chapter says
-so. Each bullet claims two things, that babble refuses X and that org
-does Y instead, and a refusal fixture pins only the first: the oracle
-harness skips a book babble is expected to refuse, by design and
-correctly, since there is nothing to compare. The second clause has
-been wrong twice this month, so leaving it unmarked would overstate
-what the chapter proves.
+(9) The org half of every deviation stays prose, and the chapter says
+so. Each bullet claims two things, that babble refuses X and that
+org does Y instead, and a refusal fixture pins only the first: the
+oracle harness skips a book babble is expected to refuse, correctly,
+since there is nothing to compare. The second clause has been wrong
+twice this month, so leaving it unmarked would overstate what the
+chapter proves.
 
 - [ ] plan approved (the human ticks this box)
 - [ ] inserted prose reads steady-state
 - [ ] Changes draft below reads right in the journal
+- [ ] HOLE(10) filled and called, with its own fixture, before the second group
 - [ ] every deviation carries its book, or says why it has none
-- [ ] the assembled fixture replaces the hand-written one
+- [ ] the assembled fixture replaces the hand-written one and is diffed by make check
 - [ ] seen to fail: every refusal broken on purpose and watched
 - [ ] census clean for stage 10, suite green under ORACLE=1
 - [ ] Changes entry dated and filed, plan entry deleted
@@ -375,15 +379,20 @@ reference to the tests, because the arrangement that put them nine
 chapters apart was the tangler's convenience: their only shared
 property was a destination on disk.
 
-The tests are written from each deviation's own sentence rather than
-from the code beneath it. A test written from an implementation
-inherits that implementation's blind spot, which is how three
-defects survived a green suite this month, each one a predicate that
-read plausibly and matched nothing.
+Lint gained its two rules and a caller. It had been written and
+unreachable since stage 4, and the second noweb group this stage
+adds is what makes the ambiguity it refuses reachable, so the
+refusal had to work before the group existed.
 
-A golden still lives on disk. That rule was about who owns a file,
-and a refusal fixture has no golden: it is an input book, an
-expected error, and nothing a machine writes back.
+The assembly self-checks, because a mistyped reference drops a
+deviation's tests without a word from either engine. The assembled
+file also rejoins the byte-identity diff, which had excluded the
+whole test directory back when every fixture was written by hand.
+
+A book made of this project's own plan markup stays out. The census
+patterns are not anchored at a line start, so a comma cannot hide a
+hole string or a CriticMarkup brace from them, and such a book would
+put entries in the plan index for text that is a test.
 #+end_quote
 
 ** PLANNED Stage 11: parity and self-hosting                      :stage11:
