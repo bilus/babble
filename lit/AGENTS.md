@@ -45,11 +45,20 @@ Grouping by output file is the commonest way to lose the point, and
 the easiest to catch: if the only thing a chapter's contents have in
 common is their destination, it should not be a chapter.
 
-One limit. A file the machine owns cannot live in the book, because
+Two limits. A file the machine owns cannot live in the book, because
 the book is a document a human owns and a machine would rewrite it.
-A golden generated from an oracle is such a file. A fixture written by
-hand is not, and the difference is who edits it, not whether it is a
-test.
+A golden generated from an oracle is such a file. A fixture written
+by hand is not, and the difference is who edits it, not whether it
+is a test.
+
+The second limit is this file's own plan markup. Some of the census
+patterns match anywhere on a line rather than at its start: the hole
+strings, the CriticMarkup brace pairs, and the twin suffix. A comma
+cannot hide those, so a test file made of them is indexed as a plan
+site wherever it sits, and the plan index fills with entries for
+text that is a test. Both engines agree on that, so it costs
+correctness nothing and costs a reader an index worth trusting.
+Those files stay outside.
 
 ## The contract
 

@@ -1062,7 +1062,7 @@ func unquote(v string) (string, error) {
 // cannot live in the header table with the rules a single block
 // settles.
 func Lint(d *book.Document) error {
-	panic("HOLE(10): a name two src blocks carry, and a name that is also a group's")
+	panic("HOLE(10): a name shared by two blocks org would still tangle, and a name that is also a group's")
 }
 
 // The shape is refused rather than reconciled. Reproducing org's

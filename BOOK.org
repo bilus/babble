@@ -65,15 +65,15 @@ so the census never matches its own index.
 - [[file:BOOK.org::128][128]] entry: PLANNED Stage 26: chapter files
 - [[file:BOOK.org::229][229]] entry: PLANNED Stage 25: minting goldens from the oracle
 - [[file:BOOK.org::277][277]] entry: PLANNED Stage 10: the fence
-- [[file:BOOK.org::398][398]] entry: PLANNED Stage 11: parity and self-hosting
-- [[file:BOOK.org::1215][1215]] badge: PLANNED stage 10 adds the skeleton and moves the first bo...
-- [[file:BOOK.org::3928][3928]] badge: PLANNED stage 10 rewrites this section (plan)
-- [[file:BOOK.org::3951][3951]] hole 10: a name two src blocks carry, and a name that is also a gr...
-- [[file:BOOK.org::5083][5083]] badge: PLANNED stage 10 replaces the block above (plan)
-- [[file:BOOK.org::5090][5090]] twin of cmd-read
-- [[file:BOOK.org::5110][5110]] generated diff
-- [[file:BOOK.org::7451][7451]] badge: PLANNED stage 21 adds the two paragraphs below (plan)
-- [[file:BOOK.org::7474][7474]] insertion: devbox.json and its lockfile,
+- [[file:BOOK.org::414][414]] entry: PLANNED Stage 11: parity and self-hosting
+- [[file:BOOK.org::1231][1231]] badge: PLANNED stage 10 adds the skeleton and moves the first bo...
+- [[file:BOOK.org::3944][3944]] badge: PLANNED stage 10 rewrites this section (plan)
+- [[file:BOOK.org::3967][3967]] hole 10: a name shared by two blocks org would still tangle, and a...
+- [[file:BOOK.org::5099][5099]] badge: PLANNED stage 10 replaces the block above (plan)
+- [[file:BOOK.org::5106][5106]] twin of cmd-read
+- [[file:BOOK.org::5126][5126]] generated diff
+- [[file:BOOK.org::7467][7467]] badge: PLANNED stage 21 adds the two paragraphs below (plan)
+- [[file:BOOK.org::7490][7490]] insertion: devbox.json and its lockfile,
 
 #+end:
 
@@ -279,120 +279,136 @@ cross-check excuses, and leaves each fixture's script untouched.
 :CUSTOM_ID: stage-10
 :SPEC:     Deviations
 :DEPS:     stages 4 through 9, 27, and 28
-:ACCEPTANCE: Lint filled and called; every deviation carries the book that trips it; the assembled fixture runs and self-checks; go test ./...; ORACLE=1 go test ./...
-:SIZE:     ~700 lines, most of it moved rather than written
+:ACCEPTANCE: Lint filled and called; the noweb refusals moved beside their bullets; the assembled fixture runs, self-checks and is diffed; go test ./...; ORACLE=1 go test ./...
+:SIZE:     ~700 lines, much of it moved rather than written
 :END:
 
-Claim: after this stage every deviation the [[#deviations][Deviations]] chapter
-lists carries, in the same place, the book that trips it and the
-error it should produce. The fixture file those books tangle into is
+Claim: after this stage the refusals in the noweb fixture sit beside
+the deviations they trip, each with the book that trips it and the
+error it should produce. The file those books tangle into is
 assembled from chunks named at each site, so the file exists for the
 suite and the chapter exists for a reader.
+
+The stage moves one fixture, not all of them. Eight bullets keep
+their books in fixtures grouped by topic rather than by deviation,
+and moving those is later work under the same rule. Three bullets
+can have no book at all: two describe behavior both engines share,
+so they want a golden, and one is about a timestamp, which testscript
+cannot assert. The chapter says which is which rather than implying
+every bullet gained a book.
 
 Decided: (1) The tests move to the deviations rather than the
 deviations gaining a reference to the tests. A reader meeting a rule
 needs the rule, the reason for it, and the thing that proves it,
 together. Today the reason is in the Deviations chapter and the
-proof is in a fixtures chapter nine chapters away, gathered with
+proof is in a fixtures chapter nine chapters away, grouped with
 unrelated books whose only shared property is their destination on
-disk. That is the arrangement a tangler wants, and the tangler is
-the one party here that has no trouble finding things.
+disk. That grouping suits the tangler, and the tangler is the one
+party here that has no trouble finding things.
 
 (2) So the fixture becomes a skeleton and the books become chunks.
 Each deviation adds to two named groups, one for its assertions and
 one for its book, and a single block assembles them. The mechanism
-was measured at full scale before it was planned: twelve
-contributors to each group, interleaved, with comma escapes for
-every construct a refusal book needs, produce identical bytes from
-both engines, in document order, with the generated banner inert to
-testscript.
+was measured before it was planned, at twelve contributors per
+group: both engines produce identical bytes, in document order, and
+the generated banner is inert to testscript.
 
-(3) HOLE(10) is filled and called first, before a second noweb group
-exists in this book. Two groups is the arrangement that makes the
-name-versus-group ambiguity reachable: once a full scan has cached
-every reference, org answers a later name from the group where
-babble answers from the named block, and both engines write. The
-refusal for that is Lint, which has been written and uncalled since
-stage 4. Adding the second group before the refusal works would
-introduce the hazard and the fence for it in the wrong order.
+(3) HOLE(10) is filled and called before the skeleton's target stops
+being ~no~. The two groups already exist, added with the skeleton,
+but nothing references them while the skeleton tangles nowhere, and
+a group answers nothing until something asks. Once it tangles, the
+arrangement becomes the one that makes the name-versus-group
+ambiguity reachable: a reference only a group can answer sends org
+through a full scan that caches every reference by group, and every
+later name is then answered from the group where babble answers from
+the named block. Both engines write, and the files differ.
 
-(4) The assembled fixture rejoins the byte-identity gate. CHECK_EXTRA
-excludes testdata wholesale today, which was right while every
-fixture was hand-written and is wrong for one the book produces. The
-exclusion narrows to the hand-written fixtures by name, so the
-assembled one is diffed like any other tangled file.
+(4) Corrected before building: the duplicate-name rule sees only the
+blocks org would still tangle. Written as "any two blocks with one
+name" it refuses a book already in the suite, where a commented
+draft and a live block share a name on purpose, and the deviation
+above it says that shape resolves to nothing rather than erroring.
+The stage owes a book pinning that a buried duplicate is not a
+duplicate.
 
-(5) The assembly self-checks, because its failure mode is silence. A
-one-character typo in a `:noweb-ref` drops that deviation's
-assertions from the fixture, both engines tangle happily, and the
-suite stays green with one fewer test in it. A test over the
-assembled file asserts that every book it holds is named by exactly
-one assertion and the reverse, and that no book name appears twice.
+(5) ~refusedName~ loses its src-block branch to Lint. Lint runs at
+read time over every block and strictly contains that branch, which
+fires only when the name is referenced, so leaving both would give
+one rule two messages and let the older one die without a word. The
+chapter also gains a sentence it lacks: the fence refuses the
+one-group collision too, where both engines agree, and that is a
+subset choice rather than a parity guard.
 
-(6) Corrected and settled: a delimiter quoted inside a src body does
-need refusing, and [[#stage-28][stage 28]] built the rule. What stays dropped is
-only the claim that an opener alone needs it.
+(6) Settled: a delimiter quoted inside a src body does need
+refusing, and [[#stage-28][stage 28]] built the rule. What stays dropped is only
+the claim that an opener alone needs it.
 
-(7) Every refusal gets a book that drives it through the command
-line, written from the deviation's own sentence rather than from the
-code beneath it. Seven have only unit coverage today. A test written
-from an implementation inherits that implementation's blind spot,
-which is how four defects survived a green suite this month, each
-one a predicate that read plausibly and matched nothing.
+(7) Six refusals have no test of any kind today, not even a unit
+test, and they get books written from each deviation's own sentence
+rather than from the code beneath it. A test written from an
+implementation inherits that implementation's blind spot, which is
+how four defects survived a green suite this month.
 
-(8) A book made of this project's own plan markup stays out, and the
-Deviations chapter says so. Comma escaping protects a line from the
-searches anchored at a line start, and the census patterns are not
-anchored: a chunk holding a hole string or a CriticMarkup brace pair
-is indexed as a plan site wherever it sits, and the index gains
-entries for text that is a test rather than a plan. Both engines
-agree on that, so it costs parity nothing and costs a reader an
-index they cannot trust.
+(8) The assembled fixture rejoins the byte-identity diff. Excluding
+the whole test directory was right while every fixture was written
+by hand and is wrong for one the book produces. Listing the
+hand-written ones by name works, and rots in the safe direction: a
+new hand-written fixture fails the diff with a message naming the
+file. A test reads the exclusion list and asserts it names exactly
+the fixtures the book does not tangle, which is the shape the
+chapter's table already uses to stop the same drift.
 
-(9) The org half of every deviation stays prose, and the chapter says
-so. Each bullet claims two things, that babble refuses X and that
-org does Y instead, and a refusal fixture pins only the first: the
-oracle harness skips a book babble is expected to refuse, correctly,
-since there is nothing to compare. The second clause has been wrong
-twice this month, so leaving it unmarked would overstate what the
-chapter proves.
+(9) The assembly self-checks, because its failure mode is silence. A
+one-character typo in a ~:noweb-ref~ drops that deviation's
+assertions, both engines tangle without complaint, and the suite
+stays green with one fewer test in it. The check is that every book
+in the file is reached by at least one assertion and every assertion
+names a book the file holds. Not one assertion each: one book is
+driven through two commands on purpose, to pin that they judge alike.
+
+(10) The org half of every deviation stays prose, and the chapter
+says so. Each bullet claims two things, that babble refuses X and
+that org does Y instead, and a refusal fixture pins only the first:
+the oracle harness skips a book babble is expected to refuse,
+correctly, since there is nothing to compare. The second clause has
+been wrong twice this month, so leaving it unmarked would overstate
+the chapter's evidence.
 
 - [ ] plan approved (the human ticks this box)
 - [ ] inserted prose reads steady-state
 - [ ] Changes draft below reads right in the journal
-- [ ] HOLE(10) filled and called, with its own fixture, before the second group
-- [ ] every deviation carries its book, or says why it has none
-- [ ] the assembled fixture replaces the hand-written one and is diffed by make check
-- [ ] seen to fail: every refusal broken on purpose and watched
+- [ ] HOLE(10) filled and called, with a book for the buried duplicate
+- [ ] refusedName's src-block branch removed, not left to rot
+- [ ] the noweb refusals sit beside their bullets, duplicates dropped
+- [ ] the assembled fixture is diffed by make check, and a test guards the list
+- [ ] seen to fail: every refusal broken on purpose, one at a time
+- [ ] the fixtures table and its opening sentence updated
 - [ ] census clean for stage 10, suite green under ORACLE=1
 - [ ] Changes entry dated and filed, plan entry deleted
 
 *** Changes draft
 
 #+begin_quote
-Every deviation now carries the book that trips it and the error it
-should produce, in the same place as the rule and the reason for it.
-The fixture file is assembled from chunks named at each site, so the
-file still exists for the suite while the chapter exists for a
-reader. The tests moved to the rules rather than the rules gaining a
-reference to the tests, because the arrangement that put them nine
-chapters apart was the tangler's convenience: their only shared
+The noweb refusals now sit beside the deviations they trip, each
+with the book that trips it and the error it should produce. The
+file those books tangle into is assembled from chunks named at each
+site, so the file still exists for the suite while the chapter
+exists for a reader. The tests moved to the rules rather than the
+rules gaining a reference to the tests, because the arrangement that
+put them nine chapters apart suited the tangler: their only shared
 property was a destination on disk.
 
 Lint gained its two rules and a caller. It had been written and
-unreachable since stage 4, and the second noweb group this stage
-adds is what makes the ambiguity it refuses reachable, so the
-refusal had to work before the group existed.
+unreachable since stage 4, and the duplicate rule sees only blocks
+org would still tangle, since a commented draft sharing a live
+block's name is a shape the book teaches rather than refuses.
+refusedName's src-block branch went with it, because Lint contains
+it and two messages for one rule is how the older one dies unnoticed.
 
-The assembly self-checks, because a mistyped reference drops a
-deviation's tests without a word from either engine. The assembled
-file also rejoins the byte-identity diff, which had excluded the
-whole test directory back when every fixture was written by hand.
-
-A book made of this project's own plan markup stays out. The census
-patterns are not anchored at a line start, so a comma cannot hide a
-hole string or a CriticMarkup brace from them, and such a book would
-put entries in the plan index for text that is a test.
+The assembly self-checks, since a mistyped reference drops a
+deviation's tests without a word from either engine, and the
+assembled file rejoins the byte-identity diff, which had excluded
+the whole test directory back when every fixture was written by hand.
 #+end_quote
 
 ** PLANNED Stage 11: parity and self-hosting                      :stage11:
@@ -3948,7 +3964,7 @@ settles.
 
 #+begin_src go :tangle internal/org/org.go :comments org
 func Lint(d *book.Document) error {
-	panic("HOLE(10): a name two src blocks carry, and a name that is also a group's")
+	panic("HOLE(10): a name shared by two blocks org would still tangle, and a name that is also a group's")
 }
 #+end_src
 
