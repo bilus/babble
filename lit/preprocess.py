@@ -60,6 +60,11 @@ PREAMBLE = [
     "#+latex_header: \\definecolor{shadecolor}{RGB}{247,247,244}",
     "#+latex_header: \\usepackage[breakable,skins]{tcolorbox}",
     "#+latex_header: \\newtcolorbox{listingground}{breakable,enhanced jigsaw,colback=shadecolor,colframe=shadecolor,boxrule=0pt,arc=4pt,outer arc=4pt,leftrule=0pt,rightrule=0pt,toprule=0pt,bottomrule=0pt,left=7pt,right=7pt,top=5pt,bottom=11pt,before skip=0pt,after skip=\\medskipamount}",
+    # pandoc defines Shaded only when the document has highlighted
+    # code in it, so renewing it outright fails on a book that has
+    # not got its first block yet, which is exactly when someone is
+    # starting one
+    "#+latex_header: \\expandafter\\ifx\\csname Shaded\\endcsname\\relax\\newenvironment{Shaded}{}{}\\fi",
     "#+latex_header: \\renewenvironment{Shaded}{\\begin{listingground}}{\\end{listingground}}",
     # a code line wider than the text block runs off the page and says
     # nothing about it: fancyvrb neither wraps nor reports an overfull

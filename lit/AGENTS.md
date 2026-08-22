@@ -47,7 +47,7 @@ common is their destination, it should not be a chapter.
 
 One limit. A file the machine owns cannot live in the book, because
 the book is a document a human owns and a machine would rewrite it.
-A golden minted from an oracle is such a file. A fixture written by
+A golden generated from an oracle is such a file. A fixture written by
 hand is not, and the difference is who edits it, not whether it is a
 test.
 
@@ -131,7 +131,7 @@ How to write and edit book prose, in working order:
    Vary the shape (an occasional question opener, a two-sentence
    paragraph with no moral), because the pattern applied ritually
    numbs the reader.
-7. No flowery language. "Sounding human" below carries the rule and
+7. No flowery language. "Sounding human" below states the rule and
    the pass that enforces it. The short form: when a phrase reads
    like it wants admiration, delete it and state the fact it was
    decorating.
@@ -141,7 +141,7 @@ How to write and edit book prose, in working order:
    entry wearing a chapter's clothes: cut the clause, keep the
    reason that survives without it. The test is whether a reader who
    has never seen an earlier version notices anything missing; if
-   the sentence only lands for someone who watched the change, it
+   the sentence only makes sense to someone who watched the change, it
    belongs in `* Changes`.
 
 ## Comments and naming
@@ -216,8 +216,8 @@ recoverable by reading it. Difficulty is the trigger, never habit.
   comments, commit messages. ASCII only.
 - Doc comments are prose. The paragraph directly above a code block is
   that block's doc comment and tangles back into the source, line
-  breaks preserved. An aside carries a "Note:" or "Apropos:" sigil:
-  styled distinctly in the weave, stripped on tangle, landing in the
+  breaks preserved. An aside opens with a "Note:" or "Apropos:" sigil:
+  styled distinctly in the weave, stripped on tangle, reaching the
   source as an ordinary comment.
 - Document decisions where they bite, in the chapter that owns the
   code. Sometimes a Note aside is the right form, precisely because it
@@ -228,8 +228,13 @@ recoverable by reading it. Difficulty is the trigger, never habit.
   CriticMarkup braces (the weave turns those into raw LaTeX) - after
   the closing brace is fine. Definitions collect at the end of the
   file, so test names never sit in running text.
+- CriticMarkup cannot cross a paragraph break. The weave turns a
+  span into a colour macro, and a blank line inside one fails with
+  "Paragraph ended before \@textcolor was complete", naming a macro
+  the author never wrote. A two-paragraph replacement needs two
+  spans, one per paragraph.
 - Every test lives in its own block, named after it
-  (`#+name: TestLoadRejectsCRLF`) and carrying `:comments org`, with
+  (`#+name: TestLoadRejectsCRLF`) and marked `:comments org`, with
   a short paragraph directly above it: why the test exists, not how
   it works, opening with the test's name in Go doc style. That
   paragraph tangles as the function's doc comment, so it stays
@@ -453,7 +458,7 @@ reqsync's stage 4, condensed:
 
     Claim: after this stage, a crash at any moment of write-back
     leaves every requirements file either whole-old or whole-new, and
-    the defining file always lands before any referencing file.
+    the defining file always precedes any referencing file.
 
     - [ ] skeleton approved (twin at [[sync-write-back--planned]])
     - [ ] inserted prose reads steady-state: no "now", "no longer",
@@ -481,15 +486,15 @@ green. The panic string is the census unit, `HOLE(<stage>):
 A modification to code the suite executes cannot be holed in place; a
 reachable panic breaks the green build. It gets a twin: a sibling
 block named `<name>--planned` with `:tangle no`, directly below the
-live block, carrying its own doc-comment paragraph (already
+live block, with its own doc-comment paragraph (already
 steady-state). The live block keeps tangling; the twin waits.
 Acceptance swaps the two blocks' `:tangle` headers and retangles;
 rejection deletes the twin. Nothing else moves either way.
 
 A badge marks every place a human must look: a PLANNED inline task,
-15 stars, directly before the paragraph that carries the change,
-carrying a letter, saying why the change is made, linking the plan
-entry, carrying the stage tag.
+15 stars, directly before the paragraph the change sits in, with a
+letter, saying why the change is made, linking the plan entry, and
+tagged with the stage.
 
 The letter goes immediately after the keyword, and a reviewer names
 a site by stage and letter, as in "stage 4 B". Letters alone
@@ -503,7 +508,7 @@ block, because the paragraph directly above a block is its doc
 comment. Every change cluster starts with one, including code whose
 only change is added holes and CriticMarkup-bearing paragraphs;
 there is no separate HOLE badge, since the hole strings and the
-census already carry the mechanics:
+census already state the mechanics:
 
     *************** PLANNED [A] stage 4 replaces the block above ([[#stage-4][plan]]) :stage4:
     The twin below is the skeleton. It must not tangle yet: the
@@ -511,7 +516,7 @@ census already carry the mechanics:
     atomicWrite's panic would turn the suite red.
     *************** END
 
-Every twin carries a generated view directly under it, without
+Every twin has a generated view directly under it, without
 exception: a dynamic block naming the pair,
 
     #+begin: src-block-diff :old sync-write-back :new sync-write-back--planned
@@ -543,12 +548,12 @@ writer, note the begin-line params are read as lisp, so
 Prose changes use CriticMarkup, in narrative paragraphs only:
 `{++new++}`, `{--old--}`, `{~~old~>new~~}`, `{>>comment<<}`. Never
 inside a doc-comment paragraph; those tangle into source, and a twin
-carries its own replacement doc comment anyway. Inserted text is
+brings its own replacement doc comment anyway. Inserted text is
 future document text; rationale rides in a `{>>...<<}` note or the
 plan entry. Stage 4's insertion:
 
     {++Every write stages through a temp file and the defining file
-    lands first, so a crash between two files leaves whole files, and
+    is written first, so a crash between two files leaves whole files, and
     no reference is substituted before its number is on disk.++}
     File modes survive the rewrite.
 
@@ -558,7 +563,7 @@ anywhere it could match itself. Org-side, `C-c / T HOLE` walks the
 heading and badge keywords.
 
 Finding the plan is a grep, never a read-through: every kind of
-transition markup carries a sigil that steady-state text cannot
+transition markup uses a sigil that steady-state text cannot
 contain, so one pattern indexes the whole layer. The kinds and their
 sigils, as extended-regexp fragments:
 
@@ -588,16 +593,16 @@ to the line (`file:BOOK.org::794` opens on line 794), the labels are
 spelled without the sigils so the census never matches its own
 index, and every tangle refreshes it like all dynamic blocks. The
 weave replaces the file links, which are external and dead in
-a PDF, with internal ones: every badge carries a hypertarget, and
+a PDF, with internal ones: every badge gets a hypertarget, and
 each index item links to its governing badge, the nearest badge
 above the site. Badge order is the one thing both sides can count
 identically, which is what makes those links safe to generate. The
-margins still flag every site: badge boxes carry a colored bar down
+margins still flag every site: badge boxes get a colored bar down
 their left edge plus a margin mark naming the stage, and every
 paragraph holding CriticMarkup gets a small margin mark of its own.
 The badges also surface in the PDF chrome: a "Plan sites" branch in
 the document outline (the Bookmarks sidebar) lists every badge, and
-each badge plants a sticky-note annotation carrying its why, so
+each badge plants a sticky-note annotation stating its why, so
 viewers list the plan under Highlights and Notes too. Whole-line
 background highlighting belongs to the editor, not the weave:
 font-lock with :extend does it in Emacs, while LaTeX backgrounds
