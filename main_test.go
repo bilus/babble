@@ -36,6 +36,14 @@ func TestScripts(t *testing.T) {
 	testscript.Run(t, testscript.Params{Dir: dir})
 }
 
+// A hole in a test skips rather than panics. Elsewhere a hole is
+// unreachable because nothing calls it yet, and that is what keeps the
+// suite green while a stage is planned. A test has a caller by
+// definition, so the same property has to be asked for.
+func TestCorpusLints(t *testing.T) {
+	t.Skip("HOLE(28): read every book in this repository, and fail on any refusal")
+}
+
 // TestOracle is the cross-check, one subtest per fixture. It is a
 // test of its own rather than a hook inside the script runner,
 // because that runner works in its own directory and the cross-check
