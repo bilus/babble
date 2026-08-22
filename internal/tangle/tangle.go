@@ -516,11 +516,6 @@ func refusedName(d *book.Document, name string) error {
 				err = fmt.Errorf("%s: <<%s>> names a heading's CUSTOM_ID, which org expands to the whole subtree as raw text; rename one of them", d.Path, name)
 				return false
 			}
-		case *book.SrcBlock:
-			if n.Name == name && n.Params.NowebRef == name {
-				err = fmt.Errorf("%s: <<%s>> is both a block name and a :noweb-ref value, and which one org picks depends on what it expanded before; rename one of them", d.Path, name)
-				return false
-			}
 		}
 		return true
 	})

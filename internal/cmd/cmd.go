@@ -60,6 +60,9 @@ func read(path string) (*book.Document, error) {
 	if err := org.LintQuotedDelimiters(d); err != nil {
 		return nil, err
 	}
+	if err := org.Lint(d); err != nil {
+		return nil, err
+	}
 	return d, nil
 }
 

@@ -15,6 +15,7 @@ import (
 	"github.com/bilus/babble/internal/cmd"
 	"github.com/bilus/babble/internal/oracletest"
 	"github.com/rogpeppe/go-internal/testscript"
+	"golang.org/x/tools/txtar"
 )
 
 func TestMain(m *testing.M) {
@@ -74,6 +75,87 @@ func TestCorpusLints(t *testing.T) {
 		})
 	}
 }
+
+// A mistyped ~:noweb-ref~ drops one deviation's assertions out of the
+// file. Both engines tangle without complaint, the fixture runs, and
+// the suite stays green with one refusal fewer in it. Nothing else
+// notices, because a test that is not there cannot fail. So the file
+// is checked for wholeness instead: every book it holds is reached by
+// an assertion, and every assertion names a book that is there. Not
+// one assertion per book, since one book is driven through two
+// commands on purpose, to pin that they judge alike.
+func TestAssembledFixtureIsWhole(t *testing.T) {
+	archive, err := txtar.ParseFile(filepath.Join("testdata", "script", "refusals.txtar"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	held := map[string]bool{}
+	for _, f := range archive.Files {
+		if held[f.Name] {
+			t.Errorf("%s appears twice in the archive", f.Name)
+		}
+		held[f.Name] = true
+	}
+	reached := map[string]bool{}
+	for _, m := range execLine.FindAllStringSubmatch(string(archive.Comment), -1) {
+		if !held[m[1]] {
+			t.Errorf("an assertion names %s and the file does not hold it", m[1])
+		}
+		reached[m[1]] = true
+	}
+	for name := range held {
+		if !reached[name] {
+			t.Errorf("%s is in the file and no assertion reaches it, so its deviation lost its test", name)
+		}
+	}
+}
+
+var execLine = regexp.MustCompile(`(?m)^!? ?exec babble \w+ (\S+)`)
+
+// The other is the exclusion list. The byte-identity diff compares the
+// tangled tree against the repository, and it has to skip the fixtures
+// written by hand, since the book does not produce those. Naming them
+// one by one works and rots in the safe direction: a new hand-written
+// fixture fails the diff with a message naming the file. What rots
+// quietly is the reverse, a fixture the book starts tangling while its
+// name stays on the skip list, so the test below asserts the list
+// holds exactly the fixtures the book does not tangle.
+func TestCheckExtraSkipsOnlyHandWrittenFixtures(t *testing.T) {
+	makefile, err := os.ReadFile("Makefile")
+	if err != nil {
+		t.Fatal(err)
+	}
+	skipped := map[string]bool{}
+	for _, m := range skipFlag.FindAllStringSubmatch(string(makefile), -1) {
+		skipped[m[1]] = true
+	}
+	book, err := os.ReadFile("BOOK.org")
+	if err != nil {
+		t.Fatal(err)
+	}
+	tangled := map[string]bool{}
+	for _, m := range tangledFixture.FindAllSubmatch(book, -1) {
+		tangled[string(m[1])] = true
+	}
+	found, err := filepath.Glob(filepath.Join("testdata", "script", "*.txtar"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, path := range found {
+		name := filepath.Base(path)
+		switch {
+		case tangled[name] && skipped[name]:
+			t.Errorf("%s is tangled from the book and skipped by the diff, so nothing checks it", name)
+		case !tangled[name] && !skipped[name]:
+			t.Errorf("%s is written by hand and not skipped, so the diff will report it missing", name)
+		}
+	}
+}
+
+var (
+	skipFlag       = regexp.MustCompile(`-x ([\w.-]+\.txtar)`)
+	tangledFixture = regexp.MustCompile(`:tangle testdata/script/([\w.-]+\.txtar)`)
+)
 
 // TestOracle is the cross-check, one subtest per fixture. It is a
 // test of its own rather than a hook inside the script runner,

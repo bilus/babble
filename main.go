@@ -180,8 +180,7 @@ func replaceFile(target string, body []byte) error {
 // command-line wrapper around it: one call, one message, one exit
 // code. The order the flow keeps is subtle enough to be worth having
 // in one place, and the oracle harness runs the same function rather
-// than its own copy of the steps. One step is still missing:
-// [[#stage-10][stage 10]] adds the lint pass that needs the whole document.
+// than its own copy of the steps.
 func tangleCmd(bookPath string, stderr io.Writer) int {
 	if err := cmd.Tangle(bookPath); err != nil {
 		fmt.Fprintln(stderr, "babble:", err)

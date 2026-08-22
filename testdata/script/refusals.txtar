@@ -1,56 +1,52 @@
-# Eight references babble will not expand. Org expands a missing one
-# to nothing and writes the file; a cycle exhausts its own recursion
-# limit and writes nothing; a call reference is evaluation, which is
-# outside the subset; a name that differs only in case resolves
-# there and not here, so the error names the near miss; and a name
-# whose first definition sits under a COMMENT heading resolves to
-# nothing even when a live block later carries the same name.
+# Code generated from BOOK.org by make tangle. DO NOT EDIT.
 
+# Every book here is one babble refuses. Each sits in the book
+# beside the deviation it trips, and they gather here because a
+# fixture is one file, not because a reader wants them together.
+! exec babble tangle self.org
+stderr 'refusing to tangle into the book itself'
 ! exec babble tangle missing.org
 stderr 'resolves to nothing'
 ! exists m.go
-
 ! exec babble tangle cycle.org
 stderr 'cycle: aa -> bb -> aa'
 ! exists c.go
-
 ! exec babble tangle call.org
 stderr 'call reference'
 ! exists f.go
-
-! exec babble tangle case.org
-stderr 'differs only in case'
-! exists k.go
-
 ! exec babble tangle shadow.org
 stderr 'resolves to nothing'
 ! exists s.go
-
-# Org searches heading CUSTOM_IDs before it searches block names and
-# answers with the whole subtree as raw text. On its own that leaves
-# babble with nothing to resolve; when a block carries the same name
-# the two engines quietly write different files, which is the case
-# the refusal exists for.
 ! exec babble tangle customid.org
 stderr 'CUSTOM_ID, which org expands'
 ! exists u.go
-
 ! exec babble tangle collide.org
 stderr 'CUSTOM_ID, which org expands'
 ! exists v.go
+! exec babble tangle case.org
+stderr 'differs only in case'
+! exists k.go
+# Two live blocks sharing a name, and a name that is also a group's.
+! exec babble tangle twice.org
+stderr 'names the block at line'
 
-# A keyword outside org's affiliated set, between a name and its
-# block, ends the run that would have carried the name. Org's noweb
-# lookup allows any keyword line there and resolves the reference;
-# babble follows org's element parser instead and refuses.
+! exec babble tangle bothways.org
+stderr 'is both a block name and a :noweb-ref value'
+
+# A commented draft sharing a live name is not a duplicate. The
+# reference resolves to nothing, which is the deviation above.
+! exec babble tangle buried.org
+stderr 'resolves to nothing'
 ! exec babble tangle unaffiliated.org
 stderr 'resolves to nothing'
 ! exists w.go
 
-! exec babble tangle shadow.org
-stderr 'resolves to nothing'
-! exists s.go
+-- self.org --
+#+title: a block tangling into the book
 
+#+begin_src go :tangle self.org
+package main
+#+end_src
 -- missing.org --
 #+begin_src go :tangle m.go :noweb yes
 <<nowhere>>
@@ -72,35 +68,6 @@ stderr 'resolves to nothing'
 -- call.org --
 #+begin_src go :tangle f.go :noweb yes
 <<part(1)>>
-#+end_src
--- case.org --
-#+name: inner
-#+begin_src go
-INNER
-#+end_src
-
-#+begin_src go :tangle k.go :noweb yes
-<<Inner>>
-#+end_src
--- shadow.org --
-#+title: a buried name shadows a live one
-
-* COMMENT Dead
-
-#+name: twin
-#+begin_src go
-buried body
-#+end_src
-
-* Alive
-
-#+name: twin
-#+begin_src go
-live body
-#+end_src
-
-#+begin_src go :tangle s.go :noweb yes
-<<twin>>
 #+end_src
 -- shadow.org --
 #+title: a buried name shadows a live one
@@ -156,6 +123,66 @@ the named block body
 
 #+begin_src go :tangle v.go :noweb yes
 <<part>>
+#+end_src
+-- case.org --
+#+name: inner
+#+begin_src go
+INNER
+#+end_src
+
+#+begin_src go :tangle k.go :noweb yes
+<<Inner>>
+#+end_src
+-- twice.org --
+#+title: one name, two live blocks
+
+#+name: dup
+#+begin_src go :tangle no
+first
+#+end_src
+
+#+name: dup
+#+begin_src go :tangle no
+second
+#+end_src
+
+#+begin_src go :tangle t.go :noweb yes
+<<dup>>
+#+end_src
+-- bothways.org --
+#+title: a name that is also a group
+
+#+name: both
+#+begin_src go :tangle no
+named
+#+end_src
+
+#+begin_src go :noweb-ref both :tangle no
+grouped
+#+end_src
+
+#+begin_src go :tangle b.go :noweb yes
+<<both>>
+#+end_src
+-- buried.org --
+#+title: a commented draft is not a duplicate
+
+* COMMENT Draft
+
+#+name: only
+#+begin_src go :tangle no
+draft
+#+end_src
+
+* Alive
+
+#+name: only
+#+begin_src go :tangle no
+live
+#+end_src
+
+#+begin_src go :tangle u.go :noweb yes
+<<only>>
 #+end_src
 -- unaffiliated.org --
 #+title: a keyword outside the affiliated set

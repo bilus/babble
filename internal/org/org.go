@@ -1062,7 +1062,36 @@ func unquote(v string) (string, error) {
 // cannot live in the header table with the rules a single block
 // settles.
 func Lint(d *book.Document) error {
-	panic("HOLE(10): a name shared by two blocks org would still tangle, and a name that is also a group's")
+	named := map[string]int{}
+	groups := map[string]bool{}
+	var err error
+	d.Walk(func(n book.Node) bool {
+		switch n := n.(type) {
+		case *book.Headline:
+			return !n.Commented && !n.Archived
+		case *book.SrcBlock:
+			if n.Params.NowebRef != "" {
+				groups[n.Params.NowebRef] = true
+			}
+			if n.Name == "" {
+				return true
+			}
+			if first, dup := named[n.Name]; dup && err == nil {
+				err = fmt.Errorf("%s:%d: %s names the block at line %d as well; org resolves a reference by whichever its scan reaches first, so rename one of them", d.Path, n.Line, n.Name, first)
+			}
+			named[n.Name] = n.Line
+		}
+		return true
+	})
+	if err != nil {
+		return err
+	}
+	for name, line := range named {
+		if groups[name] {
+			return fmt.Errorf("%s:%d: %s is both a block name and a :noweb-ref value; which one org answers with depends on what it expanded before, so rename one of them", d.Path, line, name)
+		}
+	}
+	return nil
 }
 
 // The shape is refused rather than reconciled. Reproducing org's

@@ -61,19 +61,14 @@ every dynamic block, and the labels are spelled without the sigils,
 so the census never matches its own index.
 
 #+begin: plan-toc
-- [[file:BOOK.org::80][80]] entry: PLANNED Stage 21: the environment
-- [[file:BOOK.org::128][128]] entry: PLANNED Stage 26: chapter files
-- [[file:BOOK.org::229][229]] entry: PLANNED Stage 25: minting goldens from the oracle
-- [[file:BOOK.org::277][277]] entry: PLANNED Stage 10: the fence
-- [[file:BOOK.org::414][414]] entry: PLANNED Stage 11: parity and self-hosting
-- [[file:BOOK.org::1231][1231]] badge: PLANNED stage 10 adds the skeleton and moves the first bo...
-- [[file:BOOK.org::3944][3944]] badge: PLANNED stage 10 rewrites this section (plan)
-- [[file:BOOK.org::3967][3967]] hole 10: a name shared by two blocks org would still tangle, and a...
-- [[file:BOOK.org::5099][5099]] badge: PLANNED stage 10 replaces the block above (plan)
-- [[file:BOOK.org::5106][5106]] twin of cmd-read
-- [[file:BOOK.org::5126][5126]] generated diff
-- [[file:BOOK.org::7467][7467]] badge: PLANNED stage 21 adds the two paragraphs below (plan)
-- [[file:BOOK.org::7490][7490]] insertion: devbox.json and its lockfile,
+- [[file:BOOK.org::75][75]] entry: PLANNED Stage 21: the environment
+- [[file:BOOK.org::123][123]] entry: PLANNED Stage 26: chapter files
+- [[file:BOOK.org::224][224]] entry: PLANNED Stage 25: minting goldens from the oracle
+- [[file:BOOK.org::272][272]] entry: PLANNED Stage 11: parity and self-hosting
+- [[file:BOOK.org::5214][5214]] twin of cmd-read
+- [[file:BOOK.org::5234][5234]] generated diff
+- [[file:BOOK.org::7695][7695]] badge: PLANNED stage 21 adds the two paragraphs below (plan)
+- [[file:BOOK.org::7718][7718]] insertion: devbox.json and its lockfile,
 
 #+end:
 
@@ -272,143 +267,6 @@ the writer only rewrites goldens that already exist.
 A golden is written back from the Emacs tree by a command rather
 than copied by hand. It never deletes, refuses the fixtures the
 cross-check excuses, and leaves each fixture's script untouched.
-#+end_quote
-
-** PLANNED Stage 10: the fence                                    :stage10:
-:PROPERTIES:
-:CUSTOM_ID: stage-10
-:SPEC:     Deviations
-:DEPS:     stages 4 through 9, 27, and 28
-:ACCEPTANCE: Lint filled and called; the noweb refusals moved beside their bullets; the assembled fixture runs, self-checks and is diffed; go test ./...; ORACLE=1 go test ./...
-:SIZE:     ~700 lines, much of it moved rather than written
-:END:
-
-Claim: after this stage the refusals in the noweb fixture sit beside
-the deviations they trip, each with the book that trips it and the
-error it should produce. The file those books tangle into is
-assembled from chunks named at each site, so the file exists for the
-suite and the chapter exists for a reader.
-
-The stage moves one fixture, not all of them. Eight bullets keep
-their books in fixtures grouped by topic rather than by deviation,
-and moving those is later work under the same rule. Three bullets
-can have no book at all: two describe behavior both engines share,
-so they want a golden, and one is about a timestamp, which testscript
-cannot assert. The chapter says which is which rather than implying
-every bullet gained a book.
-
-Decided: (1) The tests move to the deviations rather than the
-deviations gaining a reference to the tests. A reader meeting a rule
-needs the rule, the reason for it, and the thing that proves it,
-together. Today the reason is in the Deviations chapter and the
-proof is in a fixtures chapter nine chapters away, grouped with
-unrelated books whose only shared property is their destination on
-disk. That grouping suits the tangler, and the tangler is the one
-party here that has no trouble finding things.
-
-(2) So the fixture becomes a skeleton and the books become chunks.
-Each deviation adds to two named groups, one for its assertions and
-one for its book, and a single block assembles them. The mechanism
-was measured before it was planned, at twelve contributors per
-group: both engines produce identical bytes, in document order, and
-the generated banner is inert to testscript.
-
-(3) HOLE(10) is filled and called before the skeleton's target stops
-being ~no~. The two groups already exist, added with the skeleton,
-but nothing references them while the skeleton tangles nowhere, and
-a group answers nothing until something asks. Once it tangles, the
-arrangement becomes the one that makes the name-versus-group
-ambiguity reachable: a reference only a group can answer sends org
-through a full scan that caches every reference by group, and every
-later name is then answered from the group where babble answers from
-the named block. Both engines write, and the files differ.
-
-(4) Corrected before building: the duplicate-name rule sees only the
-blocks org would still tangle. Written as "any two blocks with one
-name" it refuses a book already in the suite, where a commented
-draft and a live block share a name on purpose, and the deviation
-above it says that shape resolves to nothing rather than erroring.
-The stage owes a book pinning that a buried duplicate is not a
-duplicate.
-
-(5) ~refusedName~ loses its src-block branch to Lint. Lint runs at
-read time over every block and strictly contains that branch, which
-fires only when the name is referenced, so leaving both would give
-one rule two messages and let the older one die without a word. The
-chapter also gains a sentence it lacks: the fence refuses the
-one-group collision too, where both engines agree, and that is a
-subset choice rather than a parity guard.
-
-(6) Settled: a delimiter quoted inside a src body does need
-refusing, and [[#stage-28][stage 28]] built the rule. What stays dropped is only
-the claim that an opener alone needs it.
-
-(7) Six refusals have no test of any kind today, not even a unit
-test, and they get books written from each deviation's own sentence
-rather than from the code beneath it. A test written from an
-implementation inherits that implementation's blind spot, which is
-how four defects survived a green suite this month.
-
-(8) The assembled fixture rejoins the byte-identity diff. Excluding
-the whole test directory was right while every fixture was written
-by hand and is wrong for one the book produces. Listing the
-hand-written ones by name works, and rots in the safe direction: a
-new hand-written fixture fails the diff with a message naming the
-file. A test reads the exclusion list and asserts it names exactly
-the fixtures the book does not tangle, which is the shape the
-chapter's table already uses to stop the same drift.
-
-(9) The assembly self-checks, because its failure mode is silence. A
-one-character typo in a ~:noweb-ref~ drops that deviation's
-assertions, both engines tangle without complaint, and the suite
-stays green with one fewer test in it. The check is that every book
-in the file is reached by at least one assertion and every assertion
-names a book the file holds. Not one assertion each: one book is
-driven through two commands on purpose, to pin that they judge alike.
-
-(10) The org half of every deviation stays prose, and the chapter
-says so. Each bullet claims two things, that babble refuses X and
-that org does Y instead, and a refusal fixture pins only the first:
-the oracle harness skips a book babble is expected to refuse,
-correctly, since there is nothing to compare. The second clause has
-been wrong twice this month, so leaving it unmarked would overstate
-the chapter's evidence.
-
-- [ ] plan approved (the human ticks this box)
-- [ ] inserted prose reads steady-state
-- [ ] Changes draft below reads right in the journal
-- [ ] HOLE(10) filled and called, with a book for the buried duplicate
-- [ ] refusedName's src-block branch removed, not left to rot
-- [ ] the noweb refusals sit beside their bullets, duplicates dropped
-- [ ] the assembled fixture is diffed by make check, and a test guards the list
-- [ ] seen to fail: every refusal broken on purpose, one at a time
-- [ ] the fixtures table and its opening sentence updated
-- [ ] census clean for stage 10, suite green under ORACLE=1
-- [ ] Changes entry dated and filed, plan entry deleted
-
-*** Changes draft
-
-#+begin_quote
-The noweb refusals now sit beside the deviations they trip, each
-with the book that trips it and the error it should produce. The
-file those books tangle into is assembled from chunks named at each
-site, so the file still exists for the suite while the chapter
-exists for a reader. The tests moved to the rules rather than the
-rules gaining a reference to the tests, because the arrangement that
-put them nine chapters apart suited the tangler: their only shared
-property was a destination on disk.
-
-Lint gained its two rules and a caller. It had been written and
-unreachable since stage 4, and the duplicate rule sees only blocks
-org would still tangle, since a commented draft sharing a live
-block's name is a shape the book teaches rather than refuses.
-refusedName's src-block branch went with it, because Lint contains
-it and two messages for one rule is how the older one dies unnoticed.
-
-The assembly self-checks, since a mistyped reference drops a
-deviation's tests without a word from either engine, and the
-assembled file rejoins the byte-identity diff, which had excluded
-the whole test directory back when every fixture was written by hand.
 #+end_quote
 
 ** PLANNED Stage 11: parity and self-hosting                      :stage11:
@@ -1228,19 +1086,12 @@ No refusal may fire on a real book, and a test reads every book here
 to enforce it. The error
 message always names the construct and the supported alternative.
 
-*************** PLANNED stage 10 adds the skeleton and moves the first book ([[#stage-10][plan]]) :stage10:
-The assembling block and one deviation moved beside its rule, as the
-shape the rest follow. The skeleton carries ~:tangle no~ until
-acceptance, so the hand-written fixture is still the one the suite
-runs and nothing changes underfoot.
-*************** END
-
 The books that trip these refusals sit with the rules they trip,
 each beside the paragraph saying why the rule exists. They tangle
 into one file all the same, assembled from two named groups:
 
 #+name: refusals-skeleton
-#+begin_src txtar :tangle no :noweb yes
+#+begin_src txtar :tangle testdata/script/refusals.txtar :noweb yes
 # Every book here is one babble refuses. Each sits in the book
 # beside the deviation it trips, and they gather here because a
 # fixture is one file, not because a reader wants them together.
@@ -1285,9 +1136,142 @@ package main
   message differs. A noweb call reference, ~<<name(args)>>~, is
   evaluation and is rejected; org treats any parentheses in the
   name as a call, wherever they sit.
+
+#+begin_src txtar :noweb-ref refusal-scripts
+! exec babble tangle missing.org
+stderr 'resolves to nothing'
+! exists m.go
+#+end_src
+
+#+begin_src txtar :noweb-ref refusal-scripts
+! exec babble tangle cycle.org
+stderr 'cycle: aa -> bb -> aa'
+! exists c.go
+#+end_src
+
+#+begin_src txtar :noweb-ref refusal-scripts
+! exec babble tangle call.org
+stderr 'call reference'
+! exists f.go
+#+end_src
+
+#+begin_src txtar :noweb-ref refusal-scripts
+! exec babble tangle shadow.org
+stderr 'resolves to nothing'
+! exists s.go
+#+end_src
+
+#+begin_src txtar :noweb-ref refusal-books
+-- missing.org --
+,#+begin_src go :tangle m.go :noweb yes
+<<nowhere>>
+,#+end_src
+#+end_src
+
+#+begin_src txtar :noweb-ref refusal-books
+-- cycle.org --
+,#+name: aa
+,#+begin_src go :noweb yes
+<<bb>>
+,#+end_src
+
+,#+name: bb
+,#+begin_src go :noweb yes
+<<aa>>
+,#+end_src
+
+,#+begin_src go :tangle c.go :noweb yes
+<<aa>>
+,#+end_src
+#+end_src
+
+#+begin_src txtar :noweb-ref refusal-books
+-- call.org --
+,#+begin_src go :tangle f.go :noweb yes
+<<part(1)>>
+,#+end_src
+#+end_src
+
+#+begin_src txtar :noweb-ref refusal-books
+-- shadow.org --
+,#+title: a buried name shadows a live one
+
+,* COMMENT Dead
+
+,#+name: twin
+,#+begin_src go
+buried body
+,#+end_src
+
+,* Alive
+
+,#+name: twin
+,#+begin_src go
+live body
+,#+end_src
+
+,#+begin_src go :tangle s.go :noweb yes
+<<twin>>
+,#+end_src
+#+end_src
+
 - A reference naming a heading's ~CUSTOM_ID~ is an error. Org
   searches those before it searches block names and answers with the
   whole subtree as raw text, delimiter lines included.
+
+#+begin_src txtar :noweb-ref refusal-scripts
+! exec babble tangle customid.org
+stderr 'CUSTOM_ID, which org expands'
+! exists u.go
+#+end_src
+
+#+begin_src txtar :noweb-ref refusal-scripts
+! exec babble tangle collide.org
+stderr 'CUSTOM_ID, which org expands'
+! exists v.go
+#+end_src
+
+#+begin_src txtar :noweb-ref refusal-books
+-- customid.org --
+,#+title: a reference naming a custom id
+
+,* A section
+:PROPERTIES:
+:CUSTOM_ID: sec
+:END:
+
+Prose inside the subtree.
+
+,* Elsewhere
+
+,#+begin_src go :tangle u.go :noweb yes
+<<sec>>
+,#+end_src
+#+end_src
+
+#+begin_src txtar :noweb-ref refusal-books
+-- collide.org --
+,#+title: a custom id and a block sharing one name
+
+,* A section
+:PROPERTIES:
+:CUSTOM_ID: part
+:END:
+
+Subtree prose.
+
+,* Elsewhere
+
+,#+name: part
+,#+begin_src go :tangle no
+the named block body
+,#+end_src
+
+,#+begin_src go :tangle v.go :noweb yes
+<<part>>
+,#+end_src
+#+end_src
+
 - A name that is both a block's name and some block's ~:noweb-ref~
   value is an error. Which one org picks depends on what it expanded
   earlier in the same run, because the group scan replaces the cache
@@ -1308,9 +1292,101 @@ package main
   when it searches for a block's name, though not when it looks up a
   ~:noweb-ref~ group, so a reference that only resolves by ignoring
   case tangles there and is an error here, naming the near miss.
+
+#+begin_src txtar :noweb-ref refusal-scripts
+! exec babble tangle case.org
+stderr 'differs only in case'
+! exists k.go
+#+end_src
+
+#+begin_src txtar :noweb-ref refusal-books
+-- case.org --
+,#+name: inner
+,#+begin_src go
+INNER
+,#+end_src
+
+,#+begin_src go :tangle k.go :noweb yes
+<<Inner>>
+,#+end_src
+#+end_src
+
 - A duplicate ~#+name:~ across src blocks is an error, as is a name
   that some block also uses as a ~:noweb-ref~ value; org would
   resolve both by whichever its scan finds first.
+  The rule sees only the blocks org would still tangle. A commented
+  draft sharing a live block's name is a shape this book teaches, and
+  the reference to it resolves to nothing rather than erroring, which
+  the deviation above already covers.
+
+#+begin_src txtar :noweb-ref refusal-scripts
+# Two live blocks sharing a name, and a name that is also a group's.
+! exec babble tangle twice.org
+stderr 'names the block at line'
+
+! exec babble tangle bothways.org
+stderr 'is both a block name and a :noweb-ref value'
+
+# A commented draft sharing a live name is not a duplicate. The
+# reference resolves to nothing, which is the deviation above.
+! exec babble tangle buried.org
+stderr 'resolves to nothing'
+#+end_src
+
+#+begin_src txtar :noweb-ref refusal-books
+-- twice.org --
+,#+title: one name, two live blocks
+
+,#+name: dup
+,#+begin_src go :tangle no
+first
+,#+end_src
+
+,#+name: dup
+,#+begin_src go :tangle no
+second
+,#+end_src
+
+,#+begin_src go :tangle t.go :noweb yes
+<<dup>>
+,#+end_src
+-- bothways.org --
+,#+title: a name that is also a group
+
+,#+name: both
+,#+begin_src go :tangle no
+named
+,#+end_src
+
+,#+begin_src go :noweb-ref both :tangle no
+grouped
+,#+end_src
+
+,#+begin_src go :tangle b.go :noweb yes
+<<both>>
+,#+end_src
+-- buried.org --
+,#+title: a commented draft is not a duplicate
+
+,* COMMENT Draft
+
+,#+name: only
+,#+begin_src go :tangle no
+draft
+,#+end_src
+
+,* Alive
+
+,#+name: only
+,#+begin_src go :tangle no
+live
+,#+end_src
+
+,#+begin_src go :tangle u.go :noweb yes
+<<only>>
+,#+end_src
+#+end_src
+
 - The header table is closed: a key babble does not know is an
   error, so org's option space cannot leak in unclassified. Within
   the table, the rejected keys error by name: ~:comments~ values
@@ -1361,6 +1437,28 @@ package main
   with a comma settles the first case; writing the space settles the
   second. Indenting settles neither, which is the one piece of
   advice the older refusal above gets wrong for this construct.
+
+#+begin_src txtar :noweb-ref refusal-scripts
+! exec babble tangle unaffiliated.org
+stderr 'resolves to nothing'
+! exists w.go
+#+end_src
+
+#+begin_src txtar :noweb-ref refusal-books
+-- unaffiliated.org --
+,#+title: a keyword outside the affiliated set
+
+,#+name: inner
+,#+title: not an affiliated keyword
+,#+begin_src go :tangle no
+INNER
+,#+end_src
+
+,#+begin_src go :tangle w.go :noweb yes
+<<inner>>
+,#+end_src
+#+end_src
+
 - A src-block-diff naming a block the book does not contain is an
   error. Org's refresh has already emptied the interior when the
   lookup fails, logs the failure, and moves on, so the block ends up
@@ -1944,8 +2042,7 @@ The flow itself lives in ~cmd.Tangle~, and this function is the
 command-line wrapper around it: one call, one message, one exit
 code. The order the flow keeps is subtle enough to be worth having
 in one place, and the oracle harness runs the same function rather
-than its own copy of the steps. One step is still missing:
-[[#stage-10][stage 10]] adds the lint pass that needs the whole document.
+than its own copy of the steps.
 
 #+name: cli-tangle
 #+begin_src go :tangle main.go :comments org
@@ -3941,13 +4038,6 @@ Lint is the other half of the fence: the refusals that need the
 whole document rather than one block. The header table catches what
 one block can be judged on alone; these need every block first.
 
-*************** PLANNED stage 10 rewrites this section ([[#stage-10][plan]]) :stage10:
-The hole is restated with the reason each of its two rules exists,
-and the section gains the paragraph saying who calls it. Nothing
-called it before, which is the defect this stage closes as much as
-the hole is.
-*************** END
-
 Both of its rules are the same shape: a name that answers to two
 things. A name carried by two src blocks, and a name that is also
 some block's ~:noweb-ref~ value, both leave org resolving by
@@ -3964,16 +4054,43 @@ settles.
 
 #+begin_src go :tangle internal/org/org.go :comments org
 func Lint(d *book.Document) error {
-	panic("HOLE(10): a name shared by two blocks org would still tangle, and a name that is also a group's")
+	named := map[string]int{}
+	groups := map[string]bool{}
+	var err error
+	d.Walk(func(n book.Node) bool {
+		switch n := n.(type) {
+		case *book.Headline:
+			return !n.Commented && !n.Archived
+		case *book.SrcBlock:
+			if n.Params.NowebRef != "" {
+				groups[n.Params.NowebRef] = true
+			}
+			if n.Name == "" {
+				return true
+			}
+			if first, dup := named[n.Name]; dup && err == nil {
+				err = fmt.Errorf("%s:%d: %s names the block at line %d as well; org resolves a reference by whichever its scan reaches first, so rename one of them", d.Path, n.Line, n.Name, first)
+			}
+			named[n.Name] = n.Line
+		}
+		return true
+	})
+	if err != nil {
+		return err
+	}
+	for name, line := range named {
+		if groups[name] {
+			return fmt.Errorf("%s:%d: %s is both a block name and a :noweb-ref value; which one org answers with depends on what it expanded before, so rename one of them", d.Path, line, name)
+		}
+	}
+	return nil
 }
 #+end_src
 
-The flow calls it beside the other two lints. That is worth saying
-because it was not true until this stage: Lint has existed since
-stage 4 and nothing has ever called it. A refusal nothing calls is
-not a fence, and the only reason the gap survived four stages is
-that its body is a hole, so calling it would have changed nothing
-except where the panic came from.
+The flow calls it beside the other two lints, after resolution
+rather than before, because the second rule reads a resolved
+~:noweb-ref~ and there is nothing to compare until every block has
+one.
 
 One of its rules cannot wait for the rest, because doc comments
 make it visible. Org finds the block above by searching the raw
@@ -4674,11 +4791,6 @@ func refusedName(d *book.Document, name string) error {
 				err = fmt.Errorf("%s: <<%s>> names a heading's CUSTOM_ID, which org expands to the whole subtree as raw text; rename one of them", d.Path, name)
 				return false
 			}
-		case *book.SrcBlock:
-			if n.Name == name && n.Params.NowebRef == name {
-				err = fmt.Errorf("%s: <<%s>> is both a block name and a :noweb-ref value, and which one org picks depends on what it expanded before; rename one of them", d.Path, name)
-				return false
-			}
 		}
 		return true
 	})
@@ -5092,16 +5204,12 @@ func read(path string) (*book.Document, error) {
 	if err := org.LintQuotedDelimiters(d); err != nil {
 		return nil, err
 	}
+	if err := org.Lint(d); err != nil {
+		return nil, err
+	}
 	return d, nil
 }
 #+end_src
-
-*************** PLANNED stage 10 replaces the block above ([[#stage-10][plan]]) :stage10:
-The twin adds the call the fence has been missing. This is the only
-place it needs adding: every caller of the flow reaches the lints
-through here, which is why the flow was worth extracting in the
-first place.
-*************** END
 
 #+name: cmd-read--planned
 #+begin_src go :tangle no
@@ -5124,17 +5232,7 @@ func read(path string) (*book.Document, error) {
 #+end_src
 
 #+begin: src-block-diff :old cmd-read :new cmd-read--planned
-#+begin_src diff
-@@ -9,5 +9,8 @@
- 	if err := org.LintQuotedDelimiters(d); err != nil {
- 		return nil, err
- 	}
-+	if err := org.Lint(d); err != nil {
-+		return nil, err
-+	}
- 	return d, nil
- }
-#+end_src
+no differences
 #+end:
 
 A book is rewritten the way a target is: written beside itself, then
@@ -5602,11 +5700,17 @@ func dblockArgs(args string) (map[string]string, error) {
 :CUSTOM_ID: the-fixtures
 :END:
 
-The suite's inputs live on disk, not in this book, and this
-chapter says what they are, how to rebuild one, and how to add
-another. They stay outside because a golden is minted by Emacs and
-rewritten by a machine, and a file the machine owns does not
-belong in a document a human owns. The weave shows them anyway.
+Most of the suite's inputs live on disk rather than in this book,
+and this chapter says what they are, how to rebuild one, and how to
+add another. They stay outside because a golden is generated by
+Emacs and rewritten by a machine, and a file the machine owns does
+not belong in a document a human owns.
+
+A fixture with no golden in it is a different case, and one of them
+has moved in. The books that trip the noweb refusals now sit beside
+the deviations they trip, and the file they tangle into is assembled
+from chunks named at each site. The rule that keeps goldens out is
+about who edits a file, not about whether it is a test. The weave shows them anyway.
 In its ~example~ spelling ~#+include~ pulls a file's text into the
 PDF and no tangler reads it, so the pages below are the files
 themselves, not a copy of them that could drift.
@@ -5640,7 +5744,7 @@ The suite as it stands, by what each file pins:
 | tangle-comments.txtar | doc comments: the extent, the marker, the sigil, the wrapping |
 | tangle-comment-refusals.txtar | a language with no marker, and five delimiters quoted in a body |
 | tangle-noweb.txtar | prefixes, group separators, gated recursion, and how far COMMENT reaches |
-| tangle-noweb-refusals.txtar | a miss, a cycle, a call reference, a near miss in case, a buried name, a heading custom id, and a keyword outside the affiliated set |
+| refusals.txtar | assembled from the books beside the deviations they trip |
 | dblock-refresh.txtar | both writers, from stale interiors, with the census folding case |
 | dblock-run-for-run.txtar | an index above a diff that grows, and why two runs differ |
 | dblock-refusals.txtar | seven dynamic-block shapes org writes and babble will not |
@@ -5866,6 +5970,7 @@ import (
 	"github.com/bilus/babble/internal/cmd"
 	"github.com/bilus/babble/internal/oracletest"
 	"github.com/rogpeppe/go-internal/testscript"
+	"golang.org/x/tools/txtar"
 )
 
 func TestMain(m *testing.M) {
@@ -6291,6 +6396,98 @@ func TestCorpusLints(t *testing.T) {
 		})
 	}
 }
+#+end_src
+
+** The assembled fixture
+
+Two things about the refusals fixture cannot be seen by running it,
+and both fail by being quiet.
+
+A mistyped ~:noweb-ref~ drops one deviation's assertions out of the
+file. Both engines tangle without complaint, the fixture runs, and
+the suite stays green with one refusal fewer in it. Nothing else
+notices, because a test that is not there cannot fail. So the file
+is checked for wholeness instead: every book it holds is reached by
+an assertion, and every assertion names a book that is there. Not
+one assertion per book, since one book is driven through two
+commands on purpose, to pin that they judge alike.
+
+#+begin_src go :tangle main_test.go :comments org
+func TestAssembledFixtureIsWhole(t *testing.T) {
+	archive, err := txtar.ParseFile(filepath.Join("testdata", "script", "refusals.txtar"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	held := map[string]bool{}
+	for _, f := range archive.Files {
+		if held[f.Name] {
+			t.Errorf("%s appears twice in the archive", f.Name)
+		}
+		held[f.Name] = true
+	}
+	reached := map[string]bool{}
+	for _, m := range execLine.FindAllStringSubmatch(string(archive.Comment), -1) {
+		if !held[m[1]] {
+			t.Errorf("an assertion names %s and the file does not hold it", m[1])
+		}
+		reached[m[1]] = true
+	}
+	for name := range held {
+		if !reached[name] {
+			t.Errorf("%s is in the file and no assertion reaches it, so its deviation lost its test", name)
+		}
+	}
+}
+
+var execLine = regexp.MustCompile(`(?m)^!? ?exec babble \w+ (\S+)`)
+#+end_src
+
+The other is the exclusion list. The byte-identity diff compares the
+tangled tree against the repository, and it has to skip the fixtures
+written by hand, since the book does not produce those. Naming them
+one by one works and rots in the safe direction: a new hand-written
+fixture fails the diff with a message naming the file. What rots
+quietly is the reverse, a fixture the book starts tangling while its
+name stays on the skip list, so the test below asserts the list
+holds exactly the fixtures the book does not tangle.
+
+#+begin_src go :tangle main_test.go :comments org
+func TestCheckExtraSkipsOnlyHandWrittenFixtures(t *testing.T) {
+	makefile, err := os.ReadFile("Makefile")
+	if err != nil {
+		t.Fatal(err)
+	}
+	skipped := map[string]bool{}
+	for _, m := range skipFlag.FindAllStringSubmatch(string(makefile), -1) {
+		skipped[m[1]] = true
+	}
+	book, err := os.ReadFile("BOOK.org")
+	if err != nil {
+		t.Fatal(err)
+	}
+	tangled := map[string]bool{}
+	for _, m := range tangledFixture.FindAllSubmatch(book, -1) {
+		tangled[string(m[1])] = true
+	}
+	found, err := filepath.Glob(filepath.Join("testdata", "script", "*.txtar"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, path := range found {
+		name := filepath.Base(path)
+		switch {
+		case tangled[name] && skipped[name]:
+			t.Errorf("%s is tangled from the book and skipped by the diff, so nothing checks it", name)
+		case !tangled[name] && !skipped[name]:
+			t.Errorf("%s is written by hand and not skipped, so the diff will report it missing", name)
+		}
+	}
+}
+
+var (
+	skipFlag       = regexp.MustCompile(`-x ([\w.-]+\.txtar)`)
+	tangledFixture = regexp.MustCompile(`:tangle testdata/script/([\w.-]+\.txtar)`)
+)
 #+end_src
 
 ** The fixtures table
@@ -6995,6 +7192,37 @@ func TestDump(t *testing.T) {
 #+end_src
 
 * Changes
+
+** [2026-08-22] The fence
+
+#+begin_quote
+The noweb refusals now sit beside the deviations they trip, each
+with the book that trips it and the error it should produce. The
+file those books tangle into is assembled from chunks named at each
+site, so the file still exists for the suite while the chapter
+exists for a reader. The tests moved to the rules rather than the
+rules gaining a reference to the tests, because the arrangement that
+put them nine chapters apart suited the tangler: their only shared
+property was a destination on disk.
+
+Lint gained its two rules and a caller. It had been written and
+unreachable since stage 4. The duplicate rule sees only the blocks
+org would still tangle, because a commented draft sharing a live
+block's name is a shape this book teaches, and written the other way
+the rule refuses a book already in the suite. refusedName's
+src-block branch went with it: Lint runs earlier and over every
+block, so leaving both would give one rule two messages and let the
+older one die unread.
+
+Two things about the assembled file cannot be seen by running it,
+and both fail quietly. A mistyped reference drops one deviation's
+assertions, and the suite stays green with one refusal fewer in it,
+so the file is checked for wholeness. And the byte-identity diff had
+excluded the whole test directory, which was right while every
+fixture was written by hand; it now names those by hand instead, and
+a test asserts the list holds exactly the ones the book does not
+produce.
+#+end_quote
 
 ** [2026-08-22] The lint stage 10 stands on
 
