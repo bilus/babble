@@ -102,9 +102,11 @@ test.
 How to write and edit book prose, in working order:
 
 1. Load the writing-like-user skill before drafting a sentence, and
-   keep its voice throughout: direct, conversational, varied sentence
-   length, dashes for asides. The skill is the voice; the rules below
-   are structure.
+   keep its voice throughout: direct, conversational, varied
+   sentence length, parenthetical asides. The skill is the voice;
+   the rules below are structure. Where the skill and "Sounding like
+   human" disagree, that section wins, and the dashes are the case
+   it wins: none, anywhere.
 2. Every chapter opens by stating its goal, in one or two sentences
    the reader can test the rest against. Every section has one
    overarching topic. Two topics may share a section when they
@@ -117,7 +119,7 @@ How to write and edit book prose, in working order:
    outputs, and the main principles, in common IT shapes (a
    pipeline, views of one source) a developer can picture at once.
    No edge cases, no hard features. Each hard problem opens the
-   chapter that solves it, as that chapter's motivation---the
+   chapter that solves it, as that chapter's motivation. The
    mutual-reference deadlock opens the sync engine, not the book.
 5. Introduce every book-specific term once, before its first
    load-bearing use. Keep a term table while editing: term, where
@@ -129,10 +131,10 @@ How to write and edit book prose, in working order:
    Vary the shape (an occasional question opener, a two-sentence
    paragraph with no moral), because the pattern applied ritually
    numbs the reader.
-7. No flowery language: no personification of the program, no
-   metaphor that outlives its sentence, no applause lines. When a
-   phrase reads like it wants admiration, delete it and state the
-   fact it was decorating.
+7. No flowery language. "Sounding like human" below carries the
+   rule and the pass that enforces it; the short form is that a
+   phrase reading like it wants admiration gets deleted, and the
+   fact it was decorating gets stated.
 8. Never justify a design by its history. A chapter argues from the
    problem, not from the bug that prompted the work or the version
    that came before. "X, because the old Y drifted" is a journal
@@ -141,6 +143,60 @@ How to write and edit book prose, in working order:
    has never seen an earlier version notices anything missing; if
    the sentence only lands for someone who watched the change, it
    belongs in `* Changes`.
+
+## Comments and naming
+
+Three limits. Only the first has an exception:
+
+- a comment block is at most 7 words
+- a function name is at most 4 words
+- a user-facing message is at most 10 words
+
+A comment on a key function may run longer, and only to tell a
+caller how to use the thing: a trap to avoid, an ordering
+requirement, a precondition the signature does not show. Anything a
+caller must know to call it correctly earns the space.
+
+Nothing else does. Implementation detail, requirements, and the
+wider context belong in the book, where the prose has room and the
+code sits beside it. A comment explaining how the function works, or
+why the project wants it at all, is in the wrong place.
+
+This toolchain is what creates the temptation, which is why the rule
+has to be stated here rather than assumed. The paragraph above a
+block becomes that block's doc comment, so with one paragraph doing
+both jobs, everything drifts into the comment by default. Split
+them: the caller's instructions in the comment, the reasoning in the
+narrative around it. Length is earned by the kind of content, not by
+the identifier being exported.
+
+Write in the active voice. No stage performances. Where two words
+fit, take the more common one. If the book has a vocabulary, check
+it before coining a term, and when a term proves itself across the
+codebase, propose adding it there. If the book has no vocabulary and
+the terms are piling up, suggest starting one.
+
+### Write for a stranger in six months
+
+The reader has none of the conversation that produced the code. They
+cannot see what was tried, argued over, or renamed along the way,
+and they should not need to.
+
+So no history in comments. "Renamed funcA to funcB", "added for the
+counter spike", "this used to take a pointer": git holds all of it,
+with dates and diffs no comment can match.
+
+What git does not hold is the reasoning. Record a dead end when it
+still costs someone a day: "A deadlocks under concurrent writes, so
+this uses B." That comment earns its place forever.
+
+### Why, not how
+
+The code already says how. A comment repeating it is noise, and it
+rots on the next edit, because nothing forces the two to agree.
+
+The single exception is genuinely tricky code, where the how is not
+recoverable by reading it. Difficulty is the trigger, never habit.
 
 ## Prose
 
@@ -174,6 +230,66 @@ How to write and edit book prose, in working order:
   buffer, and the weave turns it into a PDF link (notes.lua repairs
   what pandoc leaves spurious). Helper functions ride in unnamed,
   uncommented blocks beside their tests.
+
+## Sounding like human
+
+The failure this prevents is the one a reader notices first and the
+author never does. It deserves its own pass, and the pass is worth
+real effort.
+
+Run it in a sub-agent, never inline. The writer of a paragraph is
+its worst judge: they read what they meant instead of what they
+wrote, and a reader with no memory of the drafting catches what the
+author reads past every time. This is measured rather than believed.
+A pass run inline over this repository fixed twenty-six clauses, and
+the next two independent reviews found more in prose written after
+it, by the same author, against the same rule.
+
+Then review what comes back. A humanizer that smooths a precise
+claim into a vague one has done more harm than the prose problem it
+fixed.
+
+Start from the humanizer skill, `/anthropic-skills:humanizer`, and
+apply the rules below on top: the skill does not know about the
+verb-ending rule or the comment limits. If the skill is not
+installed where this runs, say so and suggest installing it rather
+than quietly proceeding on house rules alone.
+
+The rules:
+
+- Plain, literal language. No metaphor that outlives its sentence,
+  no applause lines, no personifying the program.
+- No sentence or subclause ends on its verb. This is the object-gap
+  relative clause, often with "that" dropped: "the versions the
+  suite pins", "the handlers you mount", "the method it tests". End
+  on the noun carrying the new information: "The suite pins their
+  versions." Active voice fixes most cases, splitting into two
+  sentences fixes the rest. A clause ending before a comma counts,
+  and that is the instance everyone misses.
+- No em dashes or en dashes. A period, comma, colon or parentheses.
+- No signposting. "Here is", "let's look at", "in this section"
+  announce instead of saying something. Cut the sentence, or give it
+  a fact.
+- No inflated significance, no promotional adjectives, no
+  three-item lists built for rhythm.
+- Vary sentence length. Uniform mid-length sentences read as machine
+  output even when every other rule passes.
+- Comments and doc comments are prose. This section governs them
+  too, not only the narrative.
+
+Dispatching the sub-agent, three things learned by doing it:
+
+- Scope it by construct, not by "the prose". Name what it may
+  rewrite (badge bodies, CriticMarkup insertions, narrative
+  paragraphs) and forbid the rest (code, block headers, dynamic
+  block interiors). Then verify the counts afterwards: badges and
+  their END lines, blocks, brace pairs.
+- Tell it to preserve every technical claim verbatim in substance.
+  "Five arguments to a four-parameter function" must survive as
+  that, not as something smoother and vaguer.
+- Ask it to report where a rule could not be satisfied without
+  changing meaning. The exceptions it argues for are worth reading,
+  and they save a review pass.
 
 ## Process
 
@@ -310,15 +426,22 @@ rejection deletes the twin. Nothing else moves either way.
 
 A badge marks every place a human must look: a PLANNED inline task,
 15 stars, directly before the paragraph that carries the change,
-saying why the change is made, linking the plan entry, carrying the
-stage tag. Before the paragraph, never between a paragraph and its
+carrying a letter, saying why the change is made, linking the plan
+entry, carrying the stage tag.
+
+The letter is how a reviewer names the site. Without one they have
+to quote a line of the badge back at you, or give a page number from
+a PDF that moves on the next weave. Letters run A, B, C in document
+order within a stage, they restart for each stage, and they go when
+the badges go. A stage past Z is a stage that should have been two
+stages. Before the paragraph, never between a paragraph and its
 block, because the paragraph directly above a block is its doc
 comment. Every change cluster starts with one, including code whose
 only change is added holes and CriticMarkup-bearing paragraphs;
 there is no separate HOLE badge, since the hole strings and the
 census already carry the mechanics:
 
-    *************** PLANNED stage 4 replaces the block above ([[#stage-4][plan]]) :stage4:
+    *************** PLANNED [C] stage 4 replaces the block above ([[#stage-4][plan]]) :stage4:
     The twin below is the skeleton. It must not tangle yet: the
     end-to-end test drives writeBack, and a body that reaches
     atomicWrite's panic would turn the suite red.
