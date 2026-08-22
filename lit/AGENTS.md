@@ -400,7 +400,7 @@ Three things about dispatching the sub-agent, learned by doing it:
 
 hole-driven-delivery says what happens in what order; this section
 says where each piece of a planned change lives in the book and what
-it looks like, so a reviewer sees intent exactly where it will land.
+it looks like, so a reviewer sees intent exactly where it applies.
 Asked to write a plan for a literate program, write a stage entry
 here: a markdown file under docs/plans/ or anywhere else outside the
 book is never the plan. The rules are generic; the examples are
