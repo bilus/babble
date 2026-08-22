@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"slices"
 	"strings"
 	"testing"
 
@@ -37,12 +38,12 @@ func TestScripts(t *testing.T) {
 	testscript.Run(t, testscript.Params{Dir: dir})
 }
 
-// The books it reads are the ones this repository ships as books, found
-// by walking for the name rather than listed. Listing them is how
+// It reads the books this repository ships, found by walking for the
+// name rather than listed. Listing them is how
 // ~TestParseCorpora~ came to miss both template books, which are the
 // ones ~make setup~ copies and tangles for every new user. The books
 // inside fixtures are not in the set: a good third of them are there to
-// be refused, and testscript already pins what each should do.
+// be refused, and testscript already pins the expected outcome for each.
 func TestCorpusLints(t *testing.T) {
 	var books []string
 	err := filepath.Walk(".", func(path string, info os.FileInfo, err error) error {
@@ -60,13 +61,15 @@ func TestCorpusLints(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(books) < 2 {
-		t.Fatalf("found %d books to lint; the walk is not finding them", len(books))
+	for _, want := range []string{"lit/templates/go/BOOK.org", "lit/templates/python/BOOK.org"} {
+		if !slices.Contains(books, filepath.FromSlash(want)) {
+			t.Fatalf("the walk missed %s, and those are the books a new project starts from; it found %v", want, books)
+		}
 	}
 	for _, path := range books {
 		t.Run(filepath.ToSlash(path), func(t *testing.T) {
 			if _, err := cmd.Parse(path); err != nil {
-				t.Errorf("the fence fires on a book this repository ships: %v", err)
+				t.Errorf("the fence fires on a book shipped by this repository: %v", err)
 			}
 		})
 	}

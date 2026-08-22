@@ -20,11 +20,11 @@ stderr 'no comment marker'
 ! exists blank.out
 
 ! exec babble tangle quoted.org
-stderr 'quoted inside a example block'
+stderr 'quoted inside an example block'
 ! exists quoted.go
 
 ! exec babble tangle indented.org
-stderr 'quoted inside a example block'
+stderr 'quoted inside an example block'
 ! exists indented.go
 
 ! exec babble tangle trailing.org

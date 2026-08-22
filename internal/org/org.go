@@ -1074,6 +1074,16 @@ func Lint(d *book.Document) error {
 // org still finds.
 var quotedDelimiter = regexp.MustCompile(`(?i)^[ \t]*#\+(begin_src|end_src)`)
 
+// English wants "an example" and "a src", and the block's own kind
+// is what decides which.
+func article(kind string) string {
+	switch kind[0] {
+	case 'a', 'e', 'i', 'o', 'u':
+		return "an " + kind + " block"
+	}
+	return "a " + kind + " block"
+}
+
 func LintQuotedDelimiters(d *book.Document) error {
 	var err error
 	d.Walk(func(n book.Node) bool {
@@ -1094,8 +1104,8 @@ func LintQuotedDelimiters(d *book.Document) error {
 		for _, text := range strings.Split(string(d.Source[body.Start:body.End]), "\n") {
 			line++
 			if quotedDelimiter.MatchString(text) {
-				err = fmt.Errorf("%s:%d: %s quoted inside a %s block; org finds it with a raw search and babble does not, so escape it with a comma",
-					d.Path, line, strings.TrimSpace(text), kind)
+				err = fmt.Errorf("%s:%d: %s quoted inside %s; org finds it with a raw search and babble does not, so escape it with a comma",
+					d.Path, line, strings.TrimSpace(text), article(kind))
 				return false
 			}
 		}

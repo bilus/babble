@@ -322,6 +322,23 @@ book.pdf. A hook that fails stops the run, since make stops at the
 first failing prerequisite, which is what you want from a check
 placed in before_tangle.
 
+Emacs finds a dynamic block by searching raw text, wherever the line
+sits, so an opener quoted inside a code body is one it rewrites in
+place. Without a check first the tangler damages the book instead of
+refusing it, and the damage is silent. babble judges a book by the
+same rules it tangles by, so asking it first catches the shape.
+
+The check hangs off the recipe that runs Emacs rather than off the
+tangle target. A prerequisite of a target is ordered only when make
+runs serially; under -j the two start together, and Emacs finishes
+the tangle while the check is still deciding.
+
+A book with no babble on the machine tangles unguarded, which is the
+right direction: the check exists to catch a mistake someone is
+making while editing, and it costs nothing to skip where it cannot
+run. When a stale babble refuses a book that is fixing the very rule
+it enforces, remove the binary and tangle once to rebuild it.
+
 #+name: lit-mk-targets
 #+begin_src makefile :tangle lit.mk
 LIT ?= lit
@@ -345,6 +362,13 @@ after_weave::
 
 tangle_el:
 	emacs -Q --batch -l $(LIT)/tangle.el --eval '(lit-tangle "BOOK.org")'
+
+tangle_el: guard_book
+
+guard_book:
+	@if command -v babble >/dev/null 2>&1; then babble parse BOOK.org >/dev/null; \
+	elif [ -x ./babble ]; then ./babble parse BOOK.org >/dev/null; \
+	else :; fi
 
 tangle: before_tangle tangle_el after_tangle
 

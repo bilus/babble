@@ -271,13 +271,24 @@ The rules:
 
 - Plain, literal language. No metaphor that outlives its sentence,
   no applause lines, no personifying the program.
-- No sentence or subclause ends on its verb. This is the object-gap
-  relative clause, often with "that" dropped: "the versions the
-  suite pins", "the handlers you mount", "the method it tests". End
-  on the noun carrying the new information: "The suite pins their
-  versions." Active voice fixes most cases, splitting into two
-  sentences fixes the rest. A clause ending before a comma counts
-  too, and most people miss that one.
+- No clause ends on its verb. This is the object-gap relative
+  clause, often with "that" dropped: "the versions the suite pins",
+  "the handlers you mount", "the method it tests". End on the noun
+  with the new information in it: "The suite pins their versions."
+  Active voice fixes most cases, splitting into two sentences fixes
+  the rest. Three checks, not one:
+
+  1. the sentence does not end on its verb
+  2. no subclause ends on its verb, including one ending at a comma
+  3. no clause inside a subject or object ends on its verb
+
+  The third survives casual proofreading. "The lowest layer the
+  handler reaches generates the token" ends on a noun and passes a
+  naive check, but its subject hides a gap that strands "reaches"
+  before the main verb arrives. Dropping the relative clause beats
+  rewording it: "At its lowest layer, the handler generates the
+  token." A prepositional phrase does the same work with nothing to
+  strand.
 - No em dashes or en dashes, and none of their ASCII spellings
   either: org renders both -- and --- as dashes, so a grep for the
   characters alone will not find them. A period, comma, colon or
@@ -291,6 +302,42 @@ The rules:
   output even when every other rule passes.
 - Comments and doc comments are prose. This section governs them
   too, not only the narrative.
+
+### Banned words
+
+A rule against metaphor does not catch a metaphor the writer stopped
+hearing as one. These are named instead, with the plain word beside
+each. The list grows: when a review catches one, it goes in the
+list.
+
+| word | instead |
+|---|---|
+| mint, mints, minted | generate, create |
+| carry, carries, carrying | contain, hold, include, or name what the thing does |
+| land, lands, landed, landing | reach, go to, arrive at, or name the actor |
+
+Each of these reads as ordinary engineering vocabulary, which is
+what makes them hard to catch in your own prose. None of them means
+anything the plain word does not.
+
+One pattern showed up in all three. When the plain word reads badly
+in the slot, the sentence is usually missing its subject, and naming
+the actor fixes both faults at once. "A reconnect may land on a
+different machine" resists every synonym for "land" until you write
+"A different machine may answer a reconnect", which turns an arrival
+into someone doing something. Treat an awkward replacement as a
+signal, not as grounds for keeping the metaphor.
+
+A word a book defines and uses consistently is a term of art, not a
+metaphor reached for in the moment, and the list does not touch it.
+The test is whether the book introduces it and holds it to one
+meaning. If it does, the word is vocabulary. If it appears once
+because it sounded precise, it is on the list whether or not it is
+written there yet.
+
+The list binds new and edited prose. Sweeping what already exists is
+a stage with a plan entry, and it will be a large one: a book of any
+size is likely to hold dozens of each.
 
 Three things about dispatching the sub-agent, learned by doing it:
 

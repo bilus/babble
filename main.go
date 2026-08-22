@@ -25,7 +25,7 @@ const usage = `usage: babble <command> [flags] [BOOK.org]
 
 commands:
   tangle  write every eligible code block to its target file
-  parse   read the book and report whether it parses (--dump for JSON)
+  parse   read the book and judge it, reporting the first refusal (--dump for JSON)
   init    start a lit book in an empty directory (--module, --dir)
   vendor  write the embedded lit/ into this directory (--dir)
 `

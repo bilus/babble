@@ -22,6 +22,13 @@ after_weave::
 tangle_el:
 	emacs -Q --batch -l $(LIT)/tangle.el --eval '(lit-tangle "BOOK.org")'
 
+tangle_el: guard_book
+
+guard_book:
+	@if command -v babble >/dev/null 2>&1; then babble parse BOOK.org >/dev/null; \
+	elif [ -x ./babble ]; then ./babble parse BOOK.org >/dev/null; \
+	else :; fi
+
 tangle: before_tangle tangle_el after_tangle
 
 weave: before_weave book.pdf after_weave

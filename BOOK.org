@@ -61,20 +61,19 @@ every dynamic block, and the labels are spelled without the sigils,
 so the census never matches its own index.
 
 #+begin: plan-toc
-- [[file:BOOK.org::81][81]] entry: PLANNED Stage 21: the environment
-- [[file:BOOK.org::129][129]] entry: PLANNED Stage 26: chapter files
-- [[file:BOOK.org::230][230]] entry: PLANNED Stage 25: minting goldens from the oracle
-- [[file:BOOK.org::278][278]] entry: PLANNED Stage 10: the fence
-- [[file:BOOK.org::390][390]] entry: PLANNED Stage 11: parity and self-hosting
-- [[file:BOOK.org::1207][1207]] badge: PLANNED stage 10 adds the skeleton and moves the first bo...
-- [[file:BOOK.org::1330][1330]] note: stage 10: src bodies come out of this bullet. Measured, t...
-- [[file:BOOK.org::3931][3931]] badge: PLANNED stage 10 rewrites this section (plan)
-- [[file:BOOK.org::3954][3954]] hole 10: a name two src blocks carry, and a name that is also a gr...
-- [[file:BOOK.org::5076][5076]] badge: PLANNED stage 10 replaces the block above (plan)
-- [[file:BOOK.org::5083][5083]] twin of cmd-read
-- [[file:BOOK.org::5103][5103]] generated diff
-- [[file:BOOK.org::7441][7441]] badge: PLANNED stage 21 adds the two paragraphs below (plan)
-- [[file:BOOK.org::7464][7464]] insertion: devbox.json and its lockfile,
+- [[file:BOOK.org::80][80]] entry: PLANNED Stage 21: the environment
+- [[file:BOOK.org::128][128]] entry: PLANNED Stage 26: chapter files
+- [[file:BOOK.org::229][229]] entry: PLANNED Stage 25: minting goldens from the oracle
+- [[file:BOOK.org::277][277]] entry: PLANNED Stage 10: the fence
+- [[file:BOOK.org::389][389]] entry: PLANNED Stage 11: parity and self-hosting
+- [[file:BOOK.org::1206][1206]] badge: PLANNED stage 10 adds the skeleton and moves the first bo...
+- [[file:BOOK.org::3919][3919]] badge: PLANNED stage 10 rewrites this section (plan)
+- [[file:BOOK.org::3942][3942]] hole 10: a name two src blocks carry, and a name that is also a gr...
+- [[file:BOOK.org::5074][5074]] badge: PLANNED stage 10 replaces the block above (plan)
+- [[file:BOOK.org::5081][5081]] twin of cmd-read
+- [[file:BOOK.org::5101][5101]] generated diff
+- [[file:BOOK.org::7442][7442]] badge: PLANNED stage 21 adds the two paragraphs below (plan)
+- [[file:BOOK.org::7465][7465]] insertion: devbox.json and its lockfile,
 
 #+end:
 
@@ -1309,13 +1308,6 @@ package main
   and names the language. The driver does not refuse it: it dies
   partway through with the file unwritten, and matching a crash is
   worth less than naming what is wrong.
-- A block delimiter written at column zero inside an example, export
-  or comment body is refused. Org finds the block above by searching
-  the raw text backwards, so it reads that line as a real delimiter
-  and anchors a comment extent on it; babble reads a tree, where the
-  line is text inside one verbatim block. Both engines would write a
-  file and the files would differ. Indenting the line, or escaping
-  it with a comma, keeps the meaning and removes the ambiguity.
 - ~.lit/comments.json~ is looked for beside the book. The driver
   resolves the book's path a second time inside a buffer already
   visiting it, so a relative path naming a subdirectory looks one
@@ -1326,11 +1318,7 @@ package main
   comment block bodies are a lint error: org's raw backward searches
   would anchor comment extents on them, and no structural parser can
   agree with that. Dynamic-block delimiters are a separate rule, two
-  bullets down, because indentation does not put one out of reach.
-  {>>stage 10: src bodies come out of this bullet. Measured, the two
-  engines agree on them: the backward search looks for an end
-  delimiter and a src body cannot carry one without ending itself,
-  and an opener quoted in one tangles the same way in both<<}
+  bullets down.
 - A dynamic block with an unknown name is an error; org empties
   its interior and logs a message it then ignores. An indented
   dynamic block is an error; org re-indents its interior, padding
@@ -1762,7 +1750,7 @@ const usage = `usage: babble <command> [flags] [BOOK.org]
 
 commands:
   tangle  write every eligible code block to its target file
-  parse   read the book and report whether it parses (--dump for JSON)
+  parse   read the book and judge it, reporting the first refusal (--dump for JSON)
   init    start a lit book in an empty directory (--module, --dir)
   vendor  write the embedded lit/ into this directory (--dir)
 `
@@ -3982,6 +3970,16 @@ org still finds.
 #+begin_src go :tangle internal/org/org.go :comments org
 var quotedDelimiter = regexp.MustCompile(`(?i)^[ \t]*#\+(begin_src|end_src)`)
 
+// English wants "an example" and "a src", and the block's own kind
+// is what decides which.
+func article(kind string) string {
+	switch kind[0] {
+	case 'a', 'e', 'i', 'o', 'u':
+		return "an " + kind + " block"
+	}
+	return "a " + kind + " block"
+}
+
 func LintQuotedDelimiters(d *book.Document) error {
 	var err error
 	d.Walk(func(n book.Node) bool {
@@ -4002,8 +4000,8 @@ func LintQuotedDelimiters(d *book.Document) error {
 		for _, text := range strings.Split(string(d.Source[body.Start:body.End]), "\n") {
 			line++
 			if quotedDelimiter.MatchString(text) {
-				err = fmt.Errorf("%s:%d: %s quoted inside a %s block; org finds it with a raw search and babble does not, so escape it with a comma",
-					d.Path, line, strings.TrimSpace(text), kind)
+				err = fmt.Errorf("%s:%d: %s quoted inside %s; org finds it with a raw search and babble does not, so escape it with a comma",
+					d.Path, line, strings.TrimSpace(text), article(kind))
 				return false
 			}
 		}
@@ -4015,12 +4013,12 @@ func LintQuotedDelimiters(d *book.Document) error {
 
 Dynamic-block delimiters are not covered by the rule above, and the
 reason is worth naming here so a reader does not go looking. This
-rule works by asking whether a line looks like a delimiter
-somewhere a delimiter should not be, and indenting the line answers
-it, because org's backward search for a block opener starts at
-column zero. Org's search for a dynamic block starts anywhere and
-stops at no block boundary, so no test of one line can settle it.
-That refusal is made where the tree is finished, in the parse.
+rule decides from a line and the block it sits in. The
+dynamic-block one cannot: org's search for a dynamic block stops at
+no block boundary, so settling it means comparing a whole-buffer
+scan against the whole tree. Indentation separates neither rule,
+since none of org's raw searches are anchored at a column. That
+refusal is made where the tree is finished, in the parse.
 
 * The tangle engine
 
@@ -5037,8 +5035,8 @@ func Tangle(path string) error {
 #+end_src
 
 # doc
-Parse is what "babble parse" does to one book: read it by exactly
-the rules a tangle would, and hand back the tree without writing
+Parse is what "babble parse" does to one book: read it under exactly
+the rules a tangle applies, and hand back the tree without writing
 anything.
 
 #+begin_src go :tangle internal/cmd/cmd.go :comments org
@@ -5615,7 +5613,7 @@ The suite as it stands, by what each file pins:
 | tangle-comment-table.txtar | comment syntax by language, and its four edges |
 | tangle-body-trim.txtar | a bare comment marker in a body, trimmed as the driver trims it |
 | tangle-comments.txtar | doc comments: the extent, the marker, the sigil, the wrapping |
-| tangle-comment-refusals.txtar | a language with no marker, and a delimiter quoted in an example |
+| tangle-comment-refusals.txtar | a language with no marker, and five delimiters quoted in a body |
 | tangle-noweb.txtar | prefixes, group separators, gated recursion, and how far COMMENT reaches |
 | tangle-noweb-refusals.txtar | a miss, a cycle, a call reference, a near miss in case, a buried name, a heading custom id, and a keyword outside the affiliated set |
 | dblock-refresh.txtar | both writers, from stale interiors, with the census folding case |
@@ -5836,6 +5834,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"slices"
 	"strings"
 	"testing"
 
@@ -6229,12 +6228,12 @@ unreachable because nothing calls it yet, and that is what keeps the
 suite green while a stage is planned. A test has a caller by
 definition, so the same property has to be asked for.
 
-The books it reads are the ones this repository ships as books, found
-by walking for the name rather than listed. Listing them is how
+It reads the books this repository ships, found by walking for the
+name rather than listed. Listing them is how
 ~TestParseCorpora~ came to miss both template books, which are the
 ones ~make setup~ copies and tangles for every new user. The books
 inside fixtures are not in the set: a good third of them are there to
-be refused, and testscript already pins what each should do.
+be refused, and testscript already pins the expected outcome for each.
 
 #+begin_src go :tangle main_test.go :comments org
 func TestCorpusLints(t *testing.T) {
@@ -6254,13 +6253,15 @@ func TestCorpusLints(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(books) < 2 {
-		t.Fatalf("found %d books to lint; the walk is not finding them", len(books))
+	for _, want := range []string{"lit/templates/go/BOOK.org", "lit/templates/python/BOOK.org"} {
+		if !slices.Contains(books, filepath.FromSlash(want)) {
+			t.Fatalf("the walk missed %s, and those are the books a new project starts from; it found %v", want, books)
+		}
 	}
 	for _, path := range books {
 		t.Run(filepath.ToSlash(path), func(t *testing.T) {
 			if _, err := cmd.Parse(path); err != nil {
-				t.Errorf("the fence fires on a book this repository ships: %v", err)
+				t.Errorf("the fence fires on a book shipped by this repository: %v", err)
 			}
 		})
 	}
@@ -6986,14 +6987,14 @@ whole body under the oracle and to the real named block here.
 
 Indentation is not an escape, which is why the rule stopped asking
 for column zero. Four lines of this book were relying on it, all
-delimiters inside example bodies, and they wear the comma now.
+delimiters inside example bodies, and they carry the comma now.
 
 ~#+name:~ stays out of the pattern. Every hazard carrying a quoted
 name also carries a quoted opener, and a name quoted on its own
 measures identical under both engines, so refusing it would invent a
 deviation.
 
-~babble parse~ judges a book by the same rules ~babble tangle~ does.
+~babble parse~ judges a book by exactly the rules a tangle applies.
 It was the third copy of that order and the only one that judged
 nothing, so a book could pass one and be refused by the other.
 

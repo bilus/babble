@@ -40,8 +40,8 @@ func Tangle(path string) error {
 	return tangle.Run(d)
 }
 
-// Parse is what "babble parse" does to one book: read it by exactly
-// the rules a tangle would, and hand back the tree without writing
+// Parse is what "babble parse" does to one book: read it under exactly
+// the rules a tangle applies, and hand back the tree without writing
 // anything.
 func Parse(path string) (*book.Document, error) {
 	return read(path)
