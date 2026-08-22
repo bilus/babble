@@ -19,7 +19,6 @@ import (
 
 	"github.com/bilus/babble/internal/book"
 	"github.com/bilus/babble/internal/cmd"
-	"github.com/bilus/babble/internal/org"
 )
 
 const usage = `usage: babble <command> [flags] [BOOK.org]
@@ -53,10 +52,7 @@ func run(args []string, stdout, stderr io.Writer) int {
 			fmt.Fprint(stderr, usage)
 			return 2
 		}
-		d, err := org.Parse(fs.Arg(0))
-		if err == nil {
-			err = org.ResolveAll(d)
-		}
+		d, err := cmd.Parse(fs.Arg(0))
 		if err != nil {
 			fmt.Fprintln(stderr, "babble:", err)
 			return 1

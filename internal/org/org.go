@@ -1072,21 +1072,30 @@ func Lint(d *book.Document) error {
 // the ambiguity. Indenting does not: none of the raw searches org runs
 // for these are anchored at a column, so an indented delimiter is one
 // org still finds.
-var quotedDelimiter = regexp.MustCompile(`^#\+(begin|end)_src`)
+var quotedDelimiter = regexp.MustCompile(`(?i)^[ \t]*#\+(begin_src|end_src)`)
 
 func LintQuotedDelimiters(d *book.Document) error {
 	var err error
 	d.Walk(func(n book.Node) bool {
-		v, ok := n.(*book.VerbatimBlock)
-		if !ok || err != nil {
+		var body book.Span
+		var line int
+		var kind string
+		switch n := n.(type) {
+		case *book.VerbatimBlock:
+			body, line, kind = n.Body, n.Line, n.Kind
+		case *book.SrcBlock:
+			body, line, kind = n.Body, n.Line, "src"
+		default:
 			return true
 		}
-		line := v.Line
-		for _, text := range strings.Split(string(d.Source[v.Body.Start:v.Body.End]), "\n") {
+		if err != nil {
+			return true
+		}
+		for _, text := range strings.Split(string(d.Source[body.Start:body.End]), "\n") {
 			line++
 			if quotedDelimiter.MatchString(text) {
-				err = fmt.Errorf("%s:%d: %s quoted at column zero inside a %s block; org reads it as a real one and babble does not, so indent it or escape it with a comma",
-					d.Path, line, strings.TrimSpace(text), v.Kind)
+				err = fmt.Errorf("%s:%d: %s quoted inside a %s block; org finds it with a raw search and babble does not, so escape it with a comma",
+					d.Path, line, strings.TrimSpace(text), kind)
 				return false
 			}
 		}

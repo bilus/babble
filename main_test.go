@@ -11,6 +11,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/bilus/babble/internal/cmd"
 	"github.com/bilus/babble/internal/oracletest"
 	"github.com/rogpeppe/go-internal/testscript"
 )
@@ -43,7 +44,32 @@ func TestScripts(t *testing.T) {
 // inside fixtures are not in the set: a good third of them are there to
 // be refused, and testscript already pins what each should do.
 func TestCorpusLints(t *testing.T) {
-	t.Skip("HOLE(28): walk the repository for BOOK.org, read each, fail on any refusal")
+	var books []string
+	err := filepath.Walk(".", func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		if info.IsDir() && info.Name() == ".git" {
+			return filepath.SkipDir
+		}
+		if !info.IsDir() && info.Name() == "BOOK.org" {
+			books = append(books, path)
+		}
+		return nil
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(books) < 2 {
+		t.Fatalf("found %d books to lint; the walk is not finding them", len(books))
+	}
+	for _, path := range books {
+		t.Run(filepath.ToSlash(path), func(t *testing.T) {
+			if _, err := cmd.Parse(path); err != nil {
+				t.Errorf("the fence fires on a book this repository ships: %v", err)
+			}
+		})
+	}
 }
 
 // TestOracle is the cross-check, one subtest per fixture. It is a

@@ -1,22 +1,44 @@
-# Two shapes a doc comment cannot be written for. A language whose
-# comment prefix has no marker in it leaves nothing to write with,
-# and the driver does not refuse it, it dies partway with the file
-# unwritten. A delimiter quoted at column zero inside an example body
-# is an anchor to org's backward text search and is not one to a
-# tree, so the two engines would disagree about where an extent
-# begins and both would write a file.
+# A language whose comment prefix has no marker in it leaves nothing
+# to write a doc comment with, and the driver does not refuse it, it
+# dies partway with the file unwritten.
+#
+# The rest are delimiters quoted inside a body, where org's raw
+# searches find an anchor and a tree finds text. None of the searches
+# is anchored at a column, so indentation is not an escape and the
+# books below carry both spellings. Two of the shapes were measured
+# writing different files from the two engines while each run
+# succeeded: a closer carrying a trailing word, which no parser ends
+# a block on but the search behind a doc comment stops at, and a name
+# quoted beside an opener, which org's noweb lookup answers with the
+# carrying block.
 
 # oracle: skip blank.org emacs dies partway here rather than
-# refusing, and quoted.org is the divergence this refusal exists to
-# prevent, so neither can be compared.
+# refusing, so it cannot be compared.
 
 ! exec babble tangle blank.org
 stderr 'no comment marker'
 ! exists blank.out
 
 ! exec babble tangle quoted.org
-stderr 'quoted at column zero'
+stderr 'quoted inside a example block'
 ! exists quoted.go
+
+! exec babble tangle indented.org
+stderr 'quoted inside a example block'
+! exists indented.go
+
+! exec babble tangle trailing.org
+stderr 'quoted inside a src block'
+! exists trailing.go
+
+! exec babble tangle smuggled.org
+stderr 'quoted inside a src block'
+! exists smuggled.go
+
+# parse judges a book by the same rules tangle does, which is the
+# whole reason both go through one reader.
+! exec babble parse trailing.org
+stderr 'quoted inside a src block'
 
 -- .lit/comments.json --
 {"blank": " "}
@@ -41,4 +63,45 @@ whatever
 
 #+begin_src go :tangle quoted.go :comments org
 package quoted
+#+end_src
+-- indented.org --
+#+title: an indented delimiter in an example body
+
+#+begin_example
+  #+begin_src go
+  x
+#+end_example
+
+#+begin_src go :tangle indented.go :comments org
+package a
+#+end_src
+-- trailing.org --
+#+title: a closer carrying a trailing word
+
+#+begin_src go :tangle trailing.go
+package a
+#+end_src trailing
+#+end_src
+Prose right after the block, with no blank line above it.
+
+#+begin_src go :tangle trailing.go :comments org
+func B() {}
+#+end_src
+-- smuggled.org --
+#+title: a name quoted beside an opener
+
+#+begin_src go :tangle smuggled.go
+package a
+#+name: inner
+#+begin_src go
+SMUGGLED
+#+end_src
+
+#+name: inner
+#+begin_src go :tangle no
+REAL
+#+end_src
+
+#+begin_src go :tangle smuggled.go :noweb yes
+<<inner>>
 #+end_src
