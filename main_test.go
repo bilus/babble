@@ -36,12 +36,14 @@ func TestScripts(t *testing.T) {
 	testscript.Run(t, testscript.Params{Dir: dir})
 }
 
-// A hole in a test skips rather than panics. Elsewhere a hole is
-// unreachable because nothing calls it yet, and that is what keeps the
-// suite green while a stage is planned. A test has a caller by
-// definition, so the same property has to be asked for.
+// The books it reads are the ones this repository ships as books, found
+// by walking for the name rather than listed. Listing them is how
+// ~TestParseCorpora~ came to miss both template books, which are the
+// ones ~make setup~ copies and tangles for every new user. The books
+// inside fixtures are not in the set: a good third of them are there to
+// be refused, and testscript already pins what each should do.
 func TestCorpusLints(t *testing.T) {
-	t.Skip("HOLE(28): read every book in this repository, and fail on any refusal")
+	t.Skip("HOLE(28): walk the repository for BOOK.org, read each, fail on any refusal")
 }
 
 // TestOracle is the cross-check, one subtest per fixture. It is a

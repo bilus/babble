@@ -40,9 +40,15 @@ func Tangle(path string) error {
 	return tangle.Run(d)
 }
 
-// Read is the front half of Tangle, and it is exported because the
-// parse subcommand judges a book by exactly these rules. Tangle
-// performs it twice on the same path.
+// Parse is what "babble parse" does to one book: read it by exactly
+// the rules a tangle would, and hand back the tree without writing
+// anything.
+func Parse(path string) (*book.Document, error) {
+	return read(path)
+}
+
+// read is the front half of Tangle, separate because Tangle performs
+// it twice on the same path.
 func read(path string) (*book.Document, error) {
 	d, err := org.Parse(path)
 	if err != nil {

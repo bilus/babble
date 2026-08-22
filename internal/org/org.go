@@ -1067,9 +1067,11 @@ func Lint(d *book.Document) error {
 
 // The shape is refused rather than reconciled. Reproducing org's
 // search would mean giving up the tree for the one case that abuses
-// it, and no book needs to quote a delimiter at column zero: indenting
-// it, or escaping it with a comma the way org already provides for,
-// leaves the meaning and removes the ambiguity.
+// it, and no book needs to quote a delimiter bare. A comma in front of
+// it, the escape org already provides, leaves the meaning and removes
+// the ambiguity. Indenting does not: none of the raw searches org runs
+// for these are anchored at a column, so an indented delimiter is one
+// org still finds.
 var quotedDelimiter = regexp.MustCompile(`^#\+(begin|end)_src`)
 
 func LintQuotedDelimiters(d *book.Document) error {

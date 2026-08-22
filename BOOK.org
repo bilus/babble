@@ -61,30 +61,33 @@ every dynamic block, and the labels are spelled without the sigils,
 so the census never matches its own index.
 
 #+begin: plan-toc
-- [[file:BOOK.org::91][91]] entry: PLANNED Stage 21: the environment
-- [[file:BOOK.org::139][139]] entry: PLANNED Stage 26: chapter files
-- [[file:BOOK.org::240][240]] entry: PLANNED Stage 25: minting goldens from the oracle
-- [[file:BOOK.org::288][288]] entry: PLANNED Stage 28: the lint stage 10 stands on
-- [[file:BOOK.org::377][377]] entry: PLANNED Stage 10: the fence
-- [[file:BOOK.org::487][487]] entry: PLANNED Stage 11: parity and self-hosting
-- [[file:BOOK.org::1304][1304]] badge: PLANNED stage 10 adds the skeleton and moves the first bo...
-- [[file:BOOK.org::1427][1427]] note: stage 10: src bodies come out of this bullet. Measured, t...
-- [[file:BOOK.org::1951][1951]] badge: PLANNED stage 28 replaces the block above (plan)
-- [[file:BOOK.org::1956][1956]] twin of cli-run
-- [[file:BOOK.org::2028][2028]] generated diff
-- [[file:BOOK.org::4127][4127]] badge: PLANNED stage 10 rewrites this section (plan)
-- [[file:BOOK.org::4150][4150]] hole 10: a name two src blocks carry, and a name that is also a gr...
-- [[file:BOOK.org::4202][4202]] badge: PLANNED stage 28 replaces the block above (plan)
-- [[file:BOOK.org::4209][4209]] twin of lint-quoted
-- [[file:BOOK.org::4244][4244]] generated diff
-- [[file:BOOK.org::5307][5307]] badge: PLANNED stage 28 renames read and exports it (plan)
-- [[file:BOOK.org::5334][5334]] badge: PLANNED stage 10 replaces the block above (plan)
-- [[file:BOOK.org::5341][5341]] twin of cmd-read
-- [[file:BOOK.org::5361][5361]] generated diff
-- [[file:BOOK.org::6472][6472]] badge: PLANNED stage 28 adds the section below (plan)
-- [[file:BOOK.org::6495][6495]] hole 28: read every book in this repository, and fail on any refusal
-- [[file:BOOK.org::7634][7634]] badge: PLANNED stage 21 adds the two paragraphs below (plan)
-- [[file:BOOK.org::7657][7657]] insertion: devbox.json and its lockfile,
+- [[file:BOOK.org::94][94]] entry: PLANNED Stage 21: the environment
+- [[file:BOOK.org::142][142]] entry: PLANNED Stage 26: chapter files
+- [[file:BOOK.org::243][243]] entry: PLANNED Stage 25: minting goldens from the oracle
+- [[file:BOOK.org::291][291]] entry: PLANNED Stage 28: the lint stage 10 stands on
+- [[file:BOOK.org::405][405]] entry: PLANNED Stage 10: the fence
+- [[file:BOOK.org::517][517]] entry: PLANNED Stage 11: parity and self-hosting
+- [[file:BOOK.org::1334][1334]] badge: PLANNED stage 10 adds the skeleton and moves the first bo...
+- [[file:BOOK.org::1457][1457]] note: stage 10: src bodies come out of this bullet. Measured, t...
+- [[file:BOOK.org::1903][1903]] badge: PLANNED stage 28 replaces the block above (plan)
+- [[file:BOOK.org::1907][1907]] twin of cli-head
+- [[file:BOOK.org::1942][1942]] generated diff
+- [[file:BOOK.org::2032][2032]] badge: PLANNED stage 28 replaces the block above (plan)
+- [[file:BOOK.org::2037][2037]] twin of cli-run
+- [[file:BOOK.org::2109][2109]] generated diff
+- [[file:BOOK.org::4208][4208]] badge: PLANNED stage 10 rewrites this section (plan)
+- [[file:BOOK.org::4231][4231]] hole 10: a name two src blocks carry, and a name that is also a gr...
+- [[file:BOOK.org::4284][4284]] badge: PLANNED stage 28 replaces the block above (plan)
+- [[file:BOOK.org::4291][4291]] twin of lint-quoted
+- [[file:BOOK.org::4326][4326]] generated diff
+- [[file:BOOK.org::5389][5389]] badge: PLANNED stage 28 adds the paragraph and block below (plan)
+- [[file:BOOK.org::5433][5433]] badge: PLANNED stage 10 replaces the block above (plan)
+- [[file:BOOK.org::5440][5440]] twin of cmd-read
+- [[file:BOOK.org::5460][5460]] generated diff
+- [[file:BOOK.org::6571][6571]] badge: PLANNED stage 28 adds the section below (plan)
+- [[file:BOOK.org::6601][6601]] hole 28: walk the repository for BOOK.org, read each, fail on any ...
+- [[file:BOOK.org::7740][7740]] badge: PLANNED stage 21 adds the two paragraphs below (plan)
+- [[file:BOOK.org::7763][7763]] insertion: devbox.json and its lockfile,
 
 #+end:
 
@@ -294,8 +297,8 @@ cross-check excuses, and leaves each fixture's script untouched.
 :SIZE:     ~250 lines
 :END:
 
-Claim: after this stage a delimiter quoted at column zero inside a
-src body is refused, ~babble parse~ judges a book by the same rules
+Claim: after this stage a delimiter quoted inside a src body is
+refused at any indentation, ~babble parse~ judges a book by the same rules
 ~babble tangle~ does, and a test runs those rules over every book this
 repository owns.
 
@@ -321,44 +324,69 @@ the oracle, smuggled markup included, and to the real named block
 under babble.
 
 Decided: (1) The lint walks src bodies as well as verbatim bodies,
-and looks for ~#+name:~ as well as the two src delimiters. Measured
-first: no book in this repository carries such a line today, so the
-rule costs nothing to adopt and would have cost something to adopt
-later.
+and stops requiring column zero. Indentation is not an escape here,
+which was measured on both hazards: the closer carrying a word
+diverges indented, and so does the quoted name. None of the searches
+org runs for these are anchored at a column.
 
-(2) ~babble parse~ runs the same lints as ~babble tangle~. It is the
+Widening it that far reaches four lines of this book, all of them
+delimiters inside example bodies that were relying on their
+indentation. They are harmless where they sit, and both engines
+agree on them, so the stage escapes them with the comma the book
+already uses in fifty-odd other places rather than carving an
+exception into the rule.
+
+(2) ~#+name:~ stays out of the pattern. Every hazard involving a
+quoted name also carries a quoted ~#+begin_src~, which the pattern
+already catches, and a name quoted on its own measures identical
+under both engines. Adding it would refuse a shape the two engines
+agree on.
+
+(3) ~babble parse~ runs the same lints as ~babble tangle~. It is the
 third copy of that order and the only one that judges nothing, which
 is why a book can pass ~parse~ and be refused by ~tangle~ today. One
 reader, one set of rules.
 
-(3) A test lints every book in the repository. The Deviations chapter
+(4) A test lints every book in the repository. The Deviations chapter
 already claims that no refusal fires on a real book and that a test
 enforces it, and no test does. More than bookkeeping: the lints are
 reachable only through the tangle flow, so nothing runs them over
 this book, and ~TestParseCorpora~ only parses.
 
-(4) The tangle gets a guard before Emacs opens the book. Org refreshes
+(5) The tangle gets a guard before Emacs opens the book. Org refreshes
 a dynamic block by raw search wherever the line sits, so an unescaped
-~#+begin:~ inside a src body is one org will rewrite in place, and
+~#+begin:~ inside a src body is one org rewrites in place, and
 ~make tangle~ would damage the book rather than refuse it. Measured:
-the book's bytes changed. The guard runs ~babble parse~ from a
-~before_tangle~ hook, which is best effort by nature, since it needs a
-babble that this repository builds from the book it is checking. When
-the binary is absent the hook says so and stands aside.
+the book's bytes changed.
+
+The guard hangs off the recipe that runs Emacs rather than off the
+tangle target. A prerequisite of the target is ordered only when make
+runs serially, and under ~-j~ the two start together: measured, Emacs
+tangled the whole book while the guard was still deciding, and
+tangled it again after the guard had failed. Ordering that matters
+has to be stated where it is enforced.
+
+It is best effort even so, since it runs a babble built from the book
+under test, and a fresh checkout has no binary. When the binary is
+absent the hook says so and stands aside. That is the right failure
+direction: the guard exists to catch a mistake in a book someone is
+editing, and someone editing this book has built it.
 
 - [ ] plan approved (the human ticks this box)
 - [ ] inserted prose reads steady-state
 - [ ] Changes draft below reads right in the journal
 - [ ] twins accepted: :tangle headers swapped, old blocks DROPPED
 - [ ] seen to fail: both counterexample books, and the corpus test
+- [ ] tangle-comment-refusals reworded: the message drops "at column zero"
 - [ ] census clean for stage 28, suite green under ORACLE=1
 - [ ] Changes entry dated and filed, plan entry deleted
 
 *** Changes draft
 
 #+begin_quote
-A delimiter quoted at column zero inside a src body is refused, where
-before only a verbatim body was checked. Two shapes made the engines
+A delimiter quoted inside a src body is refused, at any
+indentation, where before the rule reached a verbatim body at column
+zero only. Two shapes made the engines
 write different files with both runs succeeding: a closer carrying a
 trailing word, which the unanchored search behind a doc comment stops
 at, and a name quoted inside another block's body, which org's noweb
@@ -437,12 +465,14 @@ it. That ordering is the point of the stage: a test written from the
 implementation inherits the implementation's blind spot, which is
 how three defects survived a green suite this month.
 
-(6) One claim is dropped rather than built, and it was measured. A
-delimiter quoted inside a src body needs no refusal: an opener there
-tangles identically under both engines, and a closer cannot sit in a
-src body without ending it, which both engines then do in the same
-place. Refusing a shape the two engines agree on would invent a
-deviation to guard against a mistake this project does not make.
+(6) Corrected, and narrowed to what measurement supports. An earlier
+draft dropped the whole src-body refusal on the grounds that both
+engines agree there. They agree on a bare opener, and only on that. A
+closer carrying a trailing word ends no block for either parser and
+still moves a doc comment under the oracle, and a quoted name plus a
+quoted opener sends a reference to the carrying block. [[#stage-28][Stage 28]] takes
+the rule and the two shapes; what remains dropped is the claim that
+an opener alone needs refusing.
 
 (7) The org half of every deviation stays prose and the chapter says
 so. Each bullet claims two things, that babble refuses X and that org
@@ -1297,7 +1327,7 @@ and refuse books that are fine.
 Places where babble departs from what org would do: refusals,
 each a loud error instead of an imitation, plus one byte-neutral
 difference in when files are written. The refusals are the fence.
-No refusal may fire on a real book, and [[#stage-10][stage 10]] adds the test that
+No refusal may fire on a real book, and [[#stage-28][stage 28]] adds the test that
 enforces it; today the corpus is only parsed, not judged. The error
 message always names the construct and the supported alternative.
 
@@ -1870,9 +1900,60 @@ func main() {
 }
 #+end_src
 
+*************** PLANNED stage 28 replaces the block above ([[#stage-28][plan]]) :stage28:
+With parse reading through the flow package, main stops reaching for
+the frontend at all, so the import goes.
+*************** END
+#+name: cli-head--planned
+#+begin_src go :tangle no
+package main
+
+import (
+	"bytes"
+	"embed"
+	"encoding/json"
+	"flag"
+	"fmt"
+	"io"
+	"io/fs"
+	"os"
+	"os/exec"
+	"path/filepath"
+	"strings"
+
+	"github.com/bilus/babble/internal/book"
+	"github.com/bilus/babble/internal/cmd"
+)
+
+const usage = `usage: babble <command> [flags] [BOOK.org]
+
+commands:
+  tangle  write every eligible code block to its target file
+  parse   read the book and report whether it parses (--dump for JSON)
+  init    start a lit book in an empty directory (--module, --dir)
+  vendor  write the embedded lit/ into this directory (--dir)
+`
+
+func main() {
+	os.Exit(run(os.Args[1:], os.Stdout, os.Stderr))
+}
+#+end_src
+
+#+begin: src-block-diff :old cli-head :new cli-head--planned
+#+begin_src diff
+@@ -15,7 +15,6 @@
+ 
+ 	"github.com/bilus/babble/internal/book"
+ 	"github.com/bilus/babble/internal/cmd"
+-	"github.com/bilus/babble/internal/org"
+ )
+ 
+ const usage = `usage: babble <command> [flags] [BOOK.org]
+#+end_src
+#+end:
+
 run dispatches the subcommands and owns the exit codes.
 
-#+name: cli-run
 #+name: cli-run
 #+begin_src go :tangle main.go :comments org
 func run(args []string, stdout, stderr io.Writer) int {
@@ -1949,9 +2030,9 @@ func run(args []string, stdout, stderr io.Writer) int {
 #+end_src
 
 *************** PLANNED stage 28 replaces the block above ([[#stage-28][plan]]) :stage28:
-parse stops keeping its own idea of what reading a book means. It
-was the third copy of that order and the only one that judged
-nothing, so a book could pass parse and be refused by tangle.
+parse stops carrying its own version of that order. It was the third
+copy and the only one that judged nothing, so a book could pass
+parse and be refused by tangle.
 *************** END
 #+name: cli-run--planned
 #+begin_src go :tangle no
@@ -1972,7 +2053,7 @@ func run(args []string, stdout, stderr io.Writer) int {
 			fmt.Fprint(stderr, usage)
 			return 2
 		}
-		d, err := cmd.Read(fs.Arg(0))
+		d, err := cmd.Parse(fs.Arg(0))
 		if err != nil {
 			fmt.Fprintln(stderr, "babble:", err)
 			return 1
@@ -2035,7 +2116,7 @@ func run(args []string, stdout, stderr io.Writer) int {
 -		if err == nil {
 -			err = org.ResolveAll(d)
 -		}
-+		d, err := cmd.Read(fs.Arg(0))
++		d, err := cmd.Parse(fs.Arg(0))
  		if err != nil {
  			fmt.Fprintln(stderr, "babble:", err)
  			return 1
@@ -3412,9 +3493,9 @@ func (p *parser) propertyDrawerParser(from, limit int) (map[string]string, int, 
 #+end_src
 
 #+begin_example
-  #+begin_src go :tangle greet.go :comments org
+  ,#+begin_src go :tangle greet.go :comments org
   package greet
-  #+end_src
+  ,#+end_src
 #+end_example
 
 A src block records the two raw anchors beside its parsed
@@ -3580,8 +3661,8 @@ func (p *parser) paragraphParser(limit int) (parsed, int, error) {
 
 #+begin_example
   ** Ship it
-  #+begin_src go
-  #+end_src
+  ,#+begin_src go
+  ,#+end_src
   #+title: babble
   :header-args: :comments org
 #+end_example
@@ -4168,11 +4249,12 @@ file, which is the quiet kind of difference.
 
 The shape is refused rather than reconciled. Reproducing org's
 search would mean giving up the tree for the one case that abuses
-it, and no book needs to quote a delimiter at column zero: indenting
-it, or escaping it with a comma the way org already provides for,
-leaves the meaning and removes the ambiguity.
+it, and no book needs to quote a delimiter bare. A comma in front of
+it, the escape org already provides, leaves the meaning and removes
+the ambiguity. Indenting does not: none of the raw searches org runs
+for these are anchored at a column, so an indented delimiter is one
+org still finds.
 
-#+name: lint-quoted
 #+name: lint-quoted
 #+begin_src go :tangle internal/org/org.go :comments org
 var quotedDelimiter = regexp.MustCompile(`^#\+(begin|end)_src`)
@@ -4208,7 +4290,7 @@ runs here start at column zero.
 *************** END
 #+name: lint-quoted--planned
 #+begin_src go :tangle no
-var quotedDelimiter = regexp.MustCompile(`(?i)^[ \t]*#\+(begin_src|end_src|name:)`)
+var quotedDelimiter = regexp.MustCompile(`(?i)^[ \t]*#\+(begin_src|end_src)`)
 
 func LintQuotedDelimiters(d *book.Document) error {
 	var err error
@@ -4245,7 +4327,7 @@ func LintQuotedDelimiters(d *book.Document) error {
 #+begin_src diff
 @@ -1,18 +1,27 @@
 -var quotedDelimiter = regexp.MustCompile(`^#\+(begin|end)_src`)
-+var quotedDelimiter = regexp.MustCompile(`(?i)^[ \t]*#\+(begin_src|end_src|name:)`)
++var quotedDelimiter = regexp.MustCompile(`(?i)^[ \t]*#\+(begin_src|end_src)`)
  
  func LintQuotedDelimiters(d *book.Document) error {
  	var err error
@@ -5304,15 +5386,32 @@ func Tangle(path string) error {
 }
 #+end_src
 
-*************** PLANNED stage 28 renames read and exports it ([[#stage-28][plan]]) :stage28:
-The command line needs the same reader, so the function it already
-uses twice gains a capital letter and one more caller.
+*************** PLANNED stage 28 adds the paragraph and block below ([[#stage-28][plan]]) :stage28:
+The parse subcommand needs this reader, and the package already
+holds one function per subcommand. So it gains a second rather than
+read gaining a capital letter, which would have collided with the
+twin stage 10 already carries for the same block.
 *************** END
 
 # doc
-Read is the front half of Tangle, and it is exported because the
-parse subcommand judges a book by exactly these rules. Tangle
-performs it twice on the same path.
+Parse is what "babble parse" does to one book: read it by exactly
+the rules a tangle would, and hand back the tree without writing
+anything.
+
+#+begin_src go :tangle internal/cmd/cmd.go :comments org
+func Parse(path string) (*book.Document, error) {
+	return read(path)
+}
+#+end_src
+
+The package exports one function per subcommand and keeps the reader
+between them. That is the whole reason parse and tangle can no
+longer disagree about what reading a book means: there is one
+reader, and neither command owns it.
+
+# doc
+read is the front half of Tangle, separate because Tangle performs
+it twice on the same path.
 
 #+name: cmd-read
 #+begin_src go :tangle internal/cmd/cmd.go :comments org
@@ -6474,25 +6573,32 @@ The test the Deviations chapter has been claiming for some time.
 *************** END
 
 The Deviations chapter says no refusal may fire on a real book. This
-is the test that makes that a fact rather than an intention, and
-until now nothing checked it: the lints are reachable only through
-the tangle flow, and no test drives that flow over the books in this
-repository. TestParseCorpora parses them, which is a weaker question,
-because a parse cannot see a delimiter quoted inside a body.
+is the test that makes that a fact rather than an intention. It has
+to exist because the lints are reachable only through the tangle
+flow, and no test drives that flow over the books here.
+TestParseCorpora asks a weaker question, since a parse cannot see a
+delimiter quoted inside a body.
 
 It matters most for the rules that refuse a shape rather than a
 value. Those exist to catch a book nobody would write on purpose, and
 a rule of that kind is one edit away from refusing every book here,
-with the refusal landing on whoever runs make tangle next.
+and the refusal would reach whoever runs make tangle next.
 
 A hole in a test skips rather than panics. Elsewhere a hole is
 unreachable because nothing calls it yet, and that is what keeps the
 suite green while a stage is planned. A test has a caller by
 definition, so the same property has to be asked for.
 
+The books it reads are the ones this repository ships as books, found
+by walking for the name rather than listed. Listing them is how
+~TestParseCorpora~ came to miss both template books, which are the
+ones ~make setup~ copies and tangles for every new user. The books
+inside fixtures are not in the set: a good third of them are there to
+be refused, and testscript already pins what each should do.
+
 #+begin_src go :tangle main_test.go :comments org
 func TestCorpusLints(t *testing.T) {
-	t.Skip("HOLE(28): read every book in this repository, and fail on any refusal")
+	t.Skip("HOLE(28): walk the repository for BOOK.org, read each, fail on any refusal")
 }
 #+end_src
 
